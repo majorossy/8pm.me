@@ -69,6 +69,9 @@ $subcats = $category->getParentCategory()->getChildrenCategories();
 		margin:2rem auto;
 	}
 	.a-category-quicview-iframe{width:100%;}
+	.toolbar.toolbar-products,
+	header.page-header,
+	footer.page-footer,
 	.sections.nav-sections,
 	.page-layout-1column .filter.block,
 	.modal-header,.modal-footer,.copyright,.page-title-wrapper,.category-view{display:none;}
@@ -89,6 +92,7 @@ $subcats = $category->getParentCategory()->getChildrenCategories();
 	   width: 100%;
 	}
 	.category-image{text-align:center;}
+	.action.primary{background:#fff;color:#1979c3;}
 </style>
 
 
@@ -121,7 +125,7 @@ $subcats = $category->getParentCategory()->getChildrenCategories();
     <style>    	
 		.plp-list-wrapper {
 		  display: grid;
-		  grid-template-columns: 20% 12% 12% 20% 12% 12% 12%;
+		  grid-template-columns: 20% 10% 11% 20% 13% 13% 13%;
 		  grid-gap: 10px;
 		  border-bottom:1px solid #999;
 		}
@@ -141,6 +145,15 @@ $subcats = $category->getParentCategory()->getChildrenCategories();
         	grid-row: 2;
         	font-size: 89%;
 		}
+		
+		
+		.product-item-inner-OFF .actions-primary,
+		.product-item-inner-OFF .actions-secondary.product-item,
+		.product-item-inner-OFF .actions-secondary.product-item a,
+		.product-item-inner-OFF .add-to-links{float: left;display: inline-flex;width: inherit;}
+		
+		
+		
     </style>
     <div class="products wrapper <?= /* @escapeNotVerified */ $viewMode ?> products-<?= /* @escapeNotVerified */ $viewMode ?>">
 
@@ -166,7 +179,7 @@ $subcats = $category->getParentCategory()->getChildrenCategories();
             	<?php
             }elseif (($on_artist != $_artist_holder) && ($_fix_me_artist == 1)){
             	?>
-				  	<h2><?php echo $on_artist;?></h2>
+				  	<!--h2><?php echo $on_artist;?></h2-->
 				  	<div id="accordion-<?php echo preg_replace('/\W+/', '-', strtolower($on_album)); ?>" data-mage-init='{
 				        "accordion":{
 				            "active": "",
@@ -201,7 +214,7 @@ $subcats = $category->getParentCategory()->getChildrenCategories();
             	<?php
             }elseif (($on_album != $_album_holder) && ($_fix_me_album == 1)){
             	?>
-				  	<h3 style="padding-left:5%;"><?php echo $on_album;?></h3>
+				  	<h2><?php echo $on_album;?></h2>
 				  	<div id="accordion-<?php echo preg_replace('/\W+/', '-', strtolower($on_album)); ?>" data-mage-init='{
 				        "accordion":{
 				            "active": "",
@@ -217,7 +230,7 @@ $subcats = $category->getParentCategory()->getChildrenCategories();
 				$_album_holder = $on_album;										
 				?>
 					</div>
-					<h3 style="padding-left:5%;"><?php echo $on_album;?></h3>
+					<h2><?php echo $on_album;?></h2>
 				  	<div id="accordion-<?php echo preg_replace('/\W+/', '-', strtolower($on_album)); ?>" data-mage-init='{
 				        "accordion":{
 				            "active": "",
@@ -236,13 +249,13 @@ $subcats = $category->getParentCategory()->getChildrenCategories();
             	
             	<?php
             }elseif (($on_track != $_track_holder) && ($_fix_me_track == 1)){ ?>
-					<div data-role="collapsible" style="padding-left:10%;">
+					<div data-role="collapsible">
 				        <div data-role="trigger">
 				            <span>Track #<?php echo $on_track;?> - <?php echo $_product->getTitle();?></span>
 				        </div>
 				    </div>
-				    <div data-role="content" style="padding-left:15%;">
-						<ol>            
+				    <div data-role="content">
+						<ol style="padding:0px;">            
 				            <li class="plp-list-wrapper">		            			            		            	
 				            	<div class="plp-list-box"><strong></strong></div>
 				            	<div class="plp-list-box"><strong>Length</strong></div>
@@ -261,12 +274,12 @@ $subcats = $category->getParentCategory()->getChildrenCategories();
 				?>
 					</ol>
 				</div>
-				<div data-role="collapsible" style="padding-left:10%;">
+				<div data-role="collapsible">
 				        <div data-role="trigger">
 				            <span>Track #<?php echo $on_track;?> - <?php echo $_product->getTitle();?></span>
 				        </div>
 			    </div>
-			    <div data-role="content" style="padding-left:15%;">
+			    <div data-role="content">
 					<ol>            
 			            <li class="plp-list-wrapper">		            			            		            	
 			            	<div class="plp-list-box"><strong></strong></div>
@@ -307,14 +320,14 @@ $subcats = $category->getParentCategory()->getChildrenCategories();
                                             <input type="hidden" name="<?= /* @escapeNotVerified */ Action::PARAM_NAME_URL_ENCODED ?>" value="<?= /* @escapeNotVerified */ $postParams['data'][Action::PARAM_NAME_URL_ENCODED] ?>">
                                             <?= $block->getBlockHtml('formkey') ?>
                                             <button type="submit"
-                                                    title="<?= $block->escapeHtml(__('Add to Playlist')) ?>"
+                                                    title="<?= $block->escapeHtml(__('Add to Queue')) ?>"
                                                     class="action tocart primary">
-                                                <span><?= /* @escapeNotVerified */ __('Add to Playlist') ?></span>
+                                                <span><?= /* @escapeNotVerified */ __('Add to Queue') ?></span>
                                             </button>
                                         </form>
                                     <?php endif; ?>
                                 </div>
-                                <div data-role="add-to-links" class="actions-secondary"<?= strpos($pos, $viewMode . '-secondary') ? $position : '' ?>>
+                                <div data-role="add-to-links" class="actions-secondary product-item"<?= strpos($pos, $viewMode . '-secondary') ? $position : '' ?>>
                                     <?php if ($addToBlock = $block->getChildBlock('addto')): ?>
                                         <?= $addToBlock->setProduct($_product)->getChildHtml() ?>
                                     <?php endif; ?>
@@ -348,3 +361,4 @@ $subcats = $category->getParentCategory()->getChildrenCategories();
         </script>
     <?php endif; ?>
 <?php endif; ?>
+</div>

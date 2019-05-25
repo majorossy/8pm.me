@@ -139,7 +139,10 @@ class UpdateAlbums extends Command
 		   	$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 			$categoryFactory = $objectManager->create('Magento\Catalog\Model\ResourceModel\Category\CollectionFactory');
 			$subcategories = $categoryFactory->create()->addAttributeToSelect('*');
-			$subcategories->addAttributeToFilter('entity_id', array('lt' => 507));
+			//$subcategories->addAttributeToFilter('entity_id', array('gt' => 468))->addAttributeToFilter('entity_id', array('lt' => 487));
+			$subcategories->addAttributeToFilter('entity_id', array('gt' => 2537))->addAttributeToFilter('entity_id', array('lt' => 2620));
+			//$subcategories->addAttributeToFilter('entity_id', array('gt' => 705));
+			//$subcategories->addAttributeToFilter('entity_id', array('gt' => 199));
 			//$subcategories->addAttributeToFilter('entity_id','488');
 			$subcategories->addOrder('entity_id','DESC');
 			//$subcategories = $categoryObj->getChildrenCategories();
@@ -166,7 +169,7 @@ class UpdateAlbums extends Command
 					//echo '|||'. $_cat->getData('artist').'|||';
 					$_archive_collection_id = $this->createOrGetId('archive_collection', $_cat->getData('artist'));					
 					$X_collection = $X_productCollection->addAttributeToSelect(array('title','sku','name'))->addAttributeToFilter('archive_collection', $_archive_collection_id)->load();
-					$output->writeln("<info>          ".$_cat->getData('name')."---------".$_cat->getData('artist')." Starting Track Hunt</info>");
+					$output->writeln("<info>          ".$_cat->getData('name')."---".$_archive_collection_id."---------".$_cat->getData('artist')." Starting Track Hunt</info>");
 					//echo count($X_collection).'+++';
 					//exit;					
 					foreach($X_collection as $a_song){
@@ -203,10 +206,10 @@ class UpdateAlbums extends Command
 							
 							
 							//print_r($categoryIds);
-//							$this->categoryLinkManagement->assignProductToCategories(
-//							    $product->getSku(),
-//							    $categoryIds
-//							);							
+							$this->categoryLinkManagement->assignProductToCategories(
+							    $product->getSku(),
+							    $categoryIds
+							);							
 							// save Pretty Title name as drop down   | pretty_ttile
 							// save albumn name as drop down   | group_album
 							// save artist name as drop down   | group_artist
@@ -221,11 +224,11 @@ class UpdateAlbums extends Command
 							$_da_id = '';
 							$_da_id = $this->createOrGetId('pretty_title', $_cat->getName());
 							echo $_cat->getName().'|'.$_da_id.'|'.$_cat->getParentCategory()->getName();
-							$product->setPrettytitle($_da_id);
-							$product->setAlbum($this->createOrGetId('album', $_cat->getParentCategory()->getName()));
-							$product->setArtist($this->createOrGetId('artist', $_cat->getData('artist')));
-							$product->setTrack($this->createOrGetId('track', str_replace(' ','-',($_cat->getData('artist').'_'.$_cat->getParentCategory()->getName().'_'.$_cat->getData('song_track_numnber')))));
-							$product->save();
+//							$product->setPrettytitle($_da_id);
+//							$product->setAlbum($this->createOrGetId('album', $_cat->getParentCategory()->getName()));
+//							$product->setArtist($this->createOrGetId('artist', $_cat->getData('artist')));
+//							$product->setTrack($this->createOrGetId('track', str_replace(' ','-',($_cat->getData('artist').'_'.$_cat->getParentCategory()->getName().'_'.$_cat->getData('song_track_numnber')))));
+//							$product->save();
 							//$output->writeln("<info>  XXX ".$product->getSku()." Category Track ".$product->getName()."  Show Track ".$product->getTitle()." URL ".$product->getUrlKey()."</info>");
 							//$output->writeln("<info>  XXX ".$product->getSku()." Category Track ".$product->getName()."  Show Track ".$product->getTitle()." URL ".$product->getUrlKey()."</info>");
 							//$output->writeln("<info>   Album: ".$___acount." Song: ".$___bcount."             Found SKU - ".$a_song->getSku()."</info>");
