@@ -9,6 +9,8 @@
     <update handle="default_head_blocks"/>
 	<head>
 		<css src="ArchiveDotOrg_Player::css/player.css"/>
+		<css src="ArchiveDotOrg_Player::css/slick.css"/>
+		<css src="ArchiveDotOrg_Player::css/slick-theme.css"/>
 	</head>
     <body>
         <block name="require.js" class="Magento\Framework\View\Element\Template" template="Magento_Theme::page/js/require_js.phtml" />

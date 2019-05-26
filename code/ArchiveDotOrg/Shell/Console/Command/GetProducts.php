@@ -137,7 +137,7 @@ class GetProducts extends Command
 			$output->writeln('<error>     on cat::'.$subcategorie->getId().' '.memory_get_peak_usage().'</error>');
 
 //if($subcategorie->getId() ==675){ //Ween
-if($subcategorie->getId() ==156){ ///RRE
+//if($subcategorie->getId() ==156){ ///RRE
 //if($subcategorie->getId() ==100){ //TDB
 //if($subcategorie->getId() ==237){	//SCI	
 //if($subcategorie->getId() ==398){	// TLG
@@ -147,10 +147,14 @@ if($subcategorie->getId() ==156){ ///RRE
 //if($subcategorie->getId() ==663){	// Marco
 //if($subcategorie->getId() ==662){	// GreenSky
 //if($subcategorie->getId() ==705){	// Twiddle
-//if($subcategorie->getId() ==668){	// Blues Travler
+if($subcategorie->getId() ==668){	// Blues Travler
 //if($subcategorie->getId() ==664){	// moe
 //if($subcategorie->getId() ==693){	// Cabinet   305
 //if($subcategorie->getId() ==705){	// Twiddle   429
+//if($subcategorie->getId() ==2640){ // FGH 
+//if($subcategorie->getId() ==2641){ // Todd Sheaffer
+//if($subcategorie->getId() ==2641){ // Todd Sheaffer
+
 			$__count_cats = $__count_cats + 1;
 			$_subcategory_info = array();
 			$subcategorie = $objectManager->get('\Magento\Catalog\Model\CategoryFactory')->create()->load($subcategorie->getId());
@@ -166,10 +170,10 @@ if($subcategorie->getId() ==156){ ///RRE
 if($__count_cats >= 0){
 			$_how_many_feeds = count($collection_rss->channel->item);	
 			foreach($collection_rss->channel->item as $_item){			
-			if($_sub_item_count_per_artist >= 1540){
+			if($_sub_item_count_per_artist >=544){
 				//sleep(5);
 				//echo 'ssssa';exit;
-				//if ($__count_shows % 20 == 0){sleep(25);echo'SLEEP';}
+				if ($__count_shows % 25 == 0){sleep(33);echo'SLEEP';}
 				//if ($__count_shows % 100 == 0){sleep(200);echo'SLEEP';}				
 				//if($_sub_item_count_per_artist >= 700){unset($collection_feed);break;}else{$_sub_item_count_per_artist = $_sub_item_count_per_artist +1;}
 				$_sub_item_count_per_artist = $_sub_item_count_per_artist +1;
