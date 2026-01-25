@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ArchiveDotOrg Core Module - Admin System Configuration
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="archivedotorg" translate="label" sortOrder="500">
+            <label>Archive.org</label>
+        </tab>
+
+        <section id="archivedotorg" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Import Settings</label>
+            <tab>archivedotorg</tab>
+            <resource>ArchiveDotOrg_Core::config</resource>
+
+            <!-- General Settings -->
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General Settings</label>
+
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Module</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Enable or disable Archive.org import functionality</comment>
+                </field>
+
+                <field id="debug" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Debug Mode</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Enable verbose logging to var/log/archivedotorg.log</comment>
+                </field>
+            </group>
+
+            <!-- API Settings -->
+            <group id="api" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>API Settings</label>
+
+                <field id="base_url" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Base URL</label>
+                    <comment>Archive.org API base URL (default: https://archive.org)</comment>
+                    <validate>validate-url</validate>
+                </field>
+
+                <field id="timeout" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Timeout (seconds)</label>
+                    <comment>HTTP request timeout in seconds</comment>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+
+                <field id="retry_attempts" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Retry Attempts</label>
+                    <comment>Number of retry attempts for failed API calls</comment>
+                    <validate>validate-digits</validate>
+                </field>
+
+                <field id="retry_delay" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Retry Delay (ms)</label>
+                    <comment>Delay between retry attempts in milliseconds</comment>
+                    <validate>validate-digits</validate>
+                </field>
+            </group>
+
+            <!-- Import Settings -->
+            <group id="import" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Import Settings</label>
+
+                <field id="batch_size" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Batch Size</label>
+                    <comment>Number of shows to process before clearing caches</comment>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+
+                <field id="audio_format" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Audio Format</label>
+                    <source_model>ArchiveDotOrg\Core\Model\Config\Source\AudioFormat</source_model>
+                    <comment>Preferred audio format for track imports</comment>
+                </field>
+
+                <field id="import_images" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Import Images</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Import spectrogram images for tracks</comment>
+                </field>
+
+                <field id="attribute_set_id" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Attribute Set ID</label>
+                    <comment>Product attribute set ID for imported products</comment>
+                    <validate>validate-digits</validate>
+                </field>
+
+                <field id="default_website_id" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Default Website ID</label>
+                    <comment>Website ID to assign imported products to</comment>
+                    <validate>validate-digits</validate>
+                </field>
+            </group>
+
+            <!-- Artist Mappings -->
+            <group id="mappings" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Artist Mappings</label>
+                <comment>Map artist names to Archive.org collection IDs</comment>
+
+                <field id="artist_mappings" translate="label" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Artist to Collection Mappings</label>
+                    <frontend_model>ArchiveDotOrg\Core\Block\Adminhtml\System\Config\ArtistMappings</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                </field>
+            </group>
+
+            <!-- Cron Settings -->
+            <group id="cron" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Scheduled Import</label>
+
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable Cron</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Enable scheduled imports via cron</comment>
+                </field>
+
+                <field id="schedule" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Cron Schedule</label>
+                    <comment>Cron expression (e.g., "0 2 * * *" for 2 AM daily)</comment>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

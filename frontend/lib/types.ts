@@ -1,0 +1,107 @@
+// Types aligned with Magento 2 GraphQL schema
+// Song = Product, Artist = Category, Queue = Cart, Favorites = Wishlist
+// Hierarchy: Artist -> Album -> Track -> Song (recordings)
+
+export interface Song {
+  id: string;                    // Magento product uid
+  sku: string;                   // Magento product sku
+  title: string;                 // product.name
+  artistId: string;              // category id
+  artistName: string;            // category name
+  artistSlug: string;            // category url_key
+  duration: number;              // custom attribute: duration (seconds)
+  streamUrl: string;             // custom attribute: stream_url
+  albumArt: string;              // product.image.url
+  price?: number;                // product.price_range.minimum_price.final_price.value
+  // Album/track context
+  albumIdentifier: string;       // Archive.org identifier (links to Album)
+  albumName: string;             // show_name
+  trackTitle: string;            // Normalized track name (song_title)
+  showDate?: string;             // Performance date
+  showVenue?: string;            // Venue name
+  // Recording metadata
+  lineage?: string;              // Recording chain/source equipment
+  notes?: string;                // Performance notes, guests, covers
+}
+
+// Track - a unique song title within an album (may have multiple recordings)
+export interface Track {
+  id: string;                    // Generated: `${albumIdentifier}-${trackSlug}`
+  title: string;                 // song_title
+  slug: string;                  // URL-safe version of title
+  albumIdentifier: string;       // Parent album identifier
+  albumName: string;             // Parent album name
+  artistId: string;
+  artistName: string;
+  artistSlug: string;
+  songs: Song[];                 // Different recordings of this track
+  totalDuration: number;         // Duration of first/primary recording
+  songCount: number;             // Number of recordings
+}
+
+// Album - a show/concert grouped by Archive.org identifier
+export interface Album {
+  id: string;                    // The `identifier` attribute
+  identifier: string;            // Archive.org identifier
+  name: string;                  // show_name
+  slug: string;                  // URL-safe identifier
+  artistId: string;
+  artistName: string;
+  artistSlug: string;
+  showDate?: string;             // Performance date
+  showVenue?: string;            // Venue name
+  tracks: Track[];               // Tracks in this album
+  totalTracks: number;           // Number of unique tracks
+  totalSongs: number;            // Total recordings across all tracks
+  totalDuration: number;         // Sum of all song durations
+  coverArt?: string;             // Album cover image
+}
+
+export interface Artist {
+  id: string;                    // Magento category uid
+  name: string;                  // category.name
+  slug: string;                  // category.url_key
+  image: string;                 // category.image
+  bio: string;                   // custom attribute: description
+  songCount?: number;            // product_count (total recordings)
+  albumCount?: number;           // Number of albums
+}
+
+export interface ArtistDetail extends Artist {
+  albums: Album[];               // Albums (shows) by this artist
+  songs: Song[];                 // Flat list of all songs (for backwards compat)
+}
+
+// Cart types (Queue)
+export interface CartItem {
+  id: string;                    // cart item uid
+  song: Song;
+  quantity: number;              // always 1 for songs
+}
+
+export interface Cart {
+  id: string;                    // cart id
+  items: CartItem[];
+  itemCount: number;
+}
+
+// Wishlist types (Favorites)
+export interface WishlistItem {
+  id: string;                    // wishlist item id
+  song: Song;
+  addedAt: string;
+}
+
+export interface Wishlist {
+  id: string;
+  items: WishlistItem[];
+  itemCount: number;
+}
+
+// Customer (for wishlist - requires auth)
+export interface Customer {
+  id: string;
+  email: string;
+  firstname: string;
+  lastname: string;
+}

@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ArchiveDotOrg Core Module - Web API Configuration
+ *
+ * REST API Endpoints:
+ *   POST   /V1/archive/import                - Start import job
+ *   GET    /V1/archive/import/:jobId         - Get job status
+ *   DELETE /V1/archive/import/:jobId         - Cancel job
+ *   GET    /V1/archive/collections           - List configured collections
+ *   GET    /V1/archive/collections/:id       - Get collection details
+ *   DELETE /V1/archive/products/:sku         - Delete product
+ */
+-->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+
+    <!-- Import Management -->
+    <route url="/V1/archive/import" method="POST">
+        <service class="ArchiveDotOrg\Core\Api\ImportManagementInterface" method="startImport"/>
+        <resources>
+            <resource ref="ArchiveDotOrg_Core::import_start"/>
+        </resources>
+        <data>
+            <parameter name="artistName" force="true">%artist_name%</parameter>
+            <parameter name="collectionId" force="true">%collection_id%</parameter>
+            <parameter name="limit" force="false">%limit%</parameter>
+            <parameter name="offset" force="false">%offset%</parameter>
+            <parameter name="dryRun" force="false">%dry_run%</parameter>
+        </data>
+    </route>
+
+    <route url="/V1/archive/import/:jobId" method="GET">
+        <service class="ArchiveDotOrg\Core\Api\ImportManagementInterface" method="getJobStatus"/>
+        <resources>
+            <resource ref="ArchiveDotOrg_Core::import_status"/>
+        </resources>
+    </route>
+
+    <route url="/V1/archive/import/:jobId" method="DELETE">
+        <service class="ArchiveDotOrg\Core\Api\ImportManagementInterface" method="cancelJob"/>
+        <resources>
+            <resource ref="ArchiveDotOrg_Core::import_cancel"/>
+        </resources>
+    </route>
+
+    <!-- Collection Management -->
+    <route url="/V1/archive/collections" method="GET">
+        <service class="ArchiveDotOrg\Core\Api\ImportManagementInterface" method="listCollections"/>
+        <resources>
+            <resource ref="ArchiveDotOrg_Core::collections_view"/>
+        </resources>
+        <data>
+            <parameter name="includeStats" force="false">%include_stats%</parameter>
+        </data>
+    </route>
+
+    <route url="/V1/archive/collections/:collectionId" method="GET">
+        <service class="ArchiveDotOrg\Core\Api\ImportManagementInterface" method="getCollection"/>
+        <resources>
+            <resource ref="ArchiveDotOrg_Core::collections_view"/>
+        </resources>
+    </route>
+
+    <!-- Product Management -->
+    <route url="/V1/archive/products/:sku" method="DELETE">
+        <service class="ArchiveDotOrg\Core\Api\ImportManagementInterface" method="deleteProduct"/>
+        <resources>
+            <resource ref="ArchiveDotOrg_Core::products_delete"/>
+        </resources>
+    </route>
+
+</routes>

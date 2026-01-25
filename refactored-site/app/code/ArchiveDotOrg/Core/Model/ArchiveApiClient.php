@@ -1,0 +1,365 @@
+<?php
+/**
+ * ArchiveDotOrg Core Module
+ */
+
+declare(strict_types=1);
+
+namespace ArchiveDotOrg\Core\Model;
+
+use ArchiveDotOrg\Core\Api\ArchiveApiClientInterface;
+use ArchiveDotOrg\Core\Api\Data\ShowInterface;
+use ArchiveDotOrg\Core\Api\Data\ShowInterfaceFactory;
+use ArchiveDotOrg\Core\Api\Data\TrackInterface;
+use ArchiveDotOrg\Core\Api\Data\TrackInterfaceFactory;
+use ArchiveDotOrg\Core\Logger\Logger;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\HTTP\Client\Curl;
+use Magento\Framework\Serialize\Serializer\Json;
+
+/**
+ * Archive.org API Client Implementation
+ *
+ * Uses Magento's HTTP client with retry logic and proper error handling
+ */
+class ArchiveApiClient implements ArchiveApiClientInterface
+{
+    private Config $config;
+    private Curl $httpClient;
+    private Json $jsonSerializer;
+    private Logger $logger;
+    private ShowInterfaceFactory $showFactory;
+    private TrackInterfaceFactory $trackFactory;
+
+    /**
+     * @param Config $config
+     * @param Curl $httpClient
+     * @param Json $jsonSerializer
+     * @param Logger $logger
+     * @param ShowInterfaceFactory $showFactory
+     * @param TrackInterfaceFactory $trackFactory
+     */
+    public function __construct(
+        Config $config,
+        Curl $httpClient,
+        Json $jsonSerializer,
+        Logger $logger,
+        ShowInterfaceFactory $showFactory,
+        TrackInterfaceFactory $trackFactory
+    ) {
+        $this->config = $config;
+        $this->httpClient = $httpClient;
+        $this->jsonSerializer = $jsonSerializer;
+        $this->logger = $logger;
+        $this->showFactory = $showFactory;
+        $this->trackFactory = $trackFactory;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fetchCollectionIdentifiers(
+        string $collectionId,
+        ?int $limit = null,
+        ?int $offset = null
+    ): array {
+        $url = $this->config->buildSearchUrl($collectionId, $limit ?? 999999);
+
+        $response = $this->executeWithRetry($url);
+        $data = $this->parseJsonResponse($response);
+
+        if (!isset($data['response']['docs'])) {
+            throw new LocalizedException(
+                __('Invalid response format from Archive.org search API')
+            );
+        }
+
+        $identifiers = [];
+        foreach ($data['response']['docs'] as $doc) {
+            if (isset($doc['identifier'])) {
+                $identifiers[] = $doc['identifier'];
+            }
+        }
+
+        // Apply offset and limit
+        if ($offset !== null && $offset > 0) {
+            $identifiers = array_slice($identifiers, $offset);
+        }
+
+        if ($limit !== null && $limit > 0) {
+            $identifiers = array_slice($identifiers, 0, $limit);
+        }
+
+        $this->logger->debug('Fetched collection identifiers', [
+            'collection' => $collectionId,
+            'count' => count($identifiers),
+            'limit' => $limit,
+            'offset' => $offset
+        ]);
+
+        return $identifiers;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fetchShowMetadata(string $identifier): ShowInterface
+    {
+        $url = $this->config->buildMetadataUrl($identifier);
+
+        $response = $this->executeWithRetry($url);
+        $data = $this->parseJsonResponse($response);
+
+        return $this->parseShowResponse($data, $identifier);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function testConnection(): bool
+    {
+        try {
+            $url = $this->config->getBaseUrl() . '/metadata/test';
+            $this->httpClient->setTimeout($this->config->getTimeout());
+            $this->httpClient->setOption(CURLOPT_FOLLOWLOCATION, true);
+            $this->httpClient->get($url);
+
+            // Even a 404 means the server is responding
+            return $this->httpClient->getStatus() < 500;
+        } catch (\Exception $e) {
+            $this->logger->logApiError($this->config->getBaseUrl(), $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getCollectionCount(string $collectionId): int
+    {
+        $url = sprintf(
+            '%s/advancedsearch.php?q=Collection%%3A%s&fl[]=identifier&rows=0&output=json',
+            $this->config->getBaseUrl(),
+            urlencode($collectionId)
+        );
+
+        $response = $this->executeWithRetry($url);
+        $data = $this->parseJsonResponse($response);
+
+        return (int) ($data['response']['numFound'] ?? 0);
+    }
+
+    /**
+     * Execute HTTP request with retry logic
+     *
+     * @param string $url
+     * @return string
+     * @throws LocalizedException
+     */
+    private function executeWithRetry(string $url): string
+    {
+        $attempts = $this->config->getRetryAttempts();
+        $delay = $this->config->getRetryDelay();
+        $lastException = null;
+
+        for ($attempt = 1; $attempt <= $attempts; $attempt++) {
+            try {
+                $this->httpClient->setTimeout($this->config->getTimeout());
+                $this->httpClient->setOption(CURLOPT_FOLLOWLOCATION, true);
+                $this->httpClient->setHeaders([
+                    'User-Agent' => 'ArchiveDotOrg-Magento/2.0',
+                    'Accept' => 'application/json'
+                ]);
+
+                $this->httpClient->get($url);
+
+                $status = $this->httpClient->getStatus();
+                $body = $this->httpClient->getBody();
+
+                if ($status === 200) {
+                    return $body;
+                }
+
+                // Retry on 5xx errors
+                if ($status >= 500) {
+                    throw new LocalizedException(
+                        __('Server error: HTTP %1', $status)
+                    );
+                }
+
+                // Don't retry on 4xx errors
+                if ($status >= 400) {
+                    $this->logger->logApiError($url, 'Client error', $status);
+                    throw new LocalizedException(
+                        __('API error: HTTP %1', $status)
+                    );
+                }
+
+                return $body;
+            } catch (LocalizedException $e) {
+                $lastException = $e;
+
+                if ($attempt < $attempts) {
+                    $this->logger->debug('API retry', [
+                        'attempt' => $attempt,
+                        'url' => $url,
+                        'error' => $e->getMessage()
+                    ]);
+
+                    // Exponential backoff
+                    usleep($delay * 1000 * $attempt);
+                }
+            } catch (\Exception $e) {
+                $lastException = new LocalizedException(
+                    __('API request failed: %1', $e->getMessage()),
+                    $e
+                );
+
+                if ($attempt < $attempts) {
+                    usleep($delay * 1000 * $attempt);
+                }
+            }
+        }
+
+        $this->logger->logApiError($url, $lastException?->getMessage() ?? 'Unknown error');
+
+        throw $lastException ?? new LocalizedException(
+            __('API request failed after %1 attempts', $attempts)
+        );
+    }
+
+    /**
+     * Parse JSON response
+     *
+     * @param string $response
+     * @return array
+     * @throws LocalizedException
+     */
+    private function parseJsonResponse(string $response): array
+    {
+        try {
+            $data = $this->jsonSerializer->unserialize($response);
+
+            if (!is_array($data)) {
+                throw new LocalizedException(__('Invalid JSON response'));
+            }
+
+            return $data;
+        } catch (\Exception $e) {
+            throw new LocalizedException(
+                __('Failed to parse API response: %1', $e->getMessage()),
+                $e
+            );
+        }
+    }
+
+    /**
+     * Parse show metadata response into ShowInterface
+     *
+     * @param array $data
+     * @param string $identifier
+     * @return ShowInterface
+     */
+    private function parseShowResponse(array $data, string $identifier): ShowInterface
+    {
+        /** @var ShowInterface $show */
+        $show = $this->showFactory->create();
+
+        $metadata = $data['metadata'] ?? [];
+
+        $show->setIdentifier($identifier);
+        $show->setTitle($this->extractValue($metadata, 'title') ?? $identifier);
+        $show->setDescription($this->extractValue($metadata, 'description'));
+        $show->setDate($this->extractValue($metadata, 'date'));
+        $show->setYear($this->extractValue($metadata, 'year'));
+        $show->setVenue($this->extractValue($metadata, 'venue'));
+        $show->setCreator($this->extractValue($metadata, 'creator'));
+        $show->setTaper($this->extractValue($metadata, 'taper'));
+        $show->setTransferer($this->extractValue($metadata, 'transferer'));
+        $show->setLineage($this->extractValue($metadata, 'lineage'));
+        $show->setNotes($this->extractValue($metadata, 'notes'));
+        $show->setCollection($this->extractValue($metadata, 'collection'));
+        $show->setDir($data['dir'] ?? null);
+        $show->setServerOne($data['d1'] ?? null);
+        $show->setServerTwo($data['d2'] ?? null);
+
+        // Parse tracks from files
+        $audioFormat = $this->config->getAudioFormat();
+        $tracks = [];
+
+        if (isset($data['files']) && is_array($data['files'])) {
+            foreach ($data['files'] as $file) {
+                // Handle both object and array formats
+                $fileData = is_array($file) ? $file : (array) $file;
+
+                $name = $fileData['name'] ?? '';
+
+                // Only include files matching the configured audio format
+                if (!$this->endsWith($name, '.' . $audioFormat)) {
+                    continue;
+                }
+
+                // Skip files without a title
+                if (empty($fileData['title'])) {
+                    continue;
+                }
+
+                /** @var TrackInterface $track */
+                $track = $this->trackFactory->create();
+                $track->setName($name);
+                $track->setTitle($fileData['title']);
+                $track->setTrackNumber(isset($fileData['track']) ? (int) $fileData['track'] : null);
+                $track->setLength($fileData['length'] ?? null);
+                $track->setSha1($fileData['sha1'] ?? null);
+                $track->setFormat($audioFormat);
+                $track->setSource($fileData['source'] ?? null);
+                $track->setFileSize(isset($fileData['size']) ? (int) $fileData['size'] : null);
+
+                $tracks[] = $track;
+            }
+        }
+
+        $show->setTracks($tracks);
+
+        return $show;
+    }
+
+    /**
+     * Extract a value from metadata (handles arrays)
+     *
+     * @param array $metadata
+     * @param string $key
+     * @return string|null
+     */
+    private function extractValue(array $metadata, string $key): ?string
+    {
+        if (!isset($metadata[$key])) {
+            return null;
+        }
+
+        $value = $metadata[$key];
+
+        if (is_array($value)) {
+            return $value[0] ?? null;
+        }
+
+        return (string) $value ?: null;
+    }
+
+    /**
+     * Check if string ends with suffix
+     *
+     * @param string $haystack
+     * @param string $needle
+     * @return bool
+     */
+    private function endsWith(string $haystack, string $needle): bool
+    {
+        $length = strlen($needle);
+        if ($length === 0) {
+            return true;
+        }
+
+        return substr($haystack, -$length) === $needle;
+    }
+}

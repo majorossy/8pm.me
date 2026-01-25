@@ -1,0 +1,9 @@
+src/
+.DS_Store
+*.sql
+*.sql.gz
+*.pem
+node_modules/
+.next/
+frontend/.next/
+frontend/node_modules/
