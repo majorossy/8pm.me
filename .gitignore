@@ -6,3 +6,36 @@ node_modules/
 .next/
 frontend/.next/
 frontend/node_modules/
+
+# Magento core (installed via composer, not tracked)
+src/vendor/
+src/generated/
+src/var/
+src/pub/
+src/dev/
+src/setup/
+src/lib/
+src/bin/
+src/phpserver/
+
+# Magento config files (environment-specific)
+src/.htaccess
+src/.htaccess.sample
+src/.user.ini
+src/.editorconfig
+src/.php-cs-fixer.dist.php
+src/nginx.conf
+src/nginx.conf.sample
+src/auth.json.sample
+src/grunt-config.json.sample
+src/package.json.sample
+src/Gruntfile.js.sample
+
+# Magento root files
+src/CHANGELOG.md
+src/COPYING.txt
+src/LICENSE.txt
+src/LICENSE_AFL.txt
+src/SECURITY.md
+src/composer.json
+src/composer.lock
