@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ArchiveDotOrg Core Module - Database Schema
+ */
+-->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+
+    <!-- Activity Log Table -->
+    <table name="archivedotorg_activity_log" resource="default" engine="innodb" comment="Archive.org Activity Log">
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true" comment="Entity ID"/>
+        <column xsi:type="varchar" name="action_type" nullable="false" length="64" comment="Action Type"/>
+        <column xsi:type="text" name="details" nullable="true" comment="Action Details"/>
+        <column xsi:type="varchar" name="job_id" nullable="true" length="128" comment="Related Job ID"/>
+        <column xsi:type="int" name="admin_user_id" unsigned="true" nullable="true" comment="Admin User ID"/>
+        <column xsi:type="varchar" name="admin_username" nullable="true" length="128" comment="Admin Username"/>
+        <column xsi:type="varchar" name="status" nullable="false" length="32" default="success" comment="Status (success, warning, error)"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+
+        <index referenceId="ARCHIVEDOTORG_ACTIVITY_LOG_ACTION_TYPE" indexType="btree">
+            <column name="action_type"/>
+        </index>
+
+        <index referenceId="ARCHIVEDOTORG_ACTIVITY_LOG_JOB_ID" indexType="btree">
+            <column name="job_id"/>
+        </index>
+
+        <index referenceId="ARCHIVEDOTORG_ACTIVITY_LOG_STATUS" indexType="btree">
+            <column name="status"/>
+        </index>
+
+        <index referenceId="ARCHIVEDOTORG_ACTIVITY_LOG_CREATED_AT" indexType="btree">
+            <column name="created_at"/>
+        </index>
+    </table>
+
+</schema>

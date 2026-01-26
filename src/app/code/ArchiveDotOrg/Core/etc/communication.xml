@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ArchiveDotOrg Core Module - Message Queue Communication
+ *
+ * Defines topics for async import processing
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Communication/etc/communication.xsd">
+
+    <!-- Import job topic -->
+    <topic name="archivedotorg.import.job"
+           request="ArchiveDotOrg\Core\Api\Data\ImportJobInterface"/>
+
+    <!-- Import status update topic (for progress notifications) -->
+    <topic name="archivedotorg.import.status"
+           request="string"/>
+
+</config>

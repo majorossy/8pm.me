@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ArchiveDotOrg Core Module - Message Queue Consumers
+ *
+ * Defines consumers for processing async import jobs
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/queue_consumer.xsd">
+
+    <!-- Consumer for import jobs -->
+    <consumer name="archivedotorg.import.job.consumer"
+              queue="archivedotorg.import.job.queue"
+              handler="ArchiveDotOrg\Core\Model\Queue\ImportConsumer::processJob"
+              consumerInstance="Magento\Framework\MessageQueue\Consumer"
+              connection="db"
+              maxMessages="1"/>
+
+    <!-- Consumer for status updates (optional - for future dashboard updates) -->
+    <consumer name="archivedotorg.import.status.consumer"
+              queue="archivedotorg.import.status.queue"
+              handler="ArchiveDotOrg\Core\Model\Queue\StatusConsumer::processStatus"
+              consumerInstance="Magento\Framework\MessageQueue\Consumer"
+              connection="db"
+              maxMessages="100"/>
+
+</config>

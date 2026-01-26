@@ -1,0 +1,79 @@
+<?php
+/**
+ * ArchiveDotOrg Core Module - Dashboard Import Form Template
+ *
+ * @var \ArchiveDotOrg\Core\Block\Adminhtml\Dashboard\ImportForm $block
+ */
+$artistMappings = $block->getArtistMappings();
+$defaultBatchSize = $block->getDefaultBatchSize();
+?>
+<form id="import-form" class="import-form">
+    <div class="form-row">
+        <div class="form-field">
+            <label for="artist-select"><?= $block->escapeHtml(__('Artist')) ?></label>
+            <select id="artist-select" name="artist_name" class="admin__control-select">
+                <option value=""><?= $block->escapeHtml(__('-- Select Artist --')) ?></option>
+                <?php foreach ($artistMappings as $mapping): ?>
+                    <?php if (!empty($mapping['artist_name'])): ?>
+                        <option value="<?= $block->escapeHtmlAttr($mapping['artist_name']) ?>"
+                                data-collection="<?= $block->escapeHtmlAttr($mapping['collection_id'] ?? '') ?>">
+                            <?= $block->escapeHtml($mapping['artist_name']) ?>
+                        </option>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
+        <div class="form-field">
+            <label for="collection-id"><?= $block->escapeHtml(__('Collection ID')) ?></label>
+            <input type="text"
+                   id="collection-id"
+                   name="collection_id"
+                   class="admin__control-text"
+                   placeholder="<?= $block->escapeHtmlAttr(__('e.g., GratefulDead')) ?>"/>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-field">
+            <label for="import-limit"><?= $block->escapeHtml(__('Limit')) ?></label>
+            <input type="number"
+                   id="import-limit"
+                   name="limit"
+                   class="admin__control-text"
+                   value="<?= (int) $defaultBatchSize ?>"
+                   min="1"
+                   max="10000"/>
+        </div>
+
+        <div class="form-field">
+            <label for="import-offset"><?= $block->escapeHtml(__('Offset')) ?></label>
+            <input type="number"
+                   id="import-offset"
+                   name="offset"
+                   class="admin__control-text"
+                   value="0"
+                   min="0"/>
+        </div>
+
+        <div class="form-field form-field-checkbox">
+            <label for="dry-run">
+                <input type="checkbox" id="dry-run" name="dry_run" value="1" class="admin__control-checkbox"/>
+                <span><?= $block->escapeHtml(__('Dry Run')) ?></span>
+            </label>
+            <span class="field-note"><?= $block->escapeHtml(__('Preview changes without importing')) ?></span>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" id="start-import-btn" class="action-default scalable action-primary">
+            <span><?= $block->escapeHtml(__('Start Import')) ?></span>
+        </button>
+    </div>
+</form>
+
+<?php if (empty($artistMappings)): ?>
+    <div class="message message-notice notice">
+        <span><?= $block->escapeHtml(__('No artist mappings configured. Go to Stores > Configuration > Archive.org Import to add mappings.')) ?></span>
+    </div>
+<?php endif; ?>

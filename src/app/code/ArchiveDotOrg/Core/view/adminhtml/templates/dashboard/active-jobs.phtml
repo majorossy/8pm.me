@@ -1,0 +1,51 @@
+<?php
+/**
+ * ArchiveDotOrg Core Module - Dashboard Active Jobs Template
+ *
+ * @var \ArchiveDotOrg\Core\Block\Adminhtml\Dashboard\ActiveJobs $block
+ */
+?>
+<div id="active-jobs-container">
+    <div id="no-active-jobs" class="no-items-message">
+        <span><?= $block->escapeHtml(__('No active import jobs.')) ?></span>
+    </div>
+
+    <div id="active-jobs-list" class="jobs-list" style="display: none;">
+        <!-- Jobs will be rendered here by JavaScript -->
+    </div>
+</div>
+
+<!-- Template for a single job card -->
+<script type="text/template" id="job-card-template">
+    <div class="job-card" data-job-id="{{job_id}}">
+        <div class="job-header">
+            <div class="job-info">
+                <span class="job-artist">{{artist_name}}</span>
+                <span class="job-status job-status-{{status}}">{{status}}</span>
+            </div>
+            <button type="button" class="action-default cancel-job-btn" data-job-id="{{job_id}}" title="<?= $block->escapeHtmlAttr(__('Cancel Job')) ?>">
+                <span><?= $block->escapeHtml(__('Cancel')) ?></span>
+            </button>
+        </div>
+        <div class="job-progress">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: {{progress}}%;"></div>
+            </div>
+            <div class="progress-text">
+                <span class="progress-percent">{{progress}}%</span>
+                <span class="progress-details">({{processed_shows}}/{{total_shows}} shows)</span>
+            </div>
+        </div>
+        <div class="job-stats">
+            <span class="stat-item stat-created">
+                <strong><?= $block->escapeHtml(__('Created:')) ?></strong> {{tracks_created}}
+            </span>
+            <span class="stat-item stat-updated">
+                <strong><?= $block->escapeHtml(__('Updated:')) ?></strong> {{tracks_updated}}
+            </span>
+            <span class="stat-item stat-errors">
+                <strong><?= $block->escapeHtml(__('Errors:')) ?></strong> {{error_count}}
+            </span>
+        </div>
+    </div>
+</script>

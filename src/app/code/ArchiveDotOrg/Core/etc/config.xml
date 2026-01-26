@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ArchiveDotOrg Core Module - Default Configuration
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <archivedotorg>
+            <general>
+                <enabled>1</enabled>
+                <debug>0</debug>
+            </general>
+            <api>
+                <base_url>https://archive.org</base_url>
+                <timeout>30</timeout>
+                <retry_attempts>3</retry_attempts>
+                <retry_delay>1000</retry_delay>
+                <!-- Optimization settings (conservative to avoid Archive.org rate limiting) -->
+                <page_size>500</page_size>
+                <rate_limit_ms>500</rate_limit_ms>
+                <cache_enabled>1</cache_enabled>
+                <cache_ttl>86400</cache_ttl>
+                <concurrency>2</concurrency>
+                <circuit_threshold>5</circuit_threshold>
+                <circuit_reset_sec>30</circuit_reset_sec>
+            </api>
+            <import>
+                <!-- Smaller batches to reduce concurrent load on Archive.org -->
+                <batch_size>20</batch_size>
+                <audio_format>flac</audio_format>
+                <import_images>0</import_images>
+                <attribute_set_id>9</attribute_set_id>
+                <default_website_id>1</default_website_id>
+            </import>
+            <mappings>
+                <artist_mappings/>
+            </mappings>
+            <cron>
+                <enabled>0</enabled>
+                <schedule>0 2 * * *</schedule>
+            </cron>
+        </archivedotorg>
+    </default>
+</config>

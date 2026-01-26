@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ArchiveDotOrg Core Module - Product View Layout
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="product.info.main">
+            <block class="ArchiveDotOrg\Core\Block\Player"
+                   name="archivedotorg.product.player"
+                   template="ArchiveDotOrg_Core::player.phtml"
+                   after="product.info.price">
+                <arguments>
+                    <argument name="context_type" xsi:type="string">product</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

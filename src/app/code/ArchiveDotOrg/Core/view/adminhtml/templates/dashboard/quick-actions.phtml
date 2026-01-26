@@ -1,0 +1,116 @@
+<?php
+/**
+ * ArchiveDotOrg Core Module - Dashboard Quick Actions Template
+ *
+ * @var \ArchiveDotOrg\Core\Block\Adminhtml\Dashboard\QuickActions $block
+ */
+?>
+<div class="quick-actions-buttons">
+    <button type="button" id="btn-sync-albums" class="action-default scalable">
+        <span><?= $block->escapeHtml(__('Sync Albums')) ?></span>
+    </button>
+
+    <button type="button" id="btn-cleanup-products" class="action-default scalable">
+        <span><?= $block->escapeHtml(__('Cleanup Products')) ?></span>
+    </button>
+
+    <button type="button" id="btn-test-api" class="action-default scalable">
+        <span><?= $block->escapeHtml(__('Test API')) ?></span>
+    </button>
+
+    <button type="button" id="btn-view-products" class="action-default scalable action-secondary">
+        <span><?= $block->escapeHtml(__('View Products')) ?></span>
+    </button>
+</div>
+
+<!-- Cleanup Products Modal -->
+<div id="cleanup-modal" class="modal-popup" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><?= $block->escapeHtml(__('Cleanup Products')) ?></h3>
+            <button type="button" class="action-close modal-close" title="<?= $block->escapeHtmlAttr(__('Close')) ?>">
+                <span>&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="cleanup-form">
+                <div class="form-field">
+                    <label for="cleanup-collection"><?= $block->escapeHtml(__('Collection/Artist')) ?></label>
+                    <input type="text"
+                           id="cleanup-collection"
+                           name="collection"
+                           class="admin__control-text"
+                           placeholder="<?= $block->escapeHtmlAttr(__('e.g., STS9')) ?>"/>
+                </div>
+
+                <div class="form-field">
+                    <label for="cleanup-older-than"><?= $block->escapeHtml(__('Older Than (Days)')) ?></label>
+                    <input type="number"
+                           id="cleanup-older-than"
+                           name="older_than"
+                           class="admin__control-text"
+                           min="1"
+                           placeholder="<?= $block->escapeHtmlAttr(__('e.g., 365')) ?>"/>
+                </div>
+
+                <div class="form-field form-field-checkbox">
+                    <label for="cleanup-dry-run">
+                        <input type="checkbox" id="cleanup-dry-run" name="dry_run" value="1" checked class="admin__control-checkbox"/>
+                        <span><?= $block->escapeHtml(__('Dry Run')) ?></span>
+                    </label>
+                    <span class="field-note"><?= $block->escapeHtml(__('Preview what would be deleted')) ?></span>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="action-default scalable modal-close">
+                <span><?= $block->escapeHtml(__('Cancel')) ?></span>
+            </button>
+            <button type="button" id="execute-cleanup-btn" class="action-default scalable action-primary">
+                <span><?= $block->escapeHtml(__('Execute Cleanup')) ?></span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Sync Albums Modal -->
+<div id="sync-modal" class="modal-popup" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><?= $block->escapeHtml(__('Sync Albums')) ?></h3>
+            <button type="button" class="action-close modal-close" title="<?= $block->escapeHtmlAttr(__('Close')) ?>">
+                <span>&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p><?= $block->escapeHtml(__('This will sync products to album/song categories based on title matching.')) ?></p>
+            <form id="sync-form">
+                <div class="form-field">
+                    <label for="sync-threshold"><?= $block->escapeHtml(__('Similarity Threshold (%)')) ?></label>
+                    <input type="number"
+                           id="sync-threshold"
+                           name="threshold"
+                           class="admin__control-text"
+                           value="75"
+                           min="1"
+                           max="100"/>
+                </div>
+
+                <div class="form-field form-field-checkbox">
+                    <label for="sync-dry-run">
+                        <input type="checkbox" id="sync-dry-run" name="dry_run" value="1" class="admin__control-checkbox"/>
+                        <span><?= $block->escapeHtml(__('Dry Run')) ?></span>
+                    </label>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="action-default scalable modal-close">
+                <span><?= $block->escapeHtml(__('Cancel')) ?></span>
+            </button>
+            <button type="button" id="execute-sync-btn" class="action-default scalable action-primary">
+                <span><?= $block->escapeHtml(__('Start Sync')) ?></span>
+            </button>
+        </div>
+    </div>
+</div>

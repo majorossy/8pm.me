@@ -1,0 +1,88 @@
+<style>
+	.modal-popup .modal-inner-wrap{
+		width:80%;
+		margin:2rem auto;
+	}
+	.a-category-quicview-iframe{width:100%;}
+	.sections.nav-sections,
+	.page-layout-1column .filter.block,
+	.modal-header,.modal-footer,.copyright,.page-title-wrapper,.category-view{display:none;}
+	.modal-popup .modal-content{padding:0px !important;}
+	.product-quickview {
+	  overflow: hidden;
+	  padding-top: 56.25%;
+	  position: relative;
+	}
+	 
+	.product-quickview iframe {
+	   border: 0;
+	   height: 100%;
+	   left: 0;
+	   position: absolute;
+	   top: 0;
+	   width: 100%;
+	}
+	.masonry { /* Masonry container */
+	  column-count: 4;
+	  column-gap: 1em;
+	}
+	.item-masonry { /* Masonry bricks or child elements */
+	  background-color: #eee;
+	  display: inline-block;
+	  margin: 0 0 1em;
+	  width: 100%;
+	}
+	.catalog-category-view.page-layout-1column .column.main,
+	.page-layout-1column.page-with-filter .column.main{padding-top:3px;padding-bottom:141px;}
+	body{background:url('https://images-assets.nasa.gov/image/6900588/6900588~orig.jpg');}
+	.button-quickview{padding:0px;background:#fff;}
+	/*.page-footer,*/
+	.page-header .panel.wrapper{display:none;}
+	
+</style>
+<?php
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$category = $objectManager->get('Magento\Framework\Registry')->registry('current_category');//get current category
+$subcats = $category->getChildrenCategories();
+$_helper = $this->helper('Magento\Catalog\Helper\Output');
+?>
+<div class="masonry">	
+	<?php
+	$_the_sub_categories = array();
+	foreach ($subcats as $subcat) {
+		$_the_sub_categories[$subcat->getName()] = $subcat;	
+	}
+	ksort($_the_sub_categories);
+	foreach ($_the_sub_categories as $subcat) { ?>
+		<?php
+		if ($subcat->getIsActive()) {
+			$_category = $objectManager->create('Magento\Catalog\Model\Category')->load($subcat->getId());
+			$_outputhelper = $this->helper('Magento\Catalog\Helper\Output');
+			$subcaturl = $subcat->getUrl();
+			$_imgHtml = '';
+			if ($_imgUrl = $_category->getImageUrl()) {
+				echo '<div class="item-masonry">';
+				$_imgHtml = '<img style="width: 300px" src="' . $_imgUrl . '" />';
+				$_imgHtml = $_outputhelper->categoryAttribute($_category, $_imgHtml, 'image');
+				/* @escapeNotVerified */
+				//echo '<li style="list-style-type: none;width:24%;margin-right:1%;float:left"><a href="' . $subcaturl . '
+				//" class="block-promo" title="' . $subcat->getName() . '">' . $_imgHtml . '
+				//</a></li>';
+				?>
+					<button 
+						type="button" 
+						id="quickViewButton<?php /* @noEscape */ echo $subcat->getId() ?>" 
+						class="button-quickview" 
+						data-mage-init='{ "ArchiveDotOrg_Player/js/quickcategoryview": { } }' 
+						data-id="<?php /* @noEscape */ echo $subcat->getId() ?>" 
+						data-url="<?php /* @noEscape */ echo $subcaturl ?>"
+						>
+							<?php /* @noEscape */ echo $_imgHtml; ?> 
+						</button> 
+						<div id="quickViewContainer<?php /* @noEscape */ echo $subcat->getId() ?>"></div> 
+				<?php
+				echo '</div>';
+			}
+		}
+	} ?>
+</div>

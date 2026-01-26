@@ -1,0 +1,70 @@
+<?php
+/**
+ * ArchiveDotOrg Core Module - Dashboard Main Template
+ *
+ * @var \ArchiveDotOrg\Core\Block\Adminhtml\Dashboard $block
+ */
+?>
+<div class="archivedotorg-dashboard" id="archivedotorg-dashboard" data-urls='<?= $block->escapeHtmlAttr($block->getAjaxUrlsJson()) ?>'>
+    <?php if (!$block->isModuleEnabled()): ?>
+        <div class="message message-warning warning">
+            <span><?= $block->escapeHtml(__('Archive.org module is currently disabled. Enable it in Stores > Configuration > Archive.org Import.')) ?></span>
+        </div>
+    <?php endif; ?>
+
+    <!-- Stats Section -->
+    <div class="dashboard-section stats-section">
+        <?= $block->getChildHtml('archivedotorg.dashboard.stats') ?>
+    </div>
+
+    <!-- Import Form Section -->
+    <div class="dashboard-section import-section">
+        <div class="section-header">
+            <h2><?= $block->escapeHtml(__('Import Shows')) ?></h2>
+        </div>
+        <div class="section-content">
+            <?= $block->getChildHtml('archivedotorg.dashboard.import_form') ?>
+        </div>
+    </div>
+
+    <!-- Active Jobs Section -->
+    <div class="dashboard-section active-jobs-section">
+        <div class="section-header">
+            <h2><?= $block->escapeHtml(__('Active Jobs')) ?></h2>
+        </div>
+        <div class="section-content">
+            <?= $block->getChildHtml('archivedotorg.dashboard.active_jobs') ?>
+        </div>
+    </div>
+
+    <!-- Quick Actions Section -->
+    <div class="dashboard-section quick-actions-section">
+        <div class="section-header">
+            <h2><?= $block->escapeHtml(__('Quick Actions')) ?></h2>
+        </div>
+        <div class="section-content">
+            <?= $block->getChildHtml('archivedotorg.dashboard.quick_actions') ?>
+        </div>
+    </div>
+
+    <!-- Activity Log Section -->
+    <div class="dashboard-section activity-log-section">
+        <div class="section-header">
+            <h2><?= $block->escapeHtml(__('Recent Activity')) ?></h2>
+        </div>
+        <div class="section-content">
+            <?= $block->getChildHtml('archivedotorg.dashboard.activity_log') ?>
+        </div>
+    </div>
+
+    <!-- Hidden form key for AJAX requests -->
+    <input type="hidden" id="form-key" value="<?= $block->escapeHtmlAttr($block->getFormKey()) ?>"/>
+</div>
+
+<script type="text/x-magento-init">
+{
+    "#archivedotorg-dashboard": {
+        "ArchiveDotOrg_Core/js/dashboard": {}
+    }
+}
+</script>

@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArchiveDotOrg Import System - Architecture Overview</title>
+    <style>
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-card: #0f3460;
+            --text-primary: #eaeaea;
+            --text-secondary: #a0a0a0;
+            --accent: #e94560;
+            --accent-secondary: #533483;
+            --code-bg: #0d1117;
+            --border: #30363d;
+            --success: #3fb950;
+            --warning: #d29922;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+            border-bottom: 3px solid var(--accent);
+            padding-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-left: 4px solid var(--accent);
+            padding-left: 1rem;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--accent-secondary);
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .intro {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        .architecture-diagram {
+            background: var(--code-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+
+        .architecture-diagram pre {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        code {
+            background: var(--code-bg);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9em;
+            color: var(--accent);
+        }
+
+        pre {
+            background: var(--code-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border: 1px solid var(--border);
+        }
+
+        pre code {
+            padding: 0;
+            background: none;
+            color: var(--text-primary);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background: var(--bg-card);
+            color: var(--accent);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        tr:hover td {
+            background: rgba(233, 69, 96, 0.1);
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border: 1px solid var(--border);
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .step {
+            background: var(--bg-card);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            position: relative;
+            border-left: 4px solid var(--accent);
+        }
+
+        .step-number {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            background: var(--accent);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+        }
+
+        .badge-standard {
+            background: var(--success);
+            color: white;
+        }
+
+        .badge-fast {
+            background: var(--warning);
+            color: black;
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background: var(--border);
+            margin: 2rem 0;
+        }
+
+        .toc {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .toc h3 {
+            margin-top: 0;
+            color: var(--text-primary);
+        }
+
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .toc li {
+            margin: 0.5rem 0;
+        }
+
+        .toc a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        .file-tree {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            h2 {
+                font-size: 1.4rem;
+            }
+
+            .architecture-diagram pre {
+                font-size: 0.65rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ArchiveDotOrg Import System</h1>
+        <p style="font-size: 1.2rem; color: var(--text-primary); margin-bottom: 2rem;">Architecture Overview & Documentation</p>
+
+        <div class="toc">
+            <h3>Table of Contents</h3>
+            <ul>
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#architecture">High-Level Architecture</a></li>
+                <li><a href="#data-flow">Data Flow</a></li>
+                <li><a href="#module-structure">Module Structure</a></li>
+                <li><a href="#configuration">Configuration</a></li>
+                <li><a href="#attributes">Product Attributes</a></li>
+                <li><a href="#cli">CLI Commands</a></li>
+                <li><a href="#api">REST API</a></li>
+                <li><a href="#testing">Testing</a></li>
+            </ul>
+        </div>
+
+        <section id="introduction">
+            <h2>Introduction</h2>
+            <div class="intro">
+                <p style="color: var(--text-primary); margin: 0;">
+                    The <strong>ArchiveDotOrg</strong> module imports live concert recordings from Archive.org's public
+                    collections (Grateful Dead, Phish, STS9, etc.) into Magento as virtual products. Each audio track
+                    becomes a product with streaming capabilities, enabling a headless e-commerce platform for live music.
+                </p>
+            </div>
+        </section>
+
+        <section id="architecture">
+            <h2>High-Level Architecture</h2>
+            <div class="architecture-diagram">
+<pre>
++-----------------------------------------------------------------------------+
+|                            ENTRY POINTS                                      |
++------------------+------------------+------------------+---------------------+
+| CLI Command      | REST API         | Cron Job         | Message Queue      |
+| ImportShows      | ImportManagement | crontab.xml      | ImportPublisher    |
+| Command.php      | .php             |                  | /ImportConsumer    |
++--------+---------+--------+---------+--------+---------+---------+----------+
+         |                  |                  |                   |
+         +------------------+------------------+-------------------+
+                                    |
+                                    v
++-----------------------------------------------------------------------------+
+|                           ORCHESTRATION LAYER                                |
+|                                                                              |
+|  ShowImporter                                                                |
+|  +-- importByCollection() --- Main entry: fetches identifiers, batches      |
+|  +-- importShow()         --- Single show import                            |
+|  +-- dryRun()             --- Preview without changes                       |
++-----------------------------------------------------------------------------+
+                                    |
+                    +---------------+---------------+
+                    v               v               v
++-------------------------+ +-----------------+ +--------------------------+
+|    ArchiveApiClient     | |  TrackImporter  | | CategoryAssignment       |
+|                         | |     - OR -      | | Service                  |
+| - fetchCollectionIds()  | | BulkProduct     | |                          |
+| - fetchShowMetadata()   | | Importer        | | - getOrCreateArtist      |
+| - testConnection()      | |                 | |   Category()             |
+| - getCollectionCount()  | | Creates Magento | | - getOrCreateShow        |
+|                         | | Products        | |   Category()             |
+| HTTP client with        | |                 | | - bulkAssignToCategory() |
+| retry logic             | |                 | |                          |
++-------------------------+ +--------+--------+ +--------------------------+
+                                     |
+                                     v
+                    +--------------------------------+
+                    |    AttributeOptionManager      |
+                    |                                |
+                    | - getOrCreateOptionId()        |
+                    | - bulkGetOrCreateOptionIds()   |
+                    |                                |
+                    | Manages EAV dropdown values    |
+                    +--------------------------------+
+</pre>
+            </div>
+        </section>
+
+        <section id="data-flow">
+            <h2>Data Flow</h2>
+
+            <div class="step">
+                <span class="step-number">1</span>
+                <h3>Fetch Collection Identifiers</h3>
+                <pre><code>Archive.org API: /advancedsearch.php?q=Collection:GratefulDead&fl[]=identifier
+
+Returns: ["gd1977-05-08.sbd.miller.32601", "gd1978-04-22.sbd...", ...]</code></pre>
+            </div>
+
+            <div class="step">
+                <span class="step-number">2</span>
+                <h3>Fetch Show Metadata</h3>
+                <pre><code>Archive.org API: /metadata/gd1977-05-08.sbd.miller.32601
+
+Returns JSON:
+  - metadata: {title, date, year, venue, taper, lineage, notes...}
+  - d1, d2: streaming server hostnames
+  - dir: path on server
+  - files: [{name, title, track, length, sha1, format...}, ...]</code></pre>
+            </div>
+
+            <div class="step">
+                <span class="step-number">3</span>
+                <h3>Parse into DTOs</h3>
+                <pre><code>ShowInterface {
+    identifier: "gd1977-05-08.sbd.miller.32601"
+    title: "Grateful Dead Live at Barton Hall..."
+    date: "1977-05-08"
+    year: "1977"
+    venue: "Barton Hall, Cornell University"
+    taper: "Betty Cantor-Jackson"
+    serverOne: "ia800102.us.archive.org"
+    tracks: [TrackInterface, ...]
+}
+
+TrackInterface {
+    name: "gd77-05-08d1t01.flac"
+    title: "New Minglewood Blues"
+    sha1: "abc123..."  // Used as SKU
+}</code></pre>
+            </div>
+
+            <div class="step">
+                <span class="step-number">4</span>
+                <h3>Create Magento Products</h3>
+                <div class="card-grid">
+                    <div class="card">
+                        <span class="badge badge-standard">Standard</span>
+                        <h4 style="margin: 0.5rem 0;">TrackImporter</h4>
+                        <ul style="color: var(--text-secondary); padding-left: 1.5rem;">
+                            <li>Uses ProductRepository</li>
+                            <li>1 product at a time</li>
+                            <li>Triggers observers/events</li>
+                            <li>Safer, slower</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <span class="badge badge-fast">Fast</span>
+                        <h4 style="margin: 0.5rem 0;">BulkProductImporter</h4>
+                        <ul style="color: var(--text-secondary); padding-left: 1.5rem;">
+                            <li>Uses direct SQL</li>
+                            <li>Batched inserts</li>
+                            <li>Bypasses Magento layer</li>
+                            <li>10x+ faster</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <span class="step-number">5</span>
+                <h3>Assign to Categories</h3>
+                <pre><code>Products --> Artist Category (e.g., "Grateful Dead")
+        --> Show Category (e.g., "1977-05-08 Barton Hall")</code></pre>
+            </div>
+        </section>
+
+        <section id="module-structure">
+            <h2>Module Structure</h2>
+            <div class="architecture-diagram">
+<pre class="file-tree">ArchiveDotOrg/Core/
+|-- Api/                          # Service Contracts
+|   |-- Data/                     # DTO interfaces
+|   |-- ArchiveApiClientInterface.php
+|   |-- ShowImporterInterface.php
+|   +-- TrackImporterInterface.php
+|
+|-- Model/                        # Implementations
+|   |-- Data/                     # DTO implementations
+|   |-- Queue/                    # Async processing
+|   |-- ArchiveApiClient.php
+|   |-- ShowImporter.php
+|   |-- TrackImporter.php
+|   +-- BulkProductImporter.php
+|
+|-- Console/Command/              # CLI commands
+|-- Controller/Adminhtml/         # Admin controllers
+|-- Cron/                         # Scheduled jobs
+|-- Setup/Patch/Data/             # EAV attributes
+|-- Test/Unit/                    # PHPUnit tests
+|-- etc/                          # Configuration XML
++-- view/                         # Templates, JS</pre>
+            </div>
+        </section>
+
+        <section id="configuration">
+            <h2>Configuration Settings</h2>
+            <p>All settings from Magento admin: <code>Stores > Configuration > Archive.org Import</code></p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Setting</th>
+                        <th>Config Path</th>
+                        <th>Default</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Enabled</td>
+                        <td><code>archivedotorg/general/enabled</code></td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Debug mode</td>
+                        <td><code>archivedotorg/general/debug</code></td>
+                        <td>false</td>
+                    </tr>
+                    <tr>
+                        <td>Base URL</td>
+                        <td><code>archivedotorg/api/base_url</code></td>
+                        <td>https://archive.org</td>
+                    </tr>
+                    <tr>
+                        <td>Timeout</td>
+                        <td><code>archivedotorg/api/timeout</code></td>
+                        <td>30s</td>
+                    </tr>
+                    <tr>
+                        <td>Retry attempts</td>
+                        <td><code>archivedotorg/api/retry_attempts</code></td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>Batch size</td>
+                        <td><code>archivedotorg/import/batch_size</code></td>
+                        <td>100</td>
+                    </tr>
+                    <tr>
+                        <td>Audio format</td>
+                        <td><code>archivedotorg/import/audio_format</code></td>
+                        <td>flac</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="attributes">
+            <h2>Product Attributes</h2>
+            <p>Custom EAV attributes created for imported products:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Attribute Code</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>title</code></td><td>varchar</td><td>Track title</td></tr>
+                    <tr><td><code>length</code></td><td>varchar</td><td>Track duration</td></tr>
+                    <tr><td><code>identifier</code></td><td>varchar</td><td>Archive.org show identifier</td></tr>
+                    <tr><td><code>show_name</code></td><td>varchar</td><td>Show/album name</td></tr>
+                    <tr><td><code>show_date</code></td><td>varchar</td><td>Performance date</td></tr>
+                    <tr><td><code>show_year</code></td><td>select</td><td>Year (dropdown)</td></tr>
+                    <tr><td><code>show_venue</code></td><td>select</td><td>Venue (dropdown)</td></tr>
+                    <tr><td><code>show_taper</code></td><td>select</td><td>Taper/source (dropdown)</td></tr>
+                    <tr><td><code>archive_collection</code></td><td>select</td><td>Artist/collection (dropdown)</td></tr>
+                    <tr><td><code>song_url</code></td><td>varchar</td><td>Streaming audio URL</td></tr>
+                    <tr><td><code>server_one</code></td><td>varchar</td><td>Primary Archive.org server</td></tr>
+                    <tr><td><code>dir</code></td><td>varchar</td><td>Directory path on server</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="cli">
+            <h2>CLI Commands</h2>
+
+            <div class="card">
+                <h3>Import Shows</h3>
+                <pre><code># Dry run to preview
+bin/magento archive:import:shows "Grateful Dead" --collection=GratefulDead --dry-run --limit=10
+
+# Import 50 shows starting from offset 100
+bin/magento archive:import:shows "STS9" --collection=STS9 --limit=50 --offset=100
+
+# Full import
+bin/magento archive:import:shows "Phish"</code></pre>
+            </div>
+
+            <div class="card">
+                <h3>Check Status</h3>
+                <pre><code>bin/magento archive:status
+bin/magento archive:status --test-collection=GratefulDead</code></pre>
+            </div>
+
+            <div class="card">
+                <h3>Cleanup Products</h3>
+                <pre><code># Dry run
+bin/magento archive:cleanup:products --collection=OldArtist --dry-run
+
+# Delete products older than 1 year
+bin/magento archive:cleanup:products --older-than=365 --force</code></pre>
+            </div>
+        </section>
+
+        <section id="api">
+            <h2>REST API Endpoints</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Endpoint</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>POST</code></td><td>/V1/archive/import</td><td>Start import job</td></tr>
+                    <tr><td><code>GET</code></td><td>/V1/archive/import/:jobId</td><td>Get job status</td></tr>
+                    <tr><td><code>DELETE</code></td><td>/V1/archive/import/:jobId</td><td>Cancel job</td></tr>
+                    <tr><td><code>GET</code></td><td>/V1/archive/collections</td><td>List collections</td></tr>
+                    <tr><td><code>GET</code></td><td>/V1/archive/collections/:id</td><td>Get collection details</td></tr>
+                    <tr><td><code>DELETE</code></td><td>/V1/archive/products/:sku</td><td>Delete product</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="testing">
+            <h2>Testing</h2>
+            <p>Unit tests in <code>Test/Unit/</code>:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Test File</th>
+                        <th>Coverage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>ArchiveApiClientTest.php</td><td>Retry logic, HTTP errors, JSON parsing</td></tr>
+                    <tr><td>ShowImporterTest.php</td><td>Batch processing, category assignment</td></tr>
+                    <tr><td>TrackImporterTest.php</td><td>Product creation/update, SKU validation</td></tr>
+                    <tr><td>AttributeOptionManagerTest.php</td><td>Option creation, caching</td></tr>
+                    <tr><td>BulkProductImporterTest.php</td><td>Direct SQL, indexer management</td></tr>
+                    <tr><td>CategoryAssignmentServiceTest.php</td><td>Category creation, bulk assignment</td></tr>
+                </tbody>
+            </table>
+            <div class="card">
+                <h3>Run Tests</h3>
+                <pre><code>vendor/bin/phpunit -c app/code/ArchiveDotOrg/Core/Test/phpunit.xml</code></pre>
+            </div>
+        </section>
+
+        <hr>
+
+        <footer style="text-align: center; color: var(--text-secondary); padding: 2rem 0;">
+            <p>Generated for 8PM Magento Headless Project</p>
+            <p style="font-size: 0.8rem;">Last updated: January 2025</p>
+        </footer>
+    </div>
+</body>
+</html>

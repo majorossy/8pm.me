@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ArchiveDotOrg Core Module - Message Queue Publishers
+ *
+ * Defines publishers for async import topics
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/queue_publisher.xsd">
+
+    <!-- Publisher for import jobs -->
+    <publisher topic="archivedotorg.import.job">
+        <connection name="db" exchange="archivedotorg.import"/>
+    </publisher>
+
+    <!-- Publisher for status updates -->
+    <publisher topic="archivedotorg.import.status">
+        <connection name="db" exchange="archivedotorg.import"/>
+    </publisher>
+
+</config>

@@ -1,0 +1,54 @@
+<?php
+/**
+ * ArchiveDotOrg Core Module - Dashboard Stats Template
+ *
+ * @var \ArchiveDotOrg\Core\Block\Adminhtml\Dashboard\Stats $block
+ */
+?>
+<div class="stats-cards" id="stats-cards">
+    <div class="stat-card" id="stat-total-products">
+        <div class="stat-icon">
+            <span class="admin__action-dropdown-menu-link-icon fas fa-music"></span>
+        </div>
+        <div class="stat-content">
+            <div class="stat-value" id="stat-total-products-value">--</div>
+            <div class="stat-label"><?= $block->escapeHtml(__('Total Products')) ?></div>
+        </div>
+    </div>
+
+    <div class="stat-card" id="stat-api-status">
+        <div class="stat-icon">
+            <span class="admin__action-dropdown-menu-link-icon fas fa-plug"></span>
+        </div>
+        <div class="stat-content">
+            <div class="stat-value" id="stat-api-status-value">
+                <span class="status-indicator status-unknown"></span>
+                <span class="status-text"><?= $block->escapeHtml(__('Checking...')) ?></span>
+            </div>
+            <div class="stat-label"><?= $block->escapeHtml(__('API Status')) ?></div>
+        </div>
+    </div>
+
+    <div class="stat-card" id="stat-last-import">
+        <div class="stat-icon">
+            <span class="admin__action-dropdown-menu-link-icon fas fa-clock"></span>
+        </div>
+        <div class="stat-content">
+            <div class="stat-value" id="stat-last-import-value">--</div>
+            <div class="stat-label"><?= $block->escapeHtml(__('Last Import')) ?></div>
+        </div>
+    </div>
+
+    <div class="stat-card" id="stat-module-status">
+        <div class="stat-icon">
+            <span class="admin__action-dropdown-menu-link-icon fas fa-cog"></span>
+        </div>
+        <div class="stat-content">
+            <div class="stat-value" id="stat-module-status-value">
+                <span class="status-indicator status-unknown"></span>
+                <span class="status-text"><?= $block->escapeHtml(__('Checking...')) ?></span>
+            </div>
+            <div class="stat-label"><?= $block->escapeHtml(__('Module Status')) ?></div>
+        </div>
+    </div>
+</div>

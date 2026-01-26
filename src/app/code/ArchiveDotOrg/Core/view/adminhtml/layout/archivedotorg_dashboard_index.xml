@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ArchiveDotOrg Core Module - Dashboard Layout
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="styles"/>
+    <head>
+        <css src="ArchiveDotOrg_Core::css/dashboard.css"/>
+    </head>
+    <body>
+        <referenceContainer name="content">
+            <block class="ArchiveDotOrg\Core\Block\Adminhtml\Dashboard"
+                   name="archivedotorg.dashboard"
+                   template="ArchiveDotOrg_Core::dashboard/main.phtml">
+                <block class="ArchiveDotOrg\Core\Block\Adminhtml\Dashboard\Stats"
+                       name="archivedotorg.dashboard.stats"
+                       template="ArchiveDotOrg_Core::dashboard/stats.phtml"/>
+                <block class="ArchiveDotOrg\Core\Block\Adminhtml\Dashboard\ImportForm"
+                       name="archivedotorg.dashboard.import_form"
+                       template="ArchiveDotOrg_Core::dashboard/import-form.phtml"/>
+                <block class="ArchiveDotOrg\Core\Block\Adminhtml\Dashboard\ActiveJobs"
+                       name="archivedotorg.dashboard.active_jobs"
+                       template="ArchiveDotOrg_Core::dashboard/active-jobs.phtml"/>
+                <block class="ArchiveDotOrg\Core\Block\Adminhtml\Dashboard\QuickActions"
+                       name="archivedotorg.dashboard.quick_actions"
+                       template="ArchiveDotOrg_Core::dashboard/quick-actions.phtml"/>
+                <block class="ArchiveDotOrg\Core\Block\Adminhtml\Dashboard\ActivityLog"
+                       name="archivedotorg.dashboard.activity_log"
+                       template="ArchiveDotOrg_Core::dashboard/activity-log.phtml"/>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

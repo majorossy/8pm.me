@@ -1,0 +1,87 @@
+<style>
+	.modal-popup .modal-inner-wrap{
+		width:80%;
+		margin:2rem auto;
+	}
+	.a-category-quicview-iframe{width:100%;}
+	.sections.nav-sections,
+	.page-layout-1column .filter.block,
+	.modal-header,.modal-footer,.copyright,.page-title-wrapper{display:none;}
+	.modal-popup .modal-content{padding:0px !important;}
+	.product-quickview {
+	  overflow: hidden;
+	  padding-top: 56.25%;
+	  position: relative;
+	}
+	 
+	.product-quickview iframe {
+	   border: 0;
+	   height: 100%;
+	   left: 0;
+	   position: absolute;
+	   top: 0;
+	   width: 100%;
+	}
+	.category-image img{margin:auto;}
+	#maincontent{padding:0px;margin:0px;max-width:none;}
+	.maincontent{height:100%;}
+	.category-view{height:100%;width:25%;float:left;background:#000;}
+	.category-view img {width: 75%;margin: auto;background: #fff;padding: 3%;border: 1px #000 solid;border-radius: 5px;margin-top:5%;}
+	.columns{width:75%;float:left;background: cornsilk;}
+	.columns .column.main{background: cornsilk;margin: auto;padding: 1%;width:95%;}
+	body{background:darkcyan;}
+	button.slick-prev.slick-arrow{box-shadow:none;}
+	.block-promo{display: block;border: solid 1px #fff;padding: 3%;background: #000;border-radius: 15px;color: #fff;width:85%;}
+</style>
+<?php
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$category = $objectManager->get('Magento\Framework\Registry')->registry('current_category');//get current category
+$subcats = $category->getChildrenCategories();
+$_helper = $this->helper('Magento\Catalog\Helper\Output');
+?>
+<div class="theslick">
+	<?php
+	$_four_count = 0;
+	foreach ($subcats as $subcat) {
+		if ($subcat->getIsActive()) {
+			$_category = $objectManager->create('Magento\Catalog\Model\Category')->load($subcat->getId());
+			$_outputhelper = $this->helper('Magento\Catalog\Helper\Output');
+			$subcaturl = $subcat->getUrl();
+			$_imgHtml = '';
+			if ($_imgUrl = $_category->getImageUrl()) {
+				$_four_count = $_four_count +1;
+				$_show_count = array();
+				$_imgHtml = '<img style="width: 100%;" src="' . $_imgUrl . '" />';
+				$_imgHtml = $_outputhelper->categoryAttribute($_category, $_imgHtml, 'image');
+				$_all_data = $_category->getProductCollection()->addAttributeToSelect('*');
+				foreach($_all_data as $_a_show){
+					$_show_count[]= $_a_show->getIdentifier();
+				}		
+				echo '<div style="text-align:center;"><a href="' . $subcaturl . '
+				" class="block-promo" title="' . $subcat->getName() . '">'.$subcat->getName() .$_imgHtml. count($subcat->getProductCollection()->addAttributeToSelect('entity_id'))  . ' recordings from '. count(array_unique($_show_count)).' shows</a></div>';
+			}
+		}
+	} ?>
+</div>
+
+   
+
+
+
+
+<script>
+    require([
+        'jquery',
+        'slick'
+    ], function ($) {
+        jQuery(document).ready(function () {
+            jQuery(".theslick").slick({
+                dots: true,
+                infinite: true,
+                speed: 300,
+                slidesToShow: 4,
+                slidesToScroll: 1
+            });
+        });
+    });
+</script>

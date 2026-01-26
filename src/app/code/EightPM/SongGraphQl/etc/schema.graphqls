@@ -1,0 +1,16 @@
+interface ProductInterface {
+    song_title: String @doc(description: "Song title from archive.org") @resolver(class: "EightPM\\SongGraphQl\\Model\\Resolver\\Product\\SongTitle")
+    song_duration: Float @doc(description: "Song duration in seconds") @resolver(class: "EightPM\\SongGraphQl\\Model\\Resolver\\Product\\SongDuration")
+    song_url: String @doc(description: "URL to stream the song") @resolver(class: "EightPM\\SongGraphQl\\Model\\Resolver\\Product\\SongUrl")
+    show_name: String @doc(description: "Show/concert name") @resolver(class: "EightPM\\SongGraphQl\\Model\\Resolver\\Product\\ShowName")
+    identifier: String @doc(description: "Archive.org identifier") @resolver(class: "EightPM\\SongGraphQl\\Model\\Resolver\\Product\\Identifier")
+    server_one: String @doc(description: "Archive.org server") @resolver(class: "EightPM\\SongGraphQl\\Model\\Resolver\\Product\\ServerOne")
+    show_venue: String @doc(description: "Venue name") @resolver(class: "EightPM\\SongGraphQl\\Model\\Resolver\\Product\\ShowVenue")
+    show_location: String @doc(description: "City/state location") @resolver(class: "EightPM\\SongGraphQl\\Model\\Resolver\\Product\\ShowLocation")
+    show_taper: String @doc(description: "Who recorded it") @resolver(class: "EightPM\\SongGraphQl\\Model\\Resolver\\Product\\ShowTaper")
+    show_source: String @doc(description: "Recording equipment/source") @resolver(class: "EightPM\\SongGraphQl\\Model\\Resolver\\Product\\ShowSource")
+    lineage: String @doc(description: "Recording lineage/source chain") @resolver(class: "EightPM\\SongGraphQl\\Model\\Resolver\\Product\\Lineage")
+    notes: String @doc(description: "Performance notes, guests, covers") @resolver(class: "EightPM\\SongGraphQl\\Model\\Resolver\\Product\\Notes")
+    archive_avg_rating: Float @doc(description: "Archive.org average rating (1-5 stars)") @resolver(class: "EightPM\\SongGraphQl\\Model\\Resolver\\Product\\ArchiveAvgRating")
+    archive_num_reviews: Int @doc(description: "Archive.org review count") @resolver(class: "EightPM\\SongGraphQl\\Model\\Resolver\\Product\\ArchiveNumReviews")
+}

@@ -1,0 +1,45 @@
+<?php
+/**
+ * ArchiveDotOrg Core Module - Dashboard Activity Log Template
+ *
+ * @var \ArchiveDotOrg\Core\Block\Adminhtml\Dashboard\ActivityLog $block
+ */
+?>
+<div class="activity-log-filter">
+    <select id="activity-filter" class="admin__control-select">
+        <option value=""><?= $block->escapeHtml(__('All Actions')) ?></option>
+        <option value="import_started"><?= $block->escapeHtml(__('Import Started')) ?></option>
+        <option value="import_completed"><?= $block->escapeHtml(__('Import Completed')) ?></option>
+        <option value="import_cancelled"><?= $block->escapeHtml(__('Import Cancelled')) ?></option>
+        <option value="sync_albums"><?= $block->escapeHtml(__('Sync Albums')) ?></option>
+        <option value="cleanup_products"><?= $block->escapeHtml(__('Cleanup Products')) ?></option>
+    </select>
+    <button type="button" id="refresh-activity-btn" class="action-default scalable" title="<?= $block->escapeHtmlAttr(__('Refresh')) ?>">
+        <span><?= $block->escapeHtml(__('Refresh')) ?></span>
+    </button>
+</div>
+
+<div id="activity-log-container">
+    <div id="no-activity" class="no-items-message">
+        <span><?= $block->escapeHtml(__('No recent activity.')) ?></span>
+    </div>
+
+    <div id="activity-list" class="activity-list" style="display: none;">
+        <!-- Activity items will be rendered here by JavaScript -->
+    </div>
+</div>
+
+<!-- Template for a single activity item -->
+<script type="text/template" id="activity-item-template">
+    <div class="activity-item activity-status-{{status}}">
+        <div class="activity-time">{{formatted_time}}</div>
+        <div class="activity-content">
+            <span class="activity-type activity-type-{{action_type}}">{{action_label}}</span>
+            <span class="activity-details">{{details}}</span>
+        </div>
+        <div class="activity-user">{{admin_username}}</div>
+        <div class="activity-status-icon">
+            <span class="status-icon status-icon-{{status}}"></span>
+        </div>
+    </div>
+</script>

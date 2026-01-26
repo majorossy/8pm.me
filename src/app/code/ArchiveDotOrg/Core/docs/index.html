@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8PM Knowledge Base</title>
+    <style>
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-card: #0f3460;
+            --text-primary: #eaeaea;
+            --text-secondary: #a0a0a0;
+            --accent: #e94560;
+            --accent-secondary: #533483;
+            --border: #30363d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--accent-secondary) 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-bottom: 3px solid var(--accent);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+            border-left: 4px solid var(--accent);
+            padding-left: 1rem;
+        }
+
+        .doc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .doc-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            display: block;
+        }
+
+        .doc-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(233, 69, 96, 0.2);
+            border-color: var(--accent);
+        }
+
+        .doc-card h3 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .doc-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .doc-card .meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .badge-module {
+            background: var(--accent);
+            color: white;
+        }
+
+        .badge-api {
+            background: var(--accent-secondary);
+            color: white;
+        }
+
+        .badge-guide {
+            background: #3fb950;
+            color: white;
+        }
+
+        .coming-soon {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .coming-soon::after {
+            content: "Coming Soon";
+            display: block;
+            background: var(--border);
+            color: var(--text-secondary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>8PM Knowledge Base</h1>
+        <p>Documentation for the Magento Headless Live Music Platform</p>
+    </div>
+
+    <div class="container">
+        <section>
+            <h2 class="section-title">ArchiveDotOrg Module</h2>
+            <div class="doc-grid">
+                <a href="architecture-overview.html" class="doc-card">
+                    <span class="badge badge-module">Module</span>
+                    <h3>Architecture Overview</h3>
+                    <p>Complete system architecture, data flow diagrams, and component breakdown for the Archive.org import system.</p>
+                    <div class="meta">
+                        <span>HTML</span>
+                        <span>|</span>
+                        <span><a href="architecture-overview.md" style="color: var(--accent);">Markdown</a></span>
+                    </div>
+                </a>
+
+                <div class="doc-card coming-soon">
+                    <span class="badge badge-api">API</span>
+                    <h3>REST API Reference</h3>
+                    <p>Complete API documentation with request/response examples for all import endpoints.</p>
+                </div>
+
+                <div class="doc-card coming-soon">
+                    <span class="badge badge-guide">Guide</span>
+                    <h3>Import Operations Guide</h3>
+                    <p>Step-by-step instructions for running imports, handling errors, and monitoring progress.</p>
+                </div>
+            </div>
+        </section>
+
+        <section style="margin-top: 3rem;">
+            <h2 class="section-title">EightPM Modules</h2>
+            <div class="doc-grid">
+                <div class="doc-card coming-soon">
+                    <span class="badge badge-module">Module</span>
+                    <h3>SongGraphQl</h3>
+                    <p>GraphQL resolvers for exposing song attributes to the Next.js frontend.</p>
+                </div>
+            </div>
+        </section>
+
+        <section style="margin-top: 3rem;">
+            <h2 class="section-title">Infrastructure</h2>
+            <div class="doc-grid">
+                <div class="doc-card coming-soon">
+                    <span class="badge badge-guide">Guide</span>
+                    <h3>Docker Development Setup</h3>
+                    <p>Local development environment with Docker Compose, including all services.</p>
+                </div>
+
+                <div class="doc-card coming-soon">
+                    <span class="badge badge-guide">Guide</span>
+                    <h3>Frontend Integration</h3>
+                    <p>How the Next.js frontend connects to Magento GraphQL APIs.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>8PM Magento Headless Project</p>
+        <p style="font-size: 0.8rem; margin-top: 0.5rem;">Knowledge base initialized January 2025</p>
+    </footer>
+</body>
+</html>
