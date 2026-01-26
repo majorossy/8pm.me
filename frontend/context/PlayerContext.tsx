@@ -136,7 +136,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     }));
 
     audioRef.current.src = song.streamUrl;
-    audioRef.current.play().catch(console.error);
+    audioRef.current.play().catch(err => {
+      console.error('Audio play error:', err);
+      setState(prev => ({ ...prev, isPlaying: false }));
+    });
   }, [addToCart]);
 
   const togglePlay = useCallback(() => {

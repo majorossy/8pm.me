@@ -8,26 +8,70 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: '#8B5CF6',
-        'primary-dark': '#7C3AED',
-        accent: '#EC4899',
+        // Neon Synthwave palette
+        'neon-pink': '#ff2d95',
+        'neon-cyan': '#00f0ff',
+        'neon-purple': '#9d4edd',
+        'neon-orange': '#ff6b35',
+        // Primary/accent aliases
+        primary: '#00f0ff',
+        'primary-dark': '#00c8d4',
+        accent: '#ff2d95',
+        // Dark backgrounds
         dark: {
-          900: '#0a0a0f',
-          800: '#12121a',
+          900: '#0d0d12',
+          800: '#15151d',
           700: '#1a1a25',
           600: '#252530',
           500: '#303040',
           400: '#404055',
         },
+        // Text colors
+        'text-dim': '#6a6a7a',
+      },
+      fontFamily: {
+        display: ['var(--font-orbitron)', 'sans-serif'],
+        mono: ['var(--font-space-mono)', 'monospace'],
       },
       animation: {
         'pulse-subtle': 'pulse-subtle 2s ease-in-out infinite',
+        'float': 'float 8s ease-in-out infinite',
+        'float-reverse': 'float 10s ease-in-out infinite reverse',
+        'border-glow': 'border-glow 3s linear infinite',
+        'pulse-neon': 'pulse-neon 2s ease-in-out infinite',
+        'blink': 'blink 1s ease-in-out infinite',
       },
       keyframes: {
         'pulse-subtle': {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0.85' },
         },
+        'float': {
+          '0%, 100%': { transform: 'translate(0, 0)' },
+          '50%': { transform: 'translate(30px, 20px)' },
+        },
+        'border-glow': {
+          '0%, 100%': { filter: 'drop-shadow(0 0 20px #00f0ff)' },
+          '33%': { filter: 'drop-shadow(0 0 20px #ff2d95)' },
+          '66%': { filter: 'drop-shadow(0 0 20px #9d4edd)' },
+        },
+        'pulse-neon': {
+          '0%, 100%': {
+            boxShadow: '0 0 10px #ff2d95, inset 0 0 10px rgba(255, 45, 149, 0.1)'
+          },
+          '50%': {
+            boxShadow: '0 0 30px #ff2d95, inset 0 0 20px rgba(255, 45, 149, 0.2)'
+          },
+        },
+        'blink': {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.3' },
+        },
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'neon-gradient': 'linear-gradient(135deg, #00f0ff, #ff2d95, #9d4edd)',
+        'title-gradient': 'linear-gradient(180deg, #ffffff 0%, #9d4edd 100%)',
       },
     },
   },

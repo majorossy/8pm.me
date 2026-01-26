@@ -1,11 +1,12 @@
 'use client';
 
-// TrackCard - displays a track with play button and version carousel
+// TrackCard - displays a track with play button and version carousel (theme-aware)
 
 import { useState } from 'react';
 import { Track, Song, formatDuration } from '@/lib/api';
 import { usePlayer } from '@/context/PlayerContext';
 import { useCart } from '@/context/CartContext';
+import { useTheme } from '@/context/ThemeContext';
 import VersionCarousel from './VersionCarousel';
 
 interface TrackCardProps {
@@ -14,8 +15,11 @@ interface TrackCardProps {
 }
 
 export default function TrackCard({ track, index }: TrackCardProps) {
+  const { theme } = useTheme();
+  const isMetro = theme === 'metro';
   const { currentSong, isPlaying, playSong, togglePlay } = usePlayer();
   const { addToCart, isInCart } = useCart();
+  const [isExpanded, setIsExpanded] = useState(false);
 
   // Track which version is selected (default to first)
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -56,79 +60,186 @@ export default function TrackCard({ track, index }: TrackCardProps) {
     }
   };
 
-  return (
-    <div
-      className={`group rounded-lg transition-colors ${
-        isCurrentTrack ? 'bg-dark-600' : 'hover:bg-dark-600'
-      }`}
-    >
-      {/* Main track row */}
-      <div className="flex items-center gap-4 p-3">
-        {/* Track number / Play button */}
-        <div className="w-10 flex items-center justify-center">
+  const toggleExpanded = () => {
+    setIsExpanded(!isExpanded);
+  };
+
+  if (isMetro) {
+    // Metro/Time Machine style
+    return (
+      <div
+        className={`
+          bg-white border overflow-hidden transition-all
+          ${isCurrentTrack ? 'border-[#e85d04]' : 'border-[#d4d0c8]'}
+          ${isExpanded ? 'border-[#e85d04]' : ''}
+          hover:border-[#e85d04]
+        `}
+      >
+        {/* Main track row */}
+        <div
+          className="grid grid-cols-[60px_50px_1fr_auto_auto] items-center px-6 py-4 cursor-pointer"
+          onClick={toggleExpanded}
+        >
+          {/* Play button */}
           <button
-            onClick={handlePlayClick}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-primary hover:bg-primary-dark transition-colors"
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePlayClick();
+            }}
+            className={`
+              w-10 h-10 rounded-full border-2 flex items-center justify-center transition-all
+              ${isSelectedPlaying && isPlaying
+                ? 'bg-[#e85d04] border-[#e85d04] text-white'
+                : 'border-[#e85d04] text-[#e85d04] hover:bg-[#e85d04] hover:text-white'
+              }
+            `}
           >
             {isSelectedPlaying && isPlaying ? (
-              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                 <rect x="6" y="4" width="4" height="16" />
                 <rect x="14" y="4" width="4" height="16" />
               </svg>
             ) : (
-              <svg className="w-4 h-4 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z" />
               </svg>
             )}
           </button>
-        </div>
 
-        {/* Track number */}
-        {index !== undefined && (
-          <span className="w-6 text-sm text-gray-500 hidden sm:block">{index}</span>
-        )}
+          {/* Track number */}
+          <span className="font-display text-sm text-[#6b6b6b] font-semibold">
+            {index !== undefined ? String(index).padStart(2, '0') : ''}
+          </span>
 
-        {/* Track info */}
-        <div className="flex-1 min-w-0">
-          <p className={`font-medium truncate ${isCurrentTrack ? 'text-primary' : 'text-white'}`}>
-            {track.title}
+          {/* Track info */}
+          <div className="flex flex-col gap-1 min-w-0">
+            <span className={`font-display text-base font-semibold ${isCurrentTrack ? 'text-[#e85d04]' : 'text-[#1a1a1a]'}`}>
+              {track.title}
+            </span>
             {hasMultipleVersions && (
-              <span className="text-gray-400 font-normal"> - {track.songCount} versions</span>
+              <span className="inline-flex items-center gap-2 text-xs text-[#e85d04]">
+                <span className="w-1.5 h-1.5 bg-[#e85d04] rounded-full" />
+                {track.songCount} versions
+              </span>
             )}
-          </p>
+          </div>
+
+          {/* Duration */}
+          <span className="text-sm text-[#6b6b6b] mr-6 hidden sm:block">
+            {formatDuration(selectedSong?.duration || track.totalDuration)}
+          </span>
+
+          {/* Expand arrow */}
+          <div
+            className={`
+              text-[#6b6b6b] transition-all
+              ${isExpanded ? 'text-[#e85d04] rotate-180' : ''}
+            `}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
         </div>
 
-        {/* Duration (of selected version) */}
-        <span className="text-sm text-gray-400 hidden sm:block min-w-[45px] text-right">
-          {formatDuration(selectedSong?.duration || track.totalDuration)}
-        </span>
+        {/* Versions panel */}
+        {isExpanded && (
+          <div className="px-6 pb-6 bg-[#f8f6f1]">
+            <VersionCarousel
+              songs={track.songs}
+              selectedIndex={selectedIndex}
+              onSelect={handleVersionSelect}
+              onPlay={handleVersionPlay}
+              onAddToQueue={addToCart}
+              currentSongId={currentSong?.id}
+              isPlaying={isPlaying}
+              isInQueue={isInCart}
+            />
+          </div>
+        )}
+      </div>
+    );
+  }
 
-        {/* Add to queue button */}
+  // Default Tron/Synthwave style
+  return (
+    <div
+      className={`
+        bg-dark-800 border border-white/5 overflow-hidden transition-all track-card-hover
+        ${isCurrentTrack ? 'border-neon-cyan/30' : ''}
+        ${isExpanded ? 'border-neon-cyan/20' : ''}
+      `}
+    >
+      {/* Main track row */}
+      <div
+        className="grid grid-cols-[60px_50px_1fr_auto_auto] items-center px-6 py-4 cursor-pointer"
+        onClick={toggleExpanded}
+      >
+        {/* Play button */}
         <button
-          onClick={handleAddToQueue}
-          disabled={inQueue}
-          className={`p-2 rounded-full transition-colors ${
-            inQueue
-              ? 'text-primary cursor-default'
-              : 'text-gray-400 hover:text-white hover:bg-dark-500'
-          }`}
-          title={inQueue ? 'In queue' : 'Add to queue'}
+          onClick={(e) => {
+            e.stopPropagation();
+            handlePlayClick();
+          }}
+          className={`
+            w-10 h-10 rounded-full border-2 flex items-center justify-center transition-all
+            ${isSelectedPlaying && isPlaying
+              ? 'bg-neon-pink border-neon-pink text-dark-900 shadow-[0_0_20px_var(--neon-pink)]'
+              : 'border-neon-pink text-neon-pink hover:bg-neon-pink hover:text-dark-900 hover:shadow-[0_0_20px_var(--neon-pink)]'
+            }
+          `}
         >
-          {inQueue ? (
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+          {isSelectedPlaying && isPlaying ? (
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <rect x="6" y="4" width="4" height="16" />
+              <rect x="14" y="4" width="4" height="16" />
             </svg>
           ) : (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            <svg className="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
             </svg>
           )}
         </button>
+
+        {/* Track number */}
+        <span className="font-display text-sm text-text-dim">
+          {index !== undefined ? String(index).padStart(2, '0') : ''}
+        </span>
+
+        {/* Track info */}
+        <div className="flex flex-col gap-1 min-w-0">
+          <span className={`font-display text-base ${isCurrentTrack ? 'text-neon-cyan' : 'text-white'}`}>
+            {track.title}
+          </span>
+          {hasMultipleVersions && (
+            <span className="inline-flex items-center gap-2 text-[0.6rem] text-neon-cyan uppercase tracking-[0.1em]">
+              <span className="w-1.5 h-1.5 bg-neon-cyan rounded-full blink-dot" />
+              {track.songCount} versions
+            </span>
+          )}
+        </div>
+
+        {/* Duration */}
+        <span className="text-sm text-text-dim mr-6 hidden sm:block">
+          {formatDuration(selectedSong?.duration || track.totalDuration)}
+        </span>
+
+        {/* Expand arrow */}
+        <div
+          className={`
+            text-text-dim transition-all
+            ${isExpanded ? 'text-neon-cyan rotate-180' : ''}
+          `}
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
       </div>
 
-      {/* Version carousel - shown when track has multiple versions */}
-      {hasMultipleVersions && (
-        <div className="px-3 pb-3">
+      {/* Versions panel */}
+      {isExpanded && (
+        <div className="px-6 pb-6 bg-black/30">
           <VersionCarousel
             songs={track.songs}
             selectedIndex={selectedIndex}

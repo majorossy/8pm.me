@@ -28,6 +28,10 @@ export interface Song {
   // Archive.org ratings
   avgRating?: number;            // 1-5 star average from Archive.org reviews
   numReviews?: number;           // Total review count on Archive.org
+  // Archive.org download stats
+  downloads?: number;            // Total download count
+  downloadsWeek?: number;        // Downloads this week
+  downloadsMonth?: number;       // Downloads this month
 }
 
 // Track - a unique song title within an album (may have multiple recordings)

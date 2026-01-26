@@ -13,4 +13,7 @@ interface ProductInterface {
     notes: String @doc(description: "Performance notes, guests, covers") @resolver(class: "EightPM\\SongGraphQl\\Model\\Resolver\\Product\\Notes")
     archive_avg_rating: Float @doc(description: "Archive.org average rating (1-5 stars)") @resolver(class: "EightPM\\SongGraphQl\\Model\\Resolver\\Product\\ArchiveAvgRating")
     archive_num_reviews: Int @doc(description: "Archive.org review count") @resolver(class: "EightPM\\SongGraphQl\\Model\\Resolver\\Product\\ArchiveNumReviews")
+    archive_downloads: Int @doc(description: "Archive.org total download count") @resolver(class: "EightPM\\SongGraphQl\\Model\\Resolver\\Product\\ArchiveDownloads")
+    archive_downloads_week: Int @doc(description: "Archive.org downloads this week") @resolver(class: "EightPM\\SongGraphQl\\Model\\Resolver\\Product\\ArchiveDownloadsWeek")
+    archive_downloads_month: Int @doc(description: "Archive.org downloads this month") @resolver(class: "EightPM\\SongGraphQl\\Model\\Resolver\\Product\\ArchiveDownloadsMonth")
 }

@@ -1,7 +1,11 @@
 // API layer - Magento 2 GraphQL integration
+import { unstable_cache } from 'next/cache';
 import { Song, Artist, ArtistDetail, Album, Track } from './types';
 
 export type { Song, Artist, ArtistDetail, Album, Track } from './types';
+
+// Cache duration in seconds
+const CACHE_DURATION = 60 * 5; // 5 minutes
 
 // GraphQL endpoint - uses Docker service name internally, external URL for client
 const MAGENTO_GRAPHQL_URL = process.env.MAGENTO_GRAPHQL_URL || 'https://app:8443/graphql';
@@ -13,6 +17,48 @@ const MAGENTO_MEDIA_URL = process.env.NEXT_PUBLIC_MAGENTO_MEDIA_URL || 'https://
 // Parent category ID for artists
 const ARTISTS_PARENT_CATEGORY_ID = '48';
 
+// Local album art mapping (slug -> filename in /images/albums/)
+const LOCAL_ALBUM_ART: Record<string, string> = {
+  // STS9
+  'artifact': '/images/albums/artifact.jpg',
+  'interplanetaryescapevehicle': '/images/albums/interplanetary-escape-vehicle.jpg',
+  'offeredschematicssuggestingpeace': '/images/albums/offered-schematics-suggesting-peace.jpg',
+  // String Cheese Incident
+  'bornonthewrongplanet': '/images/albums/born-on-the-wrong-planet.jpg',
+  'astringcheeseincident': '/images/albums/a-string-cheese-incident.jpg',
+  'roundthewheel': '/images/albums/round-the-wheel.jpg',
+  'carnival99': '/images/albums/carnival-99.jpg',
+  'outsideinside': '/images/albums/outside-inside.jpg',
+  'untyingthenot': '/images/albums/untying-the-not.jpg',
+  'onestepcloser': '/images/albums/one-step-closer.jpg',
+  'trickortreat': '/images/albums/trick-or-treat.jpg',
+  'songinmyhead': '/images/albums/song-in-my-head.jpg',
+  'believe': '/images/albums/believe.jpg',
+  // Tea Leaf Green
+  'tealeafgreenalbum': '/images/albums/tea-leaf-green.jpg',
+  'taughttobeproud': '/images/albums/taught-to-be-proud.jpg',
+  'raiseupthetent': '/images/albums/raise-up-the-tent.jpg',
+  // Grace Potter
+  'originalsoul': '/images/albums/original-soul.jpg',
+  'midnight': '/images/albums/midnight.jpg',
+  // O.A.R.
+  'inbetweennowandthen': '/images/albums/in-between-now-and-then.jpg',
+  'soulsaflame': '/images/albums/souls-aflame.jpg',
+  'thewanderer': '/images/albums/the-wanderer.jpg',
+  'risen': '/images/albums/risen.jpg',
+};
+
+// Get album cover art - check local first, then fallback to Magento
+function getAlbumCoverArt(urlKey: string): string | undefined {
+  const slug = urlKey.toLowerCase();
+  console.log('[getAlbumCoverArt] urlKey:', urlKey, '-> slug:', slug, '-> match:', LOCAL_ALBUM_ART[slug] || 'none');
+  if (LOCAL_ALBUM_ART[slug]) {
+    return LOCAL_ALBUM_ART[slug];
+  }
+  // Fallback to Magento media (may not exist)
+  return `${MAGENTO_MEDIA_URL}/catalog/category/${urlKey}.jpg`;
+}
+
 // Helper to construct category image URL from url_key (workaround for GraphQL placeholder issue)
 function getCategoryImageUrl(urlKey: string): string {
   return `${MAGENTO_MEDIA_URL}/catalog/category/${urlKey}.jpg`;
@@ -23,14 +69,24 @@ interface GraphQLResponse<T> {
   errors?: Array<{ message: string }>;
 }
 
-async function graphqlFetch<T>(query: string, variables?: Record<string, unknown>): Promise<T> {
+interface FetchOptions {
+  cache?: boolean;
+  revalidate?: number;
+}
+
+async function graphqlFetch<T>(
+  query: string,
+  variables?: Record<string, unknown>,
+  options: FetchOptions = { cache: true, revalidate: CACHE_DURATION }
+): Promise<T> {
   const response = await fetch(MAGENTO_GRAPHQL_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ query, variables }),
-    cache: 'no-store',
+    next: options.cache ? { revalidate: options.revalidate } : undefined,
+    cache: options.cache ? undefined : 'no-store',
   });
 
   const result: GraphQLResponse<T> = await response.json();
@@ -107,6 +163,9 @@ const GET_SONGS_BY_CATEGORY_QUERY = `
         notes
         archive_avg_rating
         archive_num_reviews
+        archive_downloads
+        archive_downloads_week
+        archive_downloads_month
         categories {
           uid
           name
@@ -138,6 +197,9 @@ const GET_SONGS_BY_SEARCH_QUERY = `
         notes
         archive_avg_rating
         archive_num_reviews
+        archive_downloads
+        archive_downloads_week
+        archive_downloads_month
         categories {
           uid
           name
@@ -169,6 +231,9 @@ const GET_ALL_SONGS_QUERY = `
         notes
         archive_avg_rating
         archive_num_reviews
+        archive_downloads
+        archive_downloads_week
+        archive_downloads_month
         categories {
           uid
           name
@@ -200,6 +265,9 @@ const GET_SONG_BY_ID_QUERY = `
         notes
         archive_avg_rating
         archive_num_reviews
+        archive_downloads
+        archive_downloads_week
+        archive_downloads_month
         categories {
           uid
           name
@@ -237,6 +305,9 @@ interface MagentoProduct {
   notes?: string;               // Performance notes, guests, covers
   archive_avg_rating?: number;  // Archive.org average rating (1-5)
   archive_num_reviews?: number; // Archive.org review count
+  archive_downloads?: number;   // Archive.org total downloads
+  archive_downloads_week?: number;  // Archive.org downloads this week
+  archive_downloads_month?: number; // Archive.org downloads this month
   categories?: Array<{ uid: string; name: string; url_key: string }>;
 }
 
@@ -354,6 +425,10 @@ function productToSong(product: MagentoProduct, albumIdentifier?: string): Song 
     // Archive.org ratings
     avgRating: product.archive_avg_rating || undefined,
     numReviews: product.archive_num_reviews || undefined,
+    // Archive.org download stats
+    downloads: product.archive_downloads || undefined,
+    downloadsWeek: product.archive_downloads_week || undefined,
+    downloadsMonth: product.archive_downloads_month || undefined,
   };
 }
 
@@ -535,7 +610,7 @@ export async function getArtist(slug: string): Promise<ArtistDetail | null> {
           totalTracks: tracks.length,
           totalSongs,
           totalDuration,
-          coverArt: getCategoryImageUrl(albumCat.url_key),
+          coverArt: getAlbumCoverArt(albumCat.url_key),
         };
       })
     );
@@ -593,6 +668,54 @@ export function formatDuration(seconds: number): string {
   const mins = Math.floor(seconds / 60);
   const secs = Math.floor(seconds % 60);
   return `${mins}:${secs.toString().padStart(2, '0')}`;
+}
+
+// Lightweight function to get artist albums (no tracks/products)
+// Used by the artists listing page for better performance
+export async function getArtistAlbums(slug: string): Promise<{ artist: Artist; albums: Album[] } | null> {
+  try {
+    // Get artist category by slug
+    const artistData = await graphqlFetch<{ categoryList: MagentoCategory[] }>(
+      GET_ARTIST_BY_SLUG_QUERY,
+      { urlKey: slug }
+    );
+
+    if (!artistData.categoryList.length) {
+      return null;
+    }
+
+    const category = artistData.categoryList[0];
+    const artist = categoryToArtist(category);
+
+    // Get child categories (albums) - just metadata, no products
+    const albumCategoriesData = await graphqlFetch<{ categoryList: MagentoCategory[] }>(
+      GET_CHILD_CATEGORIES_QUERY,
+      { parentUid: category.uid }
+    );
+
+    const albumCategories = albumCategoriesData.categoryList || [];
+
+    // Transform to lightweight Album objects (no tracks, no products)
+    const albums: Album[] = albumCategories.map((albumCat) => ({
+      id: albumCat.uid,
+      identifier: albumCat.url_key,
+      name: albumCat.name,
+      slug: albumCat.url_key,
+      artistId: category.uid,
+      artistName: category.name,
+      artistSlug: category.url_key,
+      tracks: [], // Empty - not fetched
+      totalTracks: albumCat.product_count || 0, // Use category product count as estimate
+      totalSongs: 0,
+      totalDuration: 0,
+      coverArt: getAlbumCoverArt(albumCat.url_key),
+    }));
+
+    return { artist, albums };
+  } catch (error) {
+    console.error('Failed to fetch artist albums:', error);
+    return null;
+  }
 }
 
 // Get a specific album by artist slug and album identifier/slug
