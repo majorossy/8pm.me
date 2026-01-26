@@ -120,6 +120,41 @@ $progress = $tracker->get('GratefulDead');  // Returns current state
 $tracker->complete('GratefulDead');
 ```
 
+### ProductRefresher
+Updates existing products with fresh Archive.org data (ratings, reviews, length).
+
+```php
+// Refresh all products for an artist
+$result = $productRefresher->refresh(
+    artistName: 'Grateful Dead',
+    fields: ['rating', 'reviews', 'length'],  // or empty for all
+    force: false,  // bypass cache if true
+    limit: 10,     // optional limit
+    progressCallback: fn($total, $current, $msg) => $output->writeln($msg)
+);
+// Returns: ['products_updated' => 150, 'api_calls' => 10, 'cache_hits' => 5, ...]
+
+// Dry run to preview what would be updated
+$preview = $productRefresher->dryRun('STS9');
+```
+
+### ApiResponseCache
+Caches Archive.org API responses to reduce API calls.
+
+```php
+// Get cached response
+$data = $apiResponseCache->get('gd1977-05-08...');
+
+// Save with default TTL (24 hours for imports)
+$apiResponseCache->save('gd1977-05-08...', $showData);
+
+// Save with refresh TTL (1 week)
+$apiResponseCache->saveForRefresh('gd1977-05-08...', $showData);
+
+// Clear all Archive.org cache
+$apiResponseCache->clear();
+```
+
 ## CLI Commands
 
 ### archive:import:shows
@@ -173,6 +208,31 @@ bin/magento archive:cleanup:products --collection=TestArtist --force
 # Custom batch size (default: 100)
 bin/magento archive:cleanup:products --collection=TestArtist --batch-size=50
 ```
+
+### archive:refresh:products
+Updates existing products with fresh data from Archive.org (ratings, reviews, track length).
+
+```bash
+# Dry run - preview what would be updated
+bin/magento archive:refresh:products "STS9" --dry-run
+
+# Refresh all products for an artist
+bin/magento archive:refresh:products "Grateful Dead"
+
+# Refresh with specific fields only
+bin/magento archive:refresh:products "Grateful Dead" --fields=rating,reviews,length
+
+# Limit number of shows to process
+bin/magento archive:refresh:products "STS9" --limit=5
+
+# Force refresh (bypass 1-week cache)
+bin/magento archive:refresh:products "STS9" --limit=5 --force
+```
+
+**Key differences from import:**
+- **Direction**: Magento → Archive.org → Magento (updates existing products)
+- **Cache TTL**: 1 week (import uses 24 hours)
+- **Purpose**: Updates rating, reviews, and length; does not create new products
 
 ## REST API
 
@@ -304,6 +364,8 @@ The module creates these product EAV attributes:
 | `lineage` | text | Recording lineage |
 | `guid` | varchar | Unique identifier |
 | `pub_date` | varchar | Archive.org publish date |
+| `archive_avg_rating` | varchar | Archive.org average rating (e.g., "4.5") |
+| `archive_num_reviews` | int | Archive.org number of reviews |
 
 ## Category Attributes
 

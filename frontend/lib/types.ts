@@ -17,11 +17,17 @@ export interface Song {
   albumIdentifier: string;       // Archive.org identifier (links to Album)
   albumName: string;             // show_name
   trackTitle: string;            // Normalized track name (song_title)
-  showDate?: string;             // Performance date
-  showVenue?: string;            // Venue name
+  showDate?: string;             // Performance date (parsed from show_name)
+  showVenue?: string;            // Venue name (Archive.org: venue)
+  showLocation?: string;         // City/state (Archive.org: coverage)
   // Recording metadata
-  lineage?: string;              // Recording chain/source equipment
+  taper?: string;                // Who recorded it (Archive.org: taper)
+  source?: string;               // Recording equipment (Archive.org: source)
+  lineage?: string;              // Recording chain/transfer info (Archive.org: lineage)
   notes?: string;                // Performance notes, guests, covers
+  // Archive.org ratings
+  avgRating?: number;            // 1-5 star average from Archive.org reviews
+  numReviews?: number;           // Total review count on Archive.org
 }
 
 // Track - a unique song title within an album (may have multiple recordings)

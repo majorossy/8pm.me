@@ -77,6 +77,7 @@
                 <item name="archivedotorg_sync_albums" xsi:type="object">ArchiveDotOrg\Core\Console\Command\SyncAlbumsCommand</item>
                 <item name="archivedotorg_status" xsi:type="object">ArchiveDotOrg\Core\Console\Command\StatusCommand</item>
                 <item name="archivedotorg_cleanup_products" xsi:type="object">ArchiveDotOrg\Core\Console\Command\CleanupProductsCommand</item>
+                <item name="archivedotorg_refresh_products" xsi:type="object">ArchiveDotOrg\Core\Console\Command\RefreshProductsCommand</item>
             </argument>
         </arguments>
     </type>

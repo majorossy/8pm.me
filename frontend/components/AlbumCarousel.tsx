@@ -16,7 +16,7 @@ interface AlbumCarouselCardProps {
 
 function AlbumCarouselCard({ album }: AlbumCarouselCardProps) {
   return (
-    <Link href={`/artists/${album.artistSlug}/${album.slug}`}>
+    <Link href={`/artists/${album.artistSlug}/album/${album.slug}`}>
       <div className="group flex-shrink-0 w-40 cursor-pointer snap-start">
         {/* Album artwork */}
         <div className="aspect-square bg-dark-600 rounded-lg mb-2 overflow-hidden relative">

@@ -61,7 +61,7 @@ export default async function TrackPage({ params }: TrackPageProps) {
           </li>
           <li className="text-gray-600">/</li>
           <li>
-            <Link href={`/artists/${track.artistSlug}/${track.albumIdentifier}`} className="text-gray-400 hover:text-white transition-colors truncate max-w-[150px]">
+            <Link href={`/artists/${track.artistSlug}/album/${track.albumIdentifier}`} className="text-gray-400 hover:text-white transition-colors truncate max-w-[150px]">
               {track.albumName}
             </Link>
           </li>
@@ -77,7 +77,7 @@ export default async function TrackPage({ params }: TrackPageProps) {
         <p className="text-gray-300">
           From{' '}
           <Link
-            href={`/artists/${track.artistSlug}/${track.albumIdentifier}`}
+            href={`/artists/${track.artistSlug}/album/${track.albumIdentifier}`}
             className="text-primary hover:underline"
           >
             {track.albumName}

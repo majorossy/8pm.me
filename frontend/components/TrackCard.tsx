@@ -92,13 +92,8 @@ export default function TrackCard({ track, index }: TrackCardProps) {
         <div className="flex-1 min-w-0">
           <p className={`font-medium truncate ${isCurrentTrack ? 'text-primary' : 'text-white'}`}>
             {track.title}
-          </p>
-          <p className="text-sm text-gray-400 truncate">
-            {track.artistName}
             {hasMultipleVersions && (
-              <span className="ml-2 text-xs text-primary">
-                {track.songCount} versions
-              </span>
+              <span className="text-gray-400 font-normal"> - {track.songCount} versions</span>
             )}
           </p>
         </div>
@@ -139,8 +134,10 @@ export default function TrackCard({ track, index }: TrackCardProps) {
             selectedIndex={selectedIndex}
             onSelect={handleVersionSelect}
             onPlay={handleVersionPlay}
+            onAddToQueue={addToCart}
             currentSongId={currentSong?.id}
             isPlaying={isPlaying}
+            isInQueue={isInCart}
           />
         </div>
       )}

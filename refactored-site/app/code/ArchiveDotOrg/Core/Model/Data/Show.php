@@ -32,6 +32,8 @@ class Show implements ShowInterface
     private ?string $dir = null;
     private ?string $pubDate = null;
     private ?string $guid = null;
+    private ?float $avgRating = null;
+    private ?int $numReviews = null;
 
     /** @var TrackInterface[] */
     private array $tracks = [];
@@ -348,6 +350,40 @@ class Show implements ShowInterface
     public function setGuid(?string $guid): ShowInterface
     {
         $this->guid = $guid;
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAvgRating(): ?float
+    {
+        return $this->avgRating;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setAvgRating(?float $avgRating): ShowInterface
+    {
+        $this->avgRating = $avgRating;
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getNumReviews(): ?int
+    {
+        return $this->numReviews;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setNumReviews(?int $numReviews): ShowInterface
+    {
+        $this->numReviews = $numReviews;
         return $this;
     }
 }

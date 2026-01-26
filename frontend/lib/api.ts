@@ -5,6 +5,7 @@ export type { Song, Artist, ArtistDetail, Album, Track } from './types';
 
 // GraphQL endpoint - uses Docker service name internally, external URL for client
 const MAGENTO_GRAPHQL_URL = process.env.MAGENTO_GRAPHQL_URL || 'https://app:8443/graphql';
+console.log('[API] Using GraphQL URL:', MAGENTO_GRAPHQL_URL);
 
 // Magento media URL for images (browser-accessible)
 const MAGENTO_MEDIA_URL = process.env.NEXT_PUBLIC_MAGENTO_MEDIA_URL || 'https://magento.test/media';
@@ -98,8 +99,14 @@ const GET_SONGS_BY_CATEGORY_QUERY = `
         song_url
         show_name
         identifier
+        show_venue
+        show_location
+        show_taper
+        show_source
         lineage
         notes
+        archive_avg_rating
+        archive_num_reviews
         categories {
           uid
           name
@@ -123,8 +130,14 @@ const GET_SONGS_BY_SEARCH_QUERY = `
         song_url
         show_name
         identifier
+        show_venue
+        show_location
+        show_taper
+        show_source
         lineage
         notes
+        archive_avg_rating
+        archive_num_reviews
         categories {
           uid
           name
@@ -148,8 +161,14 @@ const GET_ALL_SONGS_QUERY = `
         song_url
         show_name
         identifier
+        show_venue
+        show_location
+        show_taper
+        show_source
         lineage
         notes
+        archive_avg_rating
+        archive_num_reviews
         categories {
           uid
           name
@@ -173,8 +192,14 @@ const GET_SONG_BY_ID_QUERY = `
         song_url
         show_name
         identifier
+        show_venue
+        show_location
+        show_taper
+        show_source
         lineage
         notes
+        archive_avg_rating
+        archive_num_reviews
         categories {
           uid
           name
@@ -204,8 +229,14 @@ interface MagentoProduct {
   song_url?: string;
   show_name?: string;
   identifier?: string;          // Archive.org album identifier
-  lineage?: string;             // Recording chain/source equipment
+  show_venue?: string;          // Archive.org: venue
+  show_location?: string;       // Archive.org: coverage (city/state)
+  show_taper?: string;          // Archive.org: taper (who recorded)
+  show_source?: string;         // Archive.org: source (recording equipment)
+  lineage?: string;             // Archive.org: lineage (transfer chain)
   notes?: string;               // Performance notes, guests, covers
+  archive_avg_rating?: number;  // Archive.org average rating (1-5)
+  archive_num_reviews?: number; // Archive.org review count
   categories?: Array<{ uid: string; name: string; url_key: string }>;
 }
 
@@ -221,12 +252,63 @@ function categoryToArtist(category: MagentoCategory): Artist {
   };
 }
 
+// Normalize a URL - fix missing colons, handle double protocols
+function normalizeUrl(url: string): string {
+  if (!url) return '';
+
+  // Fix "https//" or "http//" (missing colon)
+  url = url.replace(/^(https?)\/\//, '$1://');
+
+  // If URL already has a valid protocol, return as-is
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+
+  // Otherwise, prepend https://
+  return `https://${url}`;
+}
+
 // Generate URL-safe slug from string
 function slugify(text: string): string {
   return text
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '');
+}
+
+// Parse show_name to extract venue and date
+// Format: "{Artist} Live at {Venue} on {YYYY-MM-DD}"
+function parseShowName(showName: string): { venue?: string; date?: string } {
+  const result: { venue?: string; date?: string } = {};
+
+  // Extract date (YYYY-MM-DD format)
+  const dateMatch = showName.match(/(\d{4}-\d{2}-\d{2})/);
+  if (dateMatch) {
+    result.date = dateMatch[1];
+  }
+
+  // Extract venue (between "Live at " and " on ")
+  const venueMatch = showName.match(/Live at (.+?) on \d{4}-\d{2}-\d{2}/);
+  if (venueMatch) {
+    result.venue = venueMatch[1].trim();
+  }
+
+  return result;
+}
+
+// Extract taper/source info from identifier
+// Format: "artist-YYYY-MM-DD.source.format" e.g. "sts9-2006-10-31.sonyecm.pumpkin.flac16"
+function parseIdentifier(identifier: string): { source?: string } {
+  const result: { source?: string } = {};
+
+  // Get everything after the date
+  const sourceMatch = identifier.match(/\d{4}-\d{2}-\d{2}\.(.+?)(?:\.flac|$)/i);
+  if (sourceMatch) {
+    // Clean up the source info (replace dots with spaces, format nicely)
+    result.source = sourceMatch[1].replace(/\./g, ' ').trim();
+  }
+
+  return result;
 }
 
 // Transform Magento product to Song (with album context)
@@ -240,6 +322,12 @@ function productToSong(product: MagentoProduct, albumIdentifier?: string): Song 
   const albumName = product.show_name || identifier;
   const trackTitle = product.song_title || product.name;
 
+  // Parse venue and date from show_name
+  const showInfo = parseShowName(albumName);
+
+  // Parse source/taper from identifier
+  const identifierInfo = parseIdentifier(identifier);
+
   return {
     id: product.uid,
     sku: product.sku,
@@ -247,16 +335,25 @@ function productToSong(product: MagentoProduct, albumIdentifier?: string): Song 
     artistId: artistCategory?.uid || '',
     artistName: artistCategory?.name || 'Unknown Artist',
     artistSlug: artistCategory?.url_key || '',
-    duration: product.song_duration || 0,
-    streamUrl: product.song_url ? `https://${product.song_url}` : '',
+    duration: product.song_duration || 0, // API returns seconds from Archive.org
+    streamUrl: product.song_url ? normalizeUrl(product.song_url) : '',
     albumArt: '/images/songs/default.jpg',
     // Album/track context
     albumIdentifier: identifier,
     albumName,
     trackTitle,
-    // Recording metadata
+    // Show info (prefer direct fields, fallback to parsed)
+    showDate: showInfo.date,
+    showVenue: product.show_venue || showInfo.venue,
+    showLocation: product.show_location || undefined,
+    // Recording metadata (prefer direct fields, fallback to parsed)
+    taper: product.show_taper || undefined,
+    source: product.show_source || identifierInfo.source,
     lineage: product.lineage || undefined,
     notes: product.notes || undefined,
+    // Archive.org ratings
+    avgRating: product.archive_avg_rating || undefined,
+    numReviews: product.archive_num_reviews || undefined,
   };
 }
 
@@ -357,14 +454,17 @@ export async function getArtists(): Promise<Artist[]> {
 }
 
 export async function getArtist(slug: string): Promise<ArtistDetail | null> {
+  console.log('[getArtist] Fetching artist:', slug);
   try {
     // Get artist category by slug
     const artistData = await graphqlFetch<{ categoryList: MagentoCategory[] }>(
       GET_ARTIST_BY_SLUG_QUERY,
       { urlKey: slug }
     );
+    console.log('[getArtist] Got artist data:', artistData.categoryList.length, 'categories');
 
     if (!artistData.categoryList.length) {
+      console.log('[getArtist] No categories found for slug:', slug);
       return null;
     }
 

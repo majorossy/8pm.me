@@ -11,7 +11,7 @@ interface AlbumCardProps {
 
 export default function AlbumCard({ album }: AlbumCardProps) {
   return (
-    <Link href={`/artists/${album.artistSlug}/${album.slug}`}>
+    <Link href={`/artists/${album.artistSlug}/album/${album.slug}`}>
       <div className="group bg-dark-700 rounded-lg p-4 hover:bg-dark-600 transition-all duration-300 cursor-pointer">
         {/* Album artwork */}
         <div className="aspect-square bg-dark-600 rounded-lg mb-4 overflow-hidden relative">

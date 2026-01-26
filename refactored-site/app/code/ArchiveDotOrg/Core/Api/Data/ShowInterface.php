@@ -32,6 +32,8 @@ interface ShowInterface
     public const TRACKS = 'tracks';
     public const PUB_DATE = 'pub_date';
     public const GUID = 'guid';
+    public const AVG_RATING = 'avg_rating';
+    public const NUM_REVIEWS = 'num_reviews';
 
     /**
      * Get show identifier (unique ID on Archive.org)
@@ -310,4 +312,34 @@ interface ShowInterface
      * @return ShowInterface
      */
     public function setGuid(?string $guid): ShowInterface;
+
+    /**
+     * Get average rating from Archive.org
+     *
+     * @return float|null
+     */
+    public function getAvgRating(): ?float;
+
+    /**
+     * Set average rating
+     *
+     * @param float|null $avgRating
+     * @return ShowInterface
+     */
+    public function setAvgRating(?float $avgRating): ShowInterface;
+
+    /**
+     * Get number of reviews from Archive.org
+     *
+     * @return int|null
+     */
+    public function getNumReviews(): ?int;
+
+    /**
+     * Set number of reviews
+     *
+     * @param int|null $numReviews
+     * @return ShowInterface
+     */
+    public function setNumReviews(?int $numReviews): ShowInterface;
 }

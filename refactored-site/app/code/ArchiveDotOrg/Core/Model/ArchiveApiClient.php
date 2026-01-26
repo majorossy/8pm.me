@@ -283,6 +283,18 @@ class ArchiveApiClient implements ArchiveApiClientInterface
         $show->setServerOne($data['d1'] ?? null);
         $show->setServerTwo($data['d2'] ?? null);
 
+        // Parse ratings and reviews from item info
+        $itemInfo = $data['item'] ?? [];
+        if (isset($itemInfo['reviews'])) {
+            $reviews = $itemInfo['reviews'];
+            if (isset($reviews['info']['avg_rating'])) {
+                $show->setAvgRating((float) $reviews['info']['avg_rating']);
+            }
+            if (isset($reviews['info']['num_reviews'])) {
+                $show->setNumReviews((int) $reviews['info']['num_reviews']);
+            }
+        }
+
         // Parse tracks from files
         $audioFormat = $this->config->getAudioFormat();
         $tracks = [];
