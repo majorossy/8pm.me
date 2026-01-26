@@ -242,6 +242,7 @@ class TrackImporter implements TrackImporterInterface
         $product->setData('title', $track->getTitle());
         $product->setData('length', $this->formatTrackLength($track->getLength()));
         $product->setData('album_track', $track->getTrackNumber());
+        $product->setData('show_source', $show->getSource());
 
         // Show-specific attributes
         $product->setData('identifier', $show->getIdentifier());

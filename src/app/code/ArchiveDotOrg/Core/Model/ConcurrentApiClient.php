@@ -239,6 +239,7 @@ class ConcurrentApiClient
         $show->setVenue($this->extractValue($metadata, 'venue'));
         $show->setCreator($this->extractValue($metadata, 'creator'));
         $show->setTaper($this->extractValue($metadata, 'taper'));
+        $show->setSource($this->extractValue($metadata, 'source'));
         $show->setTransferer($this->extractValue($metadata, 'transferer'));
         $show->setLineage($this->extractValue($metadata, 'lineage'));
         $show->setNotes($this->extractValue($metadata, 'notes'));
