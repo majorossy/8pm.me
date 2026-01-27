@@ -1,128 +1,75 @@
 'use client';
 
-import Link from 'next/link';
-import { Artist } from '@/lib/api';
-import { useTheme } from '@/context/ThemeContext';
+import { useEffect } from 'react';
+import { ArtistDetail } from '@/lib/api';
+import { BandMemberData } from '@/lib/types';
+import { useBreadcrumbs } from '@/context/BreadcrumbContext';
 import AlbumCard from '@/components/AlbumCard';
+import BandMembers from '@/components/artist/BandMembers';
+import BandStatistics from '@/components/artist/BandStatistics';
+import BandLinks from '@/components/artist/BandLinks';
 
-interface ArtistWithAlbums extends Artist {
+interface ArtistWithAlbums extends ArtistDetail {
   albums: any[];
 }
 
 interface ArtistPageContentProps {
   artist: ArtistWithAlbums;
+  bandData?: BandMemberData | null;
 }
 
-export default function ArtistPageContent({ artist }: ArtistPageContentProps) {
-  const { theme } = useTheme();
-  const isMetro = theme === 'metro';
+export default function ArtistPageContent({ artist, bandData }: ArtistPageContentProps) {
+  const { setBreadcrumbs } = useBreadcrumbs();
 
-  if (isMetro) {
-    // Metro/Time Machine style
-    return (
-      <div className="pt-[80px] px-8 max-w-[1400px] mx-auto">
-        {/* Breadcrumb */}
-        <div className="text-xs text-[#6b6b6b] mb-6">
-          <Link href="/" className="hover:text-[#e85d04] transition-colors">Home</Link>
-          {' / '}
-          <Link href="/artists" className="hover:text-[#e85d04] transition-colors">Artists</Link>
-          {' / '}
-          <span className="text-[#1a1a1a]">{artist.name}</span>
-        </div>
+  useEffect(() => {
+    setBreadcrumbs([{ label: artist.name, type: 'artist' }]);
+    return () => setBreadcrumbs([]);
+  }, [setBreadcrumbs, artist.name]);
 
-        {/* Artist header */}
-        <section className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8 lg:gap-12 mb-12">
-          {/* Artist image */}
-          <div className="mx-auto lg:mx-0">
-            <div className="w-64 h-64 lg:w-[280px] lg:h-[280px] bg-[#e8e4dc] border border-[#d4d0c8] overflow-hidden">
-              {artist.image && !artist.image.includes('default') ? (
-                <img
-                  src={artist.image}
-                  alt={artist.name}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <span className="font-display text-7xl font-bold text-[#6b6b6b]">
-                    {artist.name.charAt(0)}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Artist info */}
-          <div className="pt-4">
-            <h1 className="font-display text-3xl md:text-4xl font-extrabold mb-4 text-[#1a1a1a]">
-              {artist.name}
-            </h1>
-
-            {artist.bio && (
-              <p className="text-[#6b6b6b] max-w-2xl mb-6">{artist.bio}</p>
-            )}
-
-            {/* Stats */}
-            <div className="flex gap-8 py-4 border-y border-[#d4d0c8]">
-              <div className="flex flex-col gap-1">
-                <span className="font-display text-2xl font-bold text-[#e85d04]">
-                  {artist.albums.length}
-                </span>
-                <span className="text-xs text-[#6b6b6b]">
-                  {artist.albums.length === 1 ? 'Album' : 'Albums'}
-                </span>
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="font-display text-2xl font-bold text-[#e85d04]">
-                  {artist.songCount}
-                </span>
-                <span className="text-xs text-[#6b6b6b]">
-                  {artist.songCount === 1 ? 'Recording' : 'Recordings'}
-                </span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Albums Grid */}
-        <section className="mb-12">
-          <div className="flex justify-between items-center mb-6 pb-4 border-b border-[#d4d0c8]">
-            <h2 className="font-display text-lg font-bold text-[#1a1a1a]">
-              Discography
-            </h2>
-          </div>
-
-          {artist.albums.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {artist.albums.map((album) => (
-                <AlbumCard key={album.id} album={album} />
-              ))}
-            </div>
-          ) : (
-            <p className="text-[#6b6b6b]">No albums available.</p>
-          )}
-        </section>
-      </div>
-    );
+  // Combine all bio images (artist web images)
+  const allImages = [];
+  if (artist.wikipediaSummary?.thumbnail) {
+    allImages.push({
+      url: artist.wikipediaSummary.thumbnail.source,
+      caption: `${artist.wikipediaSummary.title} (Wikipedia)`,
+      credit: 'Wikipedia',
+    });
+  }
+  if (bandData?.images) {
+    allImages.push(...bandData.images);
   }
 
-  // Default Tron/Synthwave style
   return (
-    <div className="pt-24 px-6 lg:px-12 max-w-[1400px] mx-auto">
-      {/* Breadcrumb */}
-      <div className="text-[0.65rem] text-text-dim uppercase tracking-[0.1em] mb-8">
-        <Link href="/" className="hover:text-neon-cyan transition-colors">Home</Link>
-        {' / '}
-        <Link href="/artists" className="hover:text-neon-cyan transition-colors">Artists</Link>
-        {' / '}
-        <span className="text-white">{artist.name}</span>
-      </div>
+    <div className="min-h-screen">
+      {/* Artist header - name left, main image right */}
+      <section className="px-4 md:px-8 pt-8 md:pt-16 pb-6 md:pb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6 lg:gap-12">
+          {/* Left: Artist name and stats */}
+          <div className="text-center lg:text-left">
+            <p className="text-[0.65rem] md:text-xs font-bold text-white uppercase tracking-wider mb-2">Artist</p>
+            <h1 className="text-3xl md:text-5xl lg:text-7xl xl:text-8xl font-black text-white mb-2 md:mb-4">
+              {artist.name}
+            </h1>
+            <p className="text-sm md:text-base text-[#a7a7a7]">
+              {artist.albums.length} {artist.albums.length === 1 ? 'album' : 'albums'} &bull; {artist.songCount} {artist.songCount === 1 ? 'recording' : 'recordings'}
+            </p>
 
-      {/* Artist header */}
-      <section className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-8 lg:gap-16 mb-16">
-        {/* Artist image */}
-        <div className="mx-auto lg:mx-0">
-          <div className="w-64 h-64 lg:w-[300px] lg:h-[300px] album-frame p-[3px]">
-            <div className="w-full h-full bg-dark-900 overflow-hidden">
+            {/* Action bar */}
+            <div className="flex items-center justify-center lg:justify-start gap-4 md:gap-6 mt-6">
+              <button className="w-12 h-12 md:w-14 md:h-14 bg-[#1DB954] rounded-full flex items-center justify-center hover:scale-105 hover:bg-[#1ed760] transition-all shadow-lg">
+                <svg className="w-5 h-5 md:w-6 md:h-6 text-black ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </button>
+              <button className="px-4 py-1 text-sm font-bold text-white border border-[#a7a7a7] rounded-full hover:border-white transition-colors">
+                Follow
+              </button>
+            </div>
+          </div>
+
+          {/* Right: Main artist image */}
+          <div className="mx-auto lg:mx-0">
+            <div className="w-48 h-48 md:w-64 md:h-64 lg:w-[280px] lg:h-[280px] rounded-full overflow-hidden shadow-2xl">
               {artist.image && !artist.image.includes('default') ? (
                 <img
                   src={artist.image}
@@ -130,70 +77,122 @@ export default function ArtistPageContent({ artist }: ArtistPageContentProps) {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <span className="font-display text-8xl font-bold gradient-text">
+                <div className="w-full h-full bg-[#282828] flex items-center justify-center">
+                  <span className="font-bold text-5xl md:text-8xl text-[#535353]">
                     {artist.name.charAt(0)}
                   </span>
                 </div>
               )}
-            </div>
-          </div>
-        </div>
-
-        {/* Artist info */}
-        <div className="pt-4">
-          <div className="font-display text-[0.6rem] text-neon-cyan uppercase tracking-[0.4em] mb-4 flex items-center gap-2">
-            <span className="opacity-50">//</span>
-            Artist
-          </div>
-
-          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-black mb-4 gradient-text-title">
-            {artist.name.toUpperCase()}
-          </h1>
-
-          {artist.bio && (
-            <p className="text-text-dim max-w-2xl mb-6">{artist.bio}</p>
-          )}
-
-          {/* Stats */}
-          <div className="flex gap-12 py-6 stats-border">
-            <div className="flex flex-col gap-1">
-              <span className="font-display text-3xl font-bold text-neon-orange">
-                {artist.albums.length}
-              </span>
-              <span className="text-[0.55rem] text-text-dim uppercase tracking-[0.2em]">
-                {artist.albums.length === 1 ? 'Album' : 'Albums'}
-              </span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="font-display text-3xl font-bold text-neon-orange">
-                {artist.songCount}
-              </span>
-              <span className="text-[0.55rem] text-text-dim uppercase tracking-[0.2em]">
-                {artist.songCount === 1 ? 'Recording' : 'Recordings'}
-              </span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Albums Grid */}
-      <section className="mb-16">
-        <div className="flex justify-between items-center mb-8 pb-4 section-border">
-          <h2 className="font-display text-xs uppercase tracking-[0.3em] text-text-dim">
-            <span className="text-neon-cyan">//</span> Discography
-          </h2>
-        </div>
-
+      {/* Discography - Full width */}
+      <section className="px-4 md:px-8 pb-8">
+        <h2 className="text-xl md:text-2xl font-bold text-white mb-4">Discography</h2>
         {artist.albums.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
             {artist.albums.map((album) => (
               <AlbumCard key={album.id} album={album} />
             ))}
           </div>
         ) : (
-          <p className="text-text-dim">No albums available.</p>
+          <p className="text-[#a7a7a7]">No albums available.</p>
         )}
+      </section>
+
+      {/* Two column: content left, images right */}
+      <section className="px-4 md:px-8 pb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6 lg:gap-12">
+          {/* Left Column: bio + members + stats + links */}
+          <div className="space-y-8 md:space-y-12">
+
+            {/* Biography Text Only */}
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold text-white mb-6">Biography</h2>
+              <div className="space-y-4">
+                {artist.wikipediaSummary?.extract && (
+                  <div className="text-[#b3b3b3] text-sm md:text-base leading-relaxed">
+                    <p>{artist.wikipediaSummary.extract}</p>
+                    {artist.wikipediaSummary.url && (
+                      <p className="mt-2 text-xs">
+                        <a
+                          href={artist.wikipediaSummary.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#1DB954] hover:underline"
+                        >
+                          Read more on Wikipedia →
+                        </a>
+                      </p>
+                    )}
+                  </div>
+                )}
+                {artist.extendedBio && artist.extendedBio.split('\n\n').map((paragraph, index) => (
+                  <p key={index} className="text-[#b3b3b3] text-sm md:text-base leading-relaxed">
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+            </div>
+
+            {/* Band Members */}
+            <BandMembers
+              members={bandData?.members?.current}
+              formerMembers={bandData?.members?.former}
+            />
+
+            {/* Band Statistics */}
+            <BandStatistics
+              statistics={{
+                totalShows: bandData?.recordingStats?.totalShows,
+                recordingStats: bandData?.recordingStats ? {
+                  total: bandData.recordingStats.totalShows || 0
+                } : undefined
+              }}
+            />
+
+            {/* Band Links */}
+            <BandLinks
+              links={{
+                website: bandData?.socialLinks?.website,
+                youtube: bandData?.socialLinks?.youtube,
+                facebook: bandData?.socialLinks?.facebook,
+                instagram: bandData?.socialLinks?.instagram,
+                twitter: bandData?.socialLinks?.twitter
+              }}
+              artistName={artist.name}
+            />
+          </div>
+
+          {/* Right Column: Artist web images only (sticky) */}
+          {allImages.length > 0 && (
+            <div className="mx-auto lg:mx-0 lg:sticky lg:top-24 lg:self-start space-y-4">
+              {allImages.slice(0, 3).map((image, index) => (
+                <div key={index} className="bg-[#181818] rounded-lg overflow-hidden">
+                  <div className="relative aspect-square">
+                    <img
+                      src={image.url}
+                      alt={image.caption || 'Band photo'}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  {image.caption && (
+                    <div className="p-3">
+                      <p className="text-xs text-[#b3b3b3]">{image.caption}</p>
+                      {image.credit && (
+                        <p className="text-[0.6rem] text-[#6a6a6a] mt-1">
+                          Credit: {image.credit}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </section>
     </div>
   );

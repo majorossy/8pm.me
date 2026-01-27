@@ -2,7 +2,8 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-export type ThemeType = 'tron' | 'metro' | 'minimal' | 'classic' | 'forest';
+// Only Jamify theme is supported
+export type ThemeType = 'jamify';
 
 interface ThemeConfig {
   name: string;
@@ -11,30 +12,10 @@ interface ThemeConfig {
 }
 
 export const THEMES: Record<ThemeType, ThemeConfig> = {
-  tron: {
-    name: 'tron',
-    label: 'Tron',
-    description: 'Neon grid vibes',
-  },
-  metro: {
-    name: 'metro',
-    label: 'Metro',
-    description: 'Light & clean',
-  },
-  minimal: {
-    name: 'minimal',
-    label: 'Minimal',
-    description: 'Clean & modern',
-  },
-  classic: {
-    name: 'classic',
-    label: 'Classic',
-    description: 'Warm vintage',
-  },
-  forest: {
-    name: 'forest',
-    label: 'Forest',
-    description: 'Natural greens',
+  jamify: {
+    name: 'jamify',
+    label: 'Jamify',
+    description: 'Spotify-style dark',
   },
 };
 
@@ -47,15 +28,12 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<ThemeType>('tron');
+  const [theme] = useState<ThemeType>('jamify');
   const [mounted, setMounted] = useState(false);
 
-  // Load theme from localStorage on mount
+  // Clear old theme selections and set to jamify on mount
   useEffect(() => {
-    const savedTheme = localStorage.getItem('8pm-theme') as ThemeType;
-    if (savedTheme && THEMES[savedTheme]) {
-      setThemeState(savedTheme);
-    }
+    localStorage.setItem('8pm-theme', 'jamify');
     setMounted(true);
   }, []);
 
@@ -63,15 +41,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!mounted) return;
 
-    // Remove all theme classes
+    // Remove any old theme classes
     document.documentElement.classList.remove('theme-tron', 'theme-metro', 'theme-minimal', 'theme-classic', 'theme-forest');
-    // Add current theme class
-    document.documentElement.classList.add(`theme-${theme}`);
-  }, [theme, mounted]);
+    // Add jamify theme class
+    document.documentElement.classList.add('theme-jamify');
+  }, [mounted]);
 
-  const setTheme = (newTheme: ThemeType) => {
-    setThemeState(newTheme);
-    localStorage.setItem('8pm-theme', newTheme);
+  const setTheme = () => {
+    // No-op: theme is always jamify
   };
 
   // Prevent hydration mismatch by not rendering until mounted
@@ -91,7 +68,7 @@ export function useTheme() {
   if (context === undefined) {
     // Return default values if context not yet available (during SSR/hydration)
     return {
-      theme: 'tron' as ThemeType,
+      theme: 'jamify' as ThemeType,
       setTheme: () => {},
       themes: THEMES,
     };

@@ -25,6 +25,7 @@ export default function ThemeSwitcher() {
     minimal: 'bg-gradient-to-r from-gray-400 to-gray-600',
     classic: 'bg-gradient-to-r from-amber-500 to-orange-600',
     forest: 'bg-gradient-to-r from-emerald-500 to-teal-600',
+    jamify: 'bg-gradient-to-r from-[#1DB954] to-[#191414]',
   };
 
   return (

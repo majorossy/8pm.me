@@ -3,22 +3,26 @@
 ## Overview
 Mage-OS 1.0.5 (Magento Open Source fork) as headless backend with Next.js/React frontend.
 
+## ⚠️ IMPORTANT - Frontend Port
+**The Next.js frontend ALWAYS runs on port 3001, not 3000.**
+- Development: `cd frontend && npm run dev` → http://localhost:3001
+- Never use port 3000 - it will cause confusion
+
 ## Quick Start
 
 ```bash
 bin/start   # Start Magento containers
 bin/stop    # Stop Magento containers
 
-# Frontend (separate)
-docker compose up frontend   # Start frontend only
-docker compose up -d         # Start all including frontend
+# Frontend (separate - runs on port 3001)
+cd frontend && npm run dev
 ```
 
 ## URLs
 
 | URL | Purpose |
 |-----|---------|
-| http://localhost:3000 | **Next.js Frontend** |
+| **http://localhost:3001** | **Next.js Frontend (ALWAYS 3001)** |
 | https://magento.test/graphql | GraphQL API |
 | https://magento.test/admin | Admin Panel |
 | http://localhost:8080 | phpMyAdmin |
@@ -32,7 +36,7 @@ docker compose up -d         # Start all including frontend
 
 | Service | Container | Host Port | Internal Port |
 |---------|-----------|-----------|---------------|
-| **Frontend** | 8pm-frontend-1 | 3000 | 3000 |
+| **Frontend** | npm run dev | **3001** | **3001** |
 | Nginx | 8pm-app-1 | 80, 443 | 8000, 8443 |
 | PHP-FPM | 8pm-phpfpm-1 | - | 9000 |
 | MariaDB | 8pm-db-1 | 3307 | 3306 |
@@ -42,7 +46,9 @@ docker compose up -d         # Start all including frontend
 | Mailcatcher | 8pm-mailcatcher-1 | 1080 | 1080 |
 | phpMyAdmin | 8pm-phpmyadmin-1 | 8080 | 80 |
 
-**Note:** Non-standard host ports (3307, 6380, etc.) are used to avoid conflicts with other Docker projects.
+**Note:**
+- **Frontend runs on port 3001 (via npm, not Docker)** to avoid conflicts
+- Non-standard host ports (3307, 6380, etc.) are used to avoid conflicts with other Docker projects
 
 ## Common Commands
 
@@ -139,3 +145,28 @@ bin/magento setup:upgrade
 bin/magento setup:di:compile
 bin/magento setup:static-content:deploy -f
 ```
+
+## Frontend Development
+
+### Running the Frontend
+```bash
+cd frontend
+npm run dev
+# Always runs on http://localhost:3001
+```
+
+### Theme
+- **Only Jamify theme is available** (Spotify-style dark theme)
+- Theme switcher has been removed
+- All pages use Jamify layout with:
+  - Desktop: Left sidebar navigation
+  - Mobile: Bottom tab navigation
+  - Dark theme (#121212 background)
+
+### Key Files
+- `frontend/context/ThemeContext.tsx` - Theme provider (hardcoded to Jamify)
+- `frontend/components/ClientLayout.tsx` - Main layout wrapper
+- `frontend/components/JamifyTopBar.tsx` - Desktop top bar
+- `frontend/components/JamifyNavSidebar.tsx` - Desktop left sidebar
+- `frontend/components/JamifyMobileNav.tsx` - Mobile bottom nav
+- `frontend/package.json` - Dev server configured for port 3001

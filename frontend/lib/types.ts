@@ -75,11 +75,77 @@ export interface Artist {
   bio: string;                   // custom attribute: description
   songCount?: number;            // product_count (total recordings)
   albumCount?: number;           // Number of albums
+  // Extended artist metadata
+  formationDate?: string;        // Year or date band was formed
+  originLocation?: string;       // City/state/country of origin
+  yearsActive?: string;          // e.g., "1965-1995, 2002-present"
+  extendedBio?: string;          // Longer biography from external sources
+  genres?: string[];             // Musical genres
+  officialWebsite?: string;      // Official website URL
+  youtubeChannel?: string;       // YouTube channel URL
+  facebook?: string;             // Facebook page URL
+  instagram?: string;            // Instagram handle/URL
+  twitter?: string;              // Twitter handle/URL
+  totalShows?: number;           // Total number of shows/albums
+  mostPlayedTrack?: string;      // Most popular track name
+}
+
+// Band member information
+export interface BandMember {
+  name: string;                  // Member name
+  role: string;                  // Instrument/position
+  years: string;                 // Years active with band
+  image?: string;                // Member photo URL
+  bio?: string;                  // Brief biography
+}
+
+// Wikipedia summary data
+export interface WikipediaSummary {
+  title: string;                 // Wikipedia page title
+  extract: string;               // Text extract from Wikipedia
+  description: string | null;    // Short description
+  thumbnail: {                   // Thumbnail image data
+    source: string;
+    width: number;
+    height: number;
+  } | null;
+  url: string | null;            // Wikipedia page URL
+}
+
+// Band member and career data
+export interface BandMemberData {
+  slug: string;                  // Artist slug
+  name: string;                  // Band name
+  biography?: string;            // Extended biography text (2-5 paragraphs)
+  members: {
+    current: BandMember[];       // Current members
+    former: BandMember[];        // Former members
+  };
+  careerHighlights?: string[];   // Notable achievements
+  recordingStats?: {             // Recording statistics
+    totalShows: number;
+    yearsActive: string;
+    mostRecordedVenue?: string;
+  };
+  socialLinks?: {                // Social media links
+    website?: string;
+    youtube?: string;
+    facebook?: string;
+    instagram?: string;
+    twitter?: string;
+  };
+  images?: Array<{               // Band photos/images
+    url: string;
+    caption?: string;
+    credit?: string;
+  }>;
 }
 
 export interface ArtistDetail extends Artist {
   albums: Album[];               // Albums (shows) by this artist
   songs: Song[];                 // Flat list of all songs (for backwards compat)
+  wikipediaSummary?: WikipediaSummary | null; // Wikipedia extract and metadata
+  bandData?: BandMemberData | null; // Band members and career data
 }
 
 // Cart types (Queue)

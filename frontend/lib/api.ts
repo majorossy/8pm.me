@@ -1,6 +1,7 @@
 // API layer - Magento 2 GraphQL integration
 import { unstable_cache } from 'next/cache';
 import { Song, Artist, ArtistDetail, Album, Track } from './types';
+import { fetchWikipediaSummary } from './wikipedia';
 
 export type { Song, Artist, ArtistDetail, Album, Track } from './types';
 
@@ -92,10 +93,12 @@ async function graphqlFetch<T>(
   const result: GraphQLResponse<T> = await response.json();
 
   if (result.errors) {
+    console.error('[GraphQL] Errors:', JSON.stringify(result.errors, null, 2));
     throw new Error(result.errors.map(e => e.message).join(', '));
   }
 
   if (!result.data) {
+    console.error('[GraphQL] No data returned:', result);
     throw new Error('No data returned from GraphQL');
   }
 
@@ -125,6 +128,18 @@ const GET_ARTIST_BY_SLUG_QUERY = `
       description
       image
       product_count
+      band_formation_date
+      band_origin_location
+      band_years_active
+      band_extended_bio
+      band_genres
+      band_official_website
+      band_youtube_channel
+      band_facebook
+      band_instagram
+      band_twitter
+      band_total_shows
+      band_most_played_track
     }
   }
 `;
@@ -286,6 +301,18 @@ interface MagentoCategory {
   description?: string;
   image?: string;
   product_count?: number;
+  band_formation_date?: string;
+  band_origin_location?: string;
+  band_years_active?: string;
+  band_extended_bio?: string;
+  band_genres?: string;
+  band_official_website?: string;
+  band_youtube_channel?: string;
+  band_facebook?: string;
+  band_instagram?: string;
+  band_twitter?: string;
+  band_total_shows?: number;
+  band_most_played_track?: string;
 }
 
 interface MagentoProduct {
@@ -320,6 +347,18 @@ function categoryToArtist(category: MagentoCategory): Artist {
     image: getCategoryImageUrl(category.url_key),
     bio: category.description || '',
     songCount: category.product_count || 0,
+    formationDate: category.band_formation_date || undefined,
+    originLocation: category.band_origin_location || undefined,
+    yearsActive: category.band_years_active || undefined,
+    extendedBio: category.band_extended_bio || undefined,
+    genres: category.band_genres ? category.band_genres.split(',').map(g => g.trim()) : undefined,
+    officialWebsite: category.band_official_website || undefined,
+    youtubeChannel: category.band_youtube_channel || undefined,
+    facebook: category.band_facebook || undefined,
+    instagram: category.band_instagram || undefined,
+    twitter: category.band_twitter || undefined,
+    totalShows: category.band_total_shows || undefined,
+    mostPlayedTrack: category.band_most_played_track || undefined,
   };
 }
 
@@ -564,33 +603,57 @@ export async function getArtist(slug: string): Promise<ArtistDetail | null> {
         );
 
         const trackCategories = trackCategoriesData.categoryList || [];
+        let tracks: Track[] = [];
 
-        // For each track category, get its products (song versions)
-        const tracks: Track[] = await Promise.all(
-          trackCategories.map(async (trackCat) => {
-            const productsData = await graphqlFetch<{ products: { items: MagentoProduct[]; total_count: number } }>(
-              GET_SONGS_BY_CATEGORY_QUERY,
-              { categoryUid: trackCat.uid, pageSize: 100 }
-            );
+        if (trackCategories.length > 0) {
+          // For each track category, get its products (song versions)
+          tracks = await Promise.all(
+            trackCategories.map(async (trackCat) => {
+              const productsData = await graphqlFetch<{ products: { items: MagentoProduct[]; total_count: number } }>(
+                GET_SONGS_BY_CATEGORY_QUERY,
+                { categoryUid: trackCat.uid, pageSize: 100 }
+              );
 
-            const products = productsData.products.items || [];
-            const songs = products.map(p => productToSong(p, albumCat.url_key));
+              const products = productsData.products.items || [];
+              const songs = products.map(p => productToSong(p, albumCat.url_key));
 
-            return {
-              id: trackCat.uid,
-              title: trackCat.name,
-              slug: trackCat.url_key,
-              albumIdentifier: albumCat.url_key,
-              albumName: albumCat.name,
-              artistId: category.uid,
-              artistName: category.name,
-              artistSlug: category.url_key,
-              songs,
-              totalDuration: songs[0]?.duration || 0,
-              songCount: songs.length,
-            };
-          })
-        );
+              return {
+                id: trackCat.uid,
+                title: trackCat.name,
+                slug: trackCat.url_key,
+                albumIdentifier: albumCat.url_key,
+                albumName: albumCat.name,
+                artistId: category.uid,
+                artistName: category.name,
+                artistSlug: category.url_key,
+                songs,
+                totalDuration: songs[0]?.duration || 0,
+                songCount: songs.length,
+              };
+            })
+          );
+        } else {
+          // No track subcategories - products are directly under album
+          // Fetch products from album category and group by song_title
+          console.log('[getArtist] No track categories for album:', albumCat.name, '- fetching products directly');
+          const productsData = await graphqlFetch<{ products: { items: MagentoProduct[]; total_count: number } }>(
+            GET_SONGS_BY_CATEGORY_QUERY,
+            { categoryUid: albumCat.uid, pageSize: 500 }
+          );
+
+          const products = productsData.products.items || [];
+          console.log('[getArtist] Found', products.length, 'products directly under album');
+
+          // Group products by song_title to create tracks
+          tracks = groupProductsIntoTracks(
+            products,
+            albumCat.url_key,
+            albumCat.name,
+            category.uid,
+            category.name,
+            category.url_key
+          );
+        }
 
         // Calculate totals
         const totalSongs = tracks.reduce((sum, t) => sum + t.songs.length, 0);
@@ -620,12 +683,18 @@ export async function getArtist(slug: string): Promise<ArtistDetail | null> {
       album.tracks.flatMap(track => track.songs)
     );
 
+    // Fetch Wikipedia summary using the artist name
+    // Convert spaces to underscores for Wikipedia page title format
+    const wikipediaPageTitle = artist.name.replace(/ /g, '_');
+    const wikipediaSummary = await fetchWikipediaSummary(wikipediaPageTitle);
+
     return {
       ...artist,
       albums,
       songs,
       albumCount: albums.length,
       songCount: songs.length,
+      wikipediaSummary,
     };
   } catch (error) {
     console.error('Failed to fetch artist:', error);
@@ -723,13 +792,27 @@ export async function getAlbum(
   artistSlug: string,
   albumIdentifier: string
 ): Promise<Album | null> {
+  console.log('[getAlbum] Fetching album:', artistSlug, albumIdentifier);
   const artist = await getArtist(artistSlug);
-  if (!artist) return null;
+  if (!artist) {
+    console.log('[getAlbum] Artist not found:', artistSlug);
+    return null;
+  }
+
+  console.log('[getAlbum] Artist has', artist.albums.length, 'albums');
 
   // Match by slug or original identifier
-  return artist.albums.find(
+  const album = artist.albums.find(
     a => a.slug === albumIdentifier || a.identifier === albumIdentifier
-  ) || null;
+  );
+
+  if (album) {
+    console.log('[getAlbum] Found album:', album.name, 'with', album.tracks.length, 'tracks');
+  } else {
+    console.log('[getAlbum] Album not found:', albumIdentifier);
+  }
+
+  return album || null;
 }
 
 // Get a specific track by artist slug, album identifier, and track slug
@@ -742,4 +825,40 @@ export async function getTrack(
   if (!album) return null;
 
   return album.tracks.find(t => t.slug === trackSlug) || null;
+}
+
+// Search across artists, albums, and tracks
+export async function search(query: string): Promise<{
+  artists: Artist[];
+  albums: Album[];
+  tracks: Song[];
+}> {
+  console.log('[search] Starting search for:', query);
+
+  if (!query.trim()) {
+    return { artists: [], albums: [], tracks: [] };
+  }
+
+  try {
+    // Search artists - get all and filter client-side
+    // (Magento categoryList doesn't support name search/match)
+    console.log('[search] Fetching all artists...');
+    const allArtists = await getArtists();
+    console.log('[search] Got artists:', allArtists.length);
+
+    const searchLower = query.toLowerCase();
+    const artists = allArtists.filter(artist =>
+      artist.name.toLowerCase().includes(searchLower)
+    ).slice(0, 10); // Limit to 10 results
+
+    console.log('[search] Filtered artists:', artists.length);
+
+    // For now, just return artists
+    // Product search has issues with Magento GraphQL - will fix separately
+    console.log('[search] Returning results:', { artists: artists.length, albums: 0, tracks: 0 });
+    return { artists, albums: [], tracks: [] };
+  } catch (error) {
+    console.error('[search] Search failed with error:', error);
+    return { artists: [], albums: [], tracks: [] };
+  }
 }

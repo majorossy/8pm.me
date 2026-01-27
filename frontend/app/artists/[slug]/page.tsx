@@ -1,4 +1,5 @@
 import { getArtist, getArtists } from '@/lib/api';
+import { getArtistBandData } from '@/lib/artistData';
 import { notFound } from 'next/navigation';
 import ArtistPageContent from '@/components/ArtistPageContent';
 
@@ -21,5 +22,8 @@ export default async function ArtistPage({ params }: ArtistPageProps) {
     notFound();
   }
 
-  return <ArtistPageContent artist={artist} />;
+  // Load band member data from static JSON file
+  const bandData = await getArtistBandData(slug);
+
+  return <ArtistPageContent artist={artist} bandData={bandData} />;
 }

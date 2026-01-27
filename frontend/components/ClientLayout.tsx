@@ -3,109 +3,73 @@
 import { ReactNode } from 'react';
 import { CartProvider } from '@/context/CartContext';
 import { WishlistProvider } from '@/context/WishlistContext';
+import { PlaylistProvider } from '@/context/PlaylistContext';
+import { QueueProvider } from '@/context/QueueContext';
 import { PlayerProvider, usePlayer } from '@/context/PlayerContext';
-import { ThemeProvider, useTheme } from '@/context/ThemeContext';
+import { ThemeProvider } from '@/context/ThemeContext';
+import { BreadcrumbProvider } from '@/context/BreadcrumbContext';
+import { MobileUIProvider, useMobileUI } from '@/context/MobileUIContext';
 import BottomPlayer from '@/components/BottomPlayer';
 import Queue from '@/components/Queue';
-import ThemeSwitcher from '@/components/ThemeSwitcher';
+import JamifyNavSidebar from '@/components/JamifyNavSidebar';
+import JamifyTopBar from '@/components/JamifyTopBar';
+import JamifyMobileNav from '@/components/JamifyMobileNav';
+import JamifyFullPlayer from '@/components/JamifyFullPlayer';
 import Link from 'next/link';
 
 // Inner layout that can access player state
 function InnerLayout({ children }: { children: ReactNode }) {
-  const { theme } = useTheme();
-  const isMetro = theme === 'metro';
+  const { isMobile } = useMobileUI();
 
-  // In Metro mode, pages manage their own sidebars (like album page with track nav)
-  // The header stays full width, and content padding is handled per-page
-
+  // Jamify layout (only theme now)
   return (
     <>
-      {/* Header - different styles for metro */}
-      <header className={`site-header fixed top-0 left-0 right-0 z-50 flex justify-between items-center transition-all ${
-        isMetro
-          ? 'h-[60px] px-8 bg-white border-b border-[#d4d0c8]'
-          : 'px-6 lg:px-12 py-6 bg-gradient-to-b from-dark-900 to-transparent'
-      }`}>
-        <Link href="/" className={`font-display font-black ${
-          isMetro
-            ? 'text-lg text-[#1a1a1a]'
-            : 'text-2xl gradient-text'
-        }`}>
-          {isMetro ? 'EightPM' : 'EIGHTPM'}
-        </Link>
-        <nav className="flex items-center gap-8">
-          <Link
-            href="/"
-            className={`transition-all ${
-              isMetro
-                ? 'text-[#6b6b6b] text-sm hover:text-[#e85d04]'
-                : 'text-text-dim text-xs uppercase tracking-[0.2em] hover:text-neon-cyan hover:neon-text-cyan'
-            }`}
-          >
-            Home
-          </Link>
-          <Link
-            href="/artists"
-            className={`transition-all ${
-              isMetro
-                ? 'text-[#6b6b6b] text-sm hover:text-[#e85d04]'
-                : 'text-text-dim text-xs uppercase tracking-[0.2em] hover:text-neon-cyan hover:neon-text-cyan'
-            }`}
-          >
-            Artists
-          </Link>
-          <Link
-            href="#"
-            className={`transition-all ${
-              isMetro
-                ? 'text-[#6b6b6b] text-sm hover:text-[#e85d04]'
-                : 'text-text-dim text-xs uppercase tracking-[0.2em] hover:text-neon-cyan hover:neon-text-cyan'
-            }`}
-          >
-            Library
-          </Link>
-          <div className={`w-px h-4 ${isMetro ? 'bg-[#d4d0c8]' : 'bg-white/20'}`} />
-          <ThemeSwitcher />
-        </nav>
-      </header>
+      {/* Desktop: Left navigation sidebar */}
+      {!isMobile && <JamifyNavSidebar />}
 
-      {/* Main content - Metro pages handle their own layout */}
-      <main className={`transition-all ${
-        isMetro ? '' : 'pb-24'
+      {/* Main content area */}
+      <main className={`min-h-screen bg-[#121212] ${
+        isMobile
+          ? 'pb-[120px]' // Space for mini player + bottom nav
+          : 'ml-[240px] pb-[90px]' // Desktop sidebar + player
       }`}>
+        {/* Desktop: Top bar with nav buttons */}
+        {!isMobile && <JamifyTopBar />}
         {children}
       </main>
 
-      {/* Player components - hidden in Metro (pages integrate player info) */}
-      {!isMetro && <BottomPlayer />}
-      {!isMetro && <Queue />}
+      {/* Mobile: Bottom navigation tabs */}
+      {isMobile && <JamifyMobileNav />}
+
+      {/* Mini player (mobile) or full player bar (desktop) */}
+      <BottomPlayer />
+
+      {/* Mobile: Full-screen player (expands from mini player) */}
+      {isMobile && <JamifyFullPlayer />}
+
+      {/* Queue drawer */}
+      <Queue />
     </>
   );
 }
 
 function LayoutContent({ children }: { children: ReactNode }) {
-  const { theme } = useTheme();
-  const isMetro = theme === 'metro';
-
   return (
-    <>
-      {/* Background effects - hidden in metro */}
-      {!isMetro && (
-        <>
-          <div className="grid-bg" />
-          <div className="glow-orb pink" />
-          <div className="glow-orb cyan" />
-        </>
-      )}
-
-      <CartProvider>
-        <WishlistProvider>
-          <PlayerProvider>
-            <InnerLayout>{children}</InnerLayout>
-          </PlayerProvider>
-        </WishlistProvider>
-      </CartProvider>
-    </>
+    <CartProvider>
+      <WishlistProvider>
+        <PlaylistProvider>
+          <QueueProvider>
+            <PlayerProvider>
+              <BreadcrumbProvider>
+                <MobileUIProvider>
+                  <InnerLayout>{children}</InnerLayout>
+                </MobileUIProvider>
+              </BreadcrumbProvider>
+            </PlayerProvider>
+          </QueueProvider>
+        </PlaylistProvider>
+      </WishlistProvider>
+    </CartProvider>
   );
 }
 

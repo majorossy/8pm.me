@@ -1,14 +1,13 @@
 'use client';
 
 // PlayerContext = Audio playback only
-// Queue management moved to CartContext (Magento cart)
+// Queue management is handled by QueueContext
 
 import React, { createContext, useContext, useState, useRef, useEffect, useCallback } from 'react';
 import { Song, Album, Track } from '@/lib/types';
-import { useCart } from './CartContext';
+import { useQueue } from './QueueContext';
 
 interface PlayerState {
-  currentSong: Song | null;
   isPlaying: boolean;
   volume: number;
   currentTime: number;
@@ -17,6 +16,9 @@ interface PlayerState {
 }
 
 interface PlayerContextType extends PlayerState {
+  // Current song comes from QueueContext
+  currentSong: Song | null;
+
   // Playback controls
   playSong: (song: Song) => void;
   togglePlay: () => void;
@@ -24,14 +26,18 @@ interface PlayerContextType extends PlayerState {
   seek: (time: number) => void;
   playNext: () => void;
   playPrev: () => void;
+
   // Queue UI
   toggleQueue: () => void;
-  // Play from queue (cart)
+
+  // Play from queue (by track index in album)
   playFromQueue: (index: number) => void;
-  // Album/track playback
+
+  // Album/track playback - delegates to QueueContext
   playAlbum: (album: Album, startIndex?: number) => void;
   playTrack: (track: Track, songIndex?: number) => void;
-  // Queue comes from cart
+
+  // Legacy queue access for compatibility (maps from QueueContext)
   queue: Song[];
   queueIndex: number;
 }
@@ -40,24 +46,26 @@ const PlayerContext = createContext<PlayerContextType | null>(null);
 
 export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const { cart, addToCart } = useCart();
+  const queueContext = useQueue();
 
-  // Queue is the cart items mapped to songs
-  const queue = cart.items.map(item => item.song);
+  // Get current song from QueueContext
+  const currentSong = queueContext.currentSong;
+
+  // Build legacy queue from QueueContext for compatibility
+  const queue: Song[] = queueContext.queue.tracks.map(track => {
+    const version = track.availableVersions.find(v => v.id === track.selectedVersionId);
+    return version!;
+  }).filter(Boolean);
+
+  const queueIndex = queueContext.queue.currentTrackIndex;
 
   const [state, setState] = useState<PlayerState>({
-    currentSong: null,
     isPlaying: false,
     volume: 0.7,
     currentTime: 0,
     duration: 0,
     isQueueOpen: false,
   });
-
-  // Current index in queue
-  const queueIndex = state.currentSong
-    ? queue.findIndex(s => s.id === state.currentSong?.id)
-    : -1;
 
   // Initialize audio element
   useEffect(() => {
@@ -75,19 +83,19 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     };
 
     const handleEnded = () => {
-      // Auto-play next in queue
-      setState(prev => {
-        const currentIdx = queue.findIndex(s => s.id === prev.currentSong?.id);
-        if (currentIdx >= 0 && currentIdx < queue.length - 1) {
-          const nextSong = queue[currentIdx + 1];
-          if (audioRef.current) {
-            audioRef.current.src = nextSong.streamUrl;
-            audioRef.current.play().catch(console.error);
-          }
-          return { ...prev, currentSong: nextSong };
+      // Get next song from queue context
+      const nextSong = queueContext.nextTrack();
+
+      if (nextSong) {
+        // Play the next song
+        if (audioRef.current) {
+          audioRef.current.src = nextSong.streamUrl;
+          audioRef.current.play().catch(console.error);
         }
-        return { ...prev, isPlaying: false };
-      });
+      } else {
+        // Nothing more to play
+        setState(prev => ({ ...prev, isPlaying: false }));
+      }
     };
 
     audio.addEventListener('timeupdate', handleTimeUpdate);
@@ -102,18 +110,18 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  // Update ended handler when queue changes
+  // Update ended handler when queue/repeat changes
   useEffect(() => {
     if (!audioRef.current) return;
 
     const audio = audioRef.current;
     const handleEnded = () => {
-      const currentIdx = queue.findIndex(s => s.id === state.currentSong?.id);
-      if (currentIdx >= 0 && currentIdx < queue.length - 1) {
-        const nextSong = queue[currentIdx + 1];
+      // Get next song from queue context
+      const nextSong = queueContext.nextTrack();
+
+      if (nextSong) {
         audio.src = nextSong.streamUrl;
         audio.play().catch(console.error);
-        setState(prev => ({ ...prev, currentSong: nextSong }));
       } else {
         setState(prev => ({ ...prev, isPlaying: false }));
       }
@@ -121,17 +129,33 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
     audio.addEventListener('ended', handleEnded);
     return () => audio.removeEventListener('ended', handleEnded);
-  }, [queue, state.currentSong]);
+  }, [queueContext]);
+
+  // When currentSong changes (from QueueContext), update audio
+  useEffect(() => {
+    if (!audioRef.current || !currentSong) return;
+
+    // Check if we need to load a new source
+    const currentSrc = audioRef.current.src;
+    const newSrc = currentSong.streamUrl;
+
+    // Only reload if the source URL changed
+    if (!currentSrc.endsWith(new URL(newSrc, window.location.origin).pathname)) {
+      audioRef.current.src = newSrc;
+      if (state.isPlaying) {
+        audioRef.current.play().catch(console.error);
+      }
+    }
+  }, [currentSong]);
 
   const playSong = useCallback((song: Song) => {
     if (!audioRef.current) return;
 
-    // Add to cart (queue) if not already there
-    addToCart(song);
+    // Add to up-next (this song might not be part of current album)
+    queueContext.addToUpNext(song);
 
     setState(prev => ({
       ...prev,
-      currentSong: song,
       isPlaying: true,
     }));
 
@@ -140,10 +164,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       console.error('Audio play error:', err);
       setState(prev => ({ ...prev, isPlaying: false }));
     });
-  }, [addToCart]);
+  }, [queueContext]);
 
   const togglePlay = useCallback(() => {
-    if (!audioRef.current || !state.currentSong) return;
+    if (!audioRef.current || !currentSong) return;
 
     if (state.isPlaying) {
       audioRef.current.pause();
@@ -151,7 +175,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       audioRef.current.play().catch(console.error);
     }
     setState(prev => ({ ...prev, isPlaying: !prev.isPlaying }));
-  }, [state.isPlaying, state.currentSong]);
+  }, [state.isPlaying, currentSong]);
 
   const setVolume = useCallback((volume: number) => {
     if (!audioRef.current) return;
@@ -166,61 +190,93 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const playNext = useCallback(() => {
-    if (queueIndex < 0 || queueIndex >= queue.length - 1) return;
-    const nextSong = queue[queueIndex + 1];
-    playSong(nextSong);
-  }, [queueIndex, queue, playSong]);
+    const nextSong = queueContext.nextTrack();
+    if (nextSong && audioRef.current) {
+      audioRef.current.src = nextSong.streamUrl;
+      audioRef.current.play().catch(console.error);
+      setState(prev => ({ ...prev, isPlaying: true }));
+    }
+  }, [queueContext]);
 
   const playPrev = useCallback(() => {
-    if (queueIndex <= 0) return;
-    const prevSong = queue[queueIndex - 1];
-    playSong(prevSong);
-  }, [queueIndex, queue, playSong]);
+    // If more than 3 seconds into song, restart it
+    if (audioRef.current && audioRef.current.currentTime > 3) {
+      audioRef.current.currentTime = 0;
+      return;
+    }
+
+    queueContext.prevTrack();
+
+    // Get the new current song after prevTrack
+    const newSong = queueContext.getSongAtTrack(queueContext.queue.currentTrackIndex - 1);
+    if (newSong && audioRef.current) {
+      audioRef.current.src = newSong.streamUrl;
+      audioRef.current.play().catch(console.error);
+      setState(prev => ({ ...prev, isPlaying: true }));
+    }
+  }, [queueContext]);
 
   const toggleQueue = useCallback(() => {
     setState(prev => ({ ...prev, isQueueOpen: !prev.isQueueOpen }));
   }, []);
 
   const playFromQueue = useCallback((index: number) => {
-    if (queue[index]) {
-      playSong(queue[index]);
+    queueContext.setCurrentTrack(index);
+    const song = queueContext.getSongAtTrack(index);
+
+    if (song && audioRef.current) {
+      audioRef.current.src = song.streamUrl;
+      audioRef.current.play().catch(console.error);
+      setState(prev => ({ ...prev, isPlaying: true }));
     }
-  }, [queue, playSong]);
+  }, [queueContext]);
 
   // Play all songs from an album, starting at a specific track index
   const playAlbum = useCallback((album: Album, startIndex: number = 0) => {
-    // Flatten all songs from all tracks
-    const allSongs = album.tracks.flatMap(t => t.songs);
-    if (allSongs.length === 0) return;
+    if (album.tracks.length === 0) return;
 
-    // Add all songs to queue
-    allSongs.forEach(song => addToCart(song));
+    // Load album into queue context
+    queueContext.loadAlbum(album, startIndex);
 
-    // Start playing from the specified index (or first song)
-    const startSong = allSongs[startIndex] || allSongs[0];
-    if (startSong) {
-      playSong(startSong);
-    }
-  }, [addToCart, playSong]);
+    // Get the song to play
+    const trackToPlay = album.tracks[startIndex];
+    if (!trackToPlay || trackToPlay.songs.length === 0) return;
 
-  // Play all recordings of a specific track
+    // Get the best version (will be auto-selected by loadAlbum)
+    // Wait a tick for state to update, then play
+    setTimeout(() => {
+      const song = queueContext.getSongAtTrack(startIndex);
+      if (song && audioRef.current) {
+        audioRef.current.src = song.streamUrl;
+        audioRef.current.play().catch(console.error);
+        setState(prev => ({ ...prev, isPlaying: true }));
+      }
+    }, 0);
+  }, [queueContext]);
+
+  // Play a specific track (adds to up next)
   const playTrack = useCallback((track: Track, songIndex: number = 0) => {
     if (track.songs.length === 0) return;
 
-    // Add all song variants to queue
-    track.songs.forEach(song => addToCart(song));
-
-    // Start playing from the specified index
     const startSong = track.songs[songIndex] || track.songs[0];
-    if (startSong) {
-      playSong(startSong);
+    if (!startSong) return;
+
+    // Add all song variants to up next
+    track.songs.forEach(song => queueContext.addToUpNext(song));
+
+    // Play the start song
+    if (audioRef.current) {
+      audioRef.current.src = startSong.streamUrl;
+      audioRef.current.play().catch(console.error);
+      setState(prev => ({ ...prev, isPlaying: true }));
     }
-  }, [addToCart, playSong]);
+  }, [queueContext]);
 
   return (
     <PlayerContext.Provider
       value={{
         ...state,
+        currentSong,
         playSong,
         togglePlay,
         setVolume,

@@ -2,21 +2,29 @@
 
 // BottomPlayer - fixed audio player bar (theme-aware)
 
+import { useState, useEffect } from 'react';
 import { usePlayer } from '@/context/PlayerContext';
+import { useQueue } from '@/context/QueueContext';
+import { useWishlist } from '@/context/WishlistContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useMobileUI } from '@/context/MobileUIContext';
+import { useSwipeGesture } from '@/hooks/useSwipeGesture';
+import { useBatteryOptimization } from '@/hooks/useBatteryOptimization';
 import { formatDuration } from '@/lib/api';
+import { getSelectedSong } from '@/lib/queueTypes';
 
 export default function BottomPlayer() {
   const { theme } = useTheme();
+  const { isMobile, expandPlayer, isPlayerExpanded, isTransitioning } = useMobileUI();
+  const { reducedMotion } = useBatteryOptimization();
   const isMetro = theme === 'metro';
+  const isJamify = theme === 'jamify';
   const {
     currentSong,
     isPlaying,
     volume,
     currentTime,
     duration,
-    queue,
-    queueIndex,
     togglePlay,
     playNext,
     playPrev,
@@ -26,25 +34,484 @@ export default function BottomPlayer() {
     isQueueOpen,
   } = usePlayer();
 
+  const {
+    queue,
+    currentTrack,
+    hasAlbum,
+    totalTracks,
+    isFirstTrack,
+    isLastTrack,
+    hasUpNext,
+    selectVersion,
+    setRepeat,
+    setShuffle,
+  } = useQueue();
+
+  const { addToWishlist, removeFromWishlist, isInWishlist, wishlist } = useWishlist();
+
+  // Image loading state for lazy loading
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  // Pulse animation on track change (Jamify only) - skip if reduced motion
+  const [isPulsing, setIsPulsing] = useState(false);
+
+  useEffect(() => {
+    if (isJamify && currentSong && !reducedMotion) {
+      setIsPulsing(true);
+      const timer = setTimeout(() => setIsPulsing(false), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [currentSong?.id, isJamify, reducedMotion]);
+
+  // Swipe gesture for expanding player (Jamify mobile only)
+  const swipeHandlers = useSwipeGesture({
+    onSwipeUp: () => {
+      if (isJamify && isMobile && !isTransitioning) {
+        expandPlayer();
+      }
+    },
+    threshold: 50,
+    velocityThreshold: 0.5,
+    direction: 'vertical',
+  });
+
   if (!currentSong) return null;
 
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
+  // Check if current track has multiple versions
+  const hasVersions = currentTrack && currentTrack.availableVersions.length > 1;
+
+  // Jamify theme - horizontal bottom player bar
+  if (isJamify) {
+    // MOBILE: Mini player (Spotify-style) - positioned above bottom tabs
+    if (isMobile) {
+      // Don't render mini player if full player is expanded
+      if (isPlayerExpanded) return null;
+
+      return (
+        <div className="fixed bottom-[50px] left-2 right-2 z-50">
+          {/* Mini player card with swipe gesture */}
+          <div
+            {...swipeHandlers}
+            className={`bg-[#5c4d3d] rounded-lg overflow-hidden mini-player touch-action-pan-y prevent-overscroll ${
+              isPulsing && !reducedMotion ? 'pulse-glow' : ''
+            } ${swipeHandlers.isDragging ? 'dragging' : ''} ${reducedMotion ? 'reduce-motion' : ''}`}
+            style={{
+              transform: swipeHandlers.isDragging
+                ? `translateY(${Math.min(0, swipeHandlers.dragOffset.y)}px)`
+                : undefined,
+              willChange: swipeHandlers.isDragging ? 'transform' : 'auto',
+            }}
+          >
+            {/* Drag hint pill */}
+            <div className="drag-hint" />
+
+            {/* Progress bar */}
+            <div className="h-[2px] bg-[#3e3e3e]">
+              <div
+                className="h-full bg-white transition-all duration-150"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+
+            <div className="flex items-center p-2 gap-3">
+              {/* Tappable area to expand */}
+              <button
+                onClick={expandPlayer}
+                className="flex items-center gap-3 flex-1 min-w-0 text-left btn-touch"
+                aria-label="Expand player"
+              >
+                {/* Album art */}
+                <div className="w-10 h-10 bg-[#282828] flex-shrink-0 rounded">
+                  {queue.album?.coverArt ? (
+                    <img
+                      src={queue.album.coverArt}
+                      alt={queue.album.name}
+                      loading="lazy"
+                      onLoad={() => setImageLoaded(true)}
+                      className={`w-full h-full object-cover rounded transition-opacity duration-300 ${
+                        imageLoaded ? 'opacity-100' : 'opacity-0'
+                      }`}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <svg className="w-4 h-4 text-[#535353]" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+
+                {/* Title/Artist */}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-white font-medium truncate">{currentSong.title}</p>
+                  <p className="text-xs text-white/70 truncate">{currentSong.artistName}</p>
+                </div>
+              </button>
+
+              {/* Play/Pause button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  togglePlay();
+                }}
+                className="w-10 h-10 flex items-center justify-center text-white flex-shrink-0 btn-touch btn-ripple"
+                aria-label={isPlaying ? 'Pause' : 'Play'}
+              >
+                {isPlaying ? (
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <rect x="6" y="4" width="4" height="16" />
+                    <rect x="14" y="4" width="4" height="16" />
+                  </svg>
+                ) : (
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // DESKTOP: Full 3-column layout
+    return (
+      <div className="fixed bottom-0 left-0 right-0 h-[90px] bg-[#181818] border-t border-[#282828] z-50 px-4 flex items-center">
+        {/* Left section - Now playing info (30%) */}
+        <div className="w-[30%] min-w-[180px] flex items-center gap-3">
+          {/* Album art */}
+          <div className="w-14 h-14 bg-[#282828] flex-shrink-0 rounded">
+            {queue.album?.coverArt ? (
+              <img
+                src={queue.album.coverArt}
+                alt={queue.album.name}
+                loading="lazy"
+                onLoad={() => setImageLoaded(true)}
+                className={`w-full h-full object-cover rounded transition-opacity duration-300 ${
+                  imageLoaded ? 'opacity-100' : 'opacity-0'
+                }`}
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <svg className="w-6 h-6 text-[#535353]" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
+                </svg>
+              </div>
+            )}
+          </div>
+
+          {/* Song info */}
+          <div className="min-w-0 flex-1">
+            <p className="text-sm text-white font-medium truncate hover:underline cursor-pointer">
+              {currentSong.title}
+            </p>
+            <p className="text-xs text-[#a7a7a7] truncate hover:underline cursor-pointer">
+              {currentSong.artistName}
+            </p>
+          </div>
+
+          {/* Like button */}
+          <button
+            onClick={() => {
+              if (currentSong) {
+                if (isInWishlist(currentSong.id)) {
+                  const item = wishlist.items.find(i => i.song.id === currentSong.id);
+                  if (item) removeFromWishlist(item.id);
+                } else {
+                  addToWishlist(currentSong);
+                }
+              }
+            }}
+            className={`transition-colors flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-[#1DB954] focus:ring-offset-2 focus:ring-offset-[#181818] rounded ${
+              currentSong && isInWishlist(currentSong.id) ? 'text-[#1DB954]' : 'text-[#a7a7a7] hover:text-white'
+            }`}
+            aria-label={currentSong && isInWishlist(currentSong.id) ? 'Remove from favorites' : 'Add to favorites'}
+          >
+            {currentSong && isInWishlist(currentSong.id) ? (
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+              </svg>
+            ) : (
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            )}
+          </button>
+        </div>
+
+        {/* Center section - Player controls (40%) */}
+        <div className="w-[40%] max-w-[722px] flex flex-col items-center justify-center">
+          {/* Controls */}
+          <div className="flex items-center gap-4 mb-2">
+            {/* Shuffle */}
+            <button
+              onClick={() => setShuffle(!queue.shuffle)}
+              className={`transition-colors focus:outline-none focus:ring-2 focus:ring-[#1DB954] rounded ${
+                queue.shuffle ? 'text-[#1DB954]' : 'text-[#a7a7a7] hover:text-white'
+              }`}
+              aria-label={queue.shuffle ? 'Disable shuffle' : 'Enable shuffle'}
+              title={queue.shuffle ? 'Shuffle on' : 'Shuffle off'}
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z" />
+              </svg>
+            </button>
+
+            {/* Previous */}
+            <button
+              onClick={playPrev}
+              disabled={isFirstTrack && !hasUpNext}
+              className="text-[#a7a7a7] hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-[#1DB954] rounded"
+              aria-label="Previous track"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
+              </svg>
+            </button>
+
+            {/* Play/Pause */}
+            <button
+              onClick={togglePlay}
+              className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-black hover:scale-105 transition-transform focus:outline-none focus:ring-2 focus:ring-[#1DB954] focus:ring-offset-2 focus:ring-offset-[#181818]"
+              aria-label={isPlaying ? 'Pause' : 'Play'}
+            >
+              {isPlaying ? (
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <rect x="6" y="4" width="4" height="16" />
+                  <rect x="14" y="4" width="4" height="16" />
+                </svg>
+              ) : (
+                <svg className="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              )}
+            </button>
+
+            {/* Next */}
+            <button
+              onClick={playNext}
+              disabled={isLastTrack && !hasUpNext}
+              className="text-[#a7a7a7] hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-[#1DB954] rounded"
+              aria-label="Next track"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
+              </svg>
+            </button>
+
+            {/* Repeat */}
+            <button
+              onClick={() => {
+                const modes: Array<'off' | 'all' | 'one'> = ['off', 'all', 'one'];
+                const currentIndex = modes.indexOf(queue.repeat);
+                const nextIndex = (currentIndex + 1) % modes.length;
+                setRepeat(modes[nextIndex]);
+              }}
+              className={`transition-colors focus:outline-none focus:ring-2 focus:ring-[#1DB954] rounded ${
+                queue.repeat === 'off' ? 'text-[#a7a7a7] hover:text-white' : 'text-[#1DB954]'
+              }`}
+              aria-label={`Repeat: ${queue.repeat}`}
+              title={`Repeat: ${queue.repeat}`}
+            >
+              {queue.repeat === 'one' ? (
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4zm-4-2V9h-1l-2 1v1h1.5v4H13z" />
+                </svg>
+              ) : (
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z" />
+                </svg>
+              )}
+            </button>
+          </div>
+
+          {/* Progress bar */}
+          <div className="w-full flex items-center gap-2">
+            <span className="text-[11px] text-[#a7a7a7] font-mono w-10 text-right">
+              {formatDuration(Math.floor(currentTime))}
+            </span>
+            <div
+              className="flex-1 h-1 bg-[#535353] rounded-full cursor-pointer group relative"
+              onClick={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const percent = (e.clientX - rect.left) / rect.width;
+                seek(percent * duration);
+              }}
+              role="slider"
+              aria-label="Seek"
+              aria-valuemin={0}
+              aria-valuemax={Math.floor(duration)}
+              aria-valuenow={Math.floor(currentTime)}
+            >
+              <div
+                className="h-full bg-white group-hover:bg-[#1DB954] rounded-full relative transition-colors"
+                style={{ width: `${progress}%` }}
+              >
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+            </div>
+            <span className="text-[11px] text-[#a7a7a7] font-mono w-10">
+              {formatDuration(Math.floor(duration))}
+            </span>
+          </div>
+        </div>
+
+        {/* Right section - Volume and queue (30%) */}
+        <div className="w-[30%] min-w-[180px] flex items-center justify-end gap-3">
+          {/* Queue button */}
+          <button
+            onClick={toggleQueue}
+            className={`transition-colors focus:outline-none focus:ring-2 focus:ring-[#1DB954] rounded ${
+              isQueueOpen ? 'text-[#1DB954]' : 'text-[#a7a7a7] hover:text-white'
+            }`}
+            aria-label={isQueueOpen ? 'Close queue' : 'Open queue'}
+            title="Queue"
+          >
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z" />
+            </svg>
+          </button>
+
+          {/* Volume */}
+          <button
+            onClick={() => setVolume(volume === 0 ? 0.7 : 0)}
+            className="text-[#a7a7a7] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#1DB954] rounded"
+            aria-label={volume === 0 ? 'Unmute' : 'Mute'}
+          >
+            {volume === 0 ? (
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z" />
+              </svg>
+            ) : volume < 0.5 ? (
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z" />
+              </svg>
+            ) : (
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+              </svg>
+            )}
+          </button>
+          <div className="w-24 group relative">
+            {/* Volume fill track */}
+            <div className="absolute top-1/2 left-0 h-1 bg-[#535353] rounded-full w-full -translate-y-1/2 pointer-events-none">
+              <div
+                className="h-full bg-white group-hover:bg-[#1DB954] rounded-full transition-colors"
+                style={{ width: `${volume * 100}%` }}
+              />
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={volume}
+              onChange={(e) => setVolume(parseFloat(e.target.value))}
+              aria-label="Volume"
+              className="w-full h-1 bg-transparent rounded-full appearance-none cursor-pointer relative z-10 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:opacity-0 group-hover:[&::-webkit-slider-thumb]:opacity-100 [&::-webkit-slider-thumb]:shadow-md"
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (isMetro) {
-    // Metro/Time Machine style - LEFT SIDEBAR (below header)
+    // MOBILE: Bottom bar for Metro
+    if (isMobile) {
+      return (
+        <div className="fixed bottom-0 left-0 right-0 h-[70px] bg-white border-t border-[#d4d0c8] z-50 px-4 flex items-center safe-bottom">
+          {/* Small album art */}
+          <div className="w-12 h-12 bg-[#e8e4dc] flex-shrink-0 border border-[#d4d0c8] mr-3">
+            {queue.album?.coverArt ? (
+              <img
+                src={queue.album.coverArt}
+                alt={queue.album.name}
+                loading="lazy"
+                onLoad={() => setImageLoaded(true)}
+                className={`w-full h-full object-cover transition-opacity duration-300 ${
+                  imageLoaded ? 'opacity-100' : 'opacity-0'
+                }`}
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <svg className="w-5 h-5 text-[#d4d0c8]" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
+                </svg>
+              </div>
+            )}
+          </div>
+
+          {/* Title/Artist */}
+          <div className="flex-1 min-w-0 mr-3">
+            <p className="text-sm text-[#1a1a1a] font-semibold truncate">{currentSong.title}</p>
+            <p className="text-xs text-[#6b6b6b] truncate">{currentSong.artistName}</p>
+          </div>
+
+          {/* Play/Pause + Next */}
+          <button
+            onClick={togglePlay}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-[#e85d04] text-white mr-2"
+            aria-label={isPlaying ? 'Pause' : 'Play'}
+          >
+            {isPlaying ? (
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <rect x="6" y="4" width="4" height="16" />
+                <rect x="14" y="4" width="4" height="16" />
+              </svg>
+            ) : (
+              <svg className="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            )}
+          </button>
+          <button
+            onClick={playNext}
+            disabled={isLastTrack && !hasUpNext}
+            className="w-10 h-10 flex items-center justify-center text-[#6b6b6b] disabled:opacity-30"
+            aria-label="Next track"
+          >
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
+            </svg>
+          </button>
+        </div>
+      );
+    }
+
+    // DESKTOP: Metro/Time Machine style - LEFT SIDEBAR (below header)
     return (
       <div className="fixed left-0 top-[60px] bottom-0 w-[280px] bg-white border-r border-[#d4d0c8] z-40 shadow-lg flex flex-col">
         {/* Header */}
         <div className="p-4 border-b border-[#d4d0c8]">
           <h2 className="font-display text-xs text-[#6b6b6b] uppercase tracking-wider">Now Playing</h2>
+          {hasAlbum && queue.album && (
+            <p className="text-[10px] text-[#e85d04] mt-1">
+              Track {queue.currentTrackIndex + 1} of {totalTracks}
+            </p>
+          )}
         </div>
 
         {/* Album Art */}
         <div className="p-6">
           <div className="w-full aspect-square bg-[#e8e4dc] border border-[#d4d0c8] flex items-center justify-center">
-            <svg className="w-16 h-16 text-[#d4d0c8]" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
-            </svg>
+            {queue.album?.coverArt ? (
+              <img
+                src={queue.album.coverArt}
+                alt={queue.album.name}
+                loading="lazy"
+                onLoad={() => setImageLoaded(true)}
+                className={`w-full h-full object-cover transition-opacity duration-300 ${
+                  imageLoaded ? 'opacity-100' : 'opacity-0'
+                }`}
+              />
+            ) : (
+              <svg className="w-16 h-16 text-[#d4d0c8]" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
+              </svg>
+            )}
           </div>
         </div>
 
@@ -57,6 +524,23 @@ export default function BottomPlayer() {
           )}
           {currentSong.showDate && (
             <p className="text-xs text-[#e85d04] mt-1">{currentSong.showDate}</p>
+          )}
+          {/* Version selector */}
+          {hasVersions && currentTrack && (
+            <div className="mt-3">
+              <select
+                value={currentTrack.selectedVersionId}
+                onChange={(e) => selectVersion(queue.currentTrackIndex, e.target.value)}
+                className="text-xs bg-white border border-[#d4d0c8] rounded px-2 py-1 text-[#1a1a1a] w-full max-w-[200px]"
+              >
+                {currentTrack.availableVersions.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.showDate || 'Unknown'} {v.showVenue && `- ${v.showVenue}`}
+                    {v.avgRating ? ` (★${v.avgRating.toFixed(1)})` : ''}
+                  </option>
+                ))}
+              </select>
+            </div>
           )}
         </div>
 
@@ -91,7 +575,7 @@ export default function BottomPlayer() {
         <div className="px-6 py-4 flex items-center justify-center gap-6">
           <button
             onClick={playPrev}
-            disabled={queueIndex <= 0}
+            disabled={isFirstTrack && !hasUpNext}
             className="text-[#6b6b6b] hover:text-[#e85d04] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -117,12 +601,38 @@ export default function BottomPlayer() {
 
           <button
             onClick={playNext}
-            disabled={queueIndex >= queue.length - 1}
+            disabled={isLastTrack && !hasUpNext}
             className="text-[#6b6b6b] hover:text-[#e85d04] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
               <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
             </svg>
+          </button>
+        </div>
+
+        {/* Repeat mode toggle */}
+        <div className="px-6 py-2 flex items-center justify-center gap-4">
+          <button
+            onClick={() => {
+              const modes: Array<'off' | 'all' | 'one'> = ['off', 'all', 'one'];
+              const currentIndex = modes.indexOf(queue.repeat);
+              const nextIndex = (currentIndex + 1) % modes.length;
+              setRepeat(modes[nextIndex]);
+            }}
+            className={`p-2 transition-colors ${
+              queue.repeat === 'off' ? 'text-[#6b6b6b]' : 'text-[#e85d04]'
+            }`}
+            title={`Repeat: ${queue.repeat}`}
+          >
+            {queue.repeat === 'one' ? (
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4zm-4-2V9h-1l-2 1v1h1.5v4H13z" />
+              </svg>
+            ) : (
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z" />
+              </svg>
+            )}
           </button>
         </div>
 
@@ -171,7 +681,7 @@ export default function BottomPlayer() {
               <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z" />
             </svg>
             <span className="font-display text-xs uppercase tracking-wider">
-              Queue ({queue.length})
+              Queue ({totalTracks}{hasUpNext ? ` + ${queue.upNext.length}` : ''})
             </span>
           </button>
         </div>
@@ -180,135 +690,271 @@ export default function BottomPlayer() {
   }
 
   // Default Tron/Synthwave style
-  return (
-    <div className="fixed bottom-0 left-0 right-0 bg-dark-800/95 backdrop-blur-sm border-t border-neon-cyan/20 p-4 z-40">
-      <div className="max-w-7xl mx-auto flex items-center gap-4">
-        {/* Song info */}
-        <div className="flex items-center gap-3 w-64 flex-shrink-0">
-          <div className="w-14 h-14 bg-dark-700 rounded overflow-hidden album-frame p-[2px]">
-            <div className="w-full h-full bg-dark-900 flex items-center justify-center">
-              <svg className="w-6 h-6 text-neon-cyan/40" fill="currentColor" viewBox="0 0 24 24">
+  // MOBILE: Bottom bar for Tron
+  if (isMobile) {
+    return (
+      <div className="fixed bottom-0 left-0 right-0 h-[70px] bg-dark-800/95 backdrop-blur-sm border-t border-neon-cyan/20 z-50 px-4 flex items-center safe-bottom">
+        {/* Small album art */}
+        <div className="w-12 h-12 bg-dark-700 flex-shrink-0 mr-3 album-frame p-[2px]">
+          {queue.album?.coverArt ? (
+            <img
+              src={queue.album.coverArt}
+              alt={queue.album.name}
+              loading="lazy"
+              onLoad={() => setImageLoaded(true)}
+              className={`w-full h-full object-cover transition-opacity duration-300 ${
+                imageLoaded ? 'opacity-100' : 'opacity-0'
+              }`}
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <svg className="w-5 h-5 text-neon-cyan/30" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
               </svg>
             </div>
-          </div>
-          <div className="min-w-0">
-            <p className="font-display text-sm text-white truncate">{currentSong.title}</p>
-            <p className="text-xs text-text-dim truncate">{currentSong.artistName}</p>
-          </div>
+          )}
         </div>
 
-        {/* Controls */}
-        <div className="flex-1 flex flex-col items-center gap-2">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={playPrev}
-              disabled={queueIndex <= 0}
-              className="text-text-dim hover:text-neon-cyan disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-            >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
-              </svg>
-            </button>
-
-            <button
-              onClick={togglePlay}
-              className="w-12 h-12 flex items-center justify-center rounded-full bg-neon-cyan text-dark-900 hover:shadow-[0_0_30px_var(--neon-cyan)] transition-all"
-            >
-              {isPlaying ? (
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <rect x="6" y="4" width="4" height="16" />
-                  <rect x="14" y="4" width="4" height="16" />
-                </svg>
-              ) : (
-                <svg className="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              )}
-            </button>
-
-            <button
-              onClick={playNext}
-              disabled={queueIndex >= queue.length - 1}
-              className="text-text-dim hover:text-neon-cyan disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-            >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
-              </svg>
-            </button>
-          </div>
-
-          {/* Progress bar */}
-          <div className="w-full max-w-md flex items-center gap-3">
-            <span className="text-[10px] text-text-dim font-mono w-12 text-right">
-              {formatDuration(Math.floor(currentTime))}
-            </span>
-            <div
-              className="flex-1 h-1 bg-dark-600 cursor-pointer group relative"
-              onClick={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect();
-                const percent = (e.clientX - rect.left) / rect.width;
-                seek(percent * duration);
-              }}
-            >
-              <div
-                className="h-full bg-neon-cyan relative transition-all group-hover:shadow-[0_0_10px_var(--neon-cyan)]"
-                style={{ width: `${progress}%` }}
-              >
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-neon-cyan rounded-full opacity-0 group-hover:opacity-100 shadow-[0_0_10px_var(--neon-cyan)] transition-opacity" />
-              </div>
-            </div>
-            <span className="text-[10px] text-text-dim font-mono w-12">
-              {formatDuration(Math.floor(duration))}
-            </span>
-          </div>
+        {/* Title/Artist */}
+        <div className="flex-1 min-w-0 mr-3">
+          <p className="text-sm text-white font-display truncate">{currentSong.title}</p>
+          <p className="text-xs text-text-dim truncate">{currentSong.artistName}</p>
         </div>
 
-        {/* Volume & Queue */}
-        <div className="flex items-center gap-4 w-64 justify-end">
-          {/* Volume */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setVolume(volume === 0 ? 0.7 : 0)}
-              className="text-text-dim hover:text-neon-cyan transition-colors"
-            >
-              {volume === 0 ? (
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z" />
-                </svg>
-              ) : (
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
-                </svg>
-              )}
-            </button>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              value={volume}
-              onChange={(e) => setVolume(parseFloat(e.target.value))}
-              className="w-20"
-            />
-          </div>
-
-          {/* Queue toggle */}
-          <button
-            onClick={toggleQueue}
-            className={`
-              p-2 rounded transition-all
-              ${isQueueOpen
-                ? 'bg-neon-pink/20 text-neon-pink shadow-[0_0_15px_rgba(255,45,149,0.3)]'
-                : 'text-text-dim hover:text-neon-pink'
-              }
-            `}
-          >
+        {/* Play/Pause + Next */}
+        <button
+          onClick={togglePlay}
+          className="w-10 h-10 flex items-center justify-center rounded-full bg-neon-cyan text-dark-900 mr-2"
+          aria-label={isPlaying ? 'Pause' : 'Play'}
+        >
+          {isPlaying ? (
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z" />
+              <rect x="6" y="4" width="4" height="16" />
+              <rect x="14" y="4" width="4" height="16" />
             </svg>
-          </button>
+          ) : (
+            <svg className="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          )}
+        </button>
+        <button
+          onClick={playNext}
+          disabled={isLastTrack && !hasUpNext}
+          className="w-10 h-10 flex items-center justify-center text-text-dim disabled:opacity-30"
+          aria-label="Next track"
+        >
+          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
+          </svg>
+        </button>
+      </div>
+    );
+  }
+
+  // DESKTOP: Tron/Synthwave style - LEFT SIDEBAR
+  return (
+    <div className="fixed left-0 top-0 bottom-0 w-[280px] bg-dark-800/95 backdrop-blur-sm border-r border-neon-cyan/20 z-40 flex flex-col">
+      {/* Header */}
+      <div className="p-4 border-b border-neon-cyan/20">
+        <h2 className="font-display text-[0.6rem] text-neon-cyan uppercase tracking-[0.2em]">// Now Playing</h2>
+        {hasAlbum && queue.album && (
+          <p className="text-[10px] text-neon-pink mt-1">
+            Track {queue.currentTrackIndex + 1} of {totalTracks}
+          </p>
+        )}
+      </div>
+
+      {/* Album Art */}
+      <div className="p-6">
+        <div className="w-full aspect-square bg-dark-700 flex items-center justify-center album-frame">
+          {queue.album?.coverArt ? (
+            <img
+              src={queue.album.coverArt}
+              alt={queue.album.name}
+              loading="lazy"
+              onLoad={() => setImageLoaded(true)}
+              className={`w-full h-full object-cover transition-opacity duration-300 ${
+                imageLoaded ? 'opacity-100' : 'opacity-0'
+              }`}
+            />
+          ) : (
+            <svg className="w-16 h-16 text-neon-cyan/30" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
+            </svg>
+          )}
         </div>
+      </div>
+
+      {/* Song info */}
+      <div className="px-6 pb-4 text-center">
+        <p className="font-display text-base text-white truncate">{currentSong.title}</p>
+        <p className="text-sm text-text-dim truncate mt-1">{currentSong.artistName}</p>
+        {currentSong.showVenue && (
+          <p className="text-xs text-text-dim truncate mt-1">{currentSong.showVenue}</p>
+        )}
+        {currentSong.showDate && (
+          <p className="text-xs text-neon-cyan mt-1">{currentSong.showDate}</p>
+        )}
+        {/* Version selector */}
+        {hasVersions && currentTrack && (
+          <div className="mt-3">
+            <select
+              value={currentTrack.selectedVersionId}
+              onChange={(e) => selectVersion(queue.currentTrackIndex, e.target.value)}
+              className="text-xs bg-dark-700 border border-neon-cyan/30 rounded px-2 py-1 text-white w-full max-w-[200px] focus:border-neon-cyan focus:outline-none"
+            >
+              {currentTrack.availableVersions.map((v) => (
+                <option key={v.id} value={v.id}>
+                  {v.showDate || 'Unknown'} {v.showVenue && `- ${v.showVenue}`}
+                  {v.avgRating ? ` (★${v.avgRating.toFixed(1)})` : ''}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+      </div>
+
+      {/* Progress bar */}
+      <div className="px-6 py-4">
+        <div
+          className="w-full h-1 bg-dark-600 cursor-pointer group relative"
+          onClick={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const percent = (e.clientX - rect.left) / rect.width;
+            seek(percent * duration);
+          }}
+        >
+          <div
+            className="h-full bg-neon-cyan relative transition-all group-hover:shadow-[0_0_10px_var(--neon-cyan)]"
+            style={{ width: `${progress}%` }}
+          >
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-neon-cyan rounded-full opacity-0 group-hover:opacity-100 shadow-[0_0_10px_var(--neon-cyan)] transition-opacity" />
+          </div>
+        </div>
+        <div className="flex justify-between mt-2">
+          <span className="text-[10px] text-text-dim font-mono">
+            {formatDuration(Math.floor(currentTime))}
+          </span>
+          <span className="text-[10px] text-text-dim font-mono">
+            {formatDuration(Math.floor(duration))}
+          </span>
+        </div>
+      </div>
+
+      {/* Controls */}
+      <div className="px-6 py-4 flex items-center justify-center gap-6">
+        <button
+          onClick={playPrev}
+          disabled={isFirstTrack && !hasUpNext}
+          className="text-text-dim hover:text-neon-cyan disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+        >
+          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
+          </svg>
+        </button>
+
+        <button
+          onClick={togglePlay}
+          className="w-14 h-14 flex items-center justify-center rounded-full bg-neon-cyan text-dark-900 hover:shadow-[0_0_30px_var(--neon-cyan)] transition-all"
+        >
+          {isPlaying ? (
+            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <rect x="6" y="4" width="4" height="16" />
+              <rect x="14" y="4" width="4" height="16" />
+            </svg>
+          ) : (
+            <svg className="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          )}
+        </button>
+
+        <button
+          onClick={playNext}
+          disabled={isLastTrack && !hasUpNext}
+          className="text-text-dim hover:text-neon-cyan disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+        >
+          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Repeat mode toggle */}
+      <div className="px-6 py-2 flex items-center justify-center gap-4">
+        <button
+          onClick={() => {
+            const modes: Array<'off' | 'all' | 'one'> = ['off', 'all', 'one'];
+            const currentIndex = modes.indexOf(queue.repeat);
+            const nextIndex = (currentIndex + 1) % modes.length;
+            setRepeat(modes[nextIndex]);
+          }}
+          className={`p-2 transition-colors ${
+            queue.repeat === 'off' ? 'text-text-dim' : 'text-neon-pink shadow-[0_0_10px_var(--neon-pink)]'
+          }`}
+          title={`Repeat: ${queue.repeat}`}
+        >
+          {queue.repeat === 'one' ? (
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4zm-4-2V9h-1l-2 1v1h1.5v4H13z" />
+            </svg>
+          ) : (
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z" />
+            </svg>
+          )}
+        </button>
+      </div>
+
+      {/* Volume */}
+      <div className="px-6 py-4 border-t border-neon-cyan/20">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setVolume(volume === 0 ? 0.7 : 0)}
+            className="text-text-dim hover:text-neon-cyan transition-colors"
+          >
+            {volume === 0 ? (
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z" />
+              </svg>
+            ) : (
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+              </svg>
+            )}
+          </button>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={volume}
+            onChange={(e) => setVolume(parseFloat(e.target.value))}
+            className="flex-1 accent-[var(--neon-cyan)]"
+          />
+        </div>
+      </div>
+
+      {/* Queue toggle */}
+      <div className="mt-auto p-4 border-t border-neon-cyan/20">
+        <button
+          onClick={toggleQueue}
+          className={`
+            w-full py-3 px-4 flex items-center justify-center gap-2 transition-all border
+            ${isQueueOpen
+              ? 'bg-neon-pink/20 text-neon-pink border-neon-pink shadow-[0_0_15px_rgba(255,45,149,0.3)]'
+              : 'border-neon-cyan/30 text-text-dim hover:border-neon-pink hover:text-neon-pink'
+            }
+          `}
+        >
+          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z" />
+          </svg>
+          <span className="font-display text-xs uppercase tracking-[0.15em]">
+            Queue ({totalTracks}{hasUpNext ? ` + ${queue.upNext.length}` : ''})
+          </span>
+        </button>
       </div>
     </div>
   );

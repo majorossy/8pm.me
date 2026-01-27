@@ -23,6 +23,7 @@ interface VersionCardProps {
   isPlaying: boolean;
   isInQueue: boolean;
   isMetro: boolean;
+  isJamify: boolean;
   onSelect: () => void;
   onPlay: () => void;
   onAddToQueue: () => void;
@@ -31,7 +32,7 @@ interface VersionCardProps {
 type SortOrder = 'newest' | 'oldest';
 
 // Star rating display component
-function StarRating({ rating, count, isMetro }: { rating?: number; count?: number; isMetro?: boolean }) {
+function StarRating({ rating, count, isMetro, isJamify }: { rating?: number; count?: number; isMetro?: boolean; isJamify?: boolean }) {
   if (!rating || !count) return null;
 
   const roundedRating = Math.round(rating * 2) / 2;
@@ -39,9 +40,9 @@ function StarRating({ rating, count, isMetro }: { rating?: number; count?: numbe
   const hasHalfStar = roundedRating % 1 !== 0;
   const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
 
-  const starColor = isMetro ? 'text-[#e85d04]' : 'text-neon-orange';
-  const emptyColor = isMetro ? 'text-[#d4d0c8]' : 'text-dark-500';
-  const countColor = isMetro ? 'text-[#6b6b6b]' : 'text-text-dim';
+  const starColor = isJamify ? 'text-[#1DB954]' : isMetro ? 'text-[#e85d04]' : 'text-neon-orange';
+  const emptyColor = isJamify ? 'text-[#535353]' : isMetro ? 'text-[#d4d0c8]' : 'text-dark-500';
+  const countColor = isJamify ? 'text-[#a7a7a7]' : isMetro ? 'text-[#6b6b6b]' : 'text-text-dim';
 
   return (
     <div className="flex items-center gap-1" title={`${rating.toFixed(1)} out of 5 stars (${count} reviews)`}>
@@ -79,6 +80,7 @@ function VersionCard({
   isPlaying,
   isInQueue,
   isMetro,
+  isJamify,
   onSelect,
   onPlay,
   onAddToQueue,
@@ -108,6 +110,100 @@ function VersionCard({
     e.stopPropagation();
     onAddToQueue();
   };
+
+  // Jamify/Spotify style
+  if (isJamify) {
+    return (
+      <div
+        onClick={onSelect}
+        tabIndex={0}
+        role="button"
+        aria-selected={isSelected}
+        className={`
+          flex-shrink-0 w-[280px] p-5 cursor-pointer transition-all duration-200 snap-start rounded-lg
+          ${isSelected
+            ? 'bg-[#282828] ring-2 ring-[#1DB954]'
+            : 'bg-[#181818] hover:bg-[#282828]'
+          }
+        `}
+      >
+        {/* Header: Year + Selected badge */}
+        <div className="flex justify-between items-start mb-4">
+          <span className="text-4xl font-bold text-white">
+            {year || '—'}
+          </span>
+          {isSelected && (
+            <span className="text-[10px] px-2 py-1 bg-[#1DB954] text-black rounded-full font-bold uppercase">
+              Selected
+            </span>
+          )}
+        </div>
+
+        {/* Meta info */}
+        <div className="text-xs text-[#a7a7a7] space-y-2">
+          {/* Venue */}
+          <div className="flex justify-between">
+            <span className="text-[#1DB954]">Venue</span>
+            <span className="text-white" title={song.showVenue || undefined}>{truncate(venue, 20) || '—'}</span>
+          </div>
+          {/* Location */}
+          <div className="flex justify-between">
+            <span className="text-[#1DB954]">Location</span>
+            <span title={song.showLocation || undefined}>{truncate(song.showLocation, 20) || '—'}</span>
+          </div>
+          {/* Date */}
+          <div className="flex justify-between">
+            <span className="text-[#1DB954]">Date</span>
+            <span>{formattedDate || '—'}</span>
+          </div>
+          {/* Rating */}
+          <div className="flex justify-between items-center">
+            <span className="text-[#1DB954]">Rating</span>
+            {song.avgRating ? <StarRating rating={song.avgRating} count={song.numReviews} isJamify /> : <span>—</span>}
+          </div>
+          {/* Length */}
+          <div className="flex justify-between">
+            <span className="text-[#1DB954]">Length</span>
+            <span>{formatDuration(song.duration)}</span>
+          </div>
+          {/* Taper */}
+          <div className="flex justify-between">
+            <span className="text-[#1DB954]">Taper</span>
+            <span title={song.taper || undefined}>{truncate(song.taper, 18) || '—'}</span>
+          </div>
+        </div>
+
+        {/* Action buttons */}
+        <div className="grid grid-cols-2 gap-2 mt-5">
+          <button
+            onClick={handlePlayClick}
+            className={`
+              py-2.5 text-xs font-bold rounded-full transition-all
+              ${isPlaying
+                ? 'bg-[#1DB954] text-black'
+                : 'bg-[#1DB954] text-black hover:bg-[#1ed760] hover:scale-105'
+              }
+            `}
+          >
+            {isPlaying ? 'Playing' : 'Play'}
+          </button>
+          <button
+            onClick={handleQueueClick}
+            disabled={isInQueue}
+            className={`
+              py-2.5 text-xs font-bold rounded-full transition-all border
+              ${isInQueue
+                ? 'border-[#1DB954]/50 text-[#1DB954]/50 cursor-default'
+                : 'border-[#535353] text-white hover:border-white'
+              }
+            `}
+          >
+            {isInQueue ? 'Queued' : '+ Queue'}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (isMetro) {
     // Metro/Time Machine style
@@ -351,6 +447,7 @@ export default function VersionCarousel({
 }: VersionCarouselProps) {
   const { theme } = useTheme();
   const isMetro = theme === 'metro';
+  const isJamify = theme === 'jamify';
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -429,16 +526,16 @@ export default function VersionCarousel({
     <div className="mt-4">
       {/* Controls bar */}
       {sortedSongs.length > 1 && (
-        <div className={`flex items-center justify-between py-4 mb-4 border-b ${isMetro ? 'border-[#d4d0c8]' : 'border-white/5'}`}>
-          <span className={`${isMetro ? 'text-xs text-[#6b6b6b]' : 'text-[0.6rem] text-text-dim uppercase tracking-[0.15em]'}`}>
+        <div className={`flex items-center justify-between py-4 mb-4 border-b ${isJamify ? 'border-[#282828]' : isMetro ? 'border-[#d4d0c8]' : 'border-white/5'}`}>
+          <span className={`${isJamify ? 'text-xs text-[#a7a7a7]' : isMetro ? 'text-xs text-[#6b6b6b]' : 'text-[0.6rem] text-text-dim uppercase tracking-[0.15em]'}`}>
             Available Recordings
           </span>
-          <div className={`flex items-center gap-2 ${isMetro ? 'text-xs text-[#6b6b6b]' : 'text-[0.6rem] text-text-dim'}`}>
+          <div className={`flex items-center gap-2 ${isJamify ? 'text-xs text-[#a7a7a7]' : isMetro ? 'text-xs text-[#6b6b6b]' : 'text-[0.6rem] text-text-dim'}`}>
             <span>Sort:</span>
             <select
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value as SortOrder)}
-              className={isMetro ? 'metro-select' : 'neon-select'}
+              className={isJamify ? 'bg-[#282828] border border-[#535353] rounded px-2 py-1 text-white text-xs' : isMetro ? 'metro-select' : 'neon-select'}
             >
               <option value="newest">Newest First</option>
               <option value="oldest">Oldest First</option>
@@ -452,11 +549,13 @@ export default function VersionCarousel({
         {/* Left fade + arrow */}
         {canScrollLeft && (
           <>
-            <div className={`absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r ${isMetro ? 'from-[#f8f6f1]' : 'from-dark-900'} to-transparent pointer-events-none z-[5]`} />
+            <div className={`absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r ${isJamify ? 'from-[#181818]' : isMetro ? 'from-[#f8f6f1]' : 'from-dark-900'} to-transparent pointer-events-none z-[5]`} />
             <button
               onClick={() => scrollByCard('left')}
               className={`absolute left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition-all ${
-                isMetro
+                isJamify
+                  ? 'bg-[#282828] border border-[#535353] hover:border-white text-white'
+                  : isMetro
                   ? 'bg-white border border-[#d4d0c8] hover:border-[#e85d04] hover:text-[#e85d04]'
                   : 'bg-dark-800/90 border border-dark-500 hover:border-neon-cyan hover:text-neon-cyan'
               }`}
@@ -483,6 +582,7 @@ export default function VersionCarousel({
                 isPlaying={currentSongId === song.id && isPlaying}
                 isInQueue={isInQueue ? isInQueue(song.id) : false}
                 isMetro={isMetro}
+                isJamify={isJamify}
                 onSelect={() => handleSelect(idx)}
                 onPlay={() => onPlay(song)}
                 onAddToQueue={() => handleAddToQueue(song)}
@@ -494,11 +594,13 @@ export default function VersionCarousel({
         {/* Right fade + arrow */}
         {canScrollRight && (
           <>
-            <div className={`absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l ${isMetro ? 'from-[#f8f6f1]' : 'from-dark-900'} to-transparent pointer-events-none z-[5]`} />
+            <div className={`absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l ${isJamify ? 'from-[#181818]' : isMetro ? 'from-[#f8f6f1]' : 'from-dark-900'} to-transparent pointer-events-none z-[5]`} />
             <button
               onClick={() => scrollByCard('right')}
               className={`absolute right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition-all ${
-                isMetro
+                isJamify
+                  ? 'bg-[#282828] border border-[#535353] hover:border-white text-white'
+                  : isMetro
                   ? 'bg-white border border-[#d4d0c8] hover:border-[#e85d04] hover:text-[#e85d04]'
                   : 'bg-dark-800/90 border border-dark-500 hover:border-neon-cyan hover:text-neon-cyan'
               }`}

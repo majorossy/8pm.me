@@ -1,0 +1,73 @@
+{
+  "slug": "sts9",
+  "name": "STS9",
+  "biography": "Sound Tribe Sector 9 (STS9) is an instrumental band known for their unique blend of electronic music, jazz, funk, and rock. Formed in 1998 in Atlanta, Georgia, the group has become a staple of the jam band and electronic music scenes.\n\nThe band's sound is characterized by live instrumentation combined with electronic production, creating what they call \"post-rock dance music.\" Their live performances feature extended improvisational journeys that seamlessly blend acoustic and electronic elements, creating an immersive sonic experience.\n\nThroughout their career, STS9 has released numerous studio albums and performed thousands of shows across the globe. They're particularly known for their multi-night runs at iconic venues like Red Rocks Amphitheatre, where they've built a devoted following through their innovative light shows and sonic explorations.\n\nThe band has evolved significantly since their formation, with their only lineup change occurring in 2015 when bassist Alana Rocklin joined to replace founding member David Murphy. This transition marked a new chapter while maintaining the group's signature sound and improvisational approach.",
+  "members": {
+    "current": [
+      {
+        "name": "Hunter Brown",
+        "role": "Guitar, Keyboards",
+        "years": "1998-present"
+      },
+      {
+        "name": "Jeffree Lerner",
+        "role": "Percussion",
+        "years": "1998-present"
+      },
+      {
+        "name": "David Phipps",
+        "role": "Keyboards, Synths",
+        "years": "1998-present"
+      },
+      {
+        "name": "Alana Rocklin",
+        "role": "Bass",
+        "years": "2015-present"
+      },
+      {
+        "name": "Zach Velmer",
+        "role": "Drums",
+        "years": "1998-present"
+      }
+    ],
+    "former": [
+      {
+        "name": "David Murphy",
+        "role": "Bass",
+        "years": "1998-2015"
+      }
+    ]
+  },
+  "careerHighlights": [
+    "1998: Band formed in Atlanta, Georgia",
+    "2001: Released debut album 'Offered Schematics Suggesting Peace'",
+    "2005: Performed at Bonnaroo Music Festival",
+    "2008: Released breakthrough album 'Peaceblaster'",
+    "2015: Alana Rocklin joins as bassist, replacing founding member David Murphy",
+    "2016: Celebrated with 'The Unquestionable Supremacy of Nature' tour",
+    "2020: Released 'Deceptively Casual' EP during pandemic"
+  ],
+  "recordingStats": {
+    "totalShows": 1500,
+    "yearsActive": "1998-present",
+    "mostRecordedVenue": "Red Rocks Amphitheatre"
+  },
+  "socialLinks": {
+    "website": "https://sts9.com",
+    "facebook": "https://facebook.com/sts9",
+    "instagram": "https://instagram.com/sts9",
+    "twitter": "https://twitter.com/sts9"
+  },
+  "images": [
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/STS9_at_Red_Rocks_2011.jpg/800px-STS9_at_Red_Rocks_2011.jpg",
+      "caption": "STS9 performing at Red Rocks Amphitheatre",
+      "credit": "Wikimedia Commons"
+    },
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Sts9_2010.jpg/800px-Sts9_2010.jpg",
+      "caption": "The band in concert, 2010",
+      "credit": "Wikimedia Commons"
+    }
+  ]
+}

@@ -1,19 +1,5 @@
-import { getArtists, getArtistAlbums } from '@/lib/api';
-import ArtistsPageContent from '@/components/ArtistsPageContent';
+import { redirect } from 'next/navigation';
 
-export default async function ArtistsPage() {
-  const artists = await getArtists();
-
-  // Fetch albums for each artist using lightweight endpoint (no tracks/products)
-  const artistsWithAlbums = await Promise.all(
-    artists.map(async (artist) => {
-      const result = await getArtistAlbums(artist.slug);
-      return {
-        ...artist,
-        albums: result?.albums || [],
-      };
-    })
-  );
-
-  return <ArtistsPageContent artists={artistsWithAlbums} />;
+export default function ArtistsPage() {
+  redirect('/');
 }

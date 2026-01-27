@@ -22,11 +22,35 @@ const WishlistContext = createContext<WishlistContextType | null>(null);
 let mockItemId = 0;
 const generateItemId = () => `wishlist-item-${++mockItemId}`;
 
+const WISHLIST_STORAGE_KEY = 'jamify_wishlist';
+
 export function WishlistProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<WishlistItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   // TODO: Wire up to actual auth state from Magento customer token
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Load wishlist from localStorage on mount
+  React.useEffect(() => {
+    const stored = localStorage.getItem(WISHLIST_STORAGE_KEY);
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        setItems(parsed);
+      } catch (error) {
+        console.error('Failed to load wishlist from localStorage:', error);
+      }
+    }
+  }, []);
+
+  // Save wishlist to localStorage whenever it changes
+  React.useEffect(() => {
+    if (items.length > 0) {
+      localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(items));
+    } else {
+      localStorage.removeItem(WISHLIST_STORAGE_KEY);
+    }
+  }, [items]);
 
   const wishlist: Wishlist = {
     id: 'mock-wishlist-123',
