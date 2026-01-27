@@ -8,6 +8,120 @@ export type { Song, Artist, ArtistDetail, Album, Track } from './types';
 // Cache duration in seconds
 const CACHE_DURATION = 60 * 5; // 5 minutes
 
+// ============================================
+// Retry Configuration
+// ============================================
+const RETRY_CONFIG = {
+  maxRetries: 3,
+  baseDelayMs: 1000, // 1 second base delay
+  maxDelayMs: 10000, // 10 seconds max delay
+  // Status codes that should NOT be retried
+  nonRetryableStatuses: [400, 401, 403, 404, 422],
+};
+
+// Error types that indicate network/timeout issues (should retry)
+const RETRYABLE_ERROR_MESSAGES = [
+  'fetch failed',
+  'network error',
+  'timeout',
+  'ECONNREFUSED',
+  'ENOTFOUND',
+  'ETIMEDOUT',
+  'ECONNRESET',
+  'socket hang up',
+];
+
+/**
+ * Check if an error is retryable based on its type/message
+ */
+function isRetryableError(error: unknown): boolean {
+  if (error instanceof Error) {
+    const message = error.message.toLowerCase();
+    return RETRYABLE_ERROR_MESSAGES.some(msg => message.includes(msg.toLowerCase()));
+  }
+  return false;
+}
+
+/**
+ * Check if an HTTP status code is retryable
+ */
+function isRetryableStatus(status: number): boolean {
+  // Don't retry client errors (4xx) except for rate limiting (429) and server overload (503)
+  if (RETRY_CONFIG.nonRetryableStatuses.includes(status)) {
+    return false;
+  }
+  // Retry 5xx server errors and 429 rate limiting
+  return status >= 500 || status === 429;
+}
+
+/**
+ * Calculate delay with exponential backoff and jitter
+ */
+function getRetryDelay(attempt: number): number {
+  // Exponential backoff: 1s, 2s, 4s...
+  const exponentialDelay = RETRY_CONFIG.baseDelayMs * Math.pow(2, attempt);
+  // Add jitter (0-25% of the delay) to prevent thundering herd
+  const jitter = exponentialDelay * 0.25 * Math.random();
+  // Cap at max delay
+  return Math.min(exponentialDelay + jitter, RETRY_CONFIG.maxDelayMs);
+}
+
+/**
+ * Sleep for a specified number of milliseconds
+ */
+function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
+ * Fetch with retry logic
+ */
+async function fetchWithRetry(
+  url: string,
+  options: RequestInit,
+  context: string = 'fetch'
+): Promise<Response> {
+  let lastError: Error | null = null;
+
+  for (let attempt = 0; attempt <= RETRY_CONFIG.maxRetries; attempt++) {
+    try {
+      const response = await fetch(url, options);
+
+      // Check if response status indicates we should retry
+      if (!response.ok && isRetryableStatus(response.status)) {
+        if (attempt < RETRY_CONFIG.maxRetries) {
+          const delay = getRetryDelay(attempt);
+          console.warn(
+            `[${context}] Request failed with status ${response.status}, retrying in ${delay}ms (attempt ${attempt + 1}/${RETRY_CONFIG.maxRetries})`
+          );
+          await sleep(delay);
+          continue;
+        }
+      }
+
+      return response;
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+
+      // Check if error is retryable
+      if (isRetryableError(error) && attempt < RETRY_CONFIG.maxRetries) {
+        const delay = getRetryDelay(attempt);
+        console.warn(
+          `[${context}] Request failed with error: ${lastError.message}, retrying in ${delay}ms (attempt ${attempt + 1}/${RETRY_CONFIG.maxRetries})`
+        );
+        await sleep(delay);
+        continue;
+      }
+
+      // Non-retryable error or max retries reached
+      throw lastError;
+    }
+  }
+
+  // Should not reach here, but just in case
+  throw lastError || new Error(`[${context}] Request failed after ${RETRY_CONFIG.maxRetries} retries`);
+}
+
 // GraphQL endpoint - uses Docker service name internally, external URL for client
 const MAGENTO_GRAPHQL_URL = process.env.MAGENTO_GRAPHQL_URL || 'https://app:8443/graphql';
 console.log('[API] Using GraphQL URL:', MAGENTO_GRAPHQL_URL);
@@ -80,15 +194,27 @@ async function graphqlFetch<T>(
   variables?: Record<string, unknown>,
   options: FetchOptions = { cache: true, revalidate: CACHE_DURATION }
 ): Promise<T> {
-  const response = await fetch(MAGENTO_GRAPHQL_URL, {
+  const fetchOptions: RequestInit = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ query, variables }),
-    next: options.cache ? { revalidate: options.revalidate } : undefined,
-    cache: options.cache ? undefined : 'no-store',
-  });
+  };
+
+  // Add Next.js caching options (these are non-standard fetch options)
+  if (options.cache) {
+    (fetchOptions as any).next = { revalidate: options.revalidate };
+  } else {
+    fetchOptions.cache = 'no-store';
+  }
+
+  // Use fetch with retry for network resilience
+  const response = await fetchWithRetry(
+    MAGENTO_GRAPHQL_URL,
+    fetchOptions,
+    'GraphQL'
+  );
 
   const result: GraphQLResponse<T> = await response.json();
 

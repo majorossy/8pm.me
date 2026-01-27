@@ -5,6 +5,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Album } from '@/lib/api';
+import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 
 interface AlbumCardProps {
   album: Album;
@@ -12,23 +13,44 @@ interface AlbumCardProps {
 
 export default function AlbumCard({ album }: AlbumCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const { ref, isIntersecting } = useIntersectionObserver({
+    rootMargin: '100px', // Start loading 100px before visible
+    freezeOnceVisible: true,
+  });
 
   // Jamify/Spotify style - rounded cards with hover play button
   return (
     <Link href={`/artists/${album.artistSlug}/album/${album.slug}`}>
       <div className="group p-4 bg-[#181818] rounded-lg hover:bg-[#282828] transition-all duration-300 cursor-pointer">
         {/* Album artwork with play button overlay */}
-        <div className="relative aspect-square mb-4 rounded-md overflow-hidden shadow-lg">
+        <div
+          ref={ref as React.RefObject<HTMLDivElement>}
+          className="relative aspect-square mb-4 rounded-md overflow-hidden shadow-lg"
+        >
           {album.coverArt ? (
-            <img
-              src={album.coverArt}
-              alt={album.name}
-              loading="lazy"
-              onLoad={() => setImageLoaded(true)}
-              className={`w-full h-full object-cover transition-opacity duration-300 ${
-                imageLoaded ? 'opacity-100' : 'opacity-0'
-              }`}
-            />
+            <>
+              {/* Blur placeholder - shown until image loads */}
+              <div
+                className={`absolute inset-0 bg-[#282828] transition-opacity duration-500 ${
+                  imageLoaded ? 'opacity-0' : 'opacity-100'
+                }`}
+              >
+                {/* Animated shimmer effect for dark theme */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#333333] to-transparent animate-shimmer" />
+              </div>
+
+              {/* Actual image - only load when in viewport */}
+              {isIntersecting && (
+                <img
+                  src={album.coverArt}
+                  alt={album.name}
+                  onLoad={() => setImageLoaded(true)}
+                  className={`w-full h-full object-cover transition-opacity duration-500 ${
+                    imageLoaded ? 'opacity-100' : 'opacity-0'
+                  }`}
+                />
+              )}
+            </>
           ) : (
             <div className="w-full h-full bg-[#282828] flex items-center justify-center">
               <svg className="w-16 h-16 text-[#535353]" viewBox="0 0 24 24" fill="currentColor">

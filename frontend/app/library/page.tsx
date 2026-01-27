@@ -1,19 +1,38 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { useWishlist } from '@/context/WishlistContext';
 import { useQueue } from '@/context/QueueContext';
 import { useRecentlyPlayed } from '@/context/RecentlyPlayedContext';
+import { useHaptic } from '@/hooks/useHaptic';
 import { formatDuration } from '@/lib/api';
 import Link from 'next/link';
 
 type TabType = 'songs' | 'artists' | 'albums' | 'recent';
 
 export default function LibraryPage() {
-  const [activeTab, setActiveTab] = useState<TabType>('songs');
-  const { wishlist, removeFromWishlist } = useWishlist();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // Initialize from URL or default to 'songs'
+  const initialTab = (searchParams.get('tab') as TabType) || 'songs';
+  const [activeTab, setActiveTab] = useState<TabType>(initialTab);
+
+  const { wishlist, removeFromWishlist, followedArtists, followedAlbums } = useWishlist();
   const { addToUpNext } = useQueue();
   const { recentlyPlayed } = useRecentlyPlayed();
+  const { vibrate, BUTTON_PRESS, DELETE_ACTION } = useHaptic();
+
+  // Update URL when tab changes
+  const changeTab = (tab: TabType) => {
+    vibrate(BUTTON_PRESS);
+    setActiveTab(tab);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('tab', tab);
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
 
   // Format relative time (e.g., "2 hours ago", "Yesterday")
   const formatRelativeTime = (isoDate: string): string => {
@@ -78,7 +97,10 @@ export default function LibraryPage() {
           >
             {/* Play button (hidden, shows on hover/mobile always) */}
             <button
-              onClick={() => addToUpNext(item.song)}
+              onClick={() => {
+                vibrate(BUTTON_PRESS);
+                addToUpNext(item.song);
+              }}
               className="w-10 h-10 flex items-center justify-center rounded-full bg-[#1DB954] text-black opacity-0 md:group-hover:opacity-100 hover:scale-105 transition-all btn-touch"
               aria-label={`Play ${item.song.title}`}
             >
@@ -105,7 +127,10 @@ export default function LibraryPage() {
 
             {/* Unlike button */}
             <button
-              onClick={() => removeFromWishlist(item.id)}
+              onClick={() => {
+                vibrate(DELETE_ACTION);
+                removeFromWishlist(item.id);
+              }}
               className="p-2 text-[#1DB954] hover:text-white transition-colors btn-touch"
               aria-label="Remove from favorites"
             >
@@ -120,17 +145,29 @@ export default function LibraryPage() {
   };
 
   const renderArtists = () => {
-    if (artistsMap.size === 0) {
+    // Filter to only show followed artists
+    const followedArtistsList = Array.from(artistsMap.entries()).filter(([artistId, items]) => {
+      const artist = items[0].song;
+      return followedArtists.includes(artist.artistSlug);
+    });
+
+    if (followedArtistsList.length === 0) {
       return (
         <div className="flex flex-col items-center justify-center py-16 px-4">
-          <p className="text-[#b3b3b3] text-sm">No artists yet. Like some songs first!</p>
+          <svg className="w-16 h-16 text-[#535353] mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+          <h3 className="text-white font-bold text-lg mb-2">No followed artists</h3>
+          <p className="text-[#b3b3b3] text-sm text-center">
+            Follow artists to see them here. Tap the heart icon on an artist page.
+          </p>
         </div>
       );
     }
 
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-4">
-        {Array.from(artistsMap.entries()).map(([artistId, items]) => {
+        {followedArtistsList.map(([artistId, items]) => {
           const artist = items[0].song;
           return (
             <Link
@@ -161,17 +198,30 @@ export default function LibraryPage() {
   };
 
   const renderAlbums = () => {
-    if (albumsMap.size === 0) {
+    // Filter to only show followed albums
+    const followedAlbumsList = Array.from(albumsMap.entries()).filter(([albumId, items]) => {
+      const album = items[0].song;
+      const identifier = `${album.artistSlug}::${album.albumName}`;
+      return followedAlbums.includes(identifier);
+    });
+
+    if (followedAlbumsList.length === 0) {
       return (
         <div className="flex flex-col items-center justify-center py-16 px-4">
-          <p className="text-[#b3b3b3] text-sm">No albums yet. Like some songs first!</p>
+          <svg className="w-16 h-16 text-[#535353] mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+          <h3 className="text-white font-bold text-lg mb-2">No followed albums</h3>
+          <p className="text-[#b3b3b3] text-sm text-center">
+            Follow albums to see them here. Tap the heart icon on an album page.
+          </p>
         </div>
       );
     }
 
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-4">
-        {Array.from(albumsMap.entries()).map(([albumId, items]) => {
+        {followedAlbumsList.map(([albumId, items]) => {
           const album = items[0].song;
           return (
             <div
@@ -238,7 +288,10 @@ export default function LibraryPage() {
 
             {/* Play button (hidden, shows on hover/mobile always) */}
             <button
-              onClick={() => addToUpNext(item.song)}
+              onClick={() => {
+                vibrate(BUTTON_PRESS);
+                addToUpNext(item.song);
+              }}
               className="w-10 h-10 flex items-center justify-center rounded-full bg-[#1DB954] text-black opacity-0 md:group-hover:opacity-100 hover:scale-105 transition-all btn-touch"
               aria-label={`Play ${item.song.title}`}
             >
@@ -291,7 +344,7 @@ export default function LibraryPage() {
       {/* Tabs */}
       <div className="flex gap-2 px-4 mb-4 border-b border-white/10">
         <button
-          onClick={() => setActiveTab('songs')}
+          onClick={() => changeTab('songs')}
           className={`px-4 py-2 font-medium transition-colors ${
             activeTab === 'songs'
               ? 'text-white border-b-2 border-[#1DB954]'
@@ -301,7 +354,7 @@ export default function LibraryPage() {
           Songs
         </button>
         <button
-          onClick={() => setActiveTab('artists')}
+          onClick={() => changeTab('artists')}
           className={`px-4 py-2 font-medium transition-colors ${
             activeTab === 'artists'
               ? 'text-white border-b-2 border-[#1DB954]'
@@ -311,7 +364,7 @@ export default function LibraryPage() {
           Artists
         </button>
         <button
-          onClick={() => setActiveTab('albums')}
+          onClick={() => changeTab('albums')}
           className={`px-4 py-2 font-medium transition-colors ${
             activeTab === 'albums'
               ? 'text-white border-b-2 border-[#1DB954]'
@@ -321,7 +374,7 @@ export default function LibraryPage() {
           Albums
         </button>
         <button
-          onClick={() => setActiveTab('recent')}
+          onClick={() => changeTab('recent')}
           className={`px-4 py-2 font-medium transition-colors ${
             activeTab === 'recent'
               ? 'text-white border-b-2 border-[#1DB954]'

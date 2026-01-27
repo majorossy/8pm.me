@@ -5,6 +5,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Artist } from '@/lib/api';
+import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 
 interface ArtistCardProps {
   artist: Artist;
@@ -12,22 +13,45 @@ interface ArtistCardProps {
 
 export default function ArtistCard({ artist }: ArtistCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const { ref, isIntersecting } = useIntersectionObserver({
+    rootMargin: '100px', // Start loading 100px before visible
+    freezeOnceVisible: true,
+  });
+
+  const hasValidImage = artist.image && !artist.image.includes('default');
 
   return (
     <Link href={`/artists/${artist.slug}`}>
       <div className="group p-4 bg-[#181818] rounded-lg hover:bg-[#282828] transition-all duration-300 cursor-pointer">
         {/* Artist avatar - circular */}
-        <div className="relative aspect-square mb-4 rounded-full overflow-hidden shadow-lg">
-          {artist.image && !artist.image.includes('default') ? (
-            <img
-              src={artist.image}
-              alt={artist.name}
-              loading="lazy"
-              onLoad={() => setImageLoaded(true)}
-              className={`w-full h-full object-cover transition-opacity duration-300 ${
-                imageLoaded ? 'opacity-100' : 'opacity-0'
-              }`}
-            />
+        <div
+          ref={ref as React.RefObject<HTMLDivElement>}
+          className="relative aspect-square mb-4 rounded-full overflow-hidden shadow-lg"
+        >
+          {hasValidImage ? (
+            <>
+              {/* Blur placeholder - shown until image loads */}
+              <div
+                className={`absolute inset-0 bg-[#282828] transition-opacity duration-500 ${
+                  imageLoaded ? 'opacity-0' : 'opacity-100'
+                }`}
+              >
+                {/* Animated shimmer effect for dark theme */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#333333] to-transparent animate-shimmer" />
+              </div>
+
+              {/* Actual image - only load when in viewport */}
+              {isIntersecting && (
+                <img
+                  src={artist.image}
+                  alt={artist.name}
+                  onLoad={() => setImageLoaded(true)}
+                  className={`w-full h-full object-cover transition-opacity duration-500 ${
+                    imageLoaded ? 'opacity-100' : 'opacity-0'
+                  }`}
+                />
+              )}
+            </>
           ) : (
             <div className="w-full h-full bg-[#282828] flex items-center justify-center">
               <span className="font-bold text-5xl text-[#535353]">

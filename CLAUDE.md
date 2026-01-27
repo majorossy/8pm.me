@@ -155,6 +155,34 @@ npm run dev
 # Always runs on http://localhost:3001
 ```
 
+### ⚠️ IMPORTANT - Cache Management (FOR CLAUDE)
+**ALWAYS use these helper scripts instead of manually deleting `.next/` or cache files:**
+
+```bash
+frontend/bin/refresh   # Kill server, clean cache, restart (SAFEST - use this)
+frontend/bin/clean     # Clean cache only (only if server NOT running)
+npm run refresh        # Shortcut (from frontend/)
+```
+
+**When Claude should use `frontend/bin/refresh`:**
+- Changes not appearing after editing files (stale `.next/` cache)
+- TypeScript errors that won't resolve
+- After git pull or branch switching
+- "Cannot find module" errors related to `.next/`
+- Before major code changes that might affect build
+- **NEVER manually delete `.next/` while server is running - always use bin/refresh**
+
+**How it works:**
+1. Kills any process on port 3001
+2. Removes `.next/`, `tsconfig.tsbuildinfo`, `node_modules/.cache/`
+3. Restarts dev server (~1.3s startup)
+4. Always safe to run
+
+**Hot Module Replacement (HMR) is enabled:**
+- Most file saves should auto-refresh in <2 seconds
+- Only use `bin/refresh` when HMR fails or cache is stale
+- Startup time of ~1.3s indicates healthy dev environment
+
 ### Theme
 - **Only Jamify theme is available** (Spotify-style dark theme)
 - Theme switcher has been removed

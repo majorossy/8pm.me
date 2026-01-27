@@ -40,6 +40,9 @@ const config: Config = {
         'border-glow': 'border-glow 3s linear infinite',
         'pulse-neon': 'pulse-neon 2s ease-in-out infinite',
         'blink': 'blink 1s ease-in-out infinite',
+        // Toast animations
+        'toast-slide-in': 'toast-slide-in 0.3s ease-out',
+        'toast-fade-out': 'toast-fade-out 0.2s ease-in forwards',
       },
       keyframes: {
         'pulse-subtle': {
@@ -66,6 +69,21 @@ const config: Config = {
         'blink': {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0.3' },
+        },
+        // Toast keyframes
+        'toast-slide-in': {
+          '0%': {
+            transform: 'translateX(100%)',
+            opacity: '0'
+          },
+          '100%': {
+            transform: 'translateX(0)',
+            opacity: '1'
+          },
+        },
+        'toast-fade-out': {
+          '0%': { opacity: '1' },
+          '100%': { opacity: '0' },
         },
       },
       backgroundImage: {

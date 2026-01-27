@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 import { ArtistDetail } from '@/lib/api';
 import { BandMemberData } from '@/lib/types';
 import { useBreadcrumbs } from '@/context/BreadcrumbContext';
+import { useWishlist } from '@/context/WishlistContext';
+import { useHaptic } from '@/hooks/useHaptic';
 import AlbumCard from '@/components/AlbumCard';
 import BandMembers from '@/components/artist/BandMembers';
 import BandStatistics from '@/components/artist/BandStatistics';
@@ -20,11 +22,24 @@ interface ArtistPageContentProps {
 
 export default function ArtistPageContent({ artist, bandData }: ArtistPageContentProps) {
   const { setBreadcrumbs } = useBreadcrumbs();
+  const { followArtist, unfollowArtist, isArtistFollowed } = useWishlist();
+  const { vibrate, BUTTON_PRESS } = useHaptic();
+
+  const isFollowed = isArtistFollowed(artist.slug);
 
   useEffect(() => {
     setBreadcrumbs([{ label: artist.name, type: 'artist' }]);
     return () => setBreadcrumbs([]);
   }, [setBreadcrumbs, artist.name]);
+
+  const handleFollowToggle = () => {
+    vibrate(BUTTON_PRESS);
+    if (isFollowed) {
+      unfollowArtist(artist.slug);
+    } else {
+      followArtist(artist.slug);
+    }
+  };
 
   // Combine all bio images (artist web images)
   const allImages = [];
@@ -61,8 +76,14 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
                   <path d="M8 5v14l11-7z" />
                 </svg>
               </button>
-              <button className="px-4 py-1 text-sm font-bold text-white border border-[#a7a7a7] rounded-full hover:border-white transition-colors">
-                Follow
+              <button
+                onClick={handleFollowToggle}
+                className="p-2 text-[#a7a7a7] hover:text-white transition-colors"
+                aria-label={isFollowed ? 'Unfollow artist' : 'Follow artist'}
+              >
+                <svg className="w-7 h-7 md:w-8 md:h-8" fill={isFollowed ? '#1DB954' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
               </button>
             </div>
           </div>

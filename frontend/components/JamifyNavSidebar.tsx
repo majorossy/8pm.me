@@ -4,9 +4,11 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useHaptic } from '@/hooks/useHaptic';
 
 export default function JamifyNavSidebar() {
   const pathname = usePathname();
+  const { vibrate, BUTTON_PRESS } = useHaptic();
 
   const isActive = (path: string) => {
     if (path === '/') return pathname === '/';
@@ -17,7 +19,7 @@ export default function JamifyNavSidebar() {
     <aside className="fixed left-0 top-0 bottom-0 w-[240px] bg-black z-40 flex flex-col">
       {/* Logo */}
       <div className="p-6">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" onClick={() => vibrate(BUTTON_PRESS)} className="flex items-center gap-2">
           <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
           </svg>
@@ -29,6 +31,7 @@ export default function JamifyNavSidebar() {
       <nav className="px-3 space-y-1">
         <Link
           href="/"
+          onClick={() => vibrate(BUTTON_PRESS)}
           className={`flex items-center gap-4 px-3 py-3 rounded-md transition-all focus:outline-none focus:ring-2 focus:ring-[#1DB954] ${
             isActive('/') && pathname === '/'
               ? 'bg-[#282828] text-white'
@@ -43,6 +46,7 @@ export default function JamifyNavSidebar() {
 
         <Link
           href="/search"
+          onClick={() => vibrate(BUTTON_PRESS)}
           className={`flex items-center gap-4 px-3 py-3 rounded-md transition-all focus:outline-none focus:ring-2 focus:ring-[#1DB954] ${
             isActive('/search')
               ? 'bg-[#282828] text-white'
@@ -56,9 +60,10 @@ export default function JamifyNavSidebar() {
         </Link>
 
         <Link
-          href="/artists"
+          href="/library"
+          onClick={() => vibrate(BUTTON_PRESS)}
           className={`flex items-center gap-4 px-3 py-3 rounded-md transition-all focus:outline-none focus:ring-2 focus:ring-[#1DB954] ${
-            isActive('/artists')
+            isActive('/library')
               ? 'bg-[#282828] text-white'
               : 'text-[#b3b3b3] hover:text-white hover:bg-[#282828]'
           }`}
@@ -81,6 +86,7 @@ export default function JamifyNavSidebar() {
         <div className="space-y-3">
           <Link
             href="/artists/grateful-dead"
+            onClick={() => vibrate(BUTTON_PRESS)}
             className={`block text-sm transition-colors truncate ${
               pathname.startsWith('/artists/grateful-dead')
                 ? 'text-white'
@@ -91,6 +97,7 @@ export default function JamifyNavSidebar() {
           </Link>
           <Link
             href="/artists/phish"
+            onClick={() => vibrate(BUTTON_PRESS)}
             className={`block text-sm transition-colors truncate ${
               pathname.startsWith('/artists/phish')
                 ? 'text-white'

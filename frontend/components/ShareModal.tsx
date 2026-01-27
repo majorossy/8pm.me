@@ -3,6 +3,8 @@
 // ShareModal - Share content with copy link and native share
 
 import { useEffect } from 'react';
+import { useHaptic } from '@/hooks/useHaptic';
+import { useFocusTrap } from '@/hooks/useFocusTrap';
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -23,6 +25,9 @@ export default function ShareModal({
   onNativeShare,
   copiedToClipboard,
 }: ShareModalProps) {
+  const { vibrate, BUTTON_PRESS } = useHaptic();
+  const containerRef = useFocusTrap(isOpen);
+
   // Close on escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -42,18 +47,25 @@ export default function ShareModal({
     <div
       className="fixed inset-0 z-[100] flex items-end md:items-center justify-center bg-black/60 backdrop-blur-sm"
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="share-modal-title"
     >
       <div
+        ref={containerRef}
         className="bg-[#282828] rounded-t-2xl md:rounded-2xl w-full md:max-w-md p-6 space-y-4 animate-slide-up md:animate-none"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-white">Share</h2>
+          <h2 id="share-modal-title" className="text-xl font-bold text-white">Share</h2>
           <button
-            onClick={onClose}
+            onClick={() => {
+              vibrate(BUTTON_PRESS);
+              onClose();
+            }}
             className="p-2 -mr-2 text-[#b3b3b3] hover:text-white transition-colors"
-            aria-label="Close"
+            aria-label="Close share dialog"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -71,8 +83,12 @@ export default function ShareModal({
         <div className="space-y-2">
           {/* Copy Link Button */}
           <button
-            onClick={() => onCopy(url)}
+            onClick={() => {
+              vibrate(BUTTON_PRESS);
+              onCopy(url);
+            }}
             className="w-full flex items-center gap-4 p-4 bg-[#181818] hover:bg-[#2a2a2a] rounded-lg transition-colors group"
+            aria-label={copiedToClipboard ? 'Link copied to clipboard' : 'Copy link to clipboard'}
           >
             <div className="w-10 h-10 rounded-full bg-[#1DB954] flex items-center justify-center">
               {copiedToClipboard ? (
@@ -98,8 +114,12 @@ export default function ShareModal({
           {/* Native Share Button (mobile only) */}
           {hasNativeShare && (
             <button
-              onClick={() => onNativeShare(url, title)}
+              onClick={() => {
+                vibrate(BUTTON_PRESS);
+                onNativeShare(url, title);
+              }}
               className="w-full flex items-center gap-4 p-4 bg-[#181818] hover:bg-[#2a2a2a] rounded-lg transition-colors group"
+              aria-label="Open system share menu"
             >
               <div className="w-10 h-10 rounded-full bg-[#535353] flex items-center justify-center">
                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -123,6 +143,7 @@ export default function ShareModal({
               href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => vibrate(BUTTON_PRESS)}
               className="w-12 h-12 rounded-full bg-[#181818] hover:bg-[#1DA1F2] flex items-center justify-center transition-colors group"
               aria-label="Share on Twitter"
             >
@@ -136,6 +157,7 @@ export default function ShareModal({
               href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => vibrate(BUTTON_PRESS)}
               className="w-12 h-12 rounded-full bg-[#181818] hover:bg-[#1877F2] flex items-center justify-center transition-colors group"
               aria-label="Share on Facebook"
             >
@@ -149,6 +171,7 @@ export default function ShareModal({
               href={`https://wa.me/?text=${encodeURIComponent(title + ' ' + url)}`}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => vibrate(BUTTON_PRESS)}
               className="w-12 h-12 rounded-full bg-[#181818] hover:bg-[#25D366] flex items-center justify-center transition-colors group"
               aria-label="Share on WhatsApp"
             >

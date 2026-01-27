@@ -93,20 +93,23 @@ export function albumToQueue(album: Album): AlbumQueue {
     coverArt: album.coverArt,
   };
 
-  const tracks: QueueTrack[] = album.tracks.map((track, index) => {
-    const bestVersion = getBestVersion(track.songs);
+  // Filter out tracks with no available recordings and map to queue tracks
+  const tracks: QueueTrack[] = album.tracks
+    .filter(track => track.songs && track.songs.length > 0) // Skip tracks with no recordings
+    .map((track, index) => {
+      const bestVersion = getBestVersion(track.songs);
 
-    return {
-      trackId: track.id,
-      title: track.title,
-      trackSlug: track.slug,
-      albumIdentifier: album.identifier,
-      artistSlug: album.artistSlug,
-      availableVersions: track.songs,
-      selectedVersionId: bestVersion.id,
-      albumTrackIndex: index,
-    };
-  });
+      return {
+        trackId: track.id,
+        title: track.title,
+        trackSlug: track.slug,
+        albumIdentifier: album.identifier,
+        artistSlug: album.artistSlug,
+        availableVersions: track.songs,
+        selectedVersionId: bestVersion.id,
+        albumTrackIndex: index,
+      };
+    });
 
   return {
     album: queueAlbum,

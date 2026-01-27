@@ -9,12 +9,14 @@ import { useWishlist } from '@/context/WishlistContext';
 import { useMobileUI } from '@/context/MobileUIContext';
 import { useSwipeGesture } from '@/hooks/useSwipeGesture';
 import { useBatteryOptimization } from '@/hooks/useBatteryOptimization';
+import { useHaptic } from '@/hooks/useHaptic';
 import { formatDuration } from '@/lib/api';
 import { getSelectedSong } from '@/lib/queueTypes';
 
 export default function BottomPlayer() {
   const { isMobile, expandPlayer, isPlayerExpanded, isTransitioning } = useMobileUI();
   const { reducedMotion } = useBatteryOptimization();
+  const { vibrate, BUTTON_PRESS, SWIPE_COMPLETE } = useHaptic();
   const {
     currentSong,
     isPlaying,
@@ -63,6 +65,7 @@ export default function BottomPlayer() {
   const swipeHandlers = useSwipeGesture({
     onSwipeUp: () => {
       if (isMobile && !isTransitioning) {
+        vibrate(SWIPE_COMPLETE);
         expandPlayer();
       }
     },
@@ -113,7 +116,10 @@ export default function BottomPlayer() {
             <div className="flex items-center p-2 gap-3">
               {/* Tappable area to expand */}
               <button
-                onClick={expandPlayer}
+                onClick={() => {
+                  vibrate(BUTTON_PRESS);
+                  expandPlayer();
+                }}
                 className="flex items-center gap-3 flex-1 min-w-0 text-left btn-touch"
                 aria-label="Expand player"
               >
@@ -149,6 +155,7 @@ export default function BottomPlayer() {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
+                  vibrate(BUTTON_PRESS);
                   togglePlay();
                 }}
                 className="w-10 h-10 flex items-center justify-center text-white flex-shrink-0 btn-touch btn-ripple"
@@ -181,7 +188,7 @@ export default function BottomPlayer() {
             {queue.album?.coverArt ? (
               <img
                 src={queue.album.coverArt}
-                alt={queue.album.name}
+                alt={`${queue.album.name} by ${currentSong.artistName}`}
                 loading="lazy"
                 onLoad={() => setImageLoaded(true)}
                 className={`w-full h-full object-cover rounded transition-opacity duration-300 ${
@@ -189,7 +196,7 @@ export default function BottomPlayer() {
                 }`}
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center">
+              <div className="w-full h-full flex items-center justify-center" aria-hidden="true">
                 <svg className="w-6 h-6 text-[#535353]" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
                 </svg>
@@ -210,6 +217,7 @@ export default function BottomPlayer() {
           {/* Like button */}
           <button
             onClick={() => {
+              vibrate(BUTTON_PRESS);
               if (currentSong) {
                 if (isInWishlist(currentSong.id)) {
                   const item = wishlist.items.find(i => i.song.id === currentSong.id);
@@ -242,7 +250,10 @@ export default function BottomPlayer() {
           <div className="flex items-center gap-4 mb-2">
             {/* Shuffle */}
             <button
-              onClick={() => setShuffle(!queue.shuffle)}
+              onClick={() => {
+                vibrate(BUTTON_PRESS);
+                setShuffle(!queue.shuffle);
+              }}
               className={`transition-colors focus:outline-none focus:ring-2 focus:ring-[#1DB954] rounded ${
                 queue.shuffle ? 'text-[#1DB954]' : 'text-[#a7a7a7] hover:text-white'
               }`}
@@ -256,7 +267,10 @@ export default function BottomPlayer() {
 
             {/* Previous */}
             <button
-              onClick={playPrev}
+              onClick={() => {
+                vibrate(BUTTON_PRESS);
+                playPrev();
+              }}
               disabled={isFirstTrack && !hasUpNext}
               className="text-[#a7a7a7] hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-[#1DB954] rounded"
               aria-label="Previous track"
@@ -268,7 +282,10 @@ export default function BottomPlayer() {
 
             {/* Play/Pause */}
             <button
-              onClick={togglePlay}
+              onClick={() => {
+                vibrate(BUTTON_PRESS);
+                togglePlay();
+              }}
               className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-black hover:scale-105 transition-transform focus:outline-none focus:ring-2 focus:ring-[#1DB954] focus:ring-offset-2 focus:ring-offset-[#181818]"
               aria-label={isPlaying ? 'Pause' : 'Play'}
             >
@@ -286,7 +303,10 @@ export default function BottomPlayer() {
 
             {/* Next */}
             <button
-              onClick={playNext}
+              onClick={() => {
+                vibrate(BUTTON_PRESS);
+                playNext();
+              }}
               disabled={isLastTrack && !hasUpNext}
               className="text-[#a7a7a7] hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-[#1DB954] rounded"
               aria-label="Next track"
@@ -299,6 +319,7 @@ export default function BottomPlayer() {
             {/* Repeat */}
             <button
               onClick={() => {
+                vibrate(BUTTON_PRESS);
                 const modes: Array<'off' | 'all' | 'one'> = ['off', 'all', 'one'];
                 const currentIndex = modes.indexOf(queue.repeat);
                 const nextIndex = (currentIndex + 1) % modes.length;
@@ -357,7 +378,10 @@ export default function BottomPlayer() {
         <div className="w-[30%] min-w-[180px] flex items-center justify-end gap-3">
           {/* Queue button */}
           <button
-            onClick={toggleQueue}
+            onClick={() => {
+              vibrate(BUTTON_PRESS);
+              toggleQueue();
+            }}
             className={`transition-colors focus:outline-none focus:ring-2 focus:ring-[#1DB954] rounded ${
               isQueueOpen ? 'text-[#1DB954]' : 'text-[#a7a7a7] hover:text-white'
             }`}
@@ -371,9 +395,12 @@ export default function BottomPlayer() {
 
           {/* Volume */}
           <button
-            onClick={() => setVolume(volume === 0 ? 0.7 : 0)}
+            onClick={() => {
+              vibrate(BUTTON_PRESS);
+              setVolume(volume === 0 ? 0.7 : 0);
+            }}
             className="text-[#a7a7a7] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#1DB954] rounded"
-            aria-label={volume === 0 ? 'Unmute' : 'Mute'}
+            aria-label={volume === 0 ? 'Unmute' : `Mute (current volume ${Math.round(volume * 100)}%)`}
           >
             {volume === 0 ? (
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -404,7 +431,11 @@ export default function BottomPlayer() {
               step="0.01"
               value={volume}
               onChange={(e) => setVolume(parseFloat(e.target.value))}
-              aria-label="Volume"
+              aria-label="Volume control"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.round(volume * 100)}
+              aria-valuetext={`${Math.round(volume * 100)} percent`}
               className="w-full h-1 bg-transparent rounded-full appearance-none cursor-pointer relative z-10 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:opacity-0 group-hover:[&::-webkit-slider-thumb]:opacity-100 [&::-webkit-slider-thumb]:shadow-md"
             />
           </div>

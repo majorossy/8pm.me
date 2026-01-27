@@ -7,6 +7,8 @@ import { useBreadcrumbs } from '@/context/BreadcrumbContext';
 import { usePlayer } from '@/context/PlayerContext';
 import { useQueue } from '@/context/QueueContext';
 import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
+import { useHaptic } from '@/hooks/useHaptic';
 import TrackCard from '@/components/TrackCard';
 
 interface AlbumWithTracks extends Album {
@@ -51,9 +53,14 @@ export default function AlbumPageContent({ album }: AlbumPageContentProps) {
   const { currentSong, isPlaying, playSong, togglePlay, playAlbum } = usePlayer();
   const { queue, addToUpNext } = useQueue();
   const { addToCart, isInCart } = useCart();
+  const { followAlbum, unfollowAlbum, isAlbumFollowed } = useWishlist();
+  const { vibrate, BUTTON_PRESS } = useHaptic();
 
   // Check if this album is currently loaded in the queue
   const isCurrentAlbum = queue.album?.identifier === album.identifier;
+
+  // Check if album is followed
+  const isFollowed = isAlbumFollowed(album.artistSlug, album.name);
 
   // Selected track index for Metro timeline view
   const [selectedTrackIndex, setSelectedTrackIndex] = useState(0);
@@ -90,6 +97,15 @@ export default function AlbumPageContent({ album }: AlbumPageContentProps) {
       togglePlay();
     } else {
       playSong(song);
+    }
+  };
+
+  const handleFollowToggle = () => {
+    vibrate(BUTTON_PRESS);
+    if (isFollowed) {
+      unfollowAlbum(album.artistSlug, album.name);
+    } else {
+      followAlbum(album.artistSlug, album.name);
     }
   };
 
@@ -148,7 +164,10 @@ export default function AlbumPageContent({ album }: AlbumPageContentProps) {
         <section className="px-4 md:px-8 py-4 md:py-6 bg-gradient-to-b from-[#121212]/60 to-[#121212]">
           <div className="flex items-center justify-center md:justify-start gap-4 md:gap-6">
             <button
-              onClick={() => playAlbum(album, 0)}
+              onClick={() => {
+                vibrate(BUTTON_PRESS);
+                playAlbum(album, 0);
+              }}
               className={`w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center transition-all shadow-lg ${
                 isCurrentAlbum
                   ? 'bg-[#1DB954] hover:scale-105 hover:bg-[#1ed760]'
@@ -166,8 +185,12 @@ export default function AlbumPageContent({ album }: AlbumPageContentProps) {
                 </svg>
               )}
             </button>
-            <button className="text-[#a7a7a7] hover:text-white transition-colors">
-              <svg className="w-7 h-7 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button
+              onClick={handleFollowToggle}
+              className="text-[#a7a7a7] hover:text-white transition-colors"
+              aria-label={isFollowed ? 'Unfollow album' : 'Follow album'}
+            >
+              <svg className="w-7 h-7 md:w-8 md:h-8" fill={isFollowed ? '#1DB954' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
             </button>

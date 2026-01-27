@@ -11,6 +11,7 @@ import { useSwipeGesture } from '@/hooks/useSwipeGesture';
 import { useBatteryOptimization } from '@/hooks/useBatteryOptimization';
 import { useSleepTimer, SleepTimerPreset } from '@/hooks/useSleepTimer';
 import { useShare } from '@/hooks/useShare';
+import { useHaptic } from '@/hooks/useHaptic';
 import { formatDuration } from '@/lib/api';
 import Link from 'next/link';
 import ShareModal from '@/components/ShareModal';
@@ -18,6 +19,7 @@ import ShareModal from '@/components/ShareModal';
 export default function JamifyFullPlayer() {
   const { isPlayerExpanded, collapsePlayer, isTransitioning } = useMobileUI();
   const { reducedMotion } = useBatteryOptimization();
+  const { vibrate, BUTTON_PRESS, SWIPE_COMPLETE } = useHaptic();
   const {
     currentSong,
     isPlaying,
@@ -32,6 +34,8 @@ export default function JamifyFullPlayer() {
     toggleQueue,
     isQueueOpen,
     pause,
+    crossfadeDuration,
+    setCrossfadeDuration,
   } = usePlayer();
 
   const {
@@ -85,6 +89,7 @@ export default function JamifyFullPlayer() {
   const swipeHandlers = useSwipeGesture({
     onSwipeDown: () => {
       if (!isTransitioning) {
+        vibrate(SWIPE_COMPLETE);
         collapsePlayer();
       }
     },
@@ -124,9 +129,12 @@ export default function JamifyFullPlayer() {
       <div className="flex items-center justify-between px-4 py-3">
         {/* Collapse button */}
         <button
-          onClick={collapsePlayer}
+          onClick={() => {
+            vibrate(BUTTON_PRESS);
+            collapsePlayer();
+          }}
           className="p-2 -ml-2 text-white btn-touch"
-          aria-label="Minimize player"
+          aria-label="Minimize player and return to library"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -145,9 +153,12 @@ export default function JamifyFullPlayer() {
         <div className="flex items-center gap-1">
           {/* Share button */}
           <button
-            onClick={() => currentSong && openShareModal(shareableSong(currentSong))}
+            onClick={() => {
+              vibrate(BUTTON_PRESS);
+              currentSong && openShareModal(shareableSong(currentSong));
+            }}
             className="p-2 text-white btn-touch"
-            aria-label="Share"
+            aria-label={`Share ${currentSong.title}`}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
@@ -156,9 +167,14 @@ export default function JamifyFullPlayer() {
 
           {/* Settings button */}
           <button
-            onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+            onClick={() => {
+              vibrate(BUTTON_PRESS);
+              setIsSettingsOpen(!isSettingsOpen);
+            }}
             className={`p-2 -mr-2 btn-touch ${isSettingsOpen ? 'text-[#1DB954]' : 'text-white'}`}
-            aria-label="Settings"
+            aria-label={isSettingsOpen ? 'Close settings' : 'Open settings menu'}
+            aria-expanded={isSettingsOpen}
+            aria-haspopup="dialog"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -174,7 +190,7 @@ export default function JamifyFullPlayer() {
           {queue.album?.coverArt ? (
             <img
               src={queue.album.coverArt}
-              alt={queue.album.name}
+              alt={`${queue.album.name} by ${currentSong.artistName}`}
               loading="lazy"
               onLoad={() => setImageLoaded(true)}
               className={`w-full h-full object-cover transition-opacity duration-300 ${
@@ -182,7 +198,7 @@ export default function JamifyFullPlayer() {
               }`}
             />
           ) : (
-            <div className="w-full h-full bg-[#282828] flex items-center justify-center">
+            <div className="w-full h-full bg-[#282828] flex items-center justify-center" aria-hidden="true">
               <svg className="w-24 h-24 text-[#535353]" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
               </svg>
@@ -200,7 +216,10 @@ export default function JamifyFullPlayer() {
             </h2>
             <Link
               href={`/artists/${currentSong.artistSlug || ''}`}
-              onClick={collapsePlayer}
+              onClick={() => {
+                vibrate(BUTTON_PRESS);
+                collapsePlayer();
+              }}
               className="text-[#b3b3b3] hover:text-white hover:underline truncate block"
             >
               {currentSong.artistName}
@@ -209,6 +228,7 @@ export default function JamifyFullPlayer() {
           {/* Like button */}
           <button
             onClick={() => {
+              vibrate(BUTTON_PRESS);
               if (currentSong) {
                 if (isInWishlist(currentSong.id)) {
                   const item = wishlist.items.find(i => i.song.id === currentSong.id);
@@ -268,7 +288,10 @@ export default function JamifyFullPlayer() {
         <div className="flex items-center justify-between">
           {/* Shuffle */}
           <button
-            onClick={() => setShuffle(!queue.shuffle)}
+            onClick={() => {
+              vibrate(BUTTON_PRESS);
+              setShuffle(!queue.shuffle);
+            }}
             className={`p-3 btn-touch ${queue.shuffle ? 'text-[#1DB954]' : 'text-[#b3b3b3]'}`}
             aria-label={queue.shuffle ? 'Disable shuffle' : 'Enable shuffle'}
           >
@@ -279,7 +302,10 @@ export default function JamifyFullPlayer() {
 
           {/* Previous */}
           <button
-            onClick={playPrev}
+            onClick={() => {
+              vibrate(BUTTON_PRESS);
+              playPrev();
+            }}
             disabled={isFirstTrack && !hasUpNext}
             className="p-3 text-white disabled:opacity-30 btn-touch"
             aria-label="Previous track"
@@ -291,7 +317,10 @@ export default function JamifyFullPlayer() {
 
           {/* Play/Pause */}
           <button
-            onClick={togglePlay}
+            onClick={() => {
+              vibrate(BUTTON_PRESS);
+              togglePlay();
+            }}
             className="w-16 h-16 rounded-full bg-white flex items-center justify-center text-black btn-touch btn-ripple"
             aria-label={isPlaying ? 'Pause' : 'Play'}
           >
@@ -309,7 +338,10 @@ export default function JamifyFullPlayer() {
 
           {/* Next */}
           <button
-            onClick={playNext}
+            onClick={() => {
+              vibrate(BUTTON_PRESS);
+              playNext();
+            }}
             disabled={isLastTrack && !hasUpNext}
             className="p-3 text-white disabled:opacity-30 btn-touch"
             aria-label="Next track"
@@ -322,6 +354,7 @@ export default function JamifyFullPlayer() {
           {/* Repeat */}
           <button
             onClick={() => {
+              vibrate(BUTTON_PRESS);
               const modes: Array<'off' | 'all' | 'one'> = ['off', 'all', 'one'];
               const currentIndex = modes.indexOf(queue.repeat);
               const nextIndex = (currentIndex + 1) % modes.length;
@@ -347,7 +380,7 @@ export default function JamifyFullPlayer() {
       <div className="px-8 pb-6">
         <div className="flex items-center justify-between">
           {/* Device */}
-          <button className="p-2 text-[#b3b3b3] btn-touch" aria-label="Devices">
+          <button className="p-2 text-[#b3b3b3] btn-touch" aria-label="Connect to a device">
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z" />
             </svg>
@@ -356,11 +389,13 @@ export default function JamifyFullPlayer() {
           {/* Queue */}
           <button
             onClick={() => {
+              vibrate(BUTTON_PRESS);
               collapsePlayer();
               setTimeout(() => toggleQueue(), 100);
             }}
             className={`p-2 btn-touch ${isQueueOpen ? 'text-[#1DB954]' : 'text-[#b3b3b3]'}`}
-            aria-label="Queue"
+            aria-label={isQueueOpen ? 'Close queue' : 'View queue'}
+            aria-pressed={isQueueOpen}
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z" />
@@ -379,7 +414,10 @@ export default function JamifyFullPlayer() {
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-white text-lg font-bold">Sleep Timer</h3>
               <button
-                onClick={() => setIsSettingsOpen(false)}
+                onClick={() => {
+                  vibrate(BUTTON_PRESS);
+                  setIsSettingsOpen(false);
+                }}
                 className="p-2 text-[#b3b3b3] hover:text-white"
                 aria-label="Close settings"
               >
@@ -403,7 +441,10 @@ export default function JamifyFullPlayer() {
                     </p>
                   </div>
                   <button
-                    onClick={() => sleepTimer.cancelTimer()}
+                    onClick={() => {
+                      vibrate(BUTTON_PRESS);
+                      sleepTimer.cancelTimer();
+                    }}
                     className="px-4 py-2 bg-[#b3b3b3]/20 text-white rounded-full text-sm font-medium hover:bg-[#b3b3b3]/30"
                   >
                     Cancel
@@ -417,6 +458,7 @@ export default function JamifyFullPlayer() {
               <p className="text-[#b3b3b3] text-sm mb-3">Set a timer to automatically stop music</p>
               <button
                 onClick={() => {
+                  vibrate(BUTTON_PRESS);
                   sleepTimer.startTimer('5min');
                   setIsSettingsOpen(false);
                 }}
@@ -426,6 +468,7 @@ export default function JamifyFullPlayer() {
               </button>
               <button
                 onClick={() => {
+                  vibrate(BUTTON_PRESS);
                   sleepTimer.startTimer('15min');
                   setIsSettingsOpen(false);
                 }}
@@ -435,6 +478,7 @@ export default function JamifyFullPlayer() {
               </button>
               <button
                 onClick={() => {
+                  vibrate(BUTTON_PRESS);
                   sleepTimer.startTimer('30min');
                   setIsSettingsOpen(false);
                 }}
@@ -444,6 +488,7 @@ export default function JamifyFullPlayer() {
               </button>
               <button
                 onClick={() => {
+                  vibrate(BUTTON_PRESS);
                   sleepTimer.startTimer('1hr');
                   setIsSettingsOpen(false);
                 }}
@@ -453,6 +498,7 @@ export default function JamifyFullPlayer() {
               </button>
               <button
                 onClick={() => {
+                  vibrate(BUTTON_PRESS);
                   sleepTimer.startTimer('end-of-track');
                   setIsSettingsOpen(false);
                 }}
@@ -460,6 +506,38 @@ export default function JamifyFullPlayer() {
               >
                 End of current track
               </button>
+            </div>
+
+            {/* Crossfade Settings */}
+            <div className="border-t border-[#535353] pt-4 mt-4">
+              <h4 className="text-white text-sm font-medium mb-3">Crossfade</h4>
+              <p className="text-[#b3b3b3] text-xs mb-3">Seamless transition between songs</p>
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[#b3b3b3] text-sm">
+                    {crossfadeDuration === 0 ? 'Off' : `${crossfadeDuration} second${crossfadeDuration !== 1 ? 's' : ''}`}
+                  </span>
+                </div>
+
+                <input
+                  type="range"
+                  min="0"
+                  max="12"
+                  step="1"
+                  value={crossfadeDuration}
+                  onChange={(e) => setCrossfadeDuration(Number(e.target.value))}
+                  className="w-full h-1 bg-[#535353] rounded-lg appearance-none cursor-pointer"
+                  style={{
+                    background: `linear-gradient(to right, #1DB954 0%, #1DB954 ${(crossfadeDuration / 12) * 100}%, #535353 ${(crossfadeDuration / 12) * 100}%, #535353 100%)`
+                  }}
+                />
+
+                <div className="flex justify-between text-[10px] text-[#b3b3b3]">
+                  <span>Off</span>
+                  <span>12s</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

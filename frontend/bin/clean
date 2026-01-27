@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -e
+
+echo "🧹 Cleaning frontend caches..."
+
+rm -rf .next tsconfig.tsbuildinfo node_modules/.cache 2>/dev/null || true
+
+echo "✅ Caches cleaned"

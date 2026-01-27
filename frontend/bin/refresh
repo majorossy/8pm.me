@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -e
+
+echo "🔄 Refreshing frontend development environment..."
+
+# Kill any process on port 3001
+echo "  → Stopping dev server on port 3001..."
+lsof -ti:3001 | xargs kill -9 2>/dev/null || echo "    (no process found)"
+
+# Clean caches
+echo "  → Cleaning caches..."
+rm -rf .next tsconfig.tsbuildinfo node_modules/.cache 2>/dev/null || true
+
+echo "  → Starting dev server..."
+npm run dev

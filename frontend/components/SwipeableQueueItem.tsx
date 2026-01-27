@@ -1,6 +1,7 @@
 'use client';
 
 import { useSwipeGesture } from '@/hooks/useSwipeGesture';
+import { useHaptic } from '@/hooks/useHaptic';
 import { ReactNode, useState, useRef, useEffect } from 'react';
 
 interface SwipeableQueueItemProps {
@@ -19,9 +20,11 @@ export default function SwipeableQueueItem({
   const itemRef = useRef<HTMLDivElement>(null);
   const SWIPE_THRESHOLD = 80; // 80px to reveal delete button
   const VELOCITY_THRESHOLD = 0.3; // Lower threshold for faster swipes
+  const { vibrate, SWIPE_COMPLETE, DELETE_ACTION } = useHaptic();
 
   const handleDelete = () => {
     // Simple confirmation for mobile
+    vibrate(DELETE_ACTION);
     setIsDeleting(true);
     // Wait for animation before calling onDelete
     setTimeout(() => {
@@ -42,11 +45,13 @@ export default function SwipeableQueueItem({
     onSwipeLeft: () => {
       // Swipe left - reveal delete button
       if (Math.abs(dragOffset.x) >= SWIPE_THRESHOLD) {
+        vibrate(SWIPE_COMPLETE);
         setIsRevealed(true);
       }
     },
     onSwipeRight: () => {
       // Swipe right - hide delete button
+      vibrate(SWIPE_COMPLETE);
       setIsRevealed(false);
     },
   });

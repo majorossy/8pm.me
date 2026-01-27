@@ -6,10 +6,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { JamifySearchOverlay } from './JamifySearchOverlay';
+import { useHaptic } from '@/hooks/useHaptic';
 
 export default function JamifyMobileNav() {
   const pathname = usePathname();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const { vibrate, BUTTON_PRESS } = useHaptic();
 
   const isActive = (path: string) => {
     if (path === '/') return pathname === '/';
@@ -34,7 +36,10 @@ export default function JamifyMobileNav() {
     {
       href: '/search',
       label: 'Search',
-      action: () => setIsSearchOpen(true),
+      action: () => {
+        vibrate(BUTTON_PRESS);
+        setIsSearchOpen(true);
+      },
       icon: (active: boolean) => (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -66,7 +71,7 @@ export default function JamifyMobileNav() {
 
   return (
     <>
-      <nav className="fixed bottom-0 left-0 right-0 h-[50px] bg-gradient-to-t from-black via-black/95 to-black/90 z-40 md:hidden safe-bottom">
+      <nav className="fixed bottom-0 left-0 right-0 h-[50px] bg-gradient-to-t from-black via-black/95 to-black/90 z-40 md:hidden safe-bottom" aria-label="Main navigation">
         <div className="flex items-center justify-around h-full px-4">
           {tabs.map((tab) => {
             const active = isActive(tab.href);
@@ -80,9 +85,11 @@ export default function JamifyMobileNav() {
                   className={`flex flex-col items-center justify-center gap-1 min-w-[64px] py-1 transition-colors ${
                     active ? 'text-white' : 'text-[#b3b3b3]'
                   }`}
+                  aria-label={tab.label}
+                  aria-current={active ? 'page' : undefined}
                 >
                   {tab.icon(active)}
-                  <span className="text-[10px] font-medium">{tab.label}</span>
+                  <span className="text-[10px] font-medium" aria-hidden="true">{tab.label}</span>
                 </button>
               );
             }
@@ -92,12 +99,15 @@ export default function JamifyMobileNav() {
               <Link
                 key={tab.href}
                 href={tab.href}
+                onClick={() => vibrate(BUTTON_PRESS)}
                 className={`flex flex-col items-center justify-center gap-1 min-w-[64px] py-1 transition-colors ${
                   active ? 'text-white' : 'text-[#b3b3b3]'
                 }`}
+                aria-label={tab.label}
+                aria-current={active ? 'page' : undefined}
               >
                 {tab.icon(active)}
-                <span className="text-[10px] font-medium">{tab.label}</span>
+                <span className="text-[10px] font-medium" aria-hidden="true">{tab.label}</span>
               </Link>
             );
           })}

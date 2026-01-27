@@ -84,21 +84,27 @@ export default function Queue() {
 
   // Jamify/Spotify style - slides from right, positioned above bottom player
   return (
-      <>
-        {/* Backdrop */}
-        <div
-          className={`fixed z-40 bg-black/60 ${
-            isMobile ? 'inset-0' : 'top-0 right-0 bottom-[90px] left-[240px]'
-          }`}
-          onClick={toggleQueue}
-        />
+    <>
+      {/* Backdrop */}
+      <div
+        className={`fixed z-40 bg-black/60 ${
+          isMobile ? 'inset-0' : 'top-0 right-0 bottom-[90px] left-[240px]'
+        }`}
+        onClick={toggleQueue}
+        aria-hidden="true"
+      />
 
-        {/* Drawer - Full screen on mobile */}
-        <div className={`fixed z-50 flex flex-col ${
+      {/* Drawer - Full screen on mobile */}
+      <aside
+        className={`fixed z-50 flex flex-col ${
           isMobile
             ? 'inset-0 bg-gradient-to-b from-[#404040] to-[#121212] safe-top safe-bottom'
             : 'right-0 top-0 bottom-[90px] w-96 bg-[#121212] border-l border-[#282828]'
-        }`}>
+        }`}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Queue"
+      >
           {/* Mobile drag indicator */}
           {isMobile && (
             <div className="flex justify-center pt-3 pb-1">
@@ -130,6 +136,7 @@ export default function Queue() {
                     <button
                       onClick={clearQueue}
                       className="text-xs text-[#a7a7a7] hover:text-white transition-colors"
+                      aria-label="Clear entire queue"
                     >
                       Clear all
                     </button>
@@ -137,6 +144,7 @@ export default function Queue() {
                   <button
                     onClick={toggleQueue}
                     className="p-2 text-[#a7a7a7] hover:text-white transition-colors"
+                    aria-label="Close queue"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -153,6 +161,7 @@ export default function Queue() {
               <button
                 onClick={() => setShowSaveModal(true)}
                 className="w-full py-2 px-4 bg-[#1DB954] hover:bg-[#1ed760] text-white text-sm font-semibold rounded-full transition-colors"
+                aria-label={`Save queue with ${totalSongsInQueue} songs as a new playlist`}
               >
                 Save as Playlist
               </button>
@@ -160,7 +169,7 @@ export default function Queue() {
           )}
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto prevent-overscroll">
+          <div className="flex-1 overflow-y-auto prevent-overscroll" role="region" aria-label="Queue tracks">
             {!hasAlbum && !hasUpNext ? (
               <div className="flex flex-col items-center justify-center h-full text-[#a7a7a7]">
                 <svg className="w-12 h-12 mb-4 text-[#535353]" fill="currentColor" viewBox="0 0 24 24">
@@ -285,6 +294,7 @@ export default function Queue() {
                       <button
                         onClick={clearUpNext}
                         className="text-xs text-[#a7a7a7] hover:text-white transition-colors"
+                        aria-label={`Clear up next queue (${queue.upNext.length} songs)`}
                       >
                         Clear
                       </button>
@@ -311,7 +321,7 @@ export default function Queue() {
                                   removeFromUpNext(item.id);
                                 }}
                                 className="p-1 text-[#a7a7a7] hover:text-white transition-colors"
-                                aria-label="Remove from queue"
+                                aria-label={`Remove ${item.song.title} from queue`}
                               >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -349,7 +359,6 @@ export default function Queue() {
               </>
             )}
           </div>
-      </div>
 
       {/* Save Playlist Modal */}
       {showSaveModal && (
@@ -420,6 +429,7 @@ export default function Queue() {
           </div>
         </>
       )}
-    </>
+    </aside>
+  </>
   );
 }

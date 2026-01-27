@@ -272,6 +272,7 @@ interface QueueContextType {
   selectVersion: (trackIndex: number, versionId: string) => void;
   setCurrentTrack: (index: number) => void;
   nextTrack: () => Song | null; // Returns next song to play (could be from up-next)
+  peekNextTrack: () => Song | null; // Returns next song without advancing queue
   prevTrack: () => void;
   removeTrack: (trackIndex: number) => void;
   addToUpNext: (song: Song, source?: 'manual' | 'autoplay') => void;
@@ -359,6 +360,35 @@ export function QueueProvider({ children }: { children: React.ReactNode }) {
     return null;
   }, [queue, currentSong]);
 
+  const peekNextTrack = useCallback((): Song | null => {
+    // If repeat one, return current song
+    if (queue.repeat === 'one') {
+      return currentSong;
+    }
+
+    const nextIndex = queue.currentTrackIndex + 1;
+
+    // Still have album tracks
+    if (nextIndex < queue.tracks.length) {
+      const nextTrackObj = queue.tracks[nextIndex];
+      return getSelectedSong(nextTrackObj);
+    }
+
+    // Album finished - check up next
+    if (queue.upNext.length > 0) {
+      return queue.upNext[0].song;
+    }
+
+    // If repeat all, go back to start
+    if (queue.repeat === 'all') {
+      const firstTrack = queue.tracks[0];
+      return firstTrack ? getSelectedSong(firstTrack) : null;
+    }
+
+    // Nothing more to play
+    return null;
+  }, [queue, currentSong]);
+
   const prevTrack = useCallback(() => {
     dispatch({ type: 'PREV_TRACK' });
   }, []);
@@ -415,6 +445,7 @@ export function QueueProvider({ children }: { children: React.ReactNode }) {
     selectVersion,
     setCurrentTrack,
     nextTrack,
+    peekNextTrack,
     prevTrack,
     removeTrack,
     addToUpNext,
