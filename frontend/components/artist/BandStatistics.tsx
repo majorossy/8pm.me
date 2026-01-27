@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { useTheme } from '@/context/ThemeContext';
 
 interface RecordingStats {
   total: number;
@@ -31,8 +30,6 @@ interface BandStatisticsProps {
 }
 
 const BandStatistics: React.FC<BandStatisticsProps> = ({ statistics }) => {
-  const { theme } = useTheme();
-
   // Return null if no statistics data or all values are undefined
   if (!statistics || Object.values(statistics).every(val => val === undefined || val === null)) {
     return null;
@@ -47,53 +44,16 @@ const BandStatistics: React.FC<BandStatisticsProps> = ({ statistics }) => {
     topVenues,
   } = statistics;
 
-  // Theme-specific styles
-  const getThemeStyles = () => {
-    switch (theme) {
-      case 'tron':
-        return {
-          container: 'bg-gray-900 border border-cyan-500/30',
-          card: 'bg-black/50 border border-cyan-500/50 shadow-lg shadow-cyan-500/20',
-          title: 'text-cyan-400 font-bold',
-          value: 'text-cyan-300',
-          label: 'text-gray-400',
-          accent: 'text-cyan-500',
-          glow: 'shadow-[0_0_10px_rgba(6,182,212,0.3)]',
-        };
-      case 'metro':
-        return {
-          container: 'bg-white border border-gray-200',
-          card: 'bg-white border border-gray-200 shadow-md hover:shadow-lg transition-shadow',
-          title: 'text-orange-600 font-bold',
-          value: 'text-gray-900 font-semibold',
-          label: 'text-gray-600',
-          accent: 'text-orange-500',
-          glow: '',
-        };
-      case 'jamify':
-        return {
-          container: 'bg-[#181818] border border-[#282828]',
-          card: 'bg-[#181818] border border-[#282828] hover:bg-[#282828] transition-colors rounded-lg',
-          title: 'text-green-400 font-bold',
-          value: 'text-white font-semibold',
-          label: 'text-gray-400',
-          accent: 'text-green-500',
-          glow: '',
-        };
-      default:
-        return {
-          container: 'bg-gray-900 border border-cyan-500/30',
-          card: 'bg-black/50 border border-cyan-500/50',
-          title: 'text-cyan-400 font-bold',
-          value: 'text-cyan-300',
-          label: 'text-gray-400',
-          accent: 'text-cyan-500',
-          glow: '',
-        };
-    }
+  // Jamify/Spotify styles
+  const styles = {
+    container: 'bg-[#181818] border border-[#282828]',
+    card: 'bg-[#181818] border border-[#282828] hover:bg-[#282828] transition-colors rounded-lg',
+    title: 'text-green-400 font-bold',
+    value: 'text-white font-semibold',
+    label: 'text-gray-400',
+    accent: 'text-green-500',
+    glow: '',
   };
-
-  const styles = getThemeStyles();
 
   return (
     <div className={`${styles.container} rounded-lg p-6 mb-8`}>

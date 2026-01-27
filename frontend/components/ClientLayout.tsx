@@ -6,6 +6,7 @@ import { WishlistProvider } from '@/context/WishlistContext';
 import { PlaylistProvider } from '@/context/PlaylistContext';
 import { QueueProvider } from '@/context/QueueContext';
 import { PlayerProvider, usePlayer } from '@/context/PlayerContext';
+import { RecentlyPlayedProvider } from '@/context/RecentlyPlayedContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { BreadcrumbProvider } from '@/context/BreadcrumbContext';
 import { MobileUIProvider, useMobileUI } from '@/context/MobileUIContext';
@@ -59,13 +60,15 @@ function LayoutContent({ children }: { children: ReactNode }) {
       <WishlistProvider>
         <PlaylistProvider>
           <QueueProvider>
-            <PlayerProvider>
-              <BreadcrumbProvider>
-                <MobileUIProvider>
-                  <InnerLayout>{children}</InnerLayout>
-                </MobileUIProvider>
-              </BreadcrumbProvider>
-            </PlayerProvider>
+            <RecentlyPlayedProvider>
+              <PlayerProvider>
+                <BreadcrumbProvider>
+                  <MobileUIProvider>
+                    <InnerLayout>{children}</InnerLayout>
+                  </MobileUIProvider>
+                </BreadcrumbProvider>
+              </PlayerProvider>
+            </RecentlyPlayedProvider>
           </QueueProvider>
         </PlaylistProvider>
       </WishlistProvider>

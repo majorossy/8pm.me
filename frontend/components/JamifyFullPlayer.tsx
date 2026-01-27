@@ -9,8 +9,11 @@ import { useWishlist } from '@/context/WishlistContext';
 import { useMobileUI } from '@/context/MobileUIContext';
 import { useSwipeGesture } from '@/hooks/useSwipeGesture';
 import { useBatteryOptimization } from '@/hooks/useBatteryOptimization';
+import { useSleepTimer, SleepTimerPreset } from '@/hooks/useSleepTimer';
+import { useShare } from '@/hooks/useShare';
 import { formatDuration } from '@/lib/api';
 import Link from 'next/link';
+import ShareModal from '@/components/ShareModal';
 
 export default function JamifyFullPlayer() {
   const { isPlayerExpanded, collapsePlayer, isTransitioning } = useMobileUI();
@@ -28,6 +31,7 @@ export default function JamifyFullPlayer() {
     seek,
     toggleQueue,
     isQueueOpen,
+    pause,
   } = usePlayer();
 
   const {
@@ -40,6 +44,36 @@ export default function JamifyFullPlayer() {
   } = useQueue();
 
   const { addToWishlist, removeFromWishlist, isInWishlist, wishlist } = useWishlist();
+
+  const {
+    showShareModal,
+    shareUrl,
+    shareTitle,
+    copiedToClipboard,
+    openShareModal,
+    closeShareModal,
+    copyToClipboard,
+    nativeShare,
+    shareableSong,
+  } = useShare();
+
+  // Settings panel state
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [showTimerNotification, setShowTimerNotification] = useState(false);
+
+  // Sleep timer
+  const sleepTimer = useSleepTimer({
+    onTimerComplete: () => {
+      pause();
+      setShowTimerNotification(false);
+    },
+    onOneMinuteWarning: () => {
+      setShowTimerNotification(true);
+      setTimeout(() => setShowTimerNotification(false), 5000); // Hide after 5 seconds
+    },
+    currentSongDuration: duration - currentTime,
+    currentSongProgress: currentTime,
+  });
 
   // Animation state
   const [isAnimating, setIsAnimating] = useState(false);
@@ -107,12 +141,31 @@ export default function JamifyFullPlayer() {
           </p>
         </div>
 
-        {/* More options */}
-        <button className="p-2 -mr-2 text-white btn-touch" aria-label="More options">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-          </svg>
-        </button>
+        {/* Action buttons */}
+        <div className="flex items-center gap-1">
+          {/* Share button */}
+          <button
+            onClick={() => currentSong && openShareModal(shareableSong(currentSong))}
+            className="p-2 text-white btn-touch"
+            aria-label="Share"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+            </svg>
+          </button>
+
+          {/* Settings button */}
+          <button
+            onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+            className={`p-2 -mr-2 btn-touch ${isSettingsOpen ? 'text-[#1DB954]' : 'text-white'}`}
+            aria-label="Settings"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* Album Art */}
@@ -315,6 +368,129 @@ export default function JamifyFullPlayer() {
           </button>
         </div>
       </div>
+
+      {/* Settings Panel */}
+      {isSettingsOpen && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-end md:items-center md:justify-center" onClick={() => setIsSettingsOpen(false)}>
+          <div
+            className="bg-[#282828] w-full md:w-96 md:rounded-lg p-6 space-y-4 safe-bottom"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-white text-lg font-bold">Sleep Timer</h3>
+              <button
+                onClick={() => setIsSettingsOpen(false)}
+                className="p-2 text-[#b3b3b3] hover:text-white"
+                aria-label="Close settings"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Active timer display */}
+            {sleepTimer.isActive && (
+              <div className="bg-[#1DB954]/20 border border-[#1DB954] rounded-lg p-4 mb-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-[#1DB954] text-sm font-medium">Timer Active</p>
+                    <p className="text-white text-2xl font-bold font-mono mt-1">
+                      {Math.floor(sleepTimer.timeRemaining / 60)}:{(sleepTimer.timeRemaining % 60).toString().padStart(2, '0')}
+                    </p>
+                    <p className="text-[#b3b3b3] text-xs mt-1">
+                      Music will stop in {Math.floor(sleepTimer.timeRemaining / 60)} minute{Math.floor(sleepTimer.timeRemaining / 60) !== 1 ? 's' : ''}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => sleepTimer.cancelTimer()}
+                    className="px-4 py-2 bg-[#b3b3b3]/20 text-white rounded-full text-sm font-medium hover:bg-[#b3b3b3]/30"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Timer presets */}
+            <div className="space-y-2">
+              <p className="text-[#b3b3b3] text-sm mb-3">Set a timer to automatically stop music</p>
+              <button
+                onClick={() => {
+                  sleepTimer.startTimer('5min');
+                  setIsSettingsOpen(false);
+                }}
+                className="w-full px-4 py-3 bg-[#535353] hover:bg-[#3E3E3E] text-white rounded-lg text-left font-medium transition-colors"
+              >
+                5 minutes
+              </button>
+              <button
+                onClick={() => {
+                  sleepTimer.startTimer('15min');
+                  setIsSettingsOpen(false);
+                }}
+                className="w-full px-4 py-3 bg-[#535353] hover:bg-[#3E3E3E] text-white rounded-lg text-left font-medium transition-colors"
+              >
+                15 minutes
+              </button>
+              <button
+                onClick={() => {
+                  sleepTimer.startTimer('30min');
+                  setIsSettingsOpen(false);
+                }}
+                className="w-full px-4 py-3 bg-[#535353] hover:bg-[#3E3E3E] text-white rounded-lg text-left font-medium transition-colors"
+              >
+                30 minutes
+              </button>
+              <button
+                onClick={() => {
+                  sleepTimer.startTimer('1hr');
+                  setIsSettingsOpen(false);
+                }}
+                className="w-full px-4 py-3 bg-[#535353] hover:bg-[#3E3E3E] text-white rounded-lg text-left font-medium transition-colors"
+              >
+                1 hour
+              </button>
+              <button
+                onClick={() => {
+                  sleepTimer.startTimer('end-of-track');
+                  setIsSettingsOpen(false);
+                }}
+                className="w-full px-4 py-3 bg-[#535353] hover:bg-[#3E3E3E] text-white rounded-lg text-left font-medium transition-colors"
+              >
+                End of current track
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Timer notification (1 minute warning) */}
+      {showTimerNotification && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#1DB954] text-white px-6 py-3 rounded-full shadow-lg animate-fade-in">
+          <p className="text-sm font-medium">Music will stop in 1 minute</p>
+        </div>
+      )}
+
+      {/* Active timer indicator (bottom of screen when not in settings) */}
+      {sleepTimer.isActive && !isSettingsOpen && (
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 bg-[#282828]/95 backdrop-blur-sm text-white px-4 py-2 rounded-full shadow-lg">
+          <p className="text-xs font-medium text-center">
+            Sleep timer: {Math.floor(sleepTimer.timeRemaining / 60)}:{(sleepTimer.timeRemaining % 60).toString().padStart(2, '0')} remaining
+          </p>
+        </div>
+      )}
+
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={showShareModal}
+        onClose={closeShareModal}
+        url={shareUrl}
+        title={shareTitle}
+        onCopy={copyToClipboard}
+        onNativeShare={nativeShare}
+        copiedToClipboard={copiedToClipboard}
+      />
     </div>
   );
 }

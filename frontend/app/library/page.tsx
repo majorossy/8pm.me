@@ -3,15 +3,36 @@
 import { useState } from 'react';
 import { useWishlist } from '@/context/WishlistContext';
 import { useQueue } from '@/context/QueueContext';
+import { useRecentlyPlayed } from '@/context/RecentlyPlayedContext';
 import { formatDuration } from '@/lib/api';
 import Link from 'next/link';
 
-type TabType = 'songs' | 'artists' | 'albums';
+type TabType = 'songs' | 'artists' | 'albums' | 'recent';
 
 export default function LibraryPage() {
   const [activeTab, setActiveTab] = useState<TabType>('songs');
   const { wishlist, removeFromWishlist } = useWishlist();
   const { addToUpNext } = useQueue();
+  const { recentlyPlayed } = useRecentlyPlayed();
+
+  // Format relative time (e.g., "2 hours ago", "Yesterday")
+  const formatRelativeTime = (isoDate: string): string => {
+    const now = new Date();
+    const date = new Date(isoDate);
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins} ${diffMins === 1 ? 'minute' : 'minutes'} ago`;
+    if (diffHours < 24) return `${diffHours} ${diffHours === 1 ? 'hour' : 'hours'} ago`;
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays < 7) return `${diffDays} days ago`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)} ${Math.floor(diffDays / 7) === 1 ? 'week' : 'weeks'} ago`;
+    if (diffDays < 365) return `${Math.floor(diffDays / 30)} ${Math.floor(diffDays / 30) === 1 ? 'month' : 'months'} ago`;
+    return `${Math.floor(diffDays / 365)} ${Math.floor(diffDays / 365) === 1 ? 'year' : 'years'} ago`;
+  };
 
   // Group songs by artist
   const artistsMap = new Map<string, typeof wishlist.items>();
@@ -180,6 +201,85 @@ export default function LibraryPage() {
     );
   };
 
+  const renderRecentlyPlayed = () => {
+    if (recentlyPlayed.length === 0) {
+      return (
+        <div className="flex flex-col items-center justify-center py-16 px-4">
+          <svg className="w-16 h-16 text-[#535353] mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <h3 className="text-white font-bold text-lg mb-2">No listening history</h3>
+          <p className="text-[#b3b3b3] text-sm text-center">
+            Songs you play will appear here. Listen to at least 30 seconds to track them.
+          </p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-1 px-4 pb-4">
+        {recentlyPlayed.map((item) => (
+          <div
+            key={`${item.songId}-${item.playedAt}`}
+            className="flex items-center gap-3 p-3 rounded hover:bg-white/10 transition-colors group"
+          >
+            {/* Album art */}
+            <div className="w-12 h-12 flex-shrink-0 rounded overflow-hidden bg-[#282828]">
+              {item.song.albumArt ? (
+                <img src={item.song.albumArt} alt={item.song.albumName} className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-[#535353]" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14.5c-2.49 0-4.5-2.01-4.5-4.5S9.51 7.5 12 7.5s4.5 2.01 4.5 4.5-2.01 4.5-4.5 4.5zm0-5.5c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z" />
+                  </svg>
+                </div>
+              )}
+            </div>
+
+            {/* Play button (hidden, shows on hover/mobile always) */}
+            <button
+              onClick={() => addToUpNext(item.song)}
+              className="w-10 h-10 flex items-center justify-center rounded-full bg-[#1DB954] text-black opacity-0 md:group-hover:opacity-100 hover:scale-105 transition-all btn-touch"
+              aria-label={`Play ${item.song.title}`}
+            >
+              <svg className="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </button>
+
+            {/* Song info */}
+            <div className="flex-1 min-w-0">
+              <p className="text-white font-medium truncate">{item.song.title}</p>
+              <Link
+                href={`/artists/${item.song.artistSlug}`}
+                className="text-[#b3b3b3] text-sm hover:text-white hover:underline truncate block"
+              >
+                {item.song.artistName}
+              </Link>
+            </div>
+
+            {/* Play count and time */}
+            <div className="text-right flex-shrink-0">
+              <p className="text-[#b3b3b3] text-xs">
+                {formatRelativeTime(item.playedAt)}
+              </p>
+              {item.playCount > 1 && (
+                <p className="text-[#535353] text-xs">
+                  {item.playCount} plays
+                </p>
+              )}
+            </div>
+
+            {/* Duration */}
+            <div className="text-[#b3b3b3] text-sm font-mono hidden md:block">
+              {formatDuration(item.song.duration)}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-[#121212] pb-[140px] md:pb-[90px] safe-top">
       {/* Header */}
@@ -220,6 +320,16 @@ export default function LibraryPage() {
         >
           Albums
         </button>
+        <button
+          onClick={() => setActiveTab('recent')}
+          className={`px-4 py-2 font-medium transition-colors ${
+            activeTab === 'recent'
+              ? 'text-white border-b-2 border-[#1DB954]'
+              : 'text-[#b3b3b3] hover:text-white'
+          }`}
+        >
+          Recently Played
+        </button>
       </div>
 
       {/* Tab content */}
@@ -227,6 +337,7 @@ export default function LibraryPage() {
         {activeTab === 'songs' && renderSongs()}
         {activeTab === 'artists' && renderArtists()}
         {activeTab === 'albums' && renderAlbums()}
+        {activeTab === 'recent' && renderRecentlyPlayed()}
       </div>
     </div>
   );

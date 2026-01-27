@@ -1,14 +1,15 @@
 'use client';
 
-import { use, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { usePlaylists } from '@/context/PlaylistContext';
 import { useQueue } from '@/context/QueueContext';
 import { formatDuration } from '@/lib/api';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 
-export default function PlaylistDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default function PlaylistDetailPage() {
+  const params = useParams();
+  const id = params.id as string;
   const router = useRouter();
   const { getPlaylist, deletePlaylist, removeFromPlaylist, updatePlaylist } = usePlaylists();
   const { loadAlbum, addToUpNext } = useQueue();

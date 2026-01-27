@@ -6,6 +6,7 @@
 import React, { createContext, useContext, useState, useRef, useEffect, useCallback } from 'react';
 import { Song, Album, Track } from '@/lib/types';
 import { useQueue } from './QueueContext';
+import { useRecentlyPlayed } from './RecentlyPlayedContext';
 
 interface PlayerState {
   isPlaying: boolean;
@@ -22,6 +23,7 @@ interface PlayerContextType extends PlayerState {
   // Playback controls
   playSong: (song: Song) => void;
   togglePlay: () => void;
+  pause: () => void;
   setVolume: (volume: number) => void;
   seek: (time: number) => void;
   playNext: () => void;
@@ -47,6 +49,8 @@ const PlayerContext = createContext<PlayerContextType | null>(null);
 export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const queueContext = useQueue();
+  const { trackPlay } = useRecentlyPlayed();
+  const trackedSongsRef = useRef<Set<string>>(new Set()); // Track which songs we've already counted
 
   // Get current song from QueueContext
   const currentSong = queueContext.currentSong;
@@ -148,6 +152,32 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     }
   }, [currentSong]);
 
+  // Track song as "played" after 30 seconds of playback
+  useEffect(() => {
+    if (!currentSong || !state.isPlaying) return;
+
+    // Check if we've already tracked this song
+    if (trackedSongsRef.current.has(currentSong.id)) return;
+
+    // Set a timeout to track the song after 30 seconds
+    const trackingTimeout = setTimeout(() => {
+      if (state.currentTime >= 30) {
+        trackPlay(currentSong);
+        trackedSongsRef.current.add(currentSong.id);
+      }
+    }, 30000); // 30 seconds
+
+    return () => clearTimeout(trackingTimeout);
+  }, [currentSong, state.isPlaying, state.currentTime, trackPlay]);
+
+  // Clear tracked songs when song changes
+  useEffect(() => {
+    if (currentSong) {
+      // Reset tracking for new song (allow same song to be tracked again if replayed later)
+      trackedSongsRef.current.delete(currentSong.id);
+    }
+  }, [currentSong]);
+
   const playSong = useCallback((song: Song) => {
     if (!audioRef.current) return;
 
@@ -165,6 +195,12 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       setState(prev => ({ ...prev, isPlaying: false }));
     });
   }, [queueContext]);
+
+  const pause = useCallback(() => {
+    if (!audioRef.current) return;
+    audioRef.current.pause();
+    setState(prev => ({ ...prev, isPlaying: false }));
+  }, []);
 
   const togglePlay = useCallback(() => {
     if (!audioRef.current || !currentSong) return;
@@ -279,6 +315,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         currentSong,
         playSong,
         togglePlay,
+        pause,
         setVolume,
         seek,
         playNext,

@@ -603,18 +603,22 @@ export async function getArtist(slug: string): Promise<ArtistDetail | null> {
         );
 
         const trackCategories = trackCategoriesData.categoryList || [];
+        console.log('[getArtist] Album:', albumCat.name, '-> Track categories:', trackCategories.length);
         let tracks: Track[] = [];
 
         if (trackCategories.length > 0) {
+          console.log('[getArtist] Album has', trackCategories.length, 'track categories');
           // For each track category, get its products (song versions)
           tracks = await Promise.all(
             trackCategories.map(async (trackCat) => {
+              console.log('[getArtist] Querying track:', trackCat.name, 'UID:', trackCat.uid);
               const productsData = await graphqlFetch<{ products: { items: MagentoProduct[]; total_count: number } }>(
                 GET_SONGS_BY_CATEGORY_QUERY,
                 { categoryUid: trackCat.uid, pageSize: 100 }
               );
 
               const products = productsData.products.items || [];
+              console.log('[getArtist] Track:', trackCat.name, 'UID:', trackCat.uid, '-> Products:', products.length, 'Total:', productsData.products.total_count);
               const songs = products.map(p => productToSong(p, albumCat.url_key));
 
               return {
@@ -632,6 +636,33 @@ export async function getArtist(slug: string): Promise<ArtistDetail | null> {
               };
             })
           );
+
+          // Check if any tracks have products
+          const totalProducts = tracks.reduce((sum, t) => sum + t.songs.length, 0);
+
+          // Fallback: if track categories exist but have no products, try fetching from album directly
+          if (totalProducts === 0) {
+            console.log('[getArtist] Track categories have 0 products, falling back to album-level products');
+            const productsData = await graphqlFetch<{ products: { items: MagentoProduct[]; total_count: number } }>(
+              GET_SONGS_BY_CATEGORY_QUERY,
+              { categoryUid: albumCat.uid, pageSize: 500 }
+            );
+
+            const products = productsData.products.items || [];
+            console.log('[getArtist] Found', products.length, 'products at album level');
+
+            if (products.length > 0) {
+              // Group products by song_title to create tracks
+              tracks = groupProductsIntoTracks(
+                products,
+                albumCat.url_key,
+                albumCat.name,
+                category.uid,
+                category.name,
+                category.url_key
+              );
+            }
+          }
         } else {
           // No track subcategories - products are directly under album
           // Fetch products from album category and group by song_title

@@ -16,11 +16,18 @@ export async function generateStaticParams() {
     if (artistDetail) {
       artistDetail.albums.forEach(album => {
         album.tracks.forEach(track => {
-          params.push({
-            slug: artist.slug,
-            album: album.slug,
-            track: track.slug,
-          });
+          // Ensure all parameters are strings
+          if (
+            artist.slug && typeof artist.slug === 'string' &&
+            album.slug && typeof album.slug === 'string' &&
+            track.slug && typeof track.slug === 'string'
+          ) {
+            params.push({
+              slug: artist.slug,
+              album: album.slug,
+              track: track.slug,
+            });
+          }
         });
       });
     }
