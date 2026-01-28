@@ -10,6 +10,7 @@ import { RecentlyPlayedProvider } from '@/context/RecentlyPlayedContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { BreadcrumbProvider } from '@/context/BreadcrumbContext';
 import { MobileUIProvider, useMobileUI } from '@/context/MobileUIContext';
+import { AuthProvider } from '@/context/AuthContext';
 import BottomPlayer from '@/components/BottomPlayer';
 import Queue from '@/components/Queue';
 import JamifyNavSidebar from '@/components/JamifyNavSidebar';
@@ -21,6 +22,9 @@ import KeyboardShortcutsHelp from '@/components/KeyboardShortcutsHelp';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { ToastProvider } from '@/components/ToastContainer';
+import InstallPrompt from '@/components/InstallPrompt';
+import OfflineIndicator from '@/components/OfflineIndicator';
+import LoadingBar from '@/components/LoadingBar';
 import Link from 'next/link';
 
 // Inner layout that can access player state and contexts
@@ -84,6 +88,9 @@ function InnerLayout({ children }: { children: ReactNode }) {
   // Jamify layout (only theme now)
   return (
     <>
+      {/* Top loading bar for navigation */}
+      <LoadingBar />
+
       {/* Skip to main content link for keyboard users */}
       <a href="#main-content" className="skip-to-main">
         Skip to main content
@@ -92,10 +99,16 @@ function InnerLayout({ children }: { children: ReactNode }) {
       {/* Desktop: Left navigation sidebar */}
       {!isMobile && <JamifyNavSidebar />}
 
+      {/* Organic blob background */}
+      <div className="blob-bg" />
+
+      {/* Fire glow effect */}
+      <div className="fire-glow" />
+
       {/* Main content area */}
       <main
         id="main-content"
-        className={`min-h-screen bg-[#121212] ${
+        className={`min-h-screen bg-[#1c1a17] relative z-10 ${
           isMobile
             ? 'pb-[120px]' // Space for mini player + bottom nav
             : 'ml-[240px] pb-[90px]' // Desktop sidebar + player
@@ -129,31 +142,39 @@ function InnerLayout({ children }: { children: ReactNode }) {
         isOpen={isHelpOpen}
         onClose={() => setIsHelpOpen(false)}
       />
+
+      {/* PWA Install Prompt */}
+      <InstallPrompt />
+
+      {/* Offline Indicator */}
+      <OfflineIndicator />
     </>
   );
 }
 
 function LayoutContent({ children }: { children: ReactNode }) {
   return (
-    <ToastProvider>
-      <CartProvider>
-        <WishlistProvider>
-          <PlaylistProvider>
-            <QueueProvider>
-              <RecentlyPlayedProvider>
-                <PlayerProvider>
-                  <BreadcrumbProvider>
-                    <MobileUIProvider>
-                      <InnerLayout>{children}</InnerLayout>
-                    </MobileUIProvider>
-                  </BreadcrumbProvider>
-                </PlayerProvider>
-              </RecentlyPlayedProvider>
-            </QueueProvider>
-          </PlaylistProvider>
-        </WishlistProvider>
-      </CartProvider>
-    </ToastProvider>
+    <AuthProvider>
+      <ToastProvider>
+        <CartProvider>
+          <WishlistProvider>
+            <PlaylistProvider>
+              <QueueProvider>
+                <RecentlyPlayedProvider>
+                  <PlayerProvider>
+                    <BreadcrumbProvider>
+                      <MobileUIProvider>
+                        <InnerLayout>{children}</InnerLayout>
+                      </MobileUIProvider>
+                    </BreadcrumbProvider>
+                  </PlayerProvider>
+                </RecentlyPlayedProvider>
+              </QueueProvider>
+            </PlaylistProvider>
+          </WishlistProvider>
+        </CartProvider>
+      </ToastProvider>
+    </AuthProvider>
   );
 }
 

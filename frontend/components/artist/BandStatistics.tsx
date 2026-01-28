@@ -46,8 +46,8 @@ const BandStatistics: React.FC<BandStatisticsProps> = ({ statistics }) => {
 
   // Jamify/Spotify styles
   const styles = {
-    container: 'bg-[#181818] border border-[#282828]',
-    card: 'bg-[#181818] border border-[#282828] hover:bg-[#282828] transition-colors rounded-lg',
+    container: 'bg-[#252220] border border-[#2d2a26]',
+    card: 'bg-[#252220] border border-[#2d2a26] hover:bg-[#2d2a26] transition-colors rounded-lg',
     title: 'text-green-400 font-bold',
     value: 'text-white font-semibold',
     label: 'text-gray-400',

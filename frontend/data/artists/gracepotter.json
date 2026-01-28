@@ -1,0 +1,88 @@
+{
+  "slug": "gracepotter",
+  "name": "Grace Potter",
+  "biography": "Grace Potter is an American singer-songwriter and multi-instrumentalist from Waitsfield, Vermont, known for her powerful vocals and commanding stage presence. Born June 20, 1983, Potter formed Grace Potter and the Nocturnals in 2002 while attending St. Lawrence University in New York. The band name originated from their only available rehearsal time being 2AM, making them true 'nocturnals.' The group quickly built a devoted following through relentless touring, playing up to 200 shows per year on the jam band and festival circuit.\n\nWith the Nocturnals, Potter released four studio albums spanning blues rock, folk rock, and hard rock: Nothing but the Water (2005), This Is Somewhere (2007), the self-titled Grace Potter and the Nocturnals (2010), and The Lion the Beast the Beat (2012). The self-titled album was a major commercial breakthrough, topping iTunes charts and earning international recognition. The band disbanded in 2015 following Potter's divorce from drummer Matt Burr.\n\nAs a solo artist, Potter has continued to evolve musically, releasing Midnight (2015), Daylight (2019), and Mother Road (2023). Her latest album Medicine (2025), produced by T Bone Burnett with legendary musicians including Jim Keltner and Marc Ribot, was actually recorded in 2008 but shelved for nearly two decades before finally seeing release. She is a three-time Grammy nominee, including two nominations for Daylight and one for her multiplatinum duet with Kenny Chesney, 'You and Tequila' (2011).\n\nPotter co-founded the Grand Point North music festival with Higher Ground in 2011, an annual celebration of music held at Burlington's Waterfront Park. She married record producer Eric Valentine in 2017, with whom she has one son (born 2018) and operates Sonic Forest Studios, a 10,000-square-foot recording facility in Vermont.",
+  "members": {
+    "current": [
+      {
+        "name": "Grace Potter",
+        "role": "Lead Vocals, Keyboards, Guitar",
+        "years": "2002-present"
+      }
+    ],
+    "former": [
+      {
+        "name": "Scott Tournet",
+        "role": "Lead Guitar, Slide Guitar, Harmonica",
+        "years": "2003-2015"
+      },
+      {
+        "name": "Matt Burr",
+        "role": "Drums, Percussion",
+        "years": "2002-2015"
+      },
+      {
+        "name": "Benny Yurco",
+        "role": "Rhythm Guitar, Vocals",
+        "years": "2009-2015"
+      },
+      {
+        "name": "Catherine Popper",
+        "role": "Bass",
+        "years": "2009-2012"
+      },
+      {
+        "name": "Michael Libramento",
+        "role": "Bass, Keyboards",
+        "years": "2012-2015"
+      },
+      {
+        "name": "Bryan Dondero",
+        "role": "Upright Bass, Electric Bass",
+        "years": "2003-2009"
+      },
+      {
+        "name": "Cory Beard",
+        "role": "Bass",
+        "years": "2002-2003"
+      }
+    ]
+  },
+  "careerHighlights": [
+    "2002: Band formed at St. Lawrence University, New York",
+    "2002: Released debut solo album 'Red Shoe Rebel'",
+    "2004: Released solo album 'Original Soul'",
+    "2005: Released 'Nothing but the Water' independently",
+    "2005: Signed with Hollywood Records",
+    "2010: Self-titled album topped iTunes charts",
+    "2011: 'You and Tequila' with Kenny Chesney certified 2x platinum",
+    "2011: Two Grammy nominations for 'You and Tequila'",
+    "2011: Co-founded Grand Point North festival in Burlington, VT",
+    "2012: Released 'The Lion the Beast the Beat'",
+    "2015: Grace Potter and the Nocturnals disbanded",
+    "2015: Released first post-Nocturnals solo album 'Midnight'",
+    "2019: Two Grammy nominations for 'Daylight' album",
+    "2023: Released 'Mother Road' album",
+    "2025: Released 'Medicine' (recorded 2008 with T Bone Burnett)",
+    "2025: Toured with Chris Stapleton including Madison Square Garden"
+  ],
+  "recordingStats": {
+    "totalShows": 1500,
+    "yearsActive": "2002-present",
+    "mostRecordedVenue": "Higher Ground (Burlington, VT)"
+  },
+  "socialLinks": {
+    "website": "https://www.gracepotter.com",
+    "youtube": "https://www.youtube.com/gracepotter",
+    "facebook": "https://www.facebook.com/GracePotter",
+    "instagram": "https://www.instagram.com/graciepotter",
+    "twitter": "https://x.com/gracepotter"
+  },
+  "images": [
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/6/60/Grace_Potter_and_the_Nocturnals_at_The_Pub_in_California_State_University_Northridge_CA_April_2012.jpg",
+      "caption": "Grace Potter and the Nocturnals performing at CSU Northridge, April 2012",
+      "credit": "Wikimedia Commons"
+    }
+  ]
+}

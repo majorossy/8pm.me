@@ -26,7 +26,7 @@ export default function BandMembers({ members, formerMembers }: BandMembersProps
               {members.map((member, index) => (
                 <div
                   key={index}
-                  className="bg-[#282828] rounded-lg p-4 hover:bg-[#3e3e3e] transition-colors"
+                  className="bg-[#2d2a26] rounded-lg p-4 hover:bg-[#3a3632] transition-colors"
                 >
                   <div className="flex items-start gap-4">
                     {/* Member photo or initial */}
@@ -37,7 +37,7 @@ export default function BandMembers({ members, formerMembers }: BandMembersProps
                         className="w-12 h-12 rounded-full object-cover flex-shrink-0"
                       />
                     ) : (
-                      <div className="w-12 h-12 rounded-full bg-[#1DB954] flex items-center justify-center flex-shrink-0">
+                      <div className="w-12 h-12 rounded-full bg-[#d4a060] flex items-center justify-center flex-shrink-0">
                         <span className="text-black font-bold text-lg">
                           {member.name.charAt(0)}
                         </span>
@@ -49,14 +49,14 @@ export default function BandMembers({ members, formerMembers }: BandMembersProps
                       <h4 className="text-white font-bold text-base truncate">
                         {member.name}
                       </h4>
-                      <p className="text-[#a7a7a7] text-sm mt-1">
+                      <p className="text-[#8a8478] text-sm mt-1">
                         {member.role}
                       </p>
-                      <p className="text-[#1DB954] text-xs mt-1">
+                      <p className="text-[#d4a060] text-xs mt-1">
                         {member.years}
                       </p>
                       {member.bio && (
-                        <p className="text-[#a7a7a7] text-xs mt-2 line-clamp-2">
+                        <p className="text-[#8a8478] text-xs mt-2 line-clamp-2">
                           {member.bio}
                         </p>
                       )}
@@ -76,7 +76,7 @@ export default function BandMembers({ members, formerMembers }: BandMembersProps
               {formerMembers.map((member, index) => (
                 <div
                   key={index}
-                  className="bg-[#282828] rounded-lg p-4 hover:bg-[#3e3e3e] transition-colors opacity-75"
+                  className="bg-[#2d2a26] rounded-lg p-4 hover:bg-[#3a3632] transition-colors opacity-75"
                 >
                   <div className="flex items-start gap-4">
                     {/* Member photo or initial */}
@@ -87,7 +87,7 @@ export default function BandMembers({ members, formerMembers }: BandMembersProps
                         className="w-12 h-12 rounded-full object-cover flex-shrink-0 grayscale"
                       />
                     ) : (
-                      <div className="w-12 h-12 rounded-full bg-[#535353] flex items-center justify-center flex-shrink-0">
+                      <div className="w-12 h-12 rounded-full bg-[#3a3632] flex items-center justify-center flex-shrink-0">
                         <span className="text-white font-bold text-lg">
                           {member.name.charAt(0)}
                         </span>
@@ -99,14 +99,14 @@ export default function BandMembers({ members, formerMembers }: BandMembersProps
                       <h4 className="text-white font-bold text-base truncate">
                         {member.name}
                       </h4>
-                      <p className="text-[#a7a7a7] text-sm mt-1">
+                      <p className="text-[#8a8478] text-sm mt-1">
                         {member.role}
                       </p>
-                      <p className="text-[#a7a7a7] text-xs mt-1">
+                      <p className="text-[#8a8478] text-xs mt-1">
                         {member.years}
                       </p>
                       {member.bio && (
-                        <p className="text-[#a7a7a7] text-xs mt-2 line-clamp-2">
+                        <p className="text-[#8a8478] text-xs mt-2 line-clamp-2">
                           {member.bio}
                         </p>
                       )}

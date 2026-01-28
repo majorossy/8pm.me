@@ -1,0 +1,78 @@
+{
+  "slug": "stringcheeseincident",
+  "name": "The String Cheese Incident",
+  "biography": "The String Cheese Incident (SCI) is an American jam band formed in 1993 in Crested Butte, Colorado. The original four members—Bill Nershi, Michael Kang, Michael Travis, and Keith Moseley—first played together calling themselves the Blue String Cheese Band, as they considered themselves a bluegrass band who also played 'cheesy covers.' The name was soon shortened to The String Cheese Incident.\n\nIn 1996, the members quit their day jobs and moved to Boulder, Colorado, to focus on music full-time. Around this time, they invited keyboardist Kyle Hollingsworth to join, expanding their sound beyond string instruments. Hollingsworth brought jazz training and a devotion to keyboardist Herbie Hancock that enriched the band's musical palette. In 2004, percussionist Jason Hann joined to add auxiliary drums, completing the six-piece lineup that continues today.\n\nThe band's music incorporates elements of bluegrass, rock, electronica, calypso, country, funk, jazz, Latin, progressive rock, reggae, and psychedelia. All members write original compositions and sing. They formed SCI Fidelity Records in 1998, an independent label that has since signed artists including Keller Williams, Umphrey's McGee, The Disco Biscuits, and Railroad Earth.\n\nSCI went on hiatus in August 2007 when guitarist Billy Nershi stepped away to pursue solo projects. The band reunited in 2009 at the Rothbury Festival in Michigan, returning refreshed and ready to build upon their legacy. They are the host band of Electric Forest Festival (which evolved from Rothbury) and Hulaween, and are known for their elaborate 'Shebang' performances that blend music, performance art, and theatrical spectacle.",
+  "members": {
+    "current": [
+      {
+        "name": "Bill Nershi",
+        "role": "Acoustic Guitar, Lap Steel Guitar, Electric Slide Guitar, Vocals",
+        "years": "1993-2007, 2009-present"
+      },
+      {
+        "name": "Michael Kang",
+        "role": "Mandolin, Electric Guitar, Violin, Vocals",
+        "years": "1993-2007, 2009-present"
+      },
+      {
+        "name": "Michael Travis",
+        "role": "Drums, Percussion",
+        "years": "1993-2007, 2009-present"
+      },
+      {
+        "name": "Keith Moseley",
+        "role": "Bass Guitar, Vocals",
+        "years": "1993-2007, 2009-present"
+      },
+      {
+        "name": "Kyle Hollingsworth",
+        "role": "Piano, Organ, Rhodes, Accordion, Vocals",
+        "years": "1996-2007, 2009-present"
+      },
+      {
+        "name": "Jason Hann",
+        "role": "Auxiliary Percussion",
+        "years": "2004-2007, 2009-present"
+      }
+    ],
+    "former": []
+  },
+  "careerHighlights": [
+    "1993: Band formed in Crested Butte, Colorado as the Blue String Cheese Band",
+    "1996: Members quit day jobs and move to Boulder; Kyle Hollingsworth joins on keyboards",
+    "1997: Released debut album 'Born on the Wrong Planet' on SCI Fidelity Records",
+    "1998: Founded SCI Fidelity Records, independent record label based in Boulder",
+    "1999: Made debut at Red Rocks Amphitheatre as part of 'Telluride On The Rocks'",
+    "2000: First Horning's Hideout festival in Oregon, establishing annual tradition",
+    "2003: Released 'Untying The Not' produced by Youth with Alex Grey cover art",
+    "2004: Jason Hann joins as sixth member on auxiliary percussion",
+    "2005: Released concept album 'One Step Closer', nominated for 4 Jammy Awards",
+    "2007: Band goes on hiatus after final Red Rocks shows in August",
+    "2009: Reunited at Rothbury Festival in Michigan",
+    "2011: Headlined inaugural Electric Forest Festival (evolved from Rothbury)",
+    "2014: Released 'Song In My Head' produced by Jerry Harrison of Talking Heads",
+    "2015: Invited Skrillex to jam at Electric Forest, bridging jam and EDM scenes",
+    "2017: Released 'Believe', their 7th studio album",
+    "2023: Celebrated 30th anniversary; achieved 50th Red Rocks show; released 'Lend Me A Hand'",
+    "2023: Inducted into Colorado Music Hall of Fame"
+  ],
+  "recordingStats": {
+    "totalShows": 1900,
+    "yearsActive": "1993-2007, 2009-present",
+    "mostRecordedVenue": "Red Rocks Amphitheatre"
+  },
+  "socialLinks": {
+    "website": "https://www.stringcheeseincident.com",
+    "youtube": "https://www.youtube.com/channel/UCp0-IPbm6I9LlBG2fWUNmLg",
+    "facebook": "https://www.facebook.com/stringcheeseincident",
+    "instagram": "https://www.instagram.com/sci_official",
+    "twitter": "https://twitter.com/SCI_Official"
+  },
+  "images": [
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Christmas_Jam_2012_Asheville_-_Warren_%26_String_Cheese.jpg/800px-Christmas_Jam_2012_Asheville_-_Warren_%26_String_Cheese.jpg",
+      "caption": "The String Cheese Incident performing at Christmas Jam 2012 in Asheville",
+      "credit": "Wikimedia Commons"
+    }
+  ]
+}

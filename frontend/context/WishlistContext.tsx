@@ -1,18 +1,31 @@
 'use client';
 
 // WishlistContext = Favorites (Magento Wishlist)
-// Requires customer authentication in Magento
+// Uses localStorage for persistence with Supabase sync when authenticated
 
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react';
 import { Song, Wishlist, WishlistItem } from '@/lib/types';
+import { useAuth } from '@/context/AuthContext';
+import {
+  fetchUserWishlist,
+  syncWishlistItemToServer,
+  removeWishlistItemFromServer,
+  syncFollowedArtist,
+  syncFollowedAlbum,
+  subscribeToWishlistChanges,
+  WishlistData,
+  SyncStatus,
+} from '@/lib/syncService';
+import { isSupabaseConfigured } from '@/lib/supabase';
 
 interface WishlistContextType {
   wishlist: Wishlist;
   isLoading: boolean;
+  syncStatus: SyncStatus;
   addToWishlist: (song: Song) => void;
   removeFromWishlist: (itemId: string) => void;
   isInWishlist: (songId: string) => boolean;
-  // For auth state (Magento requires login for wishlist)
+  // For auth state
   isAuthenticated: boolean;
   // Follow artists/albums
   followedArtists: string[];
@@ -23,6 +36,7 @@ interface WishlistContextType {
   followAlbum: (artistSlug: string, albumTitle: string) => void;
   unfollowAlbum: (artistSlug: string, albumTitle: string) => void;
   isAlbumFollowed: (artistSlug: string, albumTitle: string) => boolean;
+  forceSync: () => Promise<void>;
 }
 
 const WishlistContext = createContext<WishlistContextType | null>(null);
@@ -36,15 +50,16 @@ const FOLLOWED_ARTISTS_STORAGE_KEY = 'jamify_followed_artists';
 const FOLLOWED_ALBUMS_STORAGE_KEY = 'jamify_followed_albums';
 
 export function WishlistProvider({ children }: { children: React.ReactNode }) {
+  const { user, isAuthenticated: authIsAuthenticated } = useAuth();
   const [items, setItems] = useState<WishlistItem[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  // TODO: Wire up to actual auth state from Magento customer token
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>('idle');
   const [followedArtists, setFollowedArtists] = useState<string[]>([]);
   const [followedAlbums, setFollowedAlbums] = useState<string[]>([]);
+  const hasFetchedFromServerRef = useRef(false);
 
   // Load wishlist from localStorage on mount
-  React.useEffect(() => {
+  useEffect(() => {
     const stored = localStorage.getItem(WISHLIST_STORAGE_KEY);
     if (stored) {
       try {
@@ -74,34 +89,91 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
         console.error('Failed to load followed albums from localStorage:', error);
       }
     }
+
+    setIsLoading(false);
   }, []);
 
-  // Save wishlist to localStorage whenever it changes
-  React.useEffect(() => {
-    if (items.length > 0) {
-      localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(items));
-    } else {
-      localStorage.removeItem(WISHLIST_STORAGE_KEY);
+  // Fetch from server when authenticated
+  useEffect(() => {
+    if (!authIsAuthenticated || !user || !isSupabaseConfigured() || hasFetchedFromServerRef.current) {
+      return;
     }
-  }, [items]);
+
+    const fetchFromServer = async () => {
+      setSyncStatus('syncing');
+      try {
+        const serverData = await fetchUserWishlist(user.id);
+
+        // Merge with local data (server takes precedence)
+        if (serverData.items.length > 0) {
+          setItems(serverData.items);
+        }
+        if (serverData.followedArtists.length > 0) {
+          setFollowedArtists(serverData.followedArtists);
+        }
+        if (serverData.followedAlbums.length > 0) {
+          setFollowedAlbums(serverData.followedAlbums);
+        }
+
+        setSyncStatus('synced');
+        hasFetchedFromServerRef.current = true;
+      } catch (error) {
+        console.error('Failed to fetch wishlist from server:', error);
+        setSyncStatus('error');
+      }
+    };
+
+    fetchFromServer();
+  }, [authIsAuthenticated, user]);
+
+  // Subscribe to realtime changes
+  useEffect(() => {
+    if (!authIsAuthenticated || !user || !isSupabaseConfigured()) {
+      return;
+    }
+
+    const unsubscribe = subscribeToWishlistChanges(user.id, (serverData: WishlistData) => {
+      setItems(serverData.items);
+      setFollowedArtists(serverData.followedArtists);
+      setFollowedAlbums(serverData.followedAlbums);
+      setSyncStatus('synced');
+    });
+
+    return unsubscribe;
+  }, [authIsAuthenticated, user]);
+
+  // Save wishlist to localStorage whenever it changes
+  useEffect(() => {
+    if (!isLoading) {
+      if (items.length > 0) {
+        localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(items));
+      } else {
+        localStorage.removeItem(WISHLIST_STORAGE_KEY);
+      }
+    }
+  }, [items, isLoading]);
 
   // Save followed artists to localStorage
-  React.useEffect(() => {
-    if (followedArtists.length > 0) {
-      localStorage.setItem(FOLLOWED_ARTISTS_STORAGE_KEY, JSON.stringify(followedArtists));
-    } else {
-      localStorage.removeItem(FOLLOWED_ARTISTS_STORAGE_KEY);
+  useEffect(() => {
+    if (!isLoading) {
+      if (followedArtists.length > 0) {
+        localStorage.setItem(FOLLOWED_ARTISTS_STORAGE_KEY, JSON.stringify(followedArtists));
+      } else {
+        localStorage.removeItem(FOLLOWED_ARTISTS_STORAGE_KEY);
+      }
     }
-  }, [followedArtists]);
+  }, [followedArtists, isLoading]);
 
   // Save followed albums to localStorage
-  React.useEffect(() => {
-    if (followedAlbums.length > 0) {
-      localStorage.setItem(FOLLOWED_ALBUMS_STORAGE_KEY, JSON.stringify(followedAlbums));
-    } else {
-      localStorage.removeItem(FOLLOWED_ALBUMS_STORAGE_KEY);
+  useEffect(() => {
+    if (!isLoading) {
+      if (followedAlbums.length > 0) {
+        localStorage.setItem(FOLLOWED_ALBUMS_STORAGE_KEY, JSON.stringify(followedAlbums));
+      } else {
+        localStorage.removeItem(FOLLOWED_ALBUMS_STORAGE_KEY);
+      }
     }
-  }, [followedAlbums]);
+  }, [followedAlbums, isLoading]);
 
   const wishlist: Wishlist = {
     id: 'mock-wishlist-123',
@@ -110,24 +182,37 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   };
 
   const addToWishlist = useCallback((song: Song) => {
-    // TODO: Replace with Magento addProductsToWishlist mutation
-    // Note: Requires customer authentication
+    const newItem: WishlistItem = {
+      id: generateItemId(),
+      song,
+      addedAt: new Date().toISOString(),
+    };
+
     setItems(prev => {
       if (prev.some(item => item.song.id === song.id)) {
         return prev; // Already in wishlist
       }
-      return [...prev, {
-        id: generateItemId(),
-        song,
-        addedAt: new Date().toISOString(),
-      }];
+      return [...prev, newItem];
     });
-  }, []);
+
+    // Sync to server
+    if (authIsAuthenticated && user && isSupabaseConfigured()) {
+      syncWishlistItemToServer(user.id, newItem).catch(error => {
+        console.error('Failed to sync wishlist item:', error);
+      });
+    }
+  }, [authIsAuthenticated, user]);
 
   const removeFromWishlist = useCallback((itemId: string) => {
-    // TODO: Replace with Magento removeProductsFromWishlist mutation
     setItems(prev => prev.filter(item => item.id !== itemId));
-  }, []);
+
+    // Sync to server
+    if (authIsAuthenticated && user && isSupabaseConfigured()) {
+      removeWishlistItemFromServer(itemId).catch(error => {
+        console.error('Failed to remove wishlist item from server:', error);
+      });
+    }
+  }, [authIsAuthenticated, user]);
 
   const isInWishlist = useCallback((songId: string) => {
     return items.some(item => item.song.id === songId);
@@ -140,11 +225,25 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
       }
       return [...prev, slug];
     });
-  }, []);
+
+    // Sync to server
+    if (authIsAuthenticated && user && isSupabaseConfigured()) {
+      syncFollowedArtist(user.id, slug, true).catch(error => {
+        console.error('Failed to sync followed artist:', error);
+      });
+    }
+  }, [authIsAuthenticated, user]);
 
   const unfollowArtist = useCallback((slug: string) => {
     setFollowedArtists(prev => prev.filter(s => s !== slug));
-  }, []);
+
+    // Sync to server
+    if (authIsAuthenticated && user && isSupabaseConfigured()) {
+      syncFollowedArtist(user.id, slug, false).catch(error => {
+        console.error('Failed to sync unfollowed artist:', error);
+      });
+    }
+  }, [authIsAuthenticated, user]);
 
   const isArtistFollowed = useCallback((slug: string) => {
     return followedArtists.includes(slug);
@@ -158,27 +257,71 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
       }
       return [...prev, identifier];
     });
-  }, []);
+
+    // Sync to server
+    if (authIsAuthenticated && user && isSupabaseConfigured()) {
+      syncFollowedAlbum(user.id, artistSlug, albumTitle, true).catch(error => {
+        console.error('Failed to sync followed album:', error);
+      });
+    }
+  }, [authIsAuthenticated, user]);
 
   const unfollowAlbum = useCallback((artistSlug: string, albumTitle: string) => {
     const identifier = `${artistSlug}::${albumTitle}`;
     setFollowedAlbums(prev => prev.filter(s => s !== identifier));
-  }, []);
+
+    // Sync to server
+    if (authIsAuthenticated && user && isSupabaseConfigured()) {
+      syncFollowedAlbum(user.id, artistSlug, albumTitle, false).catch(error => {
+        console.error('Failed to sync unfollowed album:', error);
+      });
+    }
+  }, [authIsAuthenticated, user]);
 
   const isAlbumFollowed = useCallback((artistSlug: string, albumTitle: string) => {
     const identifier = `${artistSlug}::${albumTitle}`;
     return followedAlbums.includes(identifier);
   }, [followedAlbums]);
 
+  // Force sync all data to server
+  const forceSync = useCallback(async () => {
+    if (!authIsAuthenticated || !user || !isSupabaseConfigured()) return;
+
+    setSyncStatus('syncing');
+    try {
+      // Sync all wishlist items
+      for (const item of items) {
+        await syncWishlistItemToServer(user.id, item);
+      }
+
+      // Sync all followed artists
+      for (const slug of followedArtists) {
+        await syncFollowedArtist(user.id, slug, true);
+      }
+
+      // Sync all followed albums
+      for (const identifier of followedAlbums) {
+        const [artistSlug, albumTitle] = identifier.split('::');
+        await syncFollowedAlbum(user.id, artistSlug, albumTitle, true);
+      }
+
+      setSyncStatus('synced');
+    } catch (error) {
+      console.error('Failed to force sync wishlist:', error);
+      setSyncStatus('error');
+    }
+  }, [authIsAuthenticated, user, items, followedArtists, followedAlbums]);
+
   return (
     <WishlistContext.Provider
       value={{
         wishlist,
         isLoading,
+        syncStatus,
         addToWishlist,
         removeFromWishlist,
         isInWishlist,
-        isAuthenticated,
+        isAuthenticated: authIsAuthenticated,
         followedArtists,
         followedAlbums,
         followArtist,
@@ -187,6 +330,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
         followAlbum,
         unfollowAlbum,
         isAlbumFollowed,
+        forceSync,
       }}
     >
       {children}

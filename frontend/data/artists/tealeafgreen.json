@@ -1,0 +1,80 @@
+{
+  "slug": "tealeafgreen",
+  "name": "Tea Leaf Green",
+  "biography": "Tea Leaf Green is an American jam band from the San Francisco Bay Area, formed in the fall of 1996 when drummer Scott Rager met bassist Ben Chambers at San Francisco State University. The two began practicing in Chambers's bedroom in a back house off Church Street in the Castro District. In early 1997, Josh Clark, a childhood friend of Rager from their high school days in Arcadia, CA, moved from Los Angeles to San Francisco and became the third member on guitar and vocals. Shortly after, Trevor Garrod, also an SFSU student studying botany, joined on keyboards.\n\nIn the late 1990s, Tea Leaf Green became the de facto house band at the Elbo Room in San Francisco during 1999 and released their eponymous debut album that same year. They were an integral part of a burgeoning rock music revitalization in San Francisco alongside bands like Animal Liberation Orchestra and New Monsoon. In 2002, the band embarked on their first national tour, leveraging their appearance at the High Sierra Music Festival and earning a feature in Relix magazine.\n\nThe band's career reached new heights in 2006 when they sold out shows in major markets including the historic Fillmore Auditorium in their hometown, and won the Jammy Award for Song of the Year for their track \"Taught to Be Proud.\" They've opened for major acts including Dave Matthews Band, Trey Anastasio, Government Mule, and Bruce Hornsby. The band signed with Surfdog Records in 2007 and continues to tour and record, known for their eclectic fusion of rock, bluegrass, folk, and neo-psychedelic influences.\n\nThroughout their history, Tea Leaf Green has maintained a taper-friendly policy, allowing fans to record and trade their live shows. On August 18, 2003, they gave permission for shows to be hosted on the Internet Archive, helping to build a robust archive of their live performances that spans over two decades.",
+  "members": {
+    "current": [
+      {
+        "name": "Josh Clark",
+        "role": "Guitar, Vocals",
+        "years": "1997-present"
+      },
+      {
+        "name": "Trevor Garrod",
+        "role": "Keyboards, Harmonica, Vocals, Guitar",
+        "years": "1997-present"
+      },
+      {
+        "name": "Scott Rager",
+        "role": "Drums",
+        "years": "1996-present"
+      },
+      {
+        "name": "Eric DiBerardino",
+        "role": "Bass, Vocals",
+        "years": "2016-present"
+      }
+    ],
+    "former": [
+      {
+        "name": "Ben Chambers",
+        "role": "Bass",
+        "years": "1996-2007"
+      },
+      {
+        "name": "Reed Mathis",
+        "role": "Bass",
+        "years": "2007-2016"
+      },
+      {
+        "name": "Cochrane McMillan",
+        "role": "Percussion, Drums",
+        "years": "2010-2016"
+      }
+    ]
+  },
+  "careerHighlights": [
+    "1996: Band founded when Scott Rager met Ben Chambers at San Francisco State University",
+    "1999: Released self-titled debut album; became house band at the Elbo Room in San Francisco",
+    "2002: First national tour; featured in Relix magazine; performed at High Sierra Music Festival",
+    "2003: Released live album 'Friday June 6, 2003: Live at Slim's, San Francisco CA'; authorized taping archive on Archive.org",
+    "2004: Released 'Live at the Independent'",
+    "2005: Released studio album 'Taught to Be Proud'",
+    "2006: Won Jammy Award for Song of the Year for 'Taught to Be Proud'; sold out Fillmore Auditorium; documentary 'Rock 'n' Roll Band' directed by Justin Kreutzmann",
+    "2007: Played Jam Cruise 5; performed over 130 shows including Bonnaroo and Wakarusa; signed with Surfdog Records; Reed Mathis joins on bass",
+    "2008: First overseas show at Jam in the Dam Music Fest in Amsterdam; released 'Seeds' triple-CD compilation and 'Raise Up the Tent'",
+    "2010: Released 'Looking West'; Cochrane McMillan joins as fifth member on percussion",
+    "2011: Released 'Radio Tragedy'",
+    "2013: Released 'In The Wake'",
+    "2016: Eric DiBerardino becomes bassist"
+  ],
+  "recordingStats": {
+    "totalShows": 1200,
+    "yearsActive": "1996-present",
+    "mostRecordedVenue": "The Independent, San Francisco"
+  },
+  "socialLinks": {
+    "website": "https://www.tealeafgreen.com",
+    "youtube": "https://www.youtube.com/@tealeafgreen",
+    "facebook": "https://www.facebook.com/tealeafgreen",
+    "instagram": "https://www.instagram.com/tealeafgreen",
+    "twitter": "https://twitter.com/tealeafgreen"
+  },
+  "images": [
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/4/4c/Tea-Leaf-Green.jpg",
+      "caption": "Tea Leaf Green performing live",
+      "credit": "Wikimedia Commons"
+    }
+  ]
+}

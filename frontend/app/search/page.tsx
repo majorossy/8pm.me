@@ -91,7 +91,7 @@ export default function SearchPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#121212] pb-[140px] md:pb-[90px] safe-top">
+    <div className="min-h-screen bg-[#1c1a17] pb-[140px] md:pb-[90px] safe-top">
       {/* Header */}
       <div className="p-6 md:p-8 border-b border-white/10">
         <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">Search</h1>
@@ -104,7 +104,7 @@ export default function SearchPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="What do you want to listen to?"
-            className="w-full bg-[#282828] text-white placeholder-gray-400 rounded-full px-6 py-4 pr-12 text-base focus:outline-none focus:ring-2 focus:ring-[#1DB954]"
+            className="w-full bg-[#2d2a26] text-white placeholder-gray-400 rounded-full px-6 py-4 pr-12 text-base focus:outline-none focus:ring-2 focus:ring-[#d4a060]"
           />
           {searchQuery && (
             <button
@@ -144,7 +144,7 @@ export default function SearchPage() {
                   <button
                     key={index}
                     onClick={() => handleRecentSearchClick(search)}
-                    className="group flex items-center gap-2 bg-[#282828] hover:bg-[#3E3E3E] text-white px-4 py-2 rounded-full text-sm transition-colors"
+                    className="group flex items-center gap-2 bg-[#2d2a26] hover:bg-[#3a3632] text-white px-4 py-2 rounded-full text-sm transition-colors"
                   >
                     <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -191,7 +191,7 @@ export default function SearchPage() {
                         <button
                           key={artist.id}
                           onClick={() => handleArtistClick(artist)}
-                          className="flex flex-col items-center p-4 bg-[#181818] hover:bg-[#282828] rounded-lg transition-colors text-left"
+                          className="flex flex-col items-center p-4 bg-[#252220] hover:bg-[#2d2a26] rounded-lg transition-colors text-left"
                         >
                           <div className="w-32 h-32 bg-gray-700 rounded-full flex items-center justify-center mb-3 overflow-hidden">
                             {artist.image ? (
@@ -219,7 +219,7 @@ export default function SearchPage() {
                         <button
                           key={album.id}
                           onClick={() => handleAlbumClick(album)}
-                          className="flex flex-col p-4 bg-[#181818] hover:bg-[#282828] rounded-lg transition-colors text-left"
+                          className="flex flex-col p-4 bg-[#252220] hover:bg-[#2d2a26] rounded-lg transition-colors text-left"
                         >
                           <div className="w-full aspect-square bg-gray-700 rounded mb-3 overflow-hidden">
                             {album.coverArt ? (
@@ -249,7 +249,7 @@ export default function SearchPage() {
                         <button
                           key={track.id}
                           onClick={() => handleTrackClick(track)}
-                          className="w-full flex items-center gap-3 p-3 hover:bg-[#282828] rounded transition-colors text-left"
+                          className="w-full flex items-center gap-3 p-3 hover:bg-[#2d2a26] rounded transition-colors text-left"
                         >
                           <div className="w-12 h-12 bg-gray-700 rounded flex items-center justify-center flex-shrink-0">
                             <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 24 24">

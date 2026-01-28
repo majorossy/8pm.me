@@ -98,8 +98,8 @@ export default function Queue() {
       <aside
         className={`fixed z-50 flex flex-col ${
           isMobile
-            ? 'inset-0 bg-gradient-to-b from-[#404040] to-[#121212] safe-top safe-bottom'
-            : 'right-0 top-0 bottom-[90px] w-96 bg-[#121212] border-l border-[#282828]'
+            ? 'inset-0 bg-gradient-to-b from-[#3a3632] to-[#1c1a17] safe-top safe-bottom'
+            : 'right-0 top-0 bottom-[90px] w-96 bg-[#1c1a17] border-l border-[#2d2a26]'
         }`}
         role="dialog"
         aria-modal="true"
@@ -113,7 +113,7 @@ export default function Queue() {
           )}
 
           {/* Header */}
-          <div className={`flex items-center justify-between px-4 ${isMobile ? 'py-3' : 'p-4 border-b border-[#282828]'}`}>
+          <div className={`flex items-center justify-between px-4 ${isMobile ? 'py-3' : 'p-4 border-b border-[#2d2a26]'}`}>
             {isMobile ? (
               <>
                 <button
@@ -135,7 +135,7 @@ export default function Queue() {
                   {(hasAlbum || hasUpNext) && (
                     <button
                       onClick={clearQueue}
-                      className="text-xs text-[#a7a7a7] hover:text-white transition-colors"
+                      className="text-xs text-[#8a8478] hover:text-white transition-colors"
                       aria-label="Clear entire queue"
                     >
                       Clear all
@@ -143,7 +143,7 @@ export default function Queue() {
                   )}
                   <button
                     onClick={toggleQueue}
-                    className="p-2 text-[#a7a7a7] hover:text-white transition-colors"
+                    className="p-2 text-[#8a8478] hover:text-white transition-colors"
                     aria-label="Close queue"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -157,10 +157,10 @@ export default function Queue() {
 
           {/* Save as Playlist Button */}
           {(hasAlbum || hasUpNext) && totalSongsInQueue > 0 && (
-            <div className="px-4 py-3 border-b border-[#282828]">
+            <div className="px-4 py-3 border-b border-[#2d2a26]">
               <button
                 onClick={() => setShowSaveModal(true)}
-                className="w-full py-2 px-4 bg-[#1DB954] hover:bg-[#1ed760] text-white text-sm font-semibold rounded-full transition-colors"
+                className="w-full py-2 px-4 bg-[#d4a060] hover:bg-[#c08a40] text-white text-sm font-semibold rounded-full transition-colors"
                 aria-label={`Save queue with ${totalSongsInQueue} songs as a new playlist`}
               >
                 Save as Playlist
@@ -171,8 +171,8 @@ export default function Queue() {
           {/* Content */}
           <div className="flex-1 overflow-y-auto prevent-overscroll" role="region" aria-label="Queue tracks">
             {!hasAlbum && !hasUpNext ? (
-              <div className="flex flex-col items-center justify-center h-full text-[#a7a7a7]">
-                <svg className="w-12 h-12 mb-4 text-[#535353]" fill="currentColor" viewBox="0 0 24 24">
+              <div className="flex flex-col items-center justify-center h-full text-[#8a8478]">
+                <svg className="w-12 h-12 mb-4 text-[#3a3632]" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z" />
                 </svg>
                 <p className="font-semibold">Queue is empty</p>
@@ -182,8 +182,8 @@ export default function Queue() {
               <>
                 {/* Now Playing */}
                 {currentTrack && (
-                  <div className="p-4 border-b border-[#282828]">
-                    <p className="text-xs text-[#a7a7a7] uppercase tracking-wider mb-3">Now Playing</p>
+                  <div className="p-4 border-b border-[#2d2a26]">
+                    <p className="text-xs text-[#8a8478] uppercase tracking-wider mb-3">Now Playing</p>
                     <div className="flex items-center gap-3">
                       {queue.album?.coverArt ? (
                         <img
@@ -192,17 +192,17 @@ export default function Queue() {
                           className="w-12 h-12 object-cover rounded"
                         />
                       ) : (
-                        <div className="w-12 h-12 bg-[#282828] rounded flex items-center justify-center">
-                          <svg className="w-6 h-6 text-[#535353]" viewBox="0 0 24 24" fill="currentColor">
+                        <div className="w-12 h-12 bg-[#2d2a26] rounded flex items-center justify-center">
+                          <svg className="w-6 h-6 text-[#3a3632]" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
                           </svg>
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-[#1DB954] truncate">
+                        <p className="text-sm font-medium text-[#d4a060] truncate">
                           {getSelectedSong(currentTrack)?.title || currentTrack.title}
                         </p>
-                        <p className="text-xs text-[#a7a7a7] truncate">
+                        <p className="text-xs text-[#8a8478] truncate">
                           {queue.album?.artistName}
                         </p>
                       </div>
@@ -212,9 +212,9 @@ export default function Queue() {
 
                 {/* Album Tracks */}
                 {hasAlbum && queue.album && (
-                  <div className="border-b border-[#282828]">
+                  <div className="border-b border-[#2d2a26]">
                     <div className="p-4">
-                      <p className="text-xs text-[#a7a7a7] uppercase tracking-wider">
+                      <p className="text-xs text-[#8a8478] uppercase tracking-wider">
                         Next from: {queue.album.name}
                       </p>
                     </div>
@@ -226,7 +226,7 @@ export default function Queue() {
 
                         const trackContent = (
                           <div className="flex items-center gap-3">
-                            <span className={`w-5 text-sm ${isCurrentlyPlaying ? 'text-[#1DB954]' : 'text-[#a7a7a7]'}`}>
+                            <span className={`w-5 text-sm ${isCurrentlyPlaying ? 'text-[#d4a060]' : 'text-[#8a8478]'}`}>
                               {isCurrentlyPlaying && isPlaying ? (
                                 <span className="jamify-eq-bars">
                                   <span /><span /><span />
@@ -236,15 +236,15 @@ export default function Queue() {
                               )}
                             </span>
                             <div className="flex-1 min-w-0">
-                              <p className={`text-sm truncate ${isCurrentlyPlaying ? 'text-[#1DB954]' : 'text-white'}`}>
+                              <p className={`text-sm truncate ${isCurrentlyPlaying ? 'text-[#d4a060]' : 'text-white'}`}>
                                 {track.title}
                               </p>
-                              <p className="text-xs text-[#a7a7a7] truncate">
+                              <p className="text-xs text-[#8a8478] truncate">
                                 {queue.album?.artistName}
                               </p>
                             </div>
                             {song && (
-                              <span className="text-xs text-[#a7a7a7] font-mono">
+                              <span className="text-xs text-[#8a8478] font-mono">
                                 {formatDuration(song.duration)}
                               </span>
                             )}
@@ -258,7 +258,7 @@ export default function Queue() {
                               key={track.trackId}
                               onDelete={() => removeTrack(actualIndex)}
                               className={`px-4 py-2 cursor-pointer ${
-                                isCurrentlyPlaying ? 'bg-[#282828]' : ''
+                                isCurrentlyPlaying ? 'bg-[#2d2a26]' : ''
                               }`}
                             >
                               <div onClick={() => playFromQueue(actualIndex)}>
@@ -271,8 +271,8 @@ export default function Queue() {
                         return (
                           <li
                             key={track.trackId}
-                            className={`px-4 py-2 hover:bg-[#282828] cursor-pointer transition-colors ${
-                              isCurrentlyPlaying ? 'bg-[#282828]' : ''
+                            className={`px-4 py-2 hover:bg-[#2d2a26] cursor-pointer transition-colors ${
+                              isCurrentlyPlaying ? 'bg-[#2d2a26]' : ''
                             }`}
                             onClick={() => playFromQueue(actualIndex)}
                           >
@@ -288,12 +288,12 @@ export default function Queue() {
                 {hasUpNext && (
                   <div>
                     <div className="flex items-center justify-between p-4">
-                      <p className="text-xs text-[#a7a7a7] uppercase tracking-wider">
+                      <p className="text-xs text-[#8a8478] uppercase tracking-wider">
                         Up Next ({queue.upNext.length})
                       </p>
                       <button
                         onClick={clearUpNext}
-                        className="text-xs text-[#a7a7a7] hover:text-white transition-colors"
+                        className="text-xs text-[#8a8478] hover:text-white transition-colors"
                         aria-label={`Clear up next queue (${queue.upNext.length} songs)`}
                       >
                         Clear
@@ -307,11 +307,11 @@ export default function Queue() {
                               <p className="text-sm text-white truncate">
                                 {item.song.title}
                               </p>
-                              <p className="text-xs text-[#a7a7a7] truncate">
+                              <p className="text-xs text-[#8a8478] truncate">
                                 {item.song.artistName}
                               </p>
                             </div>
-                            <span className="text-xs text-[#a7a7a7] font-mono">
+                            <span className="text-xs text-[#8a8478] font-mono">
                               {formatDuration(item.song.duration)}
                             </span>
                             {!isMobile && (
@@ -320,7 +320,7 @@ export default function Queue() {
                                   e.stopPropagation();
                                   removeFromUpNext(item.id);
                                 }}
-                                className="p-1 text-[#a7a7a7] hover:text-white transition-colors"
+                                className="p-1 text-[#8a8478] hover:text-white transition-colors"
                                 aria-label={`Remove ${item.song.title} from queue`}
                               >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -347,7 +347,7 @@ export default function Queue() {
                         return (
                           <li
                             key={item.id}
-                            className="px-4 py-2 hover:bg-[#282828] transition-colors"
+                            className="px-4 py-2 hover:bg-[#2d2a26] transition-colors"
                           >
                             {upNextContent}
                           </li>
@@ -371,23 +371,23 @@ export default function Queue() {
 
           {/* Modal Content */}
           <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
-            <div className="bg-[#282828] rounded-lg max-w-md w-full p-6">
+            <div className="bg-[#2d2a26] rounded-lg max-w-md w-full p-6">
               {saveSuccess ? (
                 <div className="text-center">
-                  <div className="w-16 h-16 bg-[#1DB954] rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-[#d4a060] rounded-full flex items-center justify-center mx-auto mb-4">
                     <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
                   <h3 className="text-xl font-bold text-white mb-2">Playlist Created!</h3>
-                  <p className="text-[#a7a7a7] text-sm">
+                  <p className="text-[#8a8478] text-sm">
                     {totalSongsInQueue} {totalSongsInQueue === 1 ? 'song' : 'songs'} saved to "{playlistName}"
                   </p>
                 </div>
               ) : (
                 <>
                   <h3 className="text-xl font-bold text-white mb-4">Save Queue as Playlist</h3>
-                  <p className="text-[#a7a7a7] text-sm mb-4">
+                  <p className="text-[#8a8478] text-sm mb-4">
                     {totalSongsInQueue} {totalSongsInQueue === 1 ? 'song' : 'songs'} will be saved
                   </p>
                   <input
@@ -400,7 +400,7 @@ export default function Queue() {
                       }
                     }}
                     placeholder="Playlist name"
-                    className="w-full px-4 py-3 bg-[#3e3e3e] text-white rounded border border-[#535353] focus:border-[#1DB954] focus:outline-none mb-6"
+                    className="w-full px-4 py-3 bg-[#3a3632] text-white rounded border border-[#3a3632] focus:border-[#d4a060] focus:outline-none mb-6"
                     autoFocus
                     disabled={isSaving}
                   />
@@ -411,14 +411,14 @@ export default function Queue() {
                         setPlaylistName('');
                       }}
                       disabled={isSaving}
-                      className="flex-1 py-3 px-4 bg-transparent border border-[#535353] text-white text-sm font-semibold rounded-full hover:border-white transition-colors disabled:opacity-50"
+                      className="flex-1 py-3 px-4 bg-transparent border border-[#3a3632] text-white text-sm font-semibold rounded-full hover:border-white transition-colors disabled:opacity-50"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={handleSaveQueue}
                       disabled={!playlistName.trim() || isSaving}
-                      className="flex-1 py-3 px-4 bg-[#1DB954] hover:bg-[#1ed760] text-white text-sm font-semibold rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex-1 py-3 px-4 bg-[#d4a060] hover:bg-[#c08a40] text-white text-sm font-semibold rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isSaving ? 'Saving...' : 'Save'}
                     </button>

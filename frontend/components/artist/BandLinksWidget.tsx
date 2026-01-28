@@ -111,8 +111,8 @@ export default function BandLinksWidget({
 
         /* Jamify theme */
         :global(.theme-jamify) .band-links-widget {
-          background: #181818;
-          border: 1px solid #282828;
+          background: #252220;
+          border: 1px solid #2d2a26;
         }
 
         @keyframes slideDown {
@@ -162,7 +162,7 @@ export default function BandLinksWidget({
 
         /* Jamify theme header */
         :global(.theme-jamify) .widget-header {
-          border-bottom: 1px solid #282828;
+          border-bottom: 1px solid #2d2a26;
         }
 
         :global(.theme-jamify) .widget-title {

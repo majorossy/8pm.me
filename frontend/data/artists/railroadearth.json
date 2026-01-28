@@ -1,0 +1,106 @@
+{
+  "slug": "railroadearth",
+  "name": "Railroad Earth",
+  "biography": "Railroad Earth is an American jamgrass band formed in 2001 in Stillwater, New Jersey. The band emerged from informal jam sessions at the Pocono Bluegrass Society open mics, evolving from the remnants of the earlier group From Good Homes. The band's name was inspired by Jack Kerouac's short story 'October in the Railroad Earth.'\n\nAfter just three weeks of rehearsals, the band recorded The Black Bear Sessions, a five-song demo tracked live with no overdubs except backing vocals. Within a week they had secured management, and the demo landed them a slot at the prestigious Telluride Bluegrass Festival - only their tenth gig.\n\nOver two decades of touring and recording, Railroad Earth has become a cornerstone of the progressive bluegrass and jam band scenes. They founded and operate two major music festivals: Hangtown Music Festival in Placerville, California and Hillberry: The Harvest Moon Festival in the Ozarks, Arkansas.\n\nThe band has collaborated with the John Denver Estate on 'Railroad Earth: The John Denver Letters' (2019) and released their seventh full-length album 'All For The Song.' They've earned critical recognition from NPR, Rolling Stone, American Songwriter, and Glide Magazine.",
+  "members": {
+    "current": [
+      {
+        "name": "Todd Sheaffer",
+        "role": "Lead Vocals, Acoustic Guitar",
+        "years": "2001-present"
+      },
+      {
+        "name": "Tim Carbone",
+        "role": "Violin, Electric Guitar, Vocals",
+        "years": "2001-present"
+      },
+      {
+        "name": "John Skehan",
+        "role": "Mandolin, Bouzouki, Piano, Vocals",
+        "years": "2001-present"
+      },
+      {
+        "name": "Carey Harmon",
+        "role": "Drums, Hand Percussion, Vocals",
+        "years": "2001-present"
+      },
+      {
+        "name": "Matt Slocum",
+        "role": "Keys",
+        "years": "2019-present"
+      },
+      {
+        "name": "Andrew Ryan",
+        "role": "Upright and Electric Bass",
+        "years": "2025-present"
+      },
+      {
+        "name": "George Guthrie",
+        "role": "Banjo, Acoustic Guitar",
+        "years": "2025-present"
+      }
+    ],
+    "former": [
+      {
+        "name": "Andy Goessling",
+        "role": "Guitar, Banjo, Dobro, Flute, Pennywhistle, Mandolin, Saxophones",
+        "years": "2001-2018"
+      },
+      {
+        "name": "Dave Von Dollen",
+        "role": "Bass",
+        "years": "2001-2003"
+      },
+      {
+        "name": "Johnny Grubb",
+        "role": "Bass",
+        "years": "2003-2009"
+      },
+      {
+        "name": "Andrew Altman",
+        "role": "Bass",
+        "years": "2010-2022"
+      },
+      {
+        "name": "Dave Speranza",
+        "role": "Bass",
+        "years": "2022-2025"
+      },
+      {
+        "name": "Mike Robinson",
+        "role": "Banjo, Guitar",
+        "years": "2019-2025"
+      }
+    ]
+  },
+  "careerHighlights": [
+    "2001: Band formed in Stillwater, New Jersey",
+    "2001: Released 'The Black Bear Sessions' demo",
+    "2001: Performed at Telluride Bluegrass Festival (10th gig)",
+    "2005: Founded Hangtown Music Festival in Placerville, CA",
+    "2015: Founded Hillberry: The Harvest Moon Festival in Ozark, AR",
+    "2018: Founding member Andy Goessling passed away",
+    "2019: Released 'Railroad Earth: The John Denver Letters'",
+    "2024: Released seventh studio album 'All For The Song'",
+    "2026: Celebrating 25th anniversary with new lineup"
+  ],
+  "recordingStats": {
+    "totalShows": 2000,
+    "yearsActive": "2001-present",
+    "mostRecordedVenue": "Red Rocks Amphitheatre"
+  },
+  "socialLinks": {
+    "website": "https://railroad.earth",
+    "youtube": "https://youtube.com/user/railroadearth",
+    "facebook": "https://facebook.com/RailroadEarth",
+    "instagram": "https://instagram.com/railroadearth",
+    "twitter": "https://twitter.com/railroadearth"
+  },
+  "images": [
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Railroad_Earth_-_Burlington%2C_Vermont_-_July_28%2C_2007.jpg/800px-Railroad_Earth_-_Burlington%2C_Vermont_-_July_28%2C_2007.jpg",
+      "caption": "Railroad Earth performing in Burlington, Vermont",
+      "credit": "Wikimedia Commons"
+    }
+  ]
+}

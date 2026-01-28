@@ -60,6 +60,8 @@ export interface Album {
   artistSlug: string;
   showDate?: string;             // Performance date
   showVenue?: string;            // Venue name
+  showLocation?: string;         // City/state location
+  description?: string;          // Archive.org description/notes
   tracks: Track[];               // Tracks in this album
   totalTracks: number;           // Number of unique tracks
   totalSongs: number;            // Total recordings across all tracks

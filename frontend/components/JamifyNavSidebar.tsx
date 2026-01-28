@@ -2,13 +2,17 @@
 
 // JamifyNavSidebar - Spotify-style left navigation sidebar (desktop only)
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useHaptic } from '@/hooks/useHaptic';
+import ProfileMenu from '@/components/ProfileMenu';
+import AuthModal from '@/components/AuthModal';
 
 export default function JamifyNavSidebar() {
   const pathname = usePathname();
   const { vibrate, BUTTON_PRESS } = useHaptic();
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const isActive = (path: string) => {
     if (path === '/') return pathname === '/';
@@ -16,14 +20,12 @@ export default function JamifyNavSidebar() {
   };
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-[240px] bg-black z-40 flex flex-col">
+    <aside className="fixed left-0 top-0 bottom-0 w-[240px] bg-[#1c1a17] z-40 flex flex-col border-r border-[#3a3632]/30">
       {/* Logo */}
       <div className="p-6">
         <Link href="/" onClick={() => vibrate(BUTTON_PRESS)} className="flex items-center gap-2">
-          <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
-          </svg>
-          <span className="font-display text-xl font-bold text-white">8pm</span>
+          <span className="text-2xl text-[#d4a060]">⚡</span>
+          <span className="font-serif text-xl text-[#e8e0d4]">Campfire Tapes</span>
         </Link>
       </div>
 
@@ -32,10 +34,10 @@ export default function JamifyNavSidebar() {
         <Link
           href="/"
           onClick={() => vibrate(BUTTON_PRESS)}
-          className={`flex items-center gap-4 px-3 py-3 rounded-md transition-all focus:outline-none focus:ring-2 focus:ring-[#1DB954] ${
+          className={`flex items-center gap-4 px-3 py-3 rounded-md transition-all focus:outline-none focus:ring-2 focus:ring-[#d4a060] ${
             isActive('/') && pathname === '/'
-              ? 'bg-[#282828] text-white'
-              : 'text-[#b3b3b3] hover:text-white hover:bg-[#282828]'
+              ? 'bg-[#2d2a26] text-[#e8e0d4] border-l-2 border-[#d4a060]'
+              : 'text-[#8a8478] hover:text-[#e8e0d4] hover:bg-[#2d2a26]'
           }`}
         >
           <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -47,10 +49,10 @@ export default function JamifyNavSidebar() {
         <Link
           href="/search"
           onClick={() => vibrate(BUTTON_PRESS)}
-          className={`flex items-center gap-4 px-3 py-3 rounded-md transition-all focus:outline-none focus:ring-2 focus:ring-[#1DB954] ${
+          className={`flex items-center gap-4 px-3 py-3 rounded-md transition-all focus:outline-none focus:ring-2 focus:ring-[#d4a060] ${
             isActive('/search')
-              ? 'bg-[#282828] text-white'
-              : 'text-[#b3b3b3] hover:text-white hover:bg-[#282828]'
+              ? 'bg-[#2d2a26] text-[#e8e0d4] border-l-2 border-[#d4a060]'
+              : 'text-[#8a8478] hover:text-[#e8e0d4] hover:bg-[#2d2a26]'
           }`}
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,10 +64,10 @@ export default function JamifyNavSidebar() {
         <Link
           href="/library"
           onClick={() => vibrate(BUTTON_PRESS)}
-          className={`flex items-center gap-4 px-3 py-3 rounded-md transition-all focus:outline-none focus:ring-2 focus:ring-[#1DB954] ${
+          className={`flex items-center gap-4 px-3 py-3 rounded-md transition-all focus:outline-none focus:ring-2 focus:ring-[#d4a060] ${
             isActive('/library')
-              ? 'bg-[#282828] text-white'
-              : 'text-[#b3b3b3] hover:text-white hover:bg-[#282828]'
+              ? 'bg-[#2d2a26] text-[#e8e0d4] border-l-2 border-[#d4a060]'
+              : 'text-[#8a8478] hover:text-[#e8e0d4] hover:bg-[#2d2a26]'
           }`}
         >
           <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -76,21 +78,21 @@ export default function JamifyNavSidebar() {
       </nav>
 
       {/* Divider */}
-      <div className="mx-6 my-4 border-t border-[#282828]" />
+      <div className="mx-6 my-4 border-t border-[#3a3632]" />
 
       {/* Playlist Section */}
       <div className="px-6 flex-1 overflow-y-auto">
-        <p className="text-[#b3b3b3] text-xs uppercase tracking-wider mb-4">
+        <p className="text-[#6a6458] text-xs uppercase tracking-wider mb-4 font-sans">
           Featured Artists
         </p>
         <div className="space-y-3">
           <Link
             href="/artists/grateful-dead"
             onClick={() => vibrate(BUTTON_PRESS)}
-            className={`block text-sm transition-colors truncate ${
+            className={`block text-sm font-serif transition-colors truncate ${
               pathname.startsWith('/artists/grateful-dead')
-                ? 'text-white'
-                : 'text-[#b3b3b3] hover:text-white'
+                ? 'text-[#d4a060]'
+                : 'text-[#8a8478] hover:text-[#e8e0d4]'
             }`}
           >
             Grateful Dead
@@ -98,10 +100,10 @@ export default function JamifyNavSidebar() {
           <Link
             href="/artists/phish"
             onClick={() => vibrate(BUTTON_PRESS)}
-            className={`block text-sm transition-colors truncate ${
+            className={`block text-sm font-serif transition-colors truncate ${
               pathname.startsWith('/artists/phish')
-                ? 'text-white'
-                : 'text-[#b3b3b3] hover:text-white'
+                ? 'text-[#d4a060]'
+                : 'text-[#8a8478] hover:text-[#e8e0d4]'
             }`}
           >
             Phish
@@ -109,12 +111,26 @@ export default function JamifyNavSidebar() {
         </div>
       </div>
 
+      {/* Profile Section */}
+      <div className="p-4 border-t border-[#3a3632]">
+        <ProfileMenu onSignInClick={() => setIsAuthModalOpen(true)} />
+      </div>
+
       {/* Bottom Section */}
-      <div className="p-6 border-t border-[#282828]">
-        <p className="text-[10px] text-[#a7a7a7] uppercase tracking-wider">
+      <div className="p-6 pt-2 border-t border-[#3a3632]">
+        <p className="text-[10px] text-[#6a6458] uppercase tracking-wider font-sans">
+          ☮ Please copy freely — never sell
+        </p>
+        <p className="text-[9px] text-[#4a4640] uppercase tracking-wider mt-1 font-sans">
           Powered by Archive.org
         </p>
       </div>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+      />
     </aside>
   );
 }

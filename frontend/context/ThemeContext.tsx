@@ -2,8 +2,8 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-// Only Jamify theme is supported
-export type ThemeType = 'jamify';
+// Campfire Tapes theme - earthy, organic, warm analog vibes
+export type ThemeType = 'campfire';
 
 interface ThemeConfig {
   name: string;
@@ -12,10 +12,10 @@ interface ThemeConfig {
 }
 
 export const THEMES: Record<ThemeType, ThemeConfig> = {
-  jamify: {
-    name: 'jamify',
-    label: 'Jamify',
-    description: 'Spotify-style dark',
+  campfire: {
+    name: 'campfire',
+    label: 'Campfire Tapes',
+    description: 'Earthy, organic, warm analog vibes',
   },
 };
 
@@ -28,12 +28,12 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme] = useState<ThemeType>('jamify');
+  const [theme] = useState<ThemeType>('campfire');
   const [mounted, setMounted] = useState(false);
 
-  // Clear old theme selections and set to jamify on mount
+  // Clear old theme selections and set to campfire on mount
   useEffect(() => {
-    localStorage.setItem('8pm-theme', 'jamify');
+    localStorage.setItem('8pm-theme', 'campfire');
     setMounted(true);
   }, []);
 
@@ -42,13 +42,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     if (!mounted) return;
 
     // Remove any old theme classes
-    document.documentElement.classList.remove('theme-tron', 'theme-metro', 'theme-minimal', 'theme-classic', 'theme-forest');
-    // Add jamify theme class
-    document.documentElement.classList.add('theme-jamify');
+    document.documentElement.classList.remove('theme-tron', 'theme-metro', 'theme-minimal', 'theme-classic', 'theme-forest', 'theme-jamify');
+    // Add campfire theme class
+    document.documentElement.classList.add('theme-campfire');
   }, [mounted]);
 
   const setTheme = () => {
-    // No-op: theme is always jamify
+    // No-op: theme is always campfire
   };
 
   // Prevent hydration mismatch by not rendering until mounted
@@ -68,7 +68,7 @@ export function useTheme() {
   if (context === undefined) {
     // Return default values if context not yet available (during SSR/hydration)
     return {
-      theme: 'jamify' as ThemeType,
+      theme: 'campfire' as ThemeType,
       setTheme: () => {},
       themes: THEMES,
     };

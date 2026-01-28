@@ -59,7 +59,7 @@ export default function BandBiography({
         <div className="lg:col-span-2 space-y-4">
           {/* Wikipedia extract */}
           {wikipediaSummary?.extract && (
-            <div className="text-[#b3b3b3] text-sm md:text-base leading-relaxed">
+            <div className="text-[#8a8478] text-sm md:text-base leading-relaxed">
               <p>{wikipediaSummary.extract}</p>
               {wikipediaSummary.url && (
                 <p className="mt-2 text-xs">
@@ -67,7 +67,7 @@ export default function BandBiography({
                     href={wikipediaSummary.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#1DB954] hover:underline"
+                    className="text-[#d4a060] hover:underline"
                   >
                     Read more on Wikipedia →
                   </a>
@@ -80,7 +80,7 @@ export default function BandBiography({
           {extendedBioParagraphs.map((paragraph, index) => (
             <p
               key={index}
-              className="text-[#b3b3b3] text-sm md:text-base leading-relaxed"
+              className="text-[#8a8478] text-sm md:text-base leading-relaxed"
             >
               {paragraph}
             </p>
@@ -88,7 +88,7 @@ export default function BandBiography({
 
           {/* Short bio fallback */}
           {!wikipediaSummary?.extract && !extendedBio && biography && (
-            <p className="text-[#b3b3b3] text-sm md:text-base leading-relaxed">
+            <p className="text-[#8a8478] text-sm md:text-base leading-relaxed">
               {biography}
             </p>
           )}
@@ -98,7 +98,7 @@ export default function BandBiography({
         {allImages.length > 0 && (
           <div className="space-y-4">
             {allImages.slice(0, 3).map((image, index) => (
-              <div key={index} className="bg-[#181818] rounded-lg overflow-hidden">
+              <div key={index} className="bg-[#252220] rounded-lg overflow-hidden">
                 <div className="relative aspect-square">
                   <img
                     src={image.url}
@@ -108,7 +108,7 @@ export default function BandBiography({
                 </div>
                 {image.caption && (
                   <div className="p-3">
-                    <p className="text-xs text-[#b3b3b3]">{image.caption}</p>
+                    <p className="text-xs text-[#8a8478]">{image.caption}</p>
                     {image.credit && (
                       <p className="text-[0.6rem] text-[#6a6a6a] mt-1">
                         Credit: {image.credit}

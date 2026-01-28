@@ -28,10 +28,30 @@ const config: Config = {
         },
         // Text colors
         'text-dim': '#6a6a7a',
+        // Campfire Tapes palette
+        campfire: {
+          earth: '#1c1a17',
+          soil: '#252220',
+          clay: '#2d2a26',
+          sand: '#3a3632',
+          amber: '#d4a060',
+          ochre: '#c08a40',
+          rust: '#a85a38',
+          teal: '#5a8a7a',
+          cream: '#f5f0e8',
+          'cream-aged': '#ebe5d8',
+          parchment: '#e0d8c8',
+          text: '#e8e0d4',
+          'text-body': '#c8c0b4',
+          muted: '#8a8478',
+          dim: '#6a6458',
+        },
       },
       fontFamily: {
         display: ['var(--font-orbitron)', 'sans-serif'],
         mono: ['var(--font-space-mono)', 'monospace'],
+        serif: ['Georgia', 'serif'],
+        sans: ['system-ui', 'sans-serif'],
       },
       animation: {
         'pulse-subtle': 'pulse-subtle 2s ease-in-out infinite',

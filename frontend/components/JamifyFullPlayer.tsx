@@ -112,7 +112,7 @@ export default function JamifyFullPlayer() {
   return (
     <div
       {...swipeHandlers}
-      className={`fixed inset-0 z-50 bg-gradient-to-b from-[#535353] to-[#121212] flex flex-col md:hidden safe-top safe-bottom full-screen-player prevent-overscroll touch-action-pan-y ${
+      className={`fixed inset-0 z-50 bg-gradient-to-b from-[#3a3632] to-[#1c1a17] flex flex-col md:hidden safe-top safe-bottom full-screen-player prevent-overscroll touch-action-pan-y ${
         isAnimating && !reducedMotion ? 'player-slide-up' : ''
       } ${swipeHandlers.isDragging ? 'dragging' : ''} ${reducedMotion ? 'reduce-motion' : ''}`}
       style={{
@@ -143,7 +143,7 @@ export default function JamifyFullPlayer() {
 
         {/* Now playing from */}
         <div className="text-center">
-          <p className="text-[10px] text-[#b3b3b3] uppercase tracking-wider">Playing from</p>
+          <p className="text-[10px] text-[#8a8478] uppercase tracking-wider">Playing from</p>
           <p className="text-xs text-white font-medium truncate max-w-[200px]">
             {queue.album?.name || 'Unknown'}
           </p>
@@ -171,7 +171,7 @@ export default function JamifyFullPlayer() {
               vibrate(BUTTON_PRESS);
               setIsSettingsOpen(!isSettingsOpen);
             }}
-            className={`p-2 -mr-2 btn-touch ${isSettingsOpen ? 'text-[#1DB954]' : 'text-white'}`}
+            className={`p-2 -mr-2 btn-touch ${isSettingsOpen ? 'text-[#d4a060]' : 'text-white'}`}
             aria-label={isSettingsOpen ? 'Close settings' : 'Open settings menu'}
             aria-expanded={isSettingsOpen}
             aria-haspopup="dialog"
@@ -198,8 +198,8 @@ export default function JamifyFullPlayer() {
               }`}
             />
           ) : (
-            <div className="w-full h-full bg-[#282828] flex items-center justify-center" aria-hidden="true">
-              <svg className="w-24 h-24 text-[#535353]" fill="currentColor" viewBox="0 0 24 24">
+            <div className="w-full h-full bg-[#2d2a26] flex items-center justify-center" aria-hidden="true">
+              <svg className="w-24 h-24 text-[#3a3632]" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
               </svg>
             </div>
@@ -220,7 +220,7 @@ export default function JamifyFullPlayer() {
                 vibrate(BUTTON_PRESS);
                 collapsePlayer();
               }}
-              className="text-[#b3b3b3] hover:text-white hover:underline truncate block"
+              className="text-[#8a8478] hover:text-white hover:underline truncate block"
             >
               {currentSong.artistName}
             </Link>
@@ -239,7 +239,7 @@ export default function JamifyFullPlayer() {
               }
             }}
             className={`p-2 btn-touch btn-ripple ${
-              currentSong && isInWishlist(currentSong.id) ? 'text-[#1DB954]' : 'text-[#b3b3b3]'
+              currentSong && isInWishlist(currentSong.id) ? 'text-[#d4a060]' : 'text-[#8a8478]'
             }`}
             aria-label={currentSong && isInWishlist(currentSong.id) ? 'Remove from favorites' : 'Add to favorites'}
           >
@@ -259,7 +259,7 @@ export default function JamifyFullPlayer() {
       {/* Progress Bar */}
       <div className="px-8 mb-4">
         <div
-          className="w-full h-1 bg-[#535353] rounded-full cursor-pointer group"
+          className="w-full h-1 bg-[#3a3632] rounded-full cursor-pointer group"
           onClick={(e) => {
             const rect = e.currentTarget.getBoundingClientRect();
             const percent = (e.clientX - rect.left) / rect.width;
@@ -274,10 +274,10 @@ export default function JamifyFullPlayer() {
           </div>
         </div>
         <div className="flex justify-between mt-1">
-          <span className="text-[11px] text-[#b3b3b3] font-mono">
+          <span className="text-[11px] text-[#8a8478] font-mono">
             {formatDuration(Math.floor(currentTime))}
           </span>
-          <span className="text-[11px] text-[#b3b3b3] font-mono">
+          <span className="text-[11px] text-[#8a8478] font-mono">
             {formatDuration(Math.floor(duration))}
           </span>
         </div>
@@ -292,7 +292,7 @@ export default function JamifyFullPlayer() {
               vibrate(BUTTON_PRESS);
               setShuffle(!queue.shuffle);
             }}
-            className={`p-3 btn-touch ${queue.shuffle ? 'text-[#1DB954]' : 'text-[#b3b3b3]'}`}
+            className={`p-3 btn-touch ${queue.shuffle ? 'text-[#d4a060]' : 'text-[#8a8478]'}`}
             aria-label={queue.shuffle ? 'Disable shuffle' : 'Enable shuffle'}
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -360,7 +360,7 @@ export default function JamifyFullPlayer() {
               const nextIndex = (currentIndex + 1) % modes.length;
               setRepeat(modes[nextIndex]);
             }}
-            className={`p-3 btn-touch ${queue.repeat === 'off' ? 'text-[#b3b3b3]' : 'text-[#1DB954]'}`}
+            className={`p-3 btn-touch ${queue.repeat === 'off' ? 'text-[#8a8478]' : 'text-[#d4a060]'}`}
             aria-label={`Repeat: ${queue.repeat}`}
           >
             {queue.repeat === 'one' ? (
@@ -380,7 +380,7 @@ export default function JamifyFullPlayer() {
       <div className="px-8 pb-6">
         <div className="flex items-center justify-between">
           {/* Device */}
-          <button className="p-2 text-[#b3b3b3] btn-touch" aria-label="Connect to a device">
+          <button className="p-2 text-[#8a8478] btn-touch" aria-label="Connect to a device">
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z" />
             </svg>
@@ -393,7 +393,7 @@ export default function JamifyFullPlayer() {
               collapsePlayer();
               setTimeout(() => toggleQueue(), 100);
             }}
-            className={`p-2 btn-touch ${isQueueOpen ? 'text-[#1DB954]' : 'text-[#b3b3b3]'}`}
+            className={`p-2 btn-touch ${isQueueOpen ? 'text-[#d4a060]' : 'text-[#8a8478]'}`}
             aria-label={isQueueOpen ? 'Close queue' : 'View queue'}
             aria-pressed={isQueueOpen}
           >
@@ -408,7 +408,7 @@ export default function JamifyFullPlayer() {
       {isSettingsOpen && (
         <div className="fixed inset-0 bg-black/80 z-50 flex items-end md:items-center md:justify-center" onClick={() => setIsSettingsOpen(false)}>
           <div
-            className="bg-[#282828] w-full md:w-96 md:rounded-lg p-6 space-y-4 safe-bottom"
+            className="bg-[#2d2a26] w-full md:w-96 md:rounded-lg p-6 space-y-4 safe-bottom"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
@@ -418,7 +418,7 @@ export default function JamifyFullPlayer() {
                   vibrate(BUTTON_PRESS);
                   setIsSettingsOpen(false);
                 }}
-                className="p-2 text-[#b3b3b3] hover:text-white"
+                className="p-2 text-[#8a8478] hover:text-white"
                 aria-label="Close settings"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -429,14 +429,14 @@ export default function JamifyFullPlayer() {
 
             {/* Active timer display */}
             {sleepTimer.isActive && (
-              <div className="bg-[#1DB954]/20 border border-[#1DB954] rounded-lg p-4 mb-4">
+              <div className="bg-[#d4a060]/20 border border-[#d4a060] rounded-lg p-4 mb-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-[#1DB954] text-sm font-medium">Timer Active</p>
+                    <p className="text-[#d4a060] text-sm font-medium">Timer Active</p>
                     <p className="text-white text-2xl font-bold font-mono mt-1">
                       {Math.floor(sleepTimer.timeRemaining / 60)}:{(sleepTimer.timeRemaining % 60).toString().padStart(2, '0')}
                     </p>
-                    <p className="text-[#b3b3b3] text-xs mt-1">
+                    <p className="text-[#8a8478] text-xs mt-1">
                       Music will stop in {Math.floor(sleepTimer.timeRemaining / 60)} minute{Math.floor(sleepTimer.timeRemaining / 60) !== 1 ? 's' : ''}
                     </p>
                   </div>
@@ -445,7 +445,7 @@ export default function JamifyFullPlayer() {
                       vibrate(BUTTON_PRESS);
                       sleepTimer.cancelTimer();
                     }}
-                    className="px-4 py-2 bg-[#b3b3b3]/20 text-white rounded-full text-sm font-medium hover:bg-[#b3b3b3]/30"
+                    className="px-4 py-2 bg-[#8a8478]/20 text-white rounded-full text-sm font-medium hover:bg-[#8a8478]/30"
                   >
                     Cancel
                   </button>
@@ -455,14 +455,14 @@ export default function JamifyFullPlayer() {
 
             {/* Timer presets */}
             <div className="space-y-2">
-              <p className="text-[#b3b3b3] text-sm mb-3">Set a timer to automatically stop music</p>
+              <p className="text-[#8a8478] text-sm mb-3">Set a timer to automatically stop music</p>
               <button
                 onClick={() => {
                   vibrate(BUTTON_PRESS);
                   sleepTimer.startTimer('5min');
                   setIsSettingsOpen(false);
                 }}
-                className="w-full px-4 py-3 bg-[#535353] hover:bg-[#3E3E3E] text-white rounded-lg text-left font-medium transition-colors"
+                className="w-full px-4 py-3 bg-[#3a3632] hover:bg-[#3a3632] text-white rounded-lg text-left font-medium transition-colors"
               >
                 5 minutes
               </button>
@@ -472,7 +472,7 @@ export default function JamifyFullPlayer() {
                   sleepTimer.startTimer('15min');
                   setIsSettingsOpen(false);
                 }}
-                className="w-full px-4 py-3 bg-[#535353] hover:bg-[#3E3E3E] text-white rounded-lg text-left font-medium transition-colors"
+                className="w-full px-4 py-3 bg-[#3a3632] hover:bg-[#3a3632] text-white rounded-lg text-left font-medium transition-colors"
               >
                 15 minutes
               </button>
@@ -482,7 +482,7 @@ export default function JamifyFullPlayer() {
                   sleepTimer.startTimer('30min');
                   setIsSettingsOpen(false);
                 }}
-                className="w-full px-4 py-3 bg-[#535353] hover:bg-[#3E3E3E] text-white rounded-lg text-left font-medium transition-colors"
+                className="w-full px-4 py-3 bg-[#3a3632] hover:bg-[#3a3632] text-white rounded-lg text-left font-medium transition-colors"
               >
                 30 minutes
               </button>
@@ -492,7 +492,7 @@ export default function JamifyFullPlayer() {
                   sleepTimer.startTimer('1hr');
                   setIsSettingsOpen(false);
                 }}
-                className="w-full px-4 py-3 bg-[#535353] hover:bg-[#3E3E3E] text-white rounded-lg text-left font-medium transition-colors"
+                className="w-full px-4 py-3 bg-[#3a3632] hover:bg-[#3a3632] text-white rounded-lg text-left font-medium transition-colors"
               >
                 1 hour
               </button>
@@ -502,20 +502,20 @@ export default function JamifyFullPlayer() {
                   sleepTimer.startTimer('end-of-track');
                   setIsSettingsOpen(false);
                 }}
-                className="w-full px-4 py-3 bg-[#535353] hover:bg-[#3E3E3E] text-white rounded-lg text-left font-medium transition-colors"
+                className="w-full px-4 py-3 bg-[#3a3632] hover:bg-[#3a3632] text-white rounded-lg text-left font-medium transition-colors"
               >
                 End of current track
               </button>
             </div>
 
             {/* Crossfade Settings */}
-            <div className="border-t border-[#535353] pt-4 mt-4">
+            <div className="border-t border-[#3a3632] pt-4 mt-4">
               <h4 className="text-white text-sm font-medium mb-3">Crossfade</h4>
-              <p className="text-[#b3b3b3] text-xs mb-3">Seamless transition between songs</p>
+              <p className="text-[#8a8478] text-xs mb-3">Seamless transition between songs</p>
 
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[#b3b3b3] text-sm">
+                  <span className="text-[#8a8478] text-sm">
                     {crossfadeDuration === 0 ? 'Off' : `${crossfadeDuration} second${crossfadeDuration !== 1 ? 's' : ''}`}
                   </span>
                 </div>
@@ -527,13 +527,13 @@ export default function JamifyFullPlayer() {
                   step="1"
                   value={crossfadeDuration}
                   onChange={(e) => setCrossfadeDuration(Number(e.target.value))}
-                  className="w-full h-1 bg-[#535353] rounded-lg appearance-none cursor-pointer"
+                  className="w-full h-1 bg-[#3a3632] rounded-lg appearance-none cursor-pointer"
                   style={{
-                    background: `linear-gradient(to right, #1DB954 0%, #1DB954 ${(crossfadeDuration / 12) * 100}%, #535353 ${(crossfadeDuration / 12) * 100}%, #535353 100%)`
+                    background: `linear-gradient(to right, #d4a060 0%, #d4a060 ${(crossfadeDuration / 12) * 100}%, #3a3632 ${(crossfadeDuration / 12) * 100}%, #3a3632 100%)`
                   }}
                 />
 
-                <div className="flex justify-between text-[10px] text-[#b3b3b3]">
+                <div className="flex justify-between text-[10px] text-[#8a8478]">
                   <span>Off</span>
                   <span>12s</span>
                 </div>
@@ -545,14 +545,14 @@ export default function JamifyFullPlayer() {
 
       {/* Timer notification (1 minute warning) */}
       {showTimerNotification && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#1DB954] text-white px-6 py-3 rounded-full shadow-lg animate-fade-in">
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#d4a060] text-white px-6 py-3 rounded-full shadow-lg animate-fade-in">
           <p className="text-sm font-medium">Music will stop in 1 minute</p>
         </div>
       )}
 
       {/* Active timer indicator (bottom of screen when not in settings) */}
       {sleepTimer.isActive && !isSettingsOpen && (
-        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 bg-[#282828]/95 backdrop-blur-sm text-white px-4 py-2 rounded-full shadow-lg">
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 bg-[#2d2a26]/95 backdrop-blur-sm text-white px-4 py-2 rounded-full shadow-lg">
           <p className="text-xs font-medium text-center">
             Sleep timer: {Math.floor(sleepTimer.timeRemaining / 60)}:{(sleepTimer.timeRemaining % 60).toString().padStart(2, '0')} remaining
           </p>

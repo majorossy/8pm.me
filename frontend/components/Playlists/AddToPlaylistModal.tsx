@@ -44,7 +44,7 @@ export function AddToPlaylistModal({ isOpen, onClose, song }: AddToPlaylistModal
       {/* Modal */}
       <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 pointer-events-none">
         <div
-          className="bg-[#282828] rounded-lg w-full max-w-md max-h-[80vh] overflow-hidden pointer-events-auto animate-scale-in flex flex-col"
+          className="bg-[#2d2a26] rounded-lg w-full max-w-md max-h-[80vh] overflow-hidden pointer-events-auto animate-scale-in flex flex-col"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
@@ -53,7 +53,7 @@ export function AddToPlaylistModal({ isOpen, onClose, song }: AddToPlaylistModal
               <h2 className="text-white font-bold text-lg">Add to Playlist</h2>
               <button
                 onClick={onClose}
-                className="p-2 -mr-2 text-[#b3b3b3] hover:text-white transition-colors rounded-full hover:bg-white/10"
+                className="p-2 -mr-2 text-[#8a8478] hover:text-white transition-colors rounded-full hover:bg-white/10"
                 aria-label="Close"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,7 +61,7 @@ export function AddToPlaylistModal({ isOpen, onClose, song }: AddToPlaylistModal
                 </svg>
               </button>
             </div>
-            <p className="text-[#b3b3b3] text-sm truncate">{song.title} • {song.artistName}</p>
+            <p className="text-[#8a8478] text-sm truncate">{song.title} • {song.artistName}</p>
           </div>
 
           {/* Content */}
@@ -74,7 +74,7 @@ export function AddToPlaylistModal({ isOpen, onClose, song }: AddToPlaylistModal
                   onChange={(e) => setNewPlaylistName(e.target.value)}
                   placeholder="Playlist name"
                   autoFocus
-                  className="w-full bg-[#121212] text-white placeholder-[#b3b3b3] rounded px-4 py-3 mb-3 focus:outline-none focus:ring-2 focus:ring-[#1DB954]"
+                  className="w-full bg-[#1c1a17] text-white placeholder-[#8a8478] rounded px-4 py-3 mb-3 focus:outline-none focus:ring-2 focus:ring-[#d4a060]"
                 />
                 <div className="flex gap-2">
                   <button
@@ -90,7 +90,7 @@ export function AddToPlaylistModal({ isOpen, onClose, song }: AddToPlaylistModal
                   <button
                     type="submit"
                     disabled={!newPlaylistName.trim()}
-                    className="flex-1 px-4 py-2 rounded-full bg-[#1DB954] text-black font-medium hover:bg-[#1ed760] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="flex-1 px-4 py-2 rounded-full bg-[#d4a060] text-black font-medium hover:bg-[#c08a40] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     Create
                   </button>
@@ -103,8 +103,8 @@ export function AddToPlaylistModal({ isOpen, onClose, song }: AddToPlaylistModal
                   onClick={() => setShowCreateForm(true)}
                   className="w-full flex items-center gap-3 p-4 hover:bg-white/10 transition-colors text-left"
                 >
-                  <div className="w-10 h-10 rounded bg-[#121212] flex items-center justify-center flex-shrink-0">
-                    <svg className="w-6 h-6 text-[#b3b3b3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 rounded bg-[#1c1a17] flex items-center justify-center flex-shrink-0">
+                    <svg className="w-6 h-6 text-[#8a8478]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                     </svg>
                   </div>
@@ -120,7 +120,7 @@ export function AddToPlaylistModal({ isOpen, onClose, song }: AddToPlaylistModal
                 <div>
                   {playlists.length === 0 ? (
                     <div className="p-8 text-center">
-                      <p className="text-[#b3b3b3] text-sm">No playlists yet</p>
+                      <p className="text-[#8a8478] text-sm">No playlists yet</p>
                     </div>
                   ) : (
                     playlists.map((playlist) => (
@@ -130,12 +130,12 @@ export function AddToPlaylistModal({ isOpen, onClose, song }: AddToPlaylistModal
                         className="w-full flex items-center gap-3 p-4 hover:bg-white/10 transition-colors text-left"
                       >
                         {/* Cover art */}
-                        <div className="w-10 h-10 rounded bg-[#282828] flex-shrink-0 overflow-hidden">
+                        <div className="w-10 h-10 rounded bg-[#2d2a26] flex-shrink-0 overflow-hidden">
                           {playlist.coverArt ? (
                             <img src={playlist.coverArt} alt={playlist.name} className="w-full h-full object-cover" />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">
-                              <svg className="w-5 h-5 text-[#535353]" fill="currentColor" viewBox="0 0 24 24">
+                              <svg className="w-5 h-5 text-[#3a3632]" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
                               </svg>
                             </div>
@@ -143,7 +143,7 @@ export function AddToPlaylistModal({ isOpen, onClose, song }: AddToPlaylistModal
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-white font-medium truncate">{playlist.name}</p>
-                          <p className="text-[#b3b3b3] text-sm">{playlist.songs.length} songs</p>
+                          <p className="text-[#8a8478] text-sm">{playlist.songs.length} songs</p>
                         </div>
                       </button>
                     ))

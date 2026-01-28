@@ -22,7 +22,7 @@ export default function ArtistCard({ artist }: ArtistCardProps) {
 
   return (
     <Link href={`/artists/${artist.slug}`}>
-      <div className="group p-4 bg-[#181818] rounded-lg hover:bg-[#282828] transition-all duration-300 cursor-pointer">
+      <div className="group p-4 bg-[#252220] rounded-lg hover:bg-[#2d2a26] transition-all duration-300 cursor-pointer">
         {/* Artist avatar - circular */}
         <div
           ref={ref as React.RefObject<HTMLDivElement>}
@@ -32,7 +32,7 @@ export default function ArtistCard({ artist }: ArtistCardProps) {
             <>
               {/* Blur placeholder - shown until image loads */}
               <div
-                className={`absolute inset-0 bg-[#282828] transition-opacity duration-500 ${
+                className={`absolute inset-0 bg-[#2d2a26] transition-opacity duration-500 ${
                   imageLoaded ? 'opacity-0' : 'opacity-100'
                 }`}
               >
@@ -53,15 +53,15 @@ export default function ArtistCard({ artist }: ArtistCardProps) {
               )}
             </>
           ) : (
-            <div className="w-full h-full bg-[#282828] flex items-center justify-center">
-              <span className="font-bold text-5xl text-[#535353]">
+            <div className="w-full h-full bg-[#2d2a26] flex items-center justify-center">
+              <span className="font-bold text-5xl text-[#3a3632]">
                 {artist.name.charAt(0)}
               </span>
             </div>
           )}
           {/* Play button overlay */}
           <div className="absolute bottom-2 right-2 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-            <button className="w-12 h-12 bg-[#1DB954] rounded-full flex items-center justify-center shadow-xl hover:scale-105 hover:bg-[#1ed760] transition-all">
+            <button className="w-12 h-12 bg-[#d4a060] rounded-full flex items-center justify-center shadow-xl hover:scale-105 hover:bg-[#c08a40] transition-all">
               <svg className="w-5 h-5 text-black ml-0.5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z" />
               </svg>
@@ -73,7 +73,7 @@ export default function ArtistCard({ artist }: ArtistCardProps) {
         <h3 className="font-semibold text-white truncate mb-1">
           {artist.name}
         </h3>
-        <p className="text-sm text-[#a7a7a7]">
+        <p className="text-sm text-[#8a8478]">
           Artist
         </p>
       </div>

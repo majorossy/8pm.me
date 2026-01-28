@@ -21,7 +21,7 @@ export default function AlbumCard({ album }: AlbumCardProps) {
   // Jamify/Spotify style - rounded cards with hover play button
   return (
     <Link href={`/artists/${album.artistSlug}/album/${album.slug}`}>
-      <div className="group p-4 bg-[#181818] rounded-lg hover:bg-[#282828] transition-all duration-300 cursor-pointer">
+      <div className="group p-4 bg-[#252220] rounded-lg hover:bg-[#2d2a26] transition-all duration-300 cursor-pointer">
         {/* Album artwork with play button overlay */}
         <div
           ref={ref as React.RefObject<HTMLDivElement>}
@@ -31,7 +31,7 @@ export default function AlbumCard({ album }: AlbumCardProps) {
             <>
               {/* Blur placeholder - shown until image loads */}
               <div
-                className={`absolute inset-0 bg-[#282828] transition-opacity duration-500 ${
+                className={`absolute inset-0 bg-[#2d2a26] transition-opacity duration-500 ${
                   imageLoaded ? 'opacity-0' : 'opacity-100'
                 }`}
               >
@@ -52,8 +52,8 @@ export default function AlbumCard({ album }: AlbumCardProps) {
               )}
             </>
           ) : (
-            <div className="w-full h-full bg-[#282828] flex items-center justify-center">
-              <svg className="w-16 h-16 text-[#535353]" viewBox="0 0 24 24" fill="currentColor">
+            <div className="w-full h-full bg-[#2d2a26] flex items-center justify-center">
+              <svg className="w-16 h-16 text-[#3a3632]" viewBox="0 0 24 24" fill="currentColor">
                 <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" fill="none"/>
                 <circle cx="12" cy="12" r="3" fill="currentColor"/>
               </svg>
@@ -61,7 +61,7 @@ export default function AlbumCard({ album }: AlbumCardProps) {
           )}
           {/* Play button overlay */}
           <div className="absolute bottom-2 right-2 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-            <button className="w-12 h-12 bg-[#1DB954] rounded-full flex items-center justify-center shadow-xl hover:scale-105 hover:bg-[#1ed760] transition-all">
+            <button className="w-12 h-12 bg-[#d4a060] rounded-full flex items-center justify-center shadow-xl hover:scale-105 hover:bg-[#c08a40] transition-all">
               <svg className="w-5 h-5 text-black ml-0.5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z" />
               </svg>
@@ -73,7 +73,7 @@ export default function AlbumCard({ album }: AlbumCardProps) {
         <h3 className="font-semibold text-white truncate mb-1">
           {album.name}
         </h3>
-        <p className="text-sm text-[#a7a7a7] truncate">
+        <p className="text-sm text-[#8a8478] truncate">
           {album.showDate && <span>{album.showDate} </span>}
           <span>{album.totalTracks} {album.totalTracks === 1 ? 'track' : 'tracks'}</span>
         </p>

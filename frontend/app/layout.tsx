@@ -19,6 +19,15 @@ const spaceMono = Space_Mono({
 export const metadata: Metadata = {
   title: 'EIGHTPM - Music Archive',
   description: 'Discover and stream live music recordings',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'EIGHTPM',
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 export default function RootLayout({
@@ -29,10 +38,24 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${orbitron.variable} ${spaceMono.variable}`}>
       <head>
+        {/* PWA Meta Tags */}
+        <meta name="application-name" content="EIGHTPM" />
+        <meta name="theme-color" content="#d4a060" />
+        <meta name="mobile-web-app-capable" content="yes" />
+
         {/* iOS Web App Meta Tags */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="EIGHTPM" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+
+        {/* Apple Touch Icons */}
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="167x167" href="/icons/icon-152x152.png" />
+
+        {/* iOS Splash Screens - can be generated later */}
 
         {/* iOS Haptic Feedback Preparation */}
         {/* Note: Add navigator.vibrate() calls at the following touch points:

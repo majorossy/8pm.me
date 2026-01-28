@@ -106,7 +106,7 @@ export default function BottomPlayer() {
             <div className="drag-hint" />
 
             {/* Progress bar */}
-            <div className="h-[2px] bg-[#3e3e3e]">
+            <div className="h-[2px] bg-[#3a3632]">
               <div
                 className="h-full bg-white transition-all duration-150"
                 style={{ width: `${progress}%` }}
@@ -124,7 +124,7 @@ export default function BottomPlayer() {
                 aria-label="Expand player"
               >
                 {/* Album art */}
-                <div className="w-10 h-10 bg-[#282828] flex-shrink-0 rounded">
+                <div className="w-10 h-10 bg-[#2d2a26] flex-shrink-0 rounded">
                   {queue.album?.coverArt ? (
                     <img
                       src={queue.album.coverArt}
@@ -137,7 +137,7 @@ export default function BottomPlayer() {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <svg className="w-4 h-4 text-[#535353]" fill="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 text-[#3a3632]" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
                       </svg>
                     </div>
@@ -180,11 +180,11 @@ export default function BottomPlayer() {
 
   // DESKTOP: Full 3-column layout
   return (
-      <div className="fixed bottom-0 left-0 right-0 h-[90px] bg-[#181818] border-t border-[#282828] z-50 px-4 flex items-center">
+      <div className="fixed bottom-0 left-0 right-0 h-[90px] bg-[#252220] border-t border-[#2d2a26] z-50 px-4 flex items-center">
         {/* Left section - Now playing info (30%) */}
         <div className="w-[30%] min-w-[180px] flex items-center gap-3">
           {/* Album art */}
-          <div className="w-14 h-14 bg-[#282828] flex-shrink-0 rounded">
+          <div className="w-14 h-14 bg-[#2d2a26] flex-shrink-0 rounded">
             {queue.album?.coverArt ? (
               <img
                 src={queue.album.coverArt}
@@ -197,7 +197,7 @@ export default function BottomPlayer() {
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center" aria-hidden="true">
-                <svg className="w-6 h-6 text-[#535353]" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-[#3a3632]" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
                 </svg>
               </div>
@@ -209,7 +209,7 @@ export default function BottomPlayer() {
             <p className="text-sm text-white font-medium truncate hover:underline cursor-pointer">
               {currentSong.title}
             </p>
-            <p className="text-xs text-[#a7a7a7] truncate hover:underline cursor-pointer">
+            <p className="text-xs text-[#8a8478] truncate hover:underline cursor-pointer">
               {currentSong.artistName}
             </p>
           </div>
@@ -227,8 +227,8 @@ export default function BottomPlayer() {
                 }
               }
             }}
-            className={`transition-colors flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-[#1DB954] focus:ring-offset-2 focus:ring-offset-[#181818] rounded ${
-              currentSong && isInWishlist(currentSong.id) ? 'text-[#1DB954]' : 'text-[#a7a7a7] hover:text-white'
+            className={`transition-colors flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-[#d4a060] focus:ring-offset-2 focus:ring-offset-[#252220] rounded ${
+              currentSong && isInWishlist(currentSong.id) ? 'text-[#d4a060]' : 'text-[#8a8478] hover:text-white'
             }`}
             aria-label={currentSong && isInWishlist(currentSong.id) ? 'Remove from favorites' : 'Add to favorites'}
           >
@@ -254,8 +254,8 @@ export default function BottomPlayer() {
                 vibrate(BUTTON_PRESS);
                 setShuffle(!queue.shuffle);
               }}
-              className={`transition-colors focus:outline-none focus:ring-2 focus:ring-[#1DB954] rounded ${
-                queue.shuffle ? 'text-[#1DB954]' : 'text-[#a7a7a7] hover:text-white'
+              className={`transition-colors focus:outline-none focus:ring-2 focus:ring-[#d4a060] rounded ${
+                queue.shuffle ? 'text-[#d4a060]' : 'text-[#8a8478] hover:text-white'
               }`}
               aria-label={queue.shuffle ? 'Disable shuffle' : 'Enable shuffle'}
               title={queue.shuffle ? 'Shuffle on' : 'Shuffle off'}
@@ -272,7 +272,7 @@ export default function BottomPlayer() {
                 playPrev();
               }}
               disabled={isFirstTrack && !hasUpNext}
-              className="text-[#a7a7a7] hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-[#1DB954] rounded"
+              className="text-[#8a8478] hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-[#d4a060] rounded"
               aria-label="Previous track"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -286,7 +286,7 @@ export default function BottomPlayer() {
                 vibrate(BUTTON_PRESS);
                 togglePlay();
               }}
-              className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-black hover:scale-105 transition-transform focus:outline-none focus:ring-2 focus:ring-[#1DB954] focus:ring-offset-2 focus:ring-offset-[#181818]"
+              className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-black hover:scale-105 transition-transform focus:outline-none focus:ring-2 focus:ring-[#d4a060] focus:ring-offset-2 focus:ring-offset-[#252220]"
               aria-label={isPlaying ? 'Pause' : 'Play'}
             >
               {isPlaying ? (
@@ -308,7 +308,7 @@ export default function BottomPlayer() {
                 playNext();
               }}
               disabled={isLastTrack && !hasUpNext}
-              className="text-[#a7a7a7] hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-[#1DB954] rounded"
+              className="text-[#8a8478] hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-[#d4a060] rounded"
               aria-label="Next track"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -325,8 +325,8 @@ export default function BottomPlayer() {
                 const nextIndex = (currentIndex + 1) % modes.length;
                 setRepeat(modes[nextIndex]);
               }}
-              className={`transition-colors focus:outline-none focus:ring-2 focus:ring-[#1DB954] rounded ${
-                queue.repeat === 'off' ? 'text-[#a7a7a7] hover:text-white' : 'text-[#1DB954]'
+              className={`transition-colors focus:outline-none focus:ring-2 focus:ring-[#d4a060] rounded ${
+                queue.repeat === 'off' ? 'text-[#8a8478] hover:text-white' : 'text-[#d4a060]'
               }`}
               aria-label={`Repeat: ${queue.repeat}`}
               title={`Repeat: ${queue.repeat}`}
@@ -345,11 +345,11 @@ export default function BottomPlayer() {
 
           {/* Progress bar */}
           <div className="w-full flex items-center gap-2">
-            <span className="text-[11px] text-[#a7a7a7] font-mono w-10 text-right">
+            <span className="text-[11px] text-[#8a8478] font-mono w-10 text-right">
               {formatDuration(Math.floor(currentTime))}
             </span>
             <div
-              className="flex-1 h-1 bg-[#535353] rounded-full cursor-pointer group relative"
+              className="flex-1 h-1 bg-[#3a3632] rounded-full cursor-pointer group relative"
               onClick={(e) => {
                 const rect = e.currentTarget.getBoundingClientRect();
                 const percent = (e.clientX - rect.left) / rect.width;
@@ -362,13 +362,13 @@ export default function BottomPlayer() {
               aria-valuenow={Math.floor(currentTime)}
             >
               <div
-                className="h-full bg-white group-hover:bg-[#1DB954] rounded-full relative transition-colors"
+                className="h-full bg-white group-hover:bg-[#d4a060] rounded-full relative transition-colors"
                 style={{ width: `${progress}%` }}
               >
                 <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
             </div>
-            <span className="text-[11px] text-[#a7a7a7] font-mono w-10">
+            <span className="text-[11px] text-[#8a8478] font-mono w-10">
               {formatDuration(Math.floor(duration))}
             </span>
           </div>
@@ -382,8 +382,8 @@ export default function BottomPlayer() {
               vibrate(BUTTON_PRESS);
               toggleQueue();
             }}
-            className={`transition-colors focus:outline-none focus:ring-2 focus:ring-[#1DB954] rounded ${
-              isQueueOpen ? 'text-[#1DB954]' : 'text-[#a7a7a7] hover:text-white'
+            className={`transition-colors focus:outline-none focus:ring-2 focus:ring-[#d4a060] rounded ${
+              isQueueOpen ? 'text-[#d4a060]' : 'text-[#8a8478] hover:text-white'
             }`}
             aria-label={isQueueOpen ? 'Close queue' : 'Open queue'}
             title="Queue"
@@ -399,7 +399,7 @@ export default function BottomPlayer() {
               vibrate(BUTTON_PRESS);
               setVolume(volume === 0 ? 0.7 : 0);
             }}
-            className="text-[#a7a7a7] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#1DB954] rounded"
+            className="text-[#8a8478] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#d4a060] rounded"
             aria-label={volume === 0 ? 'Unmute' : `Mute (current volume ${Math.round(volume * 100)}%)`}
           >
             {volume === 0 ? (
@@ -418,9 +418,9 @@ export default function BottomPlayer() {
           </button>
           <div className="w-24 group relative">
             {/* Volume fill track */}
-            <div className="absolute top-1/2 left-0 h-1 bg-[#535353] rounded-full w-full -translate-y-1/2 pointer-events-none">
+            <div className="absolute top-1/2 left-0 h-1 bg-[#3a3632] rounded-full w-full -translate-y-1/2 pointer-events-none">
               <div
-                className="h-full bg-white group-hover:bg-[#1DB954] rounded-full transition-colors"
+                className="h-full bg-white group-hover:bg-[#d4a060] rounded-full transition-colors"
                 style={{ width: `${volume * 100}%` }}
               />
             </div>

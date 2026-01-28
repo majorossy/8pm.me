@@ -138,7 +138,7 @@ export function JamifySearchOverlay({ isOpen, onClose }: JamifySearchOverlayProp
 
       {/* Overlay */}
       <div
-        className={`fixed inset-0 z-[9999] bg-[#121212] overflow-hidden transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+        className={`fixed inset-0 z-[9999] bg-[#1c1a17] overflow-hidden transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
           isAnimating ? 'translate-y-0' : 'translate-y-full'
         }`}
       >
@@ -162,7 +162,7 @@ export function JamifySearchOverlay({ isOpen, onClose }: JamifySearchOverlayProp
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="What do you want to listen to?"
-                className="w-full bg-[#282828] text-white placeholder-gray-400 rounded-full px-4 py-3 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-[#1DB954]"
+                className="w-full bg-[#2d2a26] text-white placeholder-gray-400 rounded-full px-4 py-3 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-[#d4a060]"
               />
               {searchQuery && (
                 <button
@@ -198,7 +198,7 @@ export function JamifySearchOverlay({ isOpen, onClose }: JamifySearchOverlayProp
                       <button
                         key={index}
                         onClick={() => handleRecentSearchClick(search)}
-                        className="group flex items-center gap-2 bg-[#282828] hover:bg-[#3E3E3E] text-white px-4 py-2 rounded-full text-sm transition-colors btn-touch"
+                        className="group flex items-center gap-2 bg-[#2d2a26] hover:bg-[#3a3632] text-white px-4 py-2 rounded-full text-sm transition-colors btn-touch"
                       >
                         <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -250,7 +250,7 @@ export function JamifySearchOverlay({ isOpen, onClose }: JamifySearchOverlayProp
                             <button
                               key={artist.id}
                               onClick={() => handleArtistClick(artist)}
-                              className="w-full flex items-center gap-3 p-3 bg-[#282828] hover:bg-[#3E3E3E] rounded-lg cursor-pointer transition-colors btn-touch text-left"
+                              className="w-full flex items-center gap-3 p-3 bg-[#2d2a26] hover:bg-[#3a3632] rounded-lg cursor-pointer transition-colors btn-touch text-left"
                             >
                               <div className="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center flex-shrink-0">
                                 {artist.image ? (
@@ -285,7 +285,7 @@ export function JamifySearchOverlay({ isOpen, onClose }: JamifySearchOverlayProp
                             <button
                               key={album.id}
                               onClick={() => handleAlbumClick(album)}
-                              className="w-full flex items-center gap-3 p-3 bg-[#282828] hover:bg-[#3E3E3E] rounded-lg cursor-pointer transition-colors btn-touch text-left"
+                              className="w-full flex items-center gap-3 p-3 bg-[#2d2a26] hover:bg-[#3a3632] rounded-lg cursor-pointer transition-colors btn-touch text-left"
                             >
                               <div className="w-12 h-12 bg-gray-700 rounded flex items-center justify-center flex-shrink-0">
                                 {album.coverArt ? (
@@ -320,7 +320,7 @@ export function JamifySearchOverlay({ isOpen, onClose }: JamifySearchOverlayProp
                             <button
                               key={track.id}
                               onClick={() => handleTrackClick(track)}
-                              className="w-full flex items-center gap-3 p-3 bg-[#282828] hover:bg-[#3E3E3E] rounded-lg cursor-pointer transition-colors btn-touch text-left"
+                              className="w-full flex items-center gap-3 p-3 bg-[#2d2a26] hover:bg-[#3a3632] rounded-lg cursor-pointer transition-colors btn-touch text-left"
                             >
                               <div className="w-12 h-12 bg-gray-700 rounded flex items-center justify-center flex-shrink-0">
                                 <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 24 24">

@@ -120,7 +120,7 @@ export default function SwipeableQueueItem({
         onTouchStart={onTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        className="relative bg-[#121212] touch-none"
+        className="relative bg-[#1c1a17] touch-none"
         style={{
           transform: getTransform(),
           transition: isDragging ? 'none' : isDeleting ? 'transform 300ms ease-out, opacity 300ms ease-out' : 'transform 250ms ease-out',

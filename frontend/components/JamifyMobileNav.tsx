@@ -7,11 +7,18 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { JamifySearchOverlay } from './JamifySearchOverlay';
 import { useHaptic } from '@/hooks/useHaptic';
+import { useAuth } from '@/context/AuthContext';
+import AuthModal from '@/components/AuthModal';
 
 export default function JamifyMobileNav() {
   const pathname = usePathname();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const { vibrate, BUTTON_PRESS } = useHaptic();
+  const { isAuthenticated, profile, user } = useAuth();
+
+  const displayName = profile?.display_name || user?.email?.split('@')[0] || 'User';
+  const initials = displayName.slice(0, 2).toUpperCase();
 
   const isActive = (path: string) => {
     if (path === '/') return pathname === '/';
@@ -67,11 +74,37 @@ export default function JamifyMobileNav() {
         </svg>
       ),
     },
+    {
+      href: isAuthenticated ? '/account' : '#',
+      label: isAuthenticated ? 'Profile' : 'Sign In',
+      action: isAuthenticated ? null : () => {
+        vibrate(BUTTON_PRESS);
+        setIsAuthModalOpen(true);
+      },
+      icon: (active: boolean) => (
+        isAuthenticated ? (
+          <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
+            active ? 'bg-[#d4a060] text-[#1c1a17]' : 'bg-[#3a3632] text-[#e8e0d4]'
+          }`}>
+            {initials}
+          </div>
+        ) : (
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={active ? 2.5 : 2}
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+            />
+          </svg>
+        )
+      ),
+    },
   ];
 
   return (
     <>
-      <nav className="fixed bottom-0 left-0 right-0 h-[50px] bg-gradient-to-t from-black via-black/95 to-black/90 z-40 md:hidden safe-bottom" aria-label="Main navigation">
+      <nav className="fixed bottom-0 left-0 right-0 h-[50px] bg-gradient-to-t from-[#1c1a17] via-[#1c1a17]/95 to-[#1c1a17]/90 border-t border-[#3a3632]/30 z-40 md:hidden safe-bottom" aria-label="Main navigation">
         <div className="flex items-center justify-around h-full px-4">
           {tabs.map((tab) => {
             const active = isActive(tab.href);
@@ -83,13 +116,13 @@ export default function JamifyMobileNav() {
                   key={tab.href}
                   onClick={tab.action}
                   className={`flex flex-col items-center justify-center gap-1 min-w-[64px] py-1 transition-colors ${
-                    active ? 'text-white' : 'text-[#b3b3b3]'
+                    active ? 'text-[#d4a060]' : 'text-[#8a8478]'
                   }`}
                   aria-label={tab.label}
                   aria-current={active ? 'page' : undefined}
                 >
                   {tab.icon(active)}
-                  <span className="text-[10px] font-medium" aria-hidden="true">{tab.label}</span>
+                  <span className="text-[10px] font-medium font-sans" aria-hidden="true">{tab.label}</span>
                 </button>
               );
             }
@@ -101,13 +134,13 @@ export default function JamifyMobileNav() {
                 href={tab.href}
                 onClick={() => vibrate(BUTTON_PRESS)}
                 className={`flex flex-col items-center justify-center gap-1 min-w-[64px] py-1 transition-colors ${
-                  active ? 'text-white' : 'text-[#b3b3b3]'
+                  active ? 'text-[#d4a060]' : 'text-[#8a8478]'
                 }`}
                 aria-label={tab.label}
                 aria-current={active ? 'page' : undefined}
               >
                 {tab.icon(active)}
-                <span className="text-[10px] font-medium" aria-hidden="true">{tab.label}</span>
+                <span className="text-[10px] font-medium font-sans" aria-hidden="true">{tab.label}</span>
               </Link>
             );
           })}
@@ -116,6 +149,12 @@ export default function JamifyMobileNav() {
 
       {/* Search Overlay */}
       <JamifySearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+      />
     </>
   );
 }

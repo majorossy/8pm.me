@@ -85,10 +85,10 @@ export default function TrackCard({ track, index, album }: TrackCardProps) {
         className={`
           rounded-lg overflow-hidden transition-all
           ${isCurrentTrack
-            ? 'bg-[#282828] border-l-2 border-[#1DB954]'
-            : 'hover:bg-[#282828] border-l-2 border-transparent'
+            ? 'bg-[#2d2a26] border-l-2 border-[#d4a060]'
+            : 'hover:bg-[#2d2a26] border-l-2 border-transparent'
           }
-          ${isExpanded ? 'bg-[#282828]' : ''}
+          ${isExpanded ? 'bg-[#2d2a26]' : ''}
         `}
       >
         {/* Main track row */}
@@ -105,7 +105,7 @@ export default function TrackCard({ track, index, album }: TrackCardProps) {
               </span>
             ) : (
               <>
-                <span className={`text-sm group-hover:hidden ${isCurrentTrack ? 'text-[#1DB954]' : 'text-[#a7a7a7]'}`}>
+                <span className={`text-sm group-hover:hidden ${isCurrentTrack ? 'text-[#d4a060]' : 'text-[#8a8478]'}`}>
                   {index !== undefined ? index : ''}
                 </span>
                 <button
@@ -133,12 +133,12 @@ export default function TrackCard({ track, index, album }: TrackCardProps) {
 
           {/* Track info */}
           <div className="flex flex-col min-w-0">
-            <span className={`text-base truncate ${isCurrentTrack ? 'text-[#1DB954]' : 'text-white'}`}>
+            <span className={`text-base truncate ${isCurrentTrack ? 'text-[#d4a060]' : 'text-white'}`}>
               {track.title}
             </span>
             {hasMultipleVersions && (
-              <span className="text-xs text-[#a7a7a7] flex items-center gap-1">
-                <span className="w-1.5 h-1.5 bg-[#1DB954] rounded-full" />
+              <span className="text-xs text-[#8a8478] flex items-center gap-1">
+                <span className="w-1.5 h-1.5 bg-[#d4a060] rounded-full" />
                 {track.songCount} versions available
               </span>
             )}
@@ -150,7 +150,7 @@ export default function TrackCard({ track, index, album }: TrackCardProps) {
               e.stopPropagation();
               setShowPlaylistModal(true);
             }}
-            className="text-[#a7a7a7] hover:text-white opacity-0 group-hover:opacity-100 transition-all focus:outline-none focus:opacity-100"
+            className="text-[#8a8478] hover:text-white opacity-0 group-hover:opacity-100 transition-all focus:outline-none focus:opacity-100"
             aria-label={`Add ${track.title} to playlist`}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -161,7 +161,7 @@ export default function TrackCard({ track, index, album }: TrackCardProps) {
           {/* Add to queue */}
           <button
             onClick={handleAddToQueue}
-            className="text-[#a7a7a7] hover:text-white opacity-0 group-hover:opacity-100 transition-all focus:outline-none focus:opacity-100"
+            className="text-[#8a8478] hover:text-white opacity-0 group-hover:opacity-100 transition-all focus:outline-none focus:opacity-100"
             aria-label={`Add ${track.title} to queue`}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -175,7 +175,7 @@ export default function TrackCard({ track, index, album }: TrackCardProps) {
               e.stopPropagation();
               openShareModal(shareableTrack(track));
             }}
-            className="text-[#a7a7a7] hover:text-white opacity-0 group-hover:opacity-100 transition-all focus:outline-none focus:opacity-100"
+            className="text-[#8a8478] hover:text-white opacity-0 group-hover:opacity-100 transition-all focus:outline-none focus:opacity-100"
             aria-label={`Share ${track.title}`}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -185,12 +185,12 @@ export default function TrackCard({ track, index, album }: TrackCardProps) {
 
           {/* Duration and expand chevron */}
           <div className="flex items-center gap-4">
-            <span className="text-sm text-[#a7a7a7]">
+            <span className="text-sm text-[#8a8478]">
               {formatDuration(selectedSong?.duration || track.totalDuration)}
             </span>
             {/* Always show expand chevron to indicate expandability */}
             <div
-              className={`text-[#a7a7a7] transition-transform ${isExpanded ? 'rotate-180 text-white' : ''} ${hasMultipleVersions ? '' : 'opacity-0'}`}
+              className={`text-[#8a8478] transition-transform ${isExpanded ? 'rotate-180 text-white' : ''} ${hasMultipleVersions ? '' : 'opacity-0'}`}
               aria-hidden="true"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -202,7 +202,7 @@ export default function TrackCard({ track, index, album }: TrackCardProps) {
 
         {/* Versions panel */}
         {isExpanded && (
-          <div className="px-4 pb-4 bg-[#181818]">
+          <div className="px-4 pb-4 bg-[#252220]">
             {track.songs.length > 0 ? (
               <VersionCarousel
                 songs={track.songs}
@@ -217,7 +217,7 @@ export default function TrackCard({ track, index, album }: TrackCardProps) {
             ) : (
               /* Empty State - No Live Recordings for this track */
               <div className="flex flex-col items-center justify-center py-8 px-4">
-                <svg className="w-16 h-16 text-[#535353] mb-4" viewBox="0 0 64 64" fill="none">
+                <svg className="w-16 h-16 text-[#3a3632] mb-4" viewBox="0 0 64 64" fill="none">
                   {/* Microphone with X */}
                   <path
                     d="M32 8C26.477 8 22 12.477 22 18V28C22 33.523 26.477 38 32 38C37.523 38 42 33.523 42 28V18C42 12.477 37.523 8 32 8Z"
@@ -227,9 +227,9 @@ export default function TrackCard({ track, index, album }: TrackCardProps) {
                   <rect x="30" y="38" width="4" height="12" fill="currentColor" opacity="0.4" />
                   <rect x="24" y="50" width="16" height="3" rx="1.5" fill="currentColor" opacity="0.4" />
                   {/* X overlay */}
-                  <path d="M20 16L44 40M44 16L20 40" stroke="#535353" strokeWidth="3" strokeLinecap="round" />
+                  <path d="M20 16L44 40M44 16L20 40" stroke="#3a3632" strokeWidth="3" strokeLinecap="round" />
                 </svg>
-                <p className="text-sm text-[#a7a7a7] text-center">
+                <p className="text-sm text-[#8a8478] text-center">
                   No live recordings found for this track
                 </p>
               </div>
