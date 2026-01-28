@@ -1,0 +1,79 @@
+{
+  "slug": "phish",
+  "name": "Phish",
+  "biography": "Phish is an American rock band formed at the University of Vermont in Burlington in 1983. The group began when freshmen Trey Anastasio and Jeff Holdsworth started playing guitar together in dorm lounges. Anastasio soon met drummer Jon Fishman, whose drumming he had heard through the dorms, and bassist Mike Gordon joined after answering a flyer. Keyboardist Page McConnell first encountered the band in early 1985 when he arranged for them to play at Goddard College, officially joining as a full-time member in September 1985. Jeff Holdsworth left in 1986, establishing the classic four-piece lineup that has remained unchanged for nearly four decades.\n\nThe band's music blends elements of funk, reggae, progressive rock, psychedelic rock, folk, country, jazz, blues, bluegrass, electronic music, and pop. They are known for their extensive musical improvisation and jams during concert performances, placing them at the forefront of the jam band movement inspired by the Grateful Dead. Phish has never played the same setlist twice across their thousands of performances.\n\nPhish has released 16 studio albums, from 1989's Junta through 2024's Evolve. They pioneered self-produced festivals beginning with The Clifford Ball in 1996, influencing events like Bonnaroo. Their millennium celebration at Big Cypress drew 80,000 fans for a legendary seven-hour overnight set. The band holds the record at Madison Square Garden with over 80 sold-out performances, including the unprecedented Baker's Dozen run of 13 consecutive nights in 2017 featuring 237 unique songs with no repeats.\n\nWidely recognized among live music's most beloved and inventive artists, Phish has played over 2,000 shows since their formation, regularly selling out arenas, amphitheaters, and stadiums across North America. They were nominated for induction into the Rock and Roll Hall of Fame for the first time in 2025.",
+  "members": {
+    "current": [
+      {
+        "name": "Trey Anastasio",
+        "role": "Guitar, Lead Vocals",
+        "years": "1983-present"
+      },
+      {
+        "name": "Page McConnell",
+        "role": "Keyboards, Vocals",
+        "years": "1985-present"
+      },
+      {
+        "name": "Mike Gordon",
+        "role": "Bass, Vocals",
+        "years": "1983-present"
+      },
+      {
+        "name": "Jon Fishman",
+        "role": "Drums, Vocals",
+        "years": "1983-present"
+      }
+    ],
+    "former": [
+      {
+        "name": "Jeff Holdsworth",
+        "role": "Guitar, Vocals",
+        "years": "1983-1986"
+      },
+      {
+        "name": "Marc Daubert",
+        "role": "Percussion",
+        "years": "1983-1984"
+      }
+    ]
+  },
+  "careerHighlights": [
+    "1983: Band formed at University of Vermont; first show December 2 at Harris Millis Cafeteria",
+    "1985: Page McConnell officially joins as keyboardist",
+    "1989: Released debut album 'Junta'",
+    "1994: First performance at Madison Square Garden",
+    "1996: Presented The Clifford Ball, their first self-produced festival at Plattsburgh Air Force Base",
+    "1999: Big Cypress Festival draws 80,000 fans for legendary seven-hour millennium set",
+    "2000-2004: First hiatus",
+    "2009: Reunion tour begins after second hiatus",
+    "2017: The Baker's Dozen - 13 consecutive MSG nights with 237 unique songs and no repeats",
+    "2024: Released 16th studio album 'Evolve'; Mondegreen Festival in Dover, DE",
+    "2025: Nominated for Rock and Roll Hall of Fame for the first time",
+    "2026: Announced nine nights at Sphere Las Vegas across three weekends"
+  ],
+  "recordingStats": {
+    "totalShows": 2000,
+    "yearsActive": "1983-present",
+    "mostRecordedVenue": "Madison Square Garden"
+  },
+  "socialLinks": {
+    "website": "https://phish.com",
+    "youtube": "https://www.youtube.com/livephish",
+    "facebook": "https://facebook.com/phish",
+    "instagram": "https://instagram.com/phish",
+    "twitter": "https://twitter.com/phish"
+  },
+  "images": [
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Phish_2009-12-30.jpg/800px-Phish_2009-12-30.jpg",
+      "caption": "Phish performing live in 2009",
+      "credit": "Wikimedia Commons"
+    },
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Phish_Miami_2009_12_30.jpg/800px-Phish_Miami_2009_12_30.jpg",
+      "caption": "Phish on stage in Miami, December 2009",
+      "credit": "Wikimedia Commons"
+    }
+  ]
+}

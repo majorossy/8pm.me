@@ -1,0 +1,113 @@
+{
+  "slug": "grateful-dead",
+  "name": "Grateful Dead",
+  "biography": "The Grateful Dead was an American rock band formed in Palo Alto, California in 1965. The group began as the Warlocks, evolving from the remnants of a jug band called Mother McCree's Uptown Jug Champions. Original members Jerry Garcia, Bob Weir, and Ron 'Pigpen' McKernan decided to switch from acoustic to electric music in late 1964, adding Bill Kreutzmann on drums. Phil Lesh joined on bass in mid-1965, replacing Dana Morgan Jr. The band changed their name to the Grateful Dead in late 1965 after discovering another group called The Warlocks.\n\nKnown for their eclectic style that fused elements of rock, blues, jazz, folk, country, bluegrass, gospel, reggae, and psychedelia, the Grateful Dead became famous for their extended improvisational live performances. In their early days, they performed at novelist Ken Kesey's Acid Tests and provided a key part of the free live music during San Francisco's 1967 Summer of Love. The band cultivated a devoted fan base known as 'Deadheads' who followed them from show to show, creating a unique touring subculture.\n\nOver their 30-year career, the Grateful Dead performed approximately 2,317 shows, selling about 22 million tickets. Despite having only one Top-40 single ('Touch of Grey' in 1987), they remained among the highest-grossing American touring acts for decades. The band was inducted into the Rock and Roll Hall of Fame in 1994 and received a Grammy for Lifetime Achievement in 2007. A recording of their May 8, 1977 performance at Cornell University was added to the National Recording Registry of the Library of Congress in 2012.\n\nThe Grateful Dead's final concert took place on July 9, 1995 at Soldier Field in Chicago. Jerry Garcia died on August 9, 1995, effectively ending the band. In 2024, the surviving members received the Kennedy Center Honors, and in December 2025, the band was awarded a Guinness World Records title for the most Top 40 albums in Billboard 200 history with 66 Top 40 albums.",
+  "members": {
+    "current": [],
+    "former": [
+      {
+        "name": "Jerry Garcia",
+        "role": "Lead Guitar, Vocals",
+        "years": "1965-1995"
+      },
+      {
+        "name": "Bob Weir",
+        "role": "Rhythm Guitar, Vocals",
+        "years": "1965-1995"
+      },
+      {
+        "name": "Phil Lesh",
+        "role": "Bass Guitar, Vocals",
+        "years": "1965-1995"
+      },
+      {
+        "name": "Bill Kreutzmann",
+        "role": "Drums, Percussion",
+        "years": "1965-1995"
+      },
+      {
+        "name": "Mickey Hart",
+        "role": "Drums, Percussion",
+        "years": "1967-1971, 1974-1995"
+      },
+      {
+        "name": "Ron 'Pigpen' McKernan",
+        "role": "Keyboards, Harmonica, Vocals",
+        "years": "1965-1972 (died 1973)"
+      },
+      {
+        "name": "Tom Constanten",
+        "role": "Keyboards",
+        "years": "1968-1970"
+      },
+      {
+        "name": "Keith Godchaux",
+        "role": "Keyboards",
+        "years": "1971-1979 (died 1980)"
+      },
+      {
+        "name": "Donna Jean Godchaux",
+        "role": "Vocals",
+        "years": "1972-1979"
+      },
+      {
+        "name": "Brent Mydland",
+        "role": "Keyboards, Vocals",
+        "years": "1979-1990 (died 1990)"
+      },
+      {
+        "name": "Vince Welnick",
+        "role": "Keyboards, Vocals",
+        "years": "1990-1995"
+      },
+      {
+        "name": "Robert Hunter",
+        "role": "Lyricist (non-performing)",
+        "years": "1967-1995"
+      },
+      {
+        "name": "John Perry Barlow",
+        "role": "Lyricist (non-performing)",
+        "years": "1971-1995"
+      }
+    ]
+  },
+  "careerHighlights": [
+    "1965: Band formed in Palo Alto, California as The Warlocks, later renamed Grateful Dead",
+    "1966: Performed at Ken Kesey's Acid Tests in San Francisco",
+    "1967: Released debut album 'The Grateful Dead' on Warner Bros; performed at Monterey Pop Festival",
+    "1967: Became central figures in San Francisco's Summer of Love",
+    "1969: Performed at Woodstock Festival in Bethel, New York",
+    "1970: Released 'Workingman's Dead' and 'American Beauty', defining their acoustic-influenced sound",
+    "1974: Performed legendary Winterland shows documented in 'The Grateful Dead Movie'",
+    "1977: Signed to Arista Records; released 'Terrapin Station'; iconic Cornell University show (May 8)",
+    "1977: Record-setting concert at Raceway Park, New Jersey with 107,019 attendees",
+    "1987: 'Touch of Grey' becomes their only Top-40 hit, reaching #9 on Billboard Hot 100",
+    "1987: 'In The Dark' album goes platinum, their first certified album",
+    "1994: Inducted into the Rock and Roll Hall of Fame",
+    "1995: Final concert at Soldier Field, Chicago on July 9",
+    "2007: Received Grammy Lifetime Achievement Award",
+    "2012: Cornell 1977 show added to Library of Congress National Recording Registry",
+    "2024: Surviving members receive Kennedy Center Honors",
+    "2025: Guinness World Record for most Top 40 albums in Billboard 200 history (66 albums)"
+  ],
+  "recordingStats": {
+    "totalShows": 2317,
+    "yearsActive": "1965-1995",
+    "mostRecordedVenue": "Oakland Coliseum"
+  },
+  "socialLinks": {
+    "website": "https://www.dead.net",
+    "youtube": "https://www.youtube.com/gratefuldead",
+    "facebook": "https://www.facebook.com/gratefuldead",
+    "instagram": "https://www.instagram.com/gratefuldead",
+    "twitter": "https://x.com/GratefulDead"
+  },
+  "images": [
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Grateful_Dead_%2814579116190%29.jpg",
+      "caption": "Grateful Dead performing live",
+      "credit": "Wikimedia Commons"
+    }
+  ]
+}
