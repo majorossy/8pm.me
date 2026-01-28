@@ -69,6 +69,15 @@
     <preference for="ArchiveDotOrg\Core\Api\ImportPublisherInterface"
                 type="ArchiveDotOrg\Core\Model\Queue\ImportPublisher"/>
 
+    <preference for="ArchiveDotOrg\Core\Api\MetadataDownloaderInterface"
+                type="ArchiveDotOrg\Core\Model\MetadataDownloader"/>
+
+    <preference for="ArchiveDotOrg\Core\Api\TrackPopulatorServiceInterface"
+                type="ArchiveDotOrg\Core\Model\TrackPopulatorService"/>
+
+    <preference for="ArchiveDotOrg\Core\Api\AlbumArtworkServiceInterface"
+                type="ArchiveDotOrg\Core\Model\AlbumArtworkService"/>
+
     <!-- Console Commands -->
     <type name="Magento\Framework\Console\CommandList">
         <arguments>
@@ -78,6 +87,9 @@
                 <item name="archivedotorg_status" xsi:type="object">ArchiveDotOrg\Core\Console\Command\StatusCommand</item>
                 <item name="archivedotorg_cleanup_products" xsi:type="object">ArchiveDotOrg\Core\Console\Command\CleanupProductsCommand</item>
                 <item name="archivedotorg_refresh_products" xsi:type="object">ArchiveDotOrg\Core\Console\Command\RefreshProductsCommand</item>
+                <item name="archivedotorg_download_metadata" xsi:type="object">ArchiveDotOrg\Core\Console\Command\DownloadMetadataCommand</item>
+                <item name="archivedotorg_populate_tracks" xsi:type="object">ArchiveDotOrg\Core\Console\Command\PopulateTracksCommand</item>
+                <item name="archivedotorg_download_album_art" xsi:type="object">ArchiveDotOrg\Core\Console\Command\DownloadAlbumArtCommand</item>
             </argument>
         </arguments>
     </type>

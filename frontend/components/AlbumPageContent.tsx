@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Album, Track, Song, formatDuration } from '@/lib/api';
 import { useBreadcrumbs } from '@/context/BreadcrumbContext';
@@ -8,6 +8,7 @@ import { usePlayer } from '@/context/PlayerContext';
 import { useQueue } from '@/context/QueueContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useHaptic } from '@/hooks/useHaptic';
+import { VUMeter, Waveform, SpinningReel } from '@/components/AudioVisualizations';
 
 interface AlbumWithTracks extends Album {
   tracks: Track[];
@@ -40,13 +41,130 @@ function StarRating({ rating, count }: { rating?: number; count?: number }) {
   );
 }
 
+// Vintage volume knob component
+function VolumeKnob({
+  volume,
+  onChange,
+}: {
+  volume: number;
+  onChange: (volume: number) => void;
+}) {
+  const [isDragging, setIsDragging] = useState(false);
+  const knobRef = useRef<HTMLDivElement>(null);
+
+  // Map volume (0-1) to rotation angle (-135° to +135°, 270° total range)
+  const angle = -135 + (volume * 270);
+
+  const handleMouseDown = () => setIsDragging(true);
+
+  useEffect(() => {
+    if (!isDragging) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!knobRef.current) return;
+
+      const rect = knobRef.current.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      // Calculate angle from center
+      const dx = e.clientX - centerX;
+      const dy = e.clientY - centerY;
+      let radians = Math.atan2(dy, dx);
+      let degrees = radians * (180 / Math.PI);
+
+      // Normalize to 0-360
+      degrees = (degrees + 90 + 360) % 360;
+
+      // Map to 0-1 volume (270° range, starting at -135°)
+      // -135° = 0 volume, +135° = 1 volume
+      let mappedVolume = (degrees + 135) / 270;
+      if (mappedVolume > 1) mappedVolume = (degrees - 225) / 270;
+
+      // Clamp to 0-1
+      mappedVolume = Math.max(0, Math.min(1, mappedVolume));
+
+      onChange(mappedVolume);
+    };
+
+    const handleMouseUp = () => setIsDragging(false);
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging, onChange]);
+
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <div className="text-[#6a5a48] text-[9px] tracking-[2px]">VOLUME</div>
+      <div
+        ref={knobRef}
+        onMouseDown={handleMouseDown}
+        className="relative w-16 h-16 rounded-full cursor-pointer select-none"
+        style={{
+          background: 'radial-gradient(circle at 35% 35%, #3a3530, #1a1410)',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.5), inset 0 -2px 8px rgba(0,0,0,0.3)',
+        }}
+      >
+        {/* Outer ring markers */}
+        {Array.from({ length: 11 }).map((_, i) => {
+          const markAngle = -135 + (i * 27);
+          const isActive = angle >= markAngle;
+          return (
+            <div
+              key={i}
+              className="absolute top-1 left-1/2 w-0.5 h-2 rounded-sm"
+              style={{
+                background: isActive ? '#e8a050' : '#4a3a28',
+                transformOrigin: '1px 30px',
+                transform: `translateX(-50%) rotate(${markAngle}deg)`,
+              }}
+            />
+          );
+        })}
+
+        {/* Knob body */}
+        <div
+          className="absolute inset-2 rounded-full"
+          style={{
+            background: 'radial-gradient(circle at 40% 40%, #5a5048, #2a2520)',
+            boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.4)',
+          }}
+        >
+          {/* Center indicator line */}
+          <div
+            className="absolute top-1 left-1/2 w-0.5 h-4 rounded-sm bg-[#e8a050]"
+            style={{
+              transformOrigin: '1px 22px',
+              transform: `translateX(-50%) rotate(${angle}deg)`,
+              boxShadow: '0 0 4px rgba(232,160,80,0.6)',
+            }}
+          />
+
+          {/* Center dot */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-[#1a1410] border border-[#4a3a28]" />
+        </div>
+      </div>
+      <div className="text-[#8a7a68] text-xs font-mono">
+        {Math.round(volume * 100)}
+      </div>
+    </div>
+  );
+}
+
 // Cassette tape component
 function CassetteTape({
   album,
-  isPlaying
+  isPlaying,
+  volume = 0,
 }: {
   album: AlbumWithTracks;
   isPlaying: boolean;
+  volume?: number;
 }) {
   const year = album.showDate?.split('-')[0] || '';
   const formattedDate = album.showDate
@@ -110,8 +228,13 @@ function CassetteTape({
                   {album.artistName} — {album.showVenue || 'Live'}
                 </div>
               </div>
-              <div className="text-[#8a6a50] text-sm sm:text-base italic font-serif">
-                '{year.slice(-2)}
+              <div className="flex items-center gap-2 relative">
+                {isPlaying && <VUMeter volume={analyzerData.volume} size="normal" />}
+
+                {/* Year display */}
+                <div className="text-[#8a6a50] text-sm sm:text-base italic font-serif">
+                  '{year.slice(-2)}
+                </div>
               </div>
             </div>
 
@@ -131,6 +254,87 @@ function CassetteTape({
             <span>archive</span>
           </div>
         </div>
+
+        {/* Album artwork with packing tape */}
+        {album.coverArt ? (
+          <div
+            className="absolute top-[8px] right-[8px] sm:top-[10px] sm:right-[12px] h-16 w-16 sm:h-20 sm:w-20 z-50"
+          >
+            {/* Packing tape strip */}
+            <div
+              className="absolute -top-0.5 h-3 sm:h-4 z-10"
+              style={{
+                left: '73%',
+                width: '40%',
+                background: 'linear-gradient(180deg, rgba(255, 248, 220, 0.92) 0%, rgba(255, 240, 195, 0.85) 100%)',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.15)',
+                borderRadius: '1px',
+                transform: 'translateX(-50%) rotate(12deg)'
+              }}
+            />
+
+            {/* Photo with white border */}
+            <div
+              className="absolute inset-0"
+              style={{ transform: 'rotate(6deg)' }}
+            >
+              <img
+                src={album.coverArt}
+                alt={`${album.name} cover`}
+                className="w-full h-full object-cover rounded-sm"
+                style={{
+                  border: '2px solid white',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.35), 0 2px 4px rgba(0,0,0,0.2)'
+                }}
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  const parent = e.currentTarget.parentElement?.parentElement;
+                  if (parent) {
+                    parent.innerHTML = `
+                      <div class="w-full h-full bg-[#f5ebda] flex items-center justify-center rounded-sm" style="border: 2px solid white; box-shadow: 0 4px 16px rgba(0,0,0,0.35), 0 2px 4px rgba(0,0,0,0.2)">
+                        <svg class="w-8 h-8 sm:w-10 sm:h-10 text-[#8b5a2b]" viewBox="0 0 24 24" fill="currentColor">
+                          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                          <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                        </svg>
+                      </div>
+                    `;
+                  }
+                }}
+              />
+            </div>
+          </div>
+        ) : (
+          // Fallback: Vinyl icon with packing tape when no coverArt
+          <div
+            className="absolute top-[8px] right-[8px] sm:top-[10px] sm:right-[12px] h-16 w-16 sm:h-20 sm:w-20 z-50"
+          >
+            {/* Packing tape strip */}
+            <div
+              className="absolute -top-0.5 h-3 sm:h-4 z-10"
+              style={{
+                left: '73%',
+                width: '40%',
+                background: 'linear-gradient(180deg, rgba(255, 248, 220, 0.92) 0%, rgba(255, 240, 195, 0.85) 100%)',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.15)',
+                borderRadius: '1px',
+                transform: 'translateX(-50%) rotate(12deg)'
+              }}
+            />
+
+            {/* Photo with white border */}
+            <div
+              className="absolute inset-0"
+              style={{ transform: 'rotate(6deg)' }}
+            >
+              <div className="w-full h-full bg-[#f5ebda] flex items-center justify-center rounded-sm" style={{ border: '2px solid white', boxShadow: '0 4px 16px rgba(0,0,0,0.35), 0 2px 4px rgba(0,0,0,0.2)' }}>
+                <svg className="w-8 h-8 sm:w-10 sm:h-10 text-[#8b5a2b]" viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                  <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Tape window */}
         <div
@@ -215,6 +419,7 @@ function RecordingCard({
   song,
   isSelected,
   isPlaying,
+  volume = 0,
   onSelect,
   onPlay,
   onQueue,
@@ -222,6 +427,7 @@ function RecordingCard({
   song: Song;
   isSelected: boolean;
   isPlaying: boolean;
+  volume?: number;
   onSelect: () => void;
   onPlay: () => void;
   onQueue: () => void;
@@ -254,12 +460,15 @@ function RecordingCard({
             {year}
           </span>
           {isPlaying && (
-            <span
-              className="text-[8px] font-bold px-2.5 py-1.5 rounded tracking-wider"
-              style={{ background: 'linear-gradient(135deg, #c85028, #a84020)' }}
-            >
-              ⚡ PLAYING
-            </span>
+            <div className="flex items-center gap-2">
+              <SpinningReel volume={analyzerData.volume} size="small" isPlaying={true} />
+              <span
+                className="text-[8px] font-bold px-2.5 py-1.5 rounded tracking-wider"
+                style={{ background: 'linear-gradient(135deg, #c85028, #a84020)' }}
+              >
+                ⚡ NOW
+              </span>
+            </div>
           )}
         </div>
       </div>
@@ -331,22 +540,28 @@ function RecordingCard({
 // Track row component
 function TrackRow({
   track,
-  index,
+  trackIndex,
+  displayIndex,
   album,
   isExpanded,
   onToggle,
   onPlay,
   currentSong,
   isPlaying,
+  waveform = [],
+  volume = 0,
 }: {
   track: Track;
-  index: number;
+  trackIndex: number;  // 0-based index in album.tracks
+  displayIndex: number;  // 1-based display number
   album: AlbumWithTracks;
   isExpanded: boolean;
   onToggle: () => void;
-  onPlay: (song: Song) => void;
+  onPlay: (song: Song, trackIndex: number) => void;
   currentSong: Song | null;
   isPlaying: boolean;
+  waveform?: number[];
+  volume?: number;
 }) {
   const { addToUpNext } = useQueue();
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -393,8 +608,14 @@ function TrackRow({
           }
         `}
       >
-        <div className={`text-lg ${isExpanded || isCurrentTrack ? 'text-[#e8a050]' : 'text-[#6a5a48]'}`}>
-          {isExpanded ? '▶' : `${index}.`}
+        <div className={`text-lg flex items-center justify-center ${isExpanded || isCurrentTrack ? 'text-[#e8a050]' : 'text-[#6a5a48]'}`}>
+          {isCurrentTrack && isPlaying ? (
+            <Waveform waveform={analyzerData.waveform} size="small" />
+          ) : isExpanded ? (
+            '▶'
+          ) : (
+            `${displayIndex}.`
+          )}
         </div>
         <div className="min-w-0 flex-1">
           <div className={`text-lg font-serif mb-1 ${isExpanded || isCurrentTrack ? 'text-[#e8d8c8]' : 'text-[#c8b8a8]'}`}>
@@ -464,8 +685,9 @@ function TrackRow({
                 song={song}
                 isSelected={idx === selectedIndex}
                 isPlaying={currentSong?.id === song.id && isPlaying}
+                volume={currentSong?.id === song.id ? volume : 0}
                 onSelect={() => setSelectedIndex(idx)}
-                onPlay={() => onPlay(song)}
+                onPlay={() => onPlay(song, trackIndex)}
                 onQueue={() => addToUpNext(song)}
               />
             ))}
@@ -503,12 +725,13 @@ function SideDivider({ side }: { side: 'A' | 'B' }) {
 
 export default function AlbumPageContent({ album }: AlbumPageContentProps) {
   const { setBreadcrumbs } = useBreadcrumbs();
-  const { currentSong, isPlaying, playSong, togglePlay, playAlbum } = usePlayer();
+  const { currentSong, isPlaying, togglePlay, playAlbum, playAlbumFromTrack, analyzerData, volume, setVolume } = usePlayer();
   const { queue, setShuffle } = useQueue();
   const { followAlbum, unfollowAlbum, isAlbumFollowed } = useWishlist();
   const { vibrate, BUTTON_PRESS } = useHaptic();
 
   const [expandedTrack, setExpandedTrack] = useState<number>(-1);
+  const prevSongIdRef = useRef<string | null>(null);
 
   // Check if this album is currently loaded in the queue
   const isCurrentAlbum = queue.album?.identifier === album.identifier;
@@ -524,6 +747,25 @@ export default function AlbumPageContent({ album }: AlbumPageContentProps) {
     ]);
     return () => setBreadcrumbs([]);
   }, [setBreadcrumbs, album.artistName, album.artistSlug, album.name]);
+
+  // Auto-expand accordion when track changes (not on every render)
+  // This allows manual accordion control while still following track advancement
+  useEffect(() => {
+    if (!currentSong || !isCurrentAlbum) return;
+
+    // Only act when the song actually changes
+    if (currentSong.id === prevSongIdRef.current) return;
+    prevSongIdRef.current = currentSong.id;
+
+    // Find which track contains the new song
+    const trackIndex = album.tracks.findIndex(track =>
+      track.songs.some(song => song.id === currentSong.id)
+    );
+
+    if (trackIndex !== -1) {
+      setExpandedTrack(trackIndex);
+    }
+  }, [currentSong, isCurrentAlbum, album.tracks]);
 
   // Split tracks for Side A/B
   const midpoint = Math.ceil(album.tracks.length / 2);
@@ -554,11 +796,13 @@ export default function AlbumPageContent({ album }: AlbumPageContentProps) {
     }
   };
 
-  const handlePlaySong = (song: Song) => {
+  const handlePlaySong = (song: Song, trackIndex: number) => {
     if (currentSong?.id === song.id && isPlaying) {
       togglePlay();
     } else {
-      playSong(song);
+      // Use playAlbumFromTrack to ensure track advancement works correctly
+      // This loads the album into queue, sets the track index, selects the version, and plays
+      playAlbumFromTrack(album, trackIndex, song);
     }
   };
 
@@ -584,8 +828,10 @@ export default function AlbumPageContent({ album }: AlbumPageContentProps) {
 
         {/* Hero section */}
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 mb-12 items-center lg:items-start justify-center">
-          {/* Cassette */}
-          <CassetteTape album={album} isPlaying={albumIsPlaying} />
+          {/* Cassette tape */}
+          <div className="flex flex-col items-center gap-6">
+            <CassetteTape album={album} isPlaying={albumIsPlaying} volume={analyzerData.volume} />
+          </div>
 
           {/* Album info */}
           <div className="pt-4 max-w-[400px] text-center lg:text-left">
@@ -655,13 +901,16 @@ export default function AlbumPageContent({ album }: AlbumPageContentProps) {
             <TrackRow
               key={track.id}
               track={track}
-              index={idx + 1}
+              trackIndex={idx}
+              displayIndex={idx + 1}
               album={album}
               isExpanded={expandedTrack === idx}
               onToggle={() => setExpandedTrack(expandedTrack === idx ? -1 : idx)}
               onPlay={handlePlaySong}
               currentSong={currentSong}
               isPlaying={isPlaying}
+              waveform={analyzerData.waveform}
+              volume={analyzerData.volume}
             />
           ))}
         </div>
@@ -679,13 +928,16 @@ export default function AlbumPageContent({ album }: AlbumPageContentProps) {
                   <TrackRow
                     key={track.id}
                     track={track}
-                    index={actualIndex + 1}
+                    trackIndex={actualIndex}
+                    displayIndex={actualIndex + 1}
                     album={album}
                     isExpanded={expandedTrack === actualIndex}
                     onToggle={() => setExpandedTrack(expandedTrack === actualIndex ? -1 : actualIndex)}
                     onPlay={handlePlaySong}
                     currentSong={currentSong}
                     isPlaying={isPlaying}
+                    waveform={analyzerData.waveform}
+                    volume={analyzerData.volume}
                   />
                 );
               })}

@@ -39,4 +39,39 @@
         </index>
     </table>
 
+    <!-- Studio Albums Table -->
+    <table name="archivedotorg_studio_albums" resource="default" engine="innodb" comment="Studio Albums with Artwork">
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true" comment="Entity ID"/>
+        <column xsi:type="varchar" name="artist_name" nullable="false" length="255" comment="Artist Name"/>
+        <column xsi:type="varchar" name="album_title" nullable="false" length="255" comment="Album Title"/>
+        <column xsi:type="int" name="release_year" unsigned="true" nullable="true" comment="Release Year"/>
+        <column xsi:type="varchar" name="release_date" nullable="true" length="32" comment="Full Release Date"/>
+        <column xsi:type="varchar" name="musicbrainz_id" nullable="true" length="64" comment="MusicBrainz Release ID"/>
+        <column xsi:type="varchar" name="artwork_url" nullable="true" length="512" comment="Cover Art Archive URL"/>
+        <column xsi:type="varchar" name="cached_image_path" nullable="true" length="512" comment="Local Cached Image Path"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+
+        <constraint xsi:type="unique" referenceId="ARCHIVEDOTORG_STUDIO_ALBUMS_ARTIST_ALBUM">
+            <column name="artist_name"/>
+            <column name="album_title"/>
+        </constraint>
+
+        <index referenceId="ARCHIVEDOTORG_STUDIO_ALBUMS_ARTIST_NAME" indexType="btree">
+            <column name="artist_name"/>
+        </index>
+
+        <index referenceId="ARCHIVEDOTORG_STUDIO_ALBUMS_MUSICBRAINZ_ID" indexType="btree">
+            <column name="musicbrainz_id"/>
+        </index>
+
+        <index referenceId="ARCHIVEDOTORG_STUDIO_ALBUMS_RELEASE_YEAR" indexType="btree">
+            <column name="release_year"/>
+        </index>
+    </table>
+
 </schema>

@@ -58,21 +58,21 @@ const BandStatistics: React.FC<BandStatisticsProps> = ({ statistics }) => {
   };
 
   return (
-    <div className={`${styles.container} rounded-lg p-6 mb-8`}>
-      <h2 className={`text-2xl ${styles.title} mb-6`}>Archive Stats</h2>
+    <div className={`${styles.container} rounded-lg p-3 md:p-4 mb-6`}>
+      <h2 className={`text-lg md:text-xl ${styles.title} mb-3`}>Archive Stats</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-3">
         {/* Shows in Archive */}
         {totalShows !== undefined && (
-          <div className={`${styles.card} ${styles.glow} rounded-lg p-6`}>
-            <div className={`text-sm ${styles.label} uppercase tracking-wider mb-2`}>
+          <div className={`${styles.card} ${styles.glow} rounded-lg p-3 md:p-4`}>
+            <div className={`text-xs ${styles.label} uppercase tracking-wider mb-1`}>
               Shows in Archive
             </div>
-            <div className={`text-4xl ${styles.value} mb-1`}>
+            <div className={`text-2xl md:text-3xl ${styles.value} mb-0.5`}>
               {totalShows.toLocaleString()}
             </div>
             {yearsActive && (
-              <div className={`text-xs ${styles.label}`}>
+              <div className={`text-[10px] ${styles.label}`}>
                 {yearsActive.first} - {yearsActive.last}
               </div>
             )}
@@ -81,14 +81,14 @@ const BandStatistics: React.FC<BandStatisticsProps> = ({ statistics }) => {
 
         {/* Total Hours */}
         {totalHours !== undefined && totalHours > 0 && (
-          <div className={`${styles.card} ${styles.glow} rounded-lg p-6`}>
-            <div className={`text-sm ${styles.label} uppercase tracking-wider mb-2`}>
+          <div className={`${styles.card} ${styles.glow} rounded-lg p-3 md:p-4`}>
+            <div className={`text-xs ${styles.label} uppercase tracking-wider mb-1`}>
               Hours of Music
             </div>
-            <div className={`text-4xl ${styles.value} mb-1`}>
+            <div className={`text-2xl md:text-3xl ${styles.value} mb-0.5`}>
               {totalHours.toLocaleString()}+
             </div>
-            <div className={`text-xs ${styles.label}`}>
+            <div className={`text-[10px] ${styles.label}`}>
               of live recordings
             </div>
           </div>
@@ -96,14 +96,14 @@ const BandStatistics: React.FC<BandStatisticsProps> = ({ statistics }) => {
 
         {/* Most Played Track */}
         {mostPlayedTrack && (
-          <div className={`${styles.card} ${styles.glow} rounded-lg p-6`}>
-            <div className={`text-sm ${styles.label} uppercase tracking-wider mb-2`}>
+          <div className={`${styles.card} ${styles.glow} rounded-lg p-3 md:p-4`}>
+            <div className={`text-xs ${styles.label} uppercase tracking-wider mb-1`}>
               Most Played Track
             </div>
-            <div className={`text-xl ${styles.value} mb-1 truncate`}>
+            <div className={`text-base md:text-lg ${styles.value} mb-0.5 truncate`}>
               {mostPlayedTrack.title}
             </div>
-            <div className={`text-sm ${styles.accent}`}>
+            <div className={`text-xs ${styles.accent}`}>
               {mostPlayedTrack.playCount.toLocaleString()} performances
             </div>
           </div>
@@ -111,15 +111,15 @@ const BandStatistics: React.FC<BandStatisticsProps> = ({ statistics }) => {
 
         {/* Recording Stats */}
         {recordingStats && recordingStats.total > 0 && (
-          <div className={`${styles.card} ${styles.glow} rounded-lg p-6`}>
-            <div className={`text-sm ${styles.label} uppercase tracking-wider mb-2`}>
+          <div className={`${styles.card} ${styles.glow} rounded-lg p-3 md:p-4`}>
+            <div className={`text-xs ${styles.label} uppercase tracking-wider mb-1`}>
               Total Recordings
             </div>
-            <div className={`text-4xl ${styles.value} mb-1`}>
+            <div className={`text-2xl md:text-3xl ${styles.value} mb-0.5`}>
               {recordingStats.total.toLocaleString()}
             </div>
             {recordingStats.sources && Object.keys(recordingStats.sources).length > 0 && (
-              <div className={`text-xs ${styles.label} space-y-1 mt-2`}>
+              <div className={`text-[10px] ${styles.label} space-y-0.5 mt-1`}>
                 {Object.entries(recordingStats.sources).map(([source, count]) => (
                   <div key={source} className="flex justify-between">
                     <span className="capitalize">{source}:</span>
@@ -133,30 +133,30 @@ const BandStatistics: React.FC<BandStatisticsProps> = ({ statistics }) => {
 
         {/* Average Set Length */}
         {averageSetLength !== undefined && (
-          <div className={`${styles.card} ${styles.glow} rounded-lg p-6`}>
-            <div className={`text-sm ${styles.label} uppercase tracking-wider mb-2`}>
+          <div className={`${styles.card} ${styles.glow} rounded-lg p-3 md:p-4`}>
+            <div className={`text-xs ${styles.label} uppercase tracking-wider mb-1`}>
               Avg. Set Length
             </div>
-            <div className={`text-4xl ${styles.value} mb-1`}>
+            <div className={`text-2xl md:text-3xl ${styles.value} mb-0.5`}>
               {averageSetLength}
             </div>
-            <div className={`text-xs ${styles.label}`}>songs per show</div>
+            <div className={`text-[10px] ${styles.label}`}>songs per show</div>
           </div>
         )}
 
         {/* Top Venues */}
         {topVenues && topVenues.length > 0 && (
-          <div className={`${styles.card} ${styles.glow} rounded-lg p-6 md:col-span-2`}>
-            <div className={`text-sm ${styles.label} uppercase tracking-wider mb-3`}>
+          <div className={`${styles.card} ${styles.glow} rounded-lg p-3 md:p-4 md:col-span-2`}>
+            <div className={`text-xs ${styles.label} uppercase tracking-wider mb-2`}>
               Top Venues
             </div>
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               {topVenues.slice(0, 3).map((venue, index) => (
                 <div key={index} className="flex justify-between items-center">
-                  <span className={`${styles.value} text-sm truncate mr-4`}>
+                  <span className={`${styles.value} text-xs md:text-sm truncate mr-4`}>
                     {venue.name}
                   </span>
-                  <span className={`${styles.accent} text-sm font-semibold`}>
+                  <span className={`${styles.accent} text-xs md:text-sm font-semibold`}>
                     {venue.showCount} shows
                   </span>
                 </div>

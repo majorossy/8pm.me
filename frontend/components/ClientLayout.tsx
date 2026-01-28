@@ -15,6 +15,7 @@ import { MagentoAuthProvider } from '@/context/MagentoAuthContext';
 import { UnifiedAuthProvider } from '@/context/UnifiedAuthContext';
 import BottomPlayer from '@/components/BottomPlayer';
 import Queue from '@/components/Queue';
+import NavDrawer from '@/components/NavDrawer';
 import JamifyTopBar from '@/components/JamifyTopBar';
 import JamifyMobileNav from '@/components/JamifyMobileNav';
 import JamifyFullPlayer from '@/components/JamifyFullPlayer';
@@ -133,7 +134,10 @@ function InnerLayout({ children }: { children: ReactNode }) {
       {/* Mobile: Full-screen player (expands from mini player) */}
       {isMobile && <JamifyFullPlayer />}
 
-      {/* Queue drawer */}
+      {/* Navigation drawer (left side) */}
+      <NavDrawer />
+
+      {/* Queue drawer (right side) */}
       <Queue />
 
       {/* Search overlay */}

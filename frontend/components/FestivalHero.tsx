@@ -92,7 +92,10 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
             {lineupArtists.map((artist, index) => {
               const fontSize = getFontSize(artist.songCount);
               return (
-                <span key={artist.slug} className="flex items-baseline">
+                <span key={artist.slug} className="flex items-baseline whitespace-nowrap">
+                  {index > 0 && (
+                    <span className="text-[#d4a060] mr-2 md:mr-4 text-base">&#9733;</span>
+                  )}
                   <Link
                     href={`/artists/${artist.slug}`}
                     className="hover:text-[#d4a060] transition-colors duration-200"
@@ -102,9 +105,6 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
                   >
                     {artist.name}
                   </Link>
-                  {index < lineupArtists.length - 1 && (
-                    <span className="text-[#d4a060] ml-2 md:ml-4 text-base">&#9733;</span>
-                  )}
                 </span>
               );
             })}

@@ -60,6 +60,10 @@ export function useCrossfade({
     audioRefA.current = new Audio();
     audioRefB.current = new Audio();
 
+    // CRITICAL: Set crossOrigin for Web Audio API compatibility with archive.org
+    audioRefA.current.crossOrigin = 'anonymous';
+    audioRefB.current.crossOrigin = 'anonymous';
+
     activeAudioRef.current = audioRefA.current;
     inactiveAudioRef.current = audioRefB.current;
 

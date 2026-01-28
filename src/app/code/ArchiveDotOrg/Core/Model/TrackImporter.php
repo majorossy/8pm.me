@@ -98,10 +98,13 @@ class TrackImporter implements TrackImporterInterface
 
             return (int) $savedProduct->getId();
         } catch (\Exception $e) {
+            $previousError = $e->getPrevious() ? $e->getPrevious()->getMessage() : 'none';
             $this->logger->logImportError('Failed to import track', [
                 'sku' => $sku,
                 'title' => $track->getTitle(),
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'previous' => $previousError,
+                'trace' => $e->getTraceAsString()
             ]);
             throw new LocalizedException(
                 __('Failed to import track %1: %2', $sku, $e->getMessage()),

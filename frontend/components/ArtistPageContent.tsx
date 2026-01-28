@@ -195,7 +195,7 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
         </div>
 
         {/* Main hero content - cassette left, info right on desktop */}
-        <div className="relative z-10 flex flex-col lg:flex-row items-center gap-8 lg:gap-16 max-w-6xl mx-auto">
+        <div className="relative z-10 flex flex-col lg:flex-row items-center gap-8 lg:gap-16 max-w-[1000px] mx-auto">
           {/* Cassette stack */}
           <div className="relative w-[320px] h-[280px] flex-shrink-0 cassette-stack-float">
             {/* Stack of 4 cassettes with slight offsets */}
@@ -328,10 +328,10 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
       </section>
 
       {/* Discography - Carousel */}
-      <section className="pb-8">
-        <h2 className="text-xl md:text-2xl font-bold text-white mb-4 text-center px-4 md:px-8">Discography</h2>
+      <section className="pb-8 max-w-[1000px] mx-auto px-4 md:px-8">
+        <h2 className="text-xl md:text-2xl font-bold text-white mb-4 text-center">Discography</h2>
         {artist.albums.length > 0 ? (
-          <div className="flex justify-center gap-4 md:gap-6 overflow-x-auto px-4 md:px-8 pb-4 scrollbar-thin scrollbar-thumb-[#3a3632] scrollbar-track-transparent">
+          <div className="flex justify-center gap-4 md:gap-6 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-[#3a3632] scrollbar-track-transparent">
             {artist.albums.map((album) => (
               <div key={album.id} className="flex-shrink-0 w-[160px] sm:w-[180px] md:w-[200px]">
                 <AlbumCard album={album} />
@@ -339,12 +339,12 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
             ))}
           </div>
         ) : (
-          <p className="text-[#8a8478] text-center px-4 md:px-8">No albums available.</p>
+          <p className="text-[#8a8478] text-center">No albums available.</p>
         )}
       </section>
 
       {/* Two column: content left, images right */}
-      <section className="px-4 md:px-8 pb-8">
+      <section className="max-w-[1000px] mx-auto px-4 md:px-8 pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6 lg:gap-12">
           {/* Left Column: bio + members + stats + links */}
           <div className="space-y-8 md:space-y-12">

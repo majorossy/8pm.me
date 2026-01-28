@@ -28,19 +28,21 @@ export default function HomePageContent({ artists, songs }: HomePageContentProps
   };
 
   return (
-    <div className="pb-8 max-w-[1800px]">
+    <div className="pb-8">
       {/* Hero section with gradient */}
-      <section className="relative mb-6 md:mb-8 -mx-4 md:-mx-8 px-4 md:px-8 pt-6 md:pt-8 pb-8 md:pb-12 bg-gradient-to-b from-[#d4a060]/30 via-[#1c1a17] to-[#1c1a17]">
-        <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
-          {getGreeting()}
-        </h1>
-        <p className="text-sm md:text-base text-[#8a8478]">
-          Stream live recordings from the Archive.org collection
-        </p>
+      <section className="relative mb-6 md:mb-8 pt-6 md:pt-8 pb-8 md:pb-12 bg-gradient-to-b from-[#d4a060]/30 via-[#1c1a17] to-[#1c1a17]">
+        <div className="max-w-[1000px] mx-auto px-4 md:px-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
+            {getGreeting()}
+          </h1>
+          <p className="text-sm md:text-base text-[#8a8478]">
+            Stream live recordings from the Archive.org collection
+          </p>
+        </div>
       </section>
 
       {/* Featured Artists */}
-      <section className="mb-8 md:mb-10 px-4 md:px-8">
+      <section className="mb-8 md:mb-10 max-w-[1000px] mx-auto px-4 md:px-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl md:text-2xl font-bold text-white">Featured Artists</h2>
           <Link href="/artists" className="text-xs md:text-sm font-bold text-[#8a8478] hover:underline uppercase tracking-wider">
@@ -55,7 +57,7 @@ export default function HomePageContent({ artists, songs }: HomePageContentProps
       </section>
 
       {/* Latest Recordings */}
-      <section className="mb-8 md:mb-10 px-4 md:px-8">
+      <section className="mb-8 md:mb-10 max-w-[1000px] mx-auto px-4 md:px-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl md:text-2xl font-bold text-white">Latest Recordings</h2>
         </div>
