@@ -129,51 +129,19 @@ class DownloadAlbumArtCommand extends Command
      */
     private function downloadForArtist(string $artistName, OutputInterface $output, int $limit): int
     {
-        $output->writeln("<info>Fetching albums for: $artistName</info>");
+        $output->writeln("<info>Enriching albums with Wikipedia artwork for: $artistName</info>");
 
         try {
-            $albums = $this->artworkService->getArtistAlbums($artistName, $limit);
-
-            if (empty($albums)) {
-                $output->writeln("<comment>No albums with artwork found for $artistName</comment>");
-                return Command::SUCCESS;
-            }
-
-            $output->writeln(sprintf('Found %d albums with artwork', count($albums)));
-
-            $downloaded = 0;
-            $skipped = 0;
-
-            foreach ($albums as $index => $album) {
-                $current = $index + 1;
-                $title = $album['title'];
-                $year = $album['year'] ?? 'Unknown';
-
-                // Check if already cached
-                if ($this->artworkService->isCached($artistName, $title)) {
-                    $output->writeln("  [$current/" . count($albums) . "] Cached: $title ($year)");
-                    $skipped++;
-                    continue;
-                }
-
-                // Download
-                $localPath = $this->artworkService->downloadArtwork($artistName, $title);
-
-                if ($localPath !== null) {
-                    $output->writeln("  [$current/" . count($albums) . "] <info>Downloaded:</info> $title ($year)");
-                    $downloaded++;
-                } else {
-                    $output->writeln("  [$current/" . count($albums) . "] <comment>Failed:</comment> $title ($year)");
-                }
-            }
+            $stats = $this->artworkService->enrichAlbumsWithArtwork($artistName, $limit);
 
             $output->writeln('');
             $output->writeln('<info>Summary:</info>');
-            $output->writeln("  Total albums: " . count($albums));
-            $output->writeln("  Downloaded: $downloaded");
-            $output->writeln("  Already cached: $skipped");
+            $output->writeln("  Albums processed: " . $stats['processed']);
+            $output->writeln("  Artwork found: " . $stats['found']);
+            $output->writeln("  Stored in database: " . $stats['stored']);
+            $output->writeln("  Errors: " . $stats['errors']);
 
-            return Command::SUCCESS;
+            return $stats['errors'] > 0 ? Command::FAILURE : Command::SUCCESS;
 
         } catch (\Exception $e) {
             $output->writeln('<error>Error: ' . $e->getMessage() . '</error>');

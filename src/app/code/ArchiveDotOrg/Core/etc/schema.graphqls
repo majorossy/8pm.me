@@ -1,0 +1,3 @@
+interface CategoryInterface {
+    wikipedia_artwork_url: String @doc(description: "Wikipedia artwork URL for album categories")
+}

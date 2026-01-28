@@ -1,0 +1,3 @@
+{
+  "query": "query { products(filter: { category_uid: { eq: \"Mzk0MA==\" } }, pageSize: 5) { items { uid sku name } total_count } }"
+}

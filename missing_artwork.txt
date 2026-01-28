@@ -1,0 +1,116 @@
+entity_id	artist	album
+1593	Cabinet	Leap
+1594	Cabinet	Stand and Sway
+1596	Dogs in a Pile	Bloom
+1597	Dogs in a Pile	Not Your Average Beagle
+1604	God Street Wine	Hot! Sweet! and Juicy!
+1603	God Street Wine	Kristi Shot a Puppy
+1602	God Street Wine	Who's Driving?
+1369	Goose	Chain Yer Dragon
+1368	Goose	Everything Must Go
+1365	Goose	Moon Cabin
+1366	Goose	Shenanigans Nite Club
+1526	Keller Williams	Bass
+1528	Keller Williams	Dos
+1525	Keller Williams	Kids
+1523	Keller Williams	Odd
+1527	Keller Williams	Pick
+1529	Keller Williams	Raw
+1531	Keller Williams	Speed
+1513	Keller Williams	Spun
+1519	Keller Williams	Stage
+1530	Keller Williams	Sync
+1524	Keller Williams	Thief
+1465	King Gizzard & The Lizard Wizard	L.W.
+1470	King Gizzard & The Lizard Wizard	Laminated Denim
+1467	King Gizzard & The Lizard Wizard	Made in Timeland
+1458	King Gizzard & The Lizard Wizard	Murder of the Universe
+1456	King Gizzard & The Lizard Wizard	Nonagon Infinity
+1452	King Gizzard & The Lizard Wizard	Oddments
+1468	King Gizzard & The Lizard Wizard	Omnium Gatherum
+1455	King Gizzard & The Lizard Wizard	Paper Mache Dream Balloon
+1472	King Gizzard & The Lizard Wizard	PetroDragonic Apocalypse
+1475	King Gizzard & The Lizard Wizard	Phantom Island
+1460	King Gizzard & The Lizard Wizard	Polygondwanaland
+1454	King Gizzard & The Lizard Wizard	Quarters!
+1459	King Gizzard & The Lizard Wizard	Sketches of Brunswick East
+1473	King Gizzard & The Lizard Wizard	The Silver Cord
+1542	Leftover Salmon	Aquatic Hitchhiker
+1545	Leftover Salmon	Brand New Good Old Days
+1538	Leftover Salmon	Bridges to Bert
+1540	Leftover Salmon	Nashville Sessions
+1544	Leftover Salmon	Something Higher
+1614	Lettuce	Cook
+1613	Lettuce	Unify
+1629	Matisyahu	Ancient Child
+1622	Matisyahu	Shake Off the Dust... Arise
+1625	Matisyahu	Spark Seeker
+1627	Matisyahu	Undercurrent
+1623	Matisyahu	Youth
+1445	moe.	Circle of Giants
+1444	moe.	This Is Not, We Are
+1436	moe.	Tin Cans and Car Tires
+1442	moe.	What Happened To The La Las
+1558	My Morning Jacket	The Tennessee Fire
+1564	My Morning Jacket	The Waterfall
+1565	My Morning Jacket	The Waterfall II
+1561	My Morning Jacket	Z
+504	Of a Revolution	Risen
+482	Of a Revolution	The Wanderer
+1393	Phish	Farmhouse
+1397	Phish	Fuego
+1389	Phish	Hoist
+1396	Phish	Joy
+1385	Phish	Junta
+1386	Phish	Lawn Boy
+1388	Phish	Rift
+1394	Phish	Round Room
+1400	Phish	Sci-Fi Soldier
+1399	Phish	Sigma Oasis
+1391	Phish	Story of the Ghost
+1392	Phish	The Siket Disc
+1395	Phish	Undermind
+252	Railroad Earth	Amen Corner
+275	Railroad Earth	Captain Nowhere
+265	Railroad Earth	Railroad Earth Album
+1636	Rusted Root	Stereo Rodeo
+1637	Rusted Root	The Movement
+1635	Rusted Root	Welcome to My Party
+1632	Rusted Root	When I Woke
+50	STS9	Interplanetary Escape Vehicle
+59	STS9	Offered Schematics Suggesting Peace
+92	STS9	Peaceblaster
+444	Tea Leaf Green	Tea Leaf Green Album
+405	The String Cheese Incident	Believe
+283	The String Cheese Incident	Born On The Wrong Planet
+307	The String Cheese Incident	Round The Wheel
+394	The String Cheese Incident	Song In My Head
+375	The String Cheese Incident	Trick Or Treat
+347	The String Cheese Incident	Untying The Not
+1620	Twiddle	Every Last Leaf
+1618	Twiddle	PLUMP Chapter One
+1619	Twiddle	Plump, Chapters 1 & 2
+1617	Twiddle	Somewhere on the Mountain
+1616	Twiddle	The Natural Evolution of Consciousness
+1509	Umphrey's McGee	Asking For a Friend
+1505	Umphrey's McGee	The London Session
+1506	Umphrey's McGee	ZONKEY
+1587	Warren Zevon	Mutineer
+1589	Warren Zevon	My Ride's Here
+1584	Warren Zevon	Sentimental Hygiene
+1583	Warren Zevon	The Envoy
+1590	Warren Zevon	The Wind
+1585	Warren Zevon	Transverse City
+1579	Warren Zevon	Wanted Dead or Alive
+1580	Warren Zevon	Warren Zevon
+1431	Widespread Panic	Hailbound Queen
+1430	Widespread Panic	Snake Oil King
+1418	Widespread Panic	Space Wrangler
+1429	Widespread Panic	Street Dogs
+1419	Widespread Panic	Widespread Panic
+1553	Yonder Mountain String Band	Black Sheep
+1555	Yonder Mountain String Band	Get Yourself Outside
+1556	Yonder Mountain String Band	Nowhere Next
+1552	Yonder Mountain String Band	The Show
+1549	Yonder Mountain String Band	Town By Town
+1551	Yonder Mountain String Band	Yonder Mountain String Band

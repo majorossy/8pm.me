@@ -12,12 +12,12 @@ interface RecordingStats {
 interface BandStatisticsProps {
   statistics?: {
     totalShows?: number;
+    totalVenues?: number;
     mostPlayedTrack?: {
       title: string;
       playCount: number;
     };
     recordingStats?: RecordingStats;
-    averageSetLength?: number;
     yearsActive?: {
       first: number;
       last: number;
@@ -38,134 +38,153 @@ const BandStatistics: React.FC<BandStatisticsProps> = ({ statistics }) => {
 
   const {
     totalShows,
-    mostPlayedTrack,
+    totalVenues,
     recordingStats,
-    averageSetLength,
-    yearsActive,
-    topVenues,
     totalHours,
+    yearsActive,
   } = statistics;
 
-  // Jamify/Spotify styles
-  const styles = {
-    container: 'bg-[#252220] border border-[#2d2a26]',
-    card: 'bg-[#252220] border border-[#2d2a26] hover:bg-[#2d2a26] transition-colors rounded-lg',
-    title: 'text-green-400 font-bold',
-    value: 'text-white font-semibold',
-    label: 'text-gray-400',
-    accent: 'text-green-500',
-    glow: '',
-  };
+  // Build stats array for ember display
+  const stats = [];
+
+  if (recordingStats && recordingStats.total > 0) {
+    stats.push({
+      value: recordingStats.total.toLocaleString(),
+      label: 'recordings',
+    });
+  }
+
+  if (totalHours !== undefined && totalHours > 0) {
+    stats.push({
+      value: `${totalHours.toLocaleString()}+`,
+      label: 'hours',
+    });
+  }
+
+  if (totalShows !== undefined) {
+    stats.push({
+      value: totalShows.toLocaleString(),
+      label: 'shows',
+    });
+  }
+
+  if (totalVenues !== undefined && totalVenues > 0) {
+    stats.push({
+      value: totalVenues.toLocaleString(),
+      label: 'venues',
+    });
+  }
+
+  if (yearsActive?.first) {
+    // Format year as '99 instead of 1999
+    const yearStr = yearsActive.first.toString();
+    const shortYear = `'${yearStr.slice(-2)}`;
+
+    stats.push({
+      value: shortYear,
+      label: 'since year',
+    });
+  }
+
+  // Return null if no stats to display
+  if (stats.length === 0) {
+    return null;
+  }
 
   return (
-    <div className={`${styles.container} rounded-lg p-3 md:p-4 mb-6`}>
-      <h2 className={`text-lg md:text-xl ${styles.title} mb-3`}>Archive Stats</h2>
+    <section className="py-6">
+      <h2 className="text-xl md:text-2xl font-bold text-white mb-6 text-center">Archive Stats</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-3">
-        {/* Shows in Archive */}
-        {totalShows !== undefined && (
-          <div className={`${styles.card} ${styles.glow} rounded-lg p-3 md:p-4`}>
-            <div className={`text-xs ${styles.label} uppercase tracking-wider mb-1`}>
-              Shows in Archive
-            </div>
-            <div className={`text-2xl md:text-3xl ${styles.value} mb-0.5`}>
-              {totalShows.toLocaleString()}
-            </div>
-            {yearsActive && (
-              <div className={`text-[10px] ${styles.label}`}>
-                {yearsActive.first} - {yearsActive.last}
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
+        {/* Ambient glow */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '-50px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '80%',
+            height: '100px',
+            background: 'radial-gradient(ellipse, rgba(255,100,30,0.15) 0%, transparent 70%)',
+            filter: 'blur(20px)',
+          }}
+        />
+
+        <div
+          style={{
+            display: 'flex',
+            gap: '20px',
+            justifyContent: 'center',
+            flexWrap: 'nowrap',
+            position: 'relative',
+            zIndex: 1,
+          }}
+        >
+          {stats.map((stat, i) => (
+            <div key={i} style={{ textAlign: 'center', minWidth: '60px' }}>
+              <div
+                className={`ember-value ember-${i}`}
+                style={{
+                  fontFamily: 'Georgia, serif',
+                  fontSize: '36px',
+                  fontWeight: 'bold',
+                  background:
+                    'linear-gradient(180deg, #fff8e7 0%, #ffb347 30%, #ff6b35 60%, #cc3300 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  filter: 'drop-shadow(0 0 10px rgba(255,150,50,0.4))',
+                  lineHeight: 1,
+                }}
+              >
+                {stat.value}
               </div>
-            )}
-          </div>
-        )}
-
-        {/* Total Hours */}
-        {totalHours !== undefined && totalHours > 0 && (
-          <div className={`${styles.card} ${styles.glow} rounded-lg p-3 md:p-4`}>
-            <div className={`text-xs ${styles.label} uppercase tracking-wider mb-1`}>
-              Hours of Music
-            </div>
-            <div className={`text-2xl md:text-3xl ${styles.value} mb-0.5`}>
-              {totalHours.toLocaleString()}+
-            </div>
-            <div className={`text-[10px] ${styles.label}`}>
-              of live recordings
-            </div>
-          </div>
-        )}
-
-        {/* Most Played Track */}
-        {mostPlayedTrack && (
-          <div className={`${styles.card} ${styles.glow} rounded-lg p-3 md:p-4`}>
-            <div className={`text-xs ${styles.label} uppercase tracking-wider mb-1`}>
-              Most Played Track
-            </div>
-            <div className={`text-base md:text-lg ${styles.value} mb-0.5 truncate`}>
-              {mostPlayedTrack.title}
-            </div>
-            <div className={`text-xs ${styles.accent}`}>
-              {mostPlayedTrack.playCount.toLocaleString()} performances
-            </div>
-          </div>
-        )}
-
-        {/* Recording Stats */}
-        {recordingStats && recordingStats.total > 0 && (
-          <div className={`${styles.card} ${styles.glow} rounded-lg p-3 md:p-4`}>
-            <div className={`text-xs ${styles.label} uppercase tracking-wider mb-1`}>
-              Total Recordings
-            </div>
-            <div className={`text-2xl md:text-3xl ${styles.value} mb-0.5`}>
-              {recordingStats.total.toLocaleString()}
-            </div>
-            {recordingStats.sources && Object.keys(recordingStats.sources).length > 0 && (
-              <div className={`text-[10px] ${styles.label} space-y-0.5 mt-1`}>
-                {Object.entries(recordingStats.sources).map(([source, count]) => (
-                  <div key={source} className="flex justify-between">
-                    <span className="capitalize">{source}:</span>
-                    <span className={styles.accent}>{count}</span>
-                  </div>
-                ))}
+              <div
+                style={{
+                  fontFamily: 'Georgia, serif',
+                  fontSize: '10px',
+                  color: '#8b6914',
+                  letterSpacing: '1.5px',
+                  textTransform: 'uppercase',
+                  marginTop: '6px',
+                }}
+              >
+                {stat.label}
               </div>
-            )}
-          </div>
-        )}
+            </div>
+          ))}
+        </div>
 
-        {/* Average Set Length */}
-        {averageSetLength !== undefined && (
-          <div className={`${styles.card} ${styles.glow} rounded-lg p-3 md:p-4`}>
-            <div className={`text-xs ${styles.label} uppercase tracking-wider mb-1`}>
-              Avg. Set Length
-            </div>
-            <div className={`text-2xl md:text-3xl ${styles.value} mb-0.5`}>
-              {averageSetLength}
-            </div>
-            <div className={`text-[10px] ${styles.label}`}>songs per show</div>
-          </div>
-        )}
+        <style>{`
+          .ember-0 { animation: ember-flicker-0 2s ease-in-out infinite; }
+          .ember-1 { animation: ember-flicker-1 2.3s ease-in-out infinite; }
+          .ember-2 { animation: ember-flicker-2 1.8s ease-in-out infinite; }
+          .ember-3 { animation: ember-flicker-3 2.1s ease-in-out infinite; }
+          .ember-4 { animation: ember-flicker-4 2.4s ease-in-out infinite; }
 
-        {/* Top Venues */}
-        {topVenues && topVenues.length > 0 && (
-          <div className={`${styles.card} ${styles.glow} rounded-lg p-3 md:p-4 md:col-span-2`}>
-            <div className={`text-xs ${styles.label} uppercase tracking-wider mb-2`}>
-              Top Venues
-            </div>
-            <div className="space-y-1.5">
-              {topVenues.slice(0, 3).map((venue, index) => (
-                <div key={index} className="flex justify-between items-center">
-                  <span className={`${styles.value} text-xs md:text-sm truncate mr-4`}>
-                    {venue.name}
-                  </span>
-                  <span className={`${styles.accent} text-xs md:text-sm font-semibold`}>
-                    {venue.showCount} shows
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+          @keyframes ember-flicker-0 {
+            0%, 100% { opacity: 1; filter: drop-shadow(0 0 10px rgba(255,150,50,0.4)); }
+            50% { opacity: 0.85; filter: drop-shadow(0 0 15px rgba(255,150,50,0.6)); }
+          }
+          @keyframes ember-flicker-1 {
+            0%, 100% { opacity: 0.9; filter: drop-shadow(0 0 12px rgba(255,150,50,0.5)); }
+            50% { opacity: 1; filter: drop-shadow(0 0 8px rgba(255,150,50,0.3)); }
+          }
+          @keyframes ember-flicker-2 {
+            0%, 100% { opacity: 0.95; filter: drop-shadow(0 0 8px rgba(255,150,50,0.4)); }
+            50% { opacity: 0.8; filter: drop-shadow(0 0 18px rgba(255,150,50,0.7)); }
+          }
+          @keyframes ember-flicker-3 {
+            0%, 100% { opacity: 0.85; filter: drop-shadow(0 0 14px rgba(255,150,50,0.5)); }
+            50% { opacity: 1; filter: drop-shadow(0 0 6px rgba(255,150,50,0.3)); }
+          }
+          @keyframes ember-flicker-4 {
+            0%, 100% { opacity: 1; filter: drop-shadow(0 0 9px rgba(255,150,50,0.45)); }
+            50% { opacity: 0.9; filter: drop-shadow(0 0 16px rgba(255,150,50,0.55)); }
+          }
+        `}</style>
       </div>
-    </div>
+    </section>
   );
 };
 

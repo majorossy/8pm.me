@@ -1,0 +1,38 @@
+
+🎵 MusicBrainz Proxy running on http://localhost:3333
+
+Routes:
+  http://localhost:3333/musicbrainz/ws/2/...
+  http://localhost:3333/coverart/release/...
+
+With automatic retry logic (3 attempts with backoff)
+
+[PROXY] https://musicbrainz.org/ws/2/release/?query=artist:"Billy+Strings"&fmt=json&limit=1
+[PROXY] https://musicbrainz.org/ws/2/release/?query=artist%3A%22Billy+Strings%22+AND+type%3Aalbum+AND+status%3Aofficial&fmt=json&limit=5
+[PROXY] https://coverartarchive.org/release/a9e987ce-1b69-4ccb-9602-85bdf3ac9337/front-500
+[PROXY] https://coverartarchive.org/release/79135565-28c3-4735-a384-c89fe292c1f0/front-500
+[RETRY 1/3] read ECONNRESET
+[RETRY 2/3] Client network socket disconnected before secure TLS connection was established
+[RETRY 3/3] Client network socket disconnected before secure TLS connection was established
+[PROXY ERROR] Client network socket disconnected before secure TLS connection was established
+[PROXY] https://coverartarchive.org/release/120eb64c-cf0b-4eed-8d51-e2dd6453270d/front-500
+[RETRY 1/3] Client network socket disconnected before secure TLS connection was established
+[RETRY 2/3] read ECONNRESET
+[RETRY 3/3] Client network socket disconnected before secure TLS connection was established
+[PROXY ERROR] Client network socket disconnected before secure TLS connection was established
+[PROXY] https://coverartarchive.org/release/dbcb4149-88d6-448a-b26d-323d38642497/front-500
+[RETRY 1/3] Client network socket disconnected before secure TLS connection was established
+[RETRY 2/3] Client network socket disconnected before secure TLS connection was established
+[RETRY 3/3] Client network socket disconnected before secure TLS connection was established
+[PROXY ERROR] Client network socket disconnected before secure TLS connection was established
+[PROXY] https://coverartarchive.org/release/544ed849-44b3-4d0c-881f-0ce023cd9c44/front-500
+[RETRY 1/3] Client network socket disconnected before secure TLS connection was established
+[RETRY 2/3] Client network socket disconnected before secure TLS connection was established
+[RETRY 3/3] Client network socket disconnected before secure TLS connection was established
+[PROXY ERROR] Client network socket disconnected before secure TLS connection was established
+[PROXY] https://musicbrainz.org/ws/2/release/?query=artist%3A%22Billy+Strings%22+AND+release%3A%22Turmoil+%26+Tinfoil%22&fmt=json&limit=10
+[RETRY 1/3] Client network socket disconnected before secure TLS connection was established
+[RETRY 2/3] Client network socket disconnected before secure TLS connection was established
+[RETRY 3/3] Client network socket disconnected before secure TLS connection was established
+[PROXY ERROR] Client network socket disconnected before secure TLS connection was established
+[PROXY] https://musicbrainz.org/ws/2/release/?query=artist%3A%22Phish%22+AND+type%3Aalbum+AND+status%3Aofficial&fmt=json&limit=3

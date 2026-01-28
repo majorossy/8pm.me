@@ -67,6 +67,7 @@ export interface Album {
   totalSongs: number;            // Total recordings across all tracks
   totalDuration: number;         // Sum of all song durations
   coverArt?: string;             // Album cover image
+  wikipediaArtworkUrl?: string;  // Wikipedia album artwork URL
 }
 
 export interface Artist {

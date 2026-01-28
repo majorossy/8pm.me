@@ -121,18 +121,24 @@ export default function ArtistsPageContent({ artists }: ArtistsPageContentProps)
       {/* All albums in continuous flow */}
       <div id="artists-content" className="px-4 md:px-8 pt-4 md:pt-6 mx-auto max-w-[1400px]">
         <div className="flex flex-wrap gap-3 md:gap-4 justify-center">
-          {allAlbums.map((album) => (
+          {allAlbums.map((album) => {
+            const isComingSoon = album.totalSongs === 0;
+            return (
             <Link
               key={`${album.artistSlug}-${album.id}`}
-              href={`/artists/${album.artistSlug}/album/${album.slug}`}
+              href={isComingSoon ? '#' : `/artists/${album.artistSlug}/album/${album.slug}`}
               className="group"
             >
               <div
-                className="rounded-lg overflow-hidden relative bg-[#1a1410] hover:scale-105 transition-transform duration-200"
+                className={`rounded-lg overflow-hidden relative bg-[#1a1410] transition-transform duration-200 ${
+                  isComingSoon ? 'cursor-default' : 'hover:scale-105'
+                }`}
                 style={{
                   width: '140px',
-                  border: `2px solid ${hexToRgba(album.color, 0.6)}`,
-                  boxShadow: `0 0 16px ${hexToRgba(album.color, 0.25)}, 0 0 4px ${hexToRgba(album.color, 0.4)}`,
+                  border: `2px solid ${hexToRgba(album.color, isComingSoon ? 0.3 : 0.6)}`,
+                  boxShadow: isComingSoon
+                    ? `0 0 8px ${hexToRgba(album.color, 0.1)}`
+                    : `0 0 16px ${hexToRgba(album.color, 0.25)}, 0 0 4px ${hexToRgba(album.color, 0.4)}`,
                 }}
               >
                 {/* Corner badge - Artist avatar */}
@@ -160,10 +166,12 @@ export default function ArtistsPageContent({ artists }: ArtistsPageContentProps)
                     <img
                       src={album.coverArt}
                       alt={album.name}
-                      className="w-full h-full object-cover"
+                      className={`w-full h-full object-cover ${isComingSoon ? 'grayscale opacity-30' : ''}`}
                     />
                   ) : (
-                    <div className="w-full h-full bg-[#2d2a26] flex items-center justify-center">
+                    <div className={`w-full h-full bg-[#2d2a26] flex items-center justify-center ${
+                      isComingSoon ? 'opacity-30' : ''
+                    }`}>
                       <svg className="w-10 h-10 text-[#3a3632]" viewBox="0 0 24 24" fill="currentColor">
                         <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" fill="none"/>
                         <circle cx="12" cy="12" r="3" fill="currentColor"/>
@@ -171,14 +179,49 @@ export default function ArtistsPageContent({ artists }: ArtistsPageContentProps)
                     </div>
                   )}
 
-                  {/* Play button overlay */}
-                  <div className="absolute bottom-2 right-2 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-                    <button className="w-8 h-8 bg-[#d4a060] rounded-full flex items-center justify-center shadow-xl hover:scale-105 hover:bg-[#c08a40] transition-all">
-                      <svg className="w-3 h-3 text-black ml-0.5" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
-                    </button>
-                  </div>
+                  {/* Coming Soon overlay - compact version */}
+                  {isComingSoon && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div
+                        className="transform -rotate-12 border-2 border-[#d4a060] bg-[#1a1715]/90 px-3 py-1.5 backdrop-blur-sm"
+                        style={{
+                          boxShadow: '0 2px 12px rgba(212, 160, 96, 0.3)',
+                        }}
+                      >
+                        <div className="text-center">
+                          <div
+                            className="text-xs font-bold tracking-wider text-[#d4a060]"
+                            style={{
+                              fontFamily: 'Georgia, serif',
+                              textShadow: '0 0 8px rgba(212, 160, 96, 0.5)',
+                            }}
+                          >
+                            COMING
+                          </div>
+                          <div
+                            className="text-xs font-bold tracking-wider text-[#d4a060] -mt-0.5"
+                            style={{
+                              fontFamily: 'Georgia, serif',
+                              textShadow: '0 0 8px rgba(212, 160, 96, 0.5)',
+                            }}
+                          >
+                            SOON
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Play button overlay - hide if coming soon */}
+                  {!isComingSoon && (
+                    <div className="absolute bottom-2 right-2 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                      <button className="w-8 h-8 bg-[#d4a060] rounded-full flex items-center justify-center shadow-xl hover:scale-105 hover:bg-[#c08a40] transition-all">
+                        <svg className="w-3 h-3 text-black ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
 
                   {/* Artist name on first album - solid color label */}
                   {album.isFirst && (
@@ -197,14 +240,24 @@ export default function ArtistsPageContent({ artists }: ArtistsPageContentProps)
 
                 {/* Album info */}
                 <div className="p-2">
-                  <div className="text-white text-sm font-medium truncate">{album.name}</div>
-                  <div className="text-[#8a8478] text-xs truncate">
-                    {album.totalTracks} {album.totalTracks === 1 ? 'track' : 'tracks'}
+                  <div className={`text-sm font-medium truncate ${
+                    isComingSoon ? 'text-[#4a4540]' : 'text-white'
+                  }`}>
+                    {album.name}
+                  </div>
+                  <div className={`text-xs truncate ${
+                    isComingSoon ? 'text-[#3a3530]' : 'text-[#8a8478]'
+                  }`}>
+                    {isComingSoon
+                      ? 'No recordings yet'
+                      : `${album.totalTracks} ${album.totalTracks === 1 ? 'track' : 'tracks'}`
+                    }
                   </div>
                 </div>
               </div>
             </Link>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

@@ -18,8 +18,8 @@ use GuzzleHttp\Exception\GuzzleException;
  */
 class MusicBrainzClient
 {
-    private const MUSICBRAINZ_API_BASE = 'https://musicbrainz.org/ws/2';
-    private const COVERART_API_BASE = 'https://coverartarchive.org';
+    private const MUSICBRAINZ_API_BASE = 'http://host.docker.internal:3333/musicbrainz/ws/2';
+    private const COVERART_API_BASE = 'http://host.docker.internal:3333/coverart';
     private const RATE_LIMIT_DELAY_MS = 1000; // MusicBrainz requires 1 req/sec
     private const USER_AGENT = 'ArchiveDotOrg-Magento/2.0 (chris.majorossy@example.com)';
 

@@ -90,6 +90,9 @@
                 <item name="archivedotorg_download_metadata" xsi:type="object">ArchiveDotOrg\Core\Console\Command\DownloadMetadataCommand</item>
                 <item name="archivedotorg_populate_tracks" xsi:type="object">ArchiveDotOrg\Core\Console\Command\PopulateTracksCommand</item>
                 <item name="archivedotorg_download_album_art" xsi:type="object">ArchiveDotOrg\Core\Console\Command\DownloadAlbumArtCommand</item>
+                <item name="archivedotorg_update_category_artwork" xsi:type="object">ArchiveDotOrg\Core\Console\Command\UpdateCategoryArtworkCommand</item>
+                <item name="archivedotorg_set_artwork_url" xsi:type="object">ArchiveDotOrg\Core\Console\Command\SetArtworkUrlCommand</item>
+                <item name="archivedotorg_retry_missing_artwork" xsi:type="object">ArchiveDotOrg\Core\Console\Command\RetryMissingArtworkCommand</item>
             </argument>
         </arguments>
     </type>

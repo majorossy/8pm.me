@@ -18,10 +18,17 @@ export default function AlbumCard({ album }: AlbumCardProps) {
     freezeOnceVisible: true,
   });
 
+  // Check if album has no song versions (coming soon)
+  const isComingSoon = album.totalSongs === 0;
+
   // Jamify/Spotify style - rounded cards with hover play button
   return (
-    <Link href={`/artists/${album.artistSlug}/album/${album.slug}`}>
-      <div className="group p-4 bg-[#252220] rounded-lg hover:bg-[#2d2a26] transition-all duration-300 cursor-pointer">
+    <Link href={isComingSoon ? '#' : `/artists/${album.artistSlug}/album/${album.slug}`}>
+      <div className={`group p-4 rounded-lg transition-all duration-300 ${
+        isComingSoon
+          ? 'bg-[#1a1715] cursor-default'
+          : 'bg-[#252220] hover:bg-[#2d2a26] cursor-pointer'
+      }`}>
         {/* Album artwork with play button overlay */}
         <div
           ref={ref as React.RefObject<HTMLDivElement>}
@@ -47,35 +54,80 @@ export default function AlbumCard({ album }: AlbumCardProps) {
                   onLoad={() => setImageLoaded(true)}
                   className={`w-full h-full object-cover transition-opacity duration-500 ${
                     imageLoaded ? 'opacity-100' : 'opacity-0'
-                  }`}
+                  } ${isComingSoon ? 'grayscale opacity-30' : ''}`}
                 />
               )}
             </>
           ) : (
-            <div className="w-full h-full bg-[#2d2a26] flex items-center justify-center">
+            <div className={`w-full h-full bg-[#2d2a26] flex items-center justify-center ${
+              isComingSoon ? 'opacity-30' : ''
+            }`}>
               <svg className="w-16 h-16 text-[#3a3632]" viewBox="0 0 24 24" fill="currentColor">
                 <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" fill="none"/>
                 <circle cx="12" cy="12" r="3" fill="currentColor"/>
               </svg>
             </div>
           )}
-          {/* Play button overlay */}
-          <div className="absolute bottom-2 right-2 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-            <button className="w-12 h-12 bg-[#d4a060] rounded-full flex items-center justify-center shadow-xl hover:scale-105 hover:bg-[#c08a40] transition-all">
-              <svg className="w-5 h-5 text-black ml-0.5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            </button>
-          </div>
+
+          {/* Coming Soon overlay - like a sold-out ticket stamp */}
+          {isComingSoon && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="relative">
+                {/* Ticket-style stamp */}
+                <div
+                  className="transform -rotate-12 border-4 border-[#d4a060] bg-[#1a1715]/90 px-6 py-3 backdrop-blur-sm"
+                  style={{
+                    boxShadow: '0 4px 20px rgba(212, 160, 96, 0.3)',
+                  }}
+                >
+                  <div className="text-center">
+                    <div
+                      className="text-2xl font-bold tracking-wider text-[#d4a060]"
+                      style={{
+                        fontFamily: 'Georgia, serif',
+                        textShadow: '0 0 10px rgba(212, 160, 96, 0.5)',
+                      }}
+                    >
+                      COMING
+                    </div>
+                    <div
+                      className="text-2xl font-bold tracking-wider text-[#d4a060] -mt-1"
+                      style={{
+                        fontFamily: 'Georgia, serif',
+                        textShadow: '0 0 10px rgba(212, 160, 96, 0.5)',
+                      }}
+                    >
+                      SOON
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Play button overlay - hide if coming soon */}
+          {!isComingSoon && (
+            <div className="absolute bottom-2 right-2 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+              <button className="w-12 h-12 bg-[#d4a060] rounded-full flex items-center justify-center shadow-xl hover:scale-105 hover:bg-[#c08a40] transition-all">
+                <svg className="w-5 h-5 text-black ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Album info */}
-        <h3 className="font-semibold text-white truncate mb-1">
+        <h3 className={`font-semibold truncate mb-1 ${
+          isComingSoon ? 'text-[#4a4540]' : 'text-white'
+        }`}>
           {album.name}
         </h3>
-        <p className="text-sm text-[#8a8478] truncate">
+        <p className={`text-sm truncate ${
+          isComingSoon ? 'text-[#3a3530]' : 'text-[#8a8478]'
+        }`}>
           {album.showDate && <span>{album.showDate} </span>}
-          <span>{album.totalTracks} {album.totalTracks === 1 ? 'track' : 'tracks'}</span>
+          <span>{isComingSoon ? 'No recordings yet' : `${album.totalTracks} ${album.totalTracks === 1 ? 'track' : 'tracks'}`}</span>
         </p>
       </div>
     </Link>

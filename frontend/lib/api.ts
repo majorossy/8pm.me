@@ -283,7 +283,26 @@ const GET_CHILD_CATEGORIES_QUERY = `
       url_key
       description
       image
+      wikipedia_artwork_url
       product_count
+    }
+  }
+`;
+
+// Get child categories with pagination support
+const GET_CHILD_CATEGORIES_PAGINATED_QUERY = `
+  query GetChildCategoriesPaginated($parentUid: String!, $pageSize: Int!, $currentPage: Int!) {
+    categories(filters: { parent_category_uid: { eq: $parentUid } }, pageSize: $pageSize, currentPage: $currentPage) {
+      items {
+        uid
+        name
+        url_key
+        description
+        image
+        wikipedia_artwork_url
+        product_count
+      }
+      total_count
     }
   }
 `;
@@ -558,7 +577,8 @@ function productToSong(product: MagentoProduct, albumIdentifier?: string): Song 
     c => c.url_key && !c.url_key.includes('-')
   ) || product.categories?.[0];
 
-  const identifier = albumIdentifier || product.identifier || 'unknown-album';
+  // Use product.identifier (Archive.org show ID) if available, otherwise fall back to album category
+  const identifier = product.identifier || albumIdentifier || 'unknown-album';
   const albumName = product.show_name || identifier;
   const trackTitle = product.song_title || product.name;
 
@@ -746,13 +766,43 @@ export async function getArtist(slug: string): Promise<ArtistDetail | null> {
     const category = artistData.categoryList[0];
     const artist = categoryToArtist(category);
 
-    // Get child categories (albums) of the artist category
-    const albumCategoriesData = await graphqlFetch<{ categoryList: MagentoCategory[] }>(
-      GET_CHILD_CATEGORIES_QUERY,
-      { parentUid: category.uid }
-    );
+    // Get child categories (albums) of the artist category with pagination
+    const PAGE_SIZE = 100;
+    let allAlbumCategories: MagentoCategory[] = [];
+    let currentPage = 1;
+    let totalCount = 0;
 
-    const albumCategories = albumCategoriesData.categoryList || [];
+    // Fetch first page to get total count
+    const firstPageData = await graphqlFetch<{
+      categories: { items: MagentoCategory[]; total_count: number };
+    }>(GET_CHILD_CATEGORIES_PAGINATED_QUERY, {
+      parentUid: category.uid,
+      pageSize: PAGE_SIZE,
+      currentPage: 1,
+    });
+
+    allAlbumCategories = firstPageData.categories.items || [];
+    totalCount = firstPageData.categories.total_count || 0;
+    console.log(`[getArtist] Page 1: got ${allAlbumCategories.length} albums, total: ${totalCount}`);
+
+    // Fetch remaining pages if needed
+    const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+    for (currentPage = 2; currentPage <= totalPages; currentPage++) {
+      const pageData = await graphqlFetch<{
+        categories: { items: MagentoCategory[]; total_count: number };
+      }>(GET_CHILD_CATEGORIES_PAGINATED_QUERY, {
+        parentUid: category.uid,
+        pageSize: PAGE_SIZE,
+        currentPage,
+      });
+
+      const pageAlbums = pageData.categories.items || [];
+      allAlbumCategories = allAlbumCategories.concat(pageAlbums);
+      console.log(`[getArtist] Page ${currentPage}: got ${pageAlbums.length} more albums`);
+    }
+
+    console.log(`[getArtist] Total albums fetched: ${allAlbumCategories.length}`);
+    const albumCategories = allAlbumCategories;
 
     // For each album category, get its track categories and their products
     const albums: Album[] = await Promise.all(
@@ -775,7 +825,7 @@ export async function getArtist(slug: string): Promise<ArtistDetail | null> {
               console.log('[getArtist] Querying track:', trackCat.name, 'UID:', trackCat.uid);
               const productsData = await graphqlFetch<{ products: { items: MagentoProduct[]; total_count: number } }>(
                 GET_SONGS_BY_CATEGORY_QUERY,
-                { categoryUid: trackCat.uid, pageSize: 100 }
+                { categoryUid: trackCat.uid, pageSize: 250 }
               );
 
               const products = productsData.products.items || [];
@@ -865,7 +915,8 @@ export async function getArtist(slug: string): Promise<ArtistDetail | null> {
           totalTracks: tracks.length,
           totalSongs,
           totalDuration,
-          coverArt: getAlbumCoverArt(albumCat.url_key),
+          coverArt: albumCat.wikipedia_artwork_url || getAlbumCoverArt(albumCat.url_key),
+          wikipediaArtworkUrl: albumCat.wikipedia_artwork_url,
         };
       })
     );
@@ -958,19 +1009,21 @@ export async function getArtistAlbums(slug: string): Promise<{ artist: Artist; a
 
     // Transform to lightweight Album objects (no tracks, no products)
     const albums: Album[] = albumCategories.map((albumCat) => ({
-      id: albumCat.uid,
-      identifier: albumCat.url_key,
-      name: albumCat.name,
-      slug: albumCat.url_key,
-      artistId: category.uid,
-      artistName: category.name,
-      artistSlug: category.url_key,
-      tracks: [], // Empty - not fetched
-      totalTracks: albumCat.product_count || 0, // Use category product count as estimate
-      totalSongs: 0,
-      totalDuration: 0,
-      coverArt: getAlbumCoverArt(albumCat.url_key),
-    }));
+        id: albumCat.uid,
+        identifier: albumCat.url_key,
+        name: albumCat.name,
+        slug: albumCat.url_key,
+        artistId: category.uid,
+        artistName: category.name,
+        artistSlug: category.url_key,
+        tracks: [], // Empty - not fetched
+        totalTracks: albumCat.product_count || 0, // Use category product count as estimate
+        totalSongs: albumCat.product_count || 0, // Use category product count for coming soon check
+        totalDuration: 0,
+        coverArt: albumCat.wikipedia_artwork_url || getAlbumCoverArt(albumCat.url_key),
+        wikipediaArtworkUrl: albumCat.wikipedia_artwork_url,
+      }
+    ));
 
     return { artist, albums };
   } catch (error) {

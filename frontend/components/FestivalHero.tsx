@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useLineStartDetection } from '@/hooks/useLineStartDetection';
 
 interface LineupArtist {
   name: string;
@@ -16,6 +17,9 @@ interface FestivalHeroProps {
 export default function FestivalHero({ artists, onStartListening }: FestivalHeroProps) {
   // Sort by song count (most songs first)
   const lineupArtists = [...artists].sort((a, b) => b.songCount - a.songCount);
+
+  // Detect line starts to hide star separators via direct DOM manipulation (no flicker)
+  const { containerRef, setItemRef, setStarRef } = useLineStartDetection(lineupArtists.length);
 
   // Calculate font size based on relative song count
   const maxSongs = Math.max(...lineupArtists.map(a => a.songCount));
@@ -88,13 +92,26 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
           <div className="text-[#d4a060] text-xs md:text-sm tracking-[3px] md:tracking-[6px] uppercase mb-3 md:mb-4">
             Tonight&apos;s Lineup
           </div>
-          <div className="flex flex-wrap items-baseline justify-center gap-x-2 md:gap-x-4 gap-y-2 text-[#e8dcc4] font-bold uppercase tracking-[1px] md:tracking-[2px]">
+          <div
+            ref={containerRef}
+            className="flex flex-wrap items-baseline justify-center gap-x-2 md:gap-x-4 gap-y-2 text-[#e8dcc4] font-bold uppercase tracking-[1px] md:tracking-[2px]"
+          >
             {lineupArtists.map((artist, index) => {
               const fontSize = getFontSize(artist.songCount);
               return (
-                <span key={artist.slug} className="flex items-baseline whitespace-nowrap">
+                <span
+                  key={artist.slug}
+                  ref={setItemRef(index)}
+                  className="flex items-baseline whitespace-nowrap"
+                >
+                  {/* Star separator - starts invisible, JS reveals appropriate ones after measurement */}
                   {index > 0 && (
-                    <span className="text-[#d4a060] mr-2 md:mr-4 text-base">&#9733;</span>
+                    <span
+                      ref={setStarRef(index)}
+                      className="text-[#d4a060] mr-2 md:mr-4 text-base invisible"
+                    >
+                      &#9733;
+                    </span>
                   )}
                   <Link
                     href={`/artists/${artist.slug}`}

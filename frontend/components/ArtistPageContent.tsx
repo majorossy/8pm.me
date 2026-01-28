@@ -7,7 +7,7 @@ import { useBreadcrumbs } from '@/context/BreadcrumbContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useHaptic } from '@/hooks/useHaptic';
 import AlbumCard from '@/components/AlbumCard';
-import BandMembers from '@/components/artist/BandMembers';
+import BandMembersTimeline from '@/components/artist/BandMembersTimeline';
 import BandStatistics from '@/components/artist/BandStatistics';
 import BandLinks from '@/components/artist/BandLinks';
 import DetailedCassette from '@/components/artist/DetailedCassette';
@@ -47,34 +47,53 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
   const calculatedStats = useMemo(() => {
     if (!artist.albums || artist.albums.length === 0) return null;
 
-    // Total shows (albums)
-    const totalShows = artist.albums.length;
-
     // Total recordings and runtime
     let totalRecordings = 0;
     let totalDuration = 0;
     const venueCounts: Record<string, number> = {};
     const trackCounts: Record<string, number> = {};
     const years: number[] = [];
+    const uniqueShows = new Set<string>(); // Track unique show identifiers
+    const uniqueVenues = new Set<string>(); // Track unique venues
 
     artist.albums.forEach((album: any) => {
       // Count recordings and duration
       if (album.tracks) {
         album.tracks.forEach((track: any) => {
-          totalRecordings += track.songCount || 1;
-          totalDuration += track.totalDuration || 0;
-
           // Track song title frequency
           const title = track.title;
           if (title) {
             trackCounts[title] = (trackCounts[title] || 0) + (track.songCount || 1);
           }
-        });
-      }
 
-      // Count venues
-      if (album.showVenue) {
-        venueCounts[album.showVenue] = (venueCounts[album.showVenue] || 0) + 1;
+          // Count unique shows and sum durations from individual song versions
+          if (track.songs && Array.isArray(track.songs)) {
+            track.songs.forEach((song: any) => {
+              // Count recordings
+              totalRecordings++;
+
+              // Sum duration from each song version
+              totalDuration += song.duration || 0;
+
+              // Track unique shows by extracting date from identifier
+              // Identifier format: "db2021-10-15.dpa4006.flac16" or "bisco2009-02-06.flac16mk4v"
+              // We want to extract just the date portion to count unique shows
+              if (song.albumIdentifier) {
+                // Extract date from identifier (remove recording source/format)
+                const match = song.albumIdentifier.match(/(\d{4}-\d{2}-\d{2})/);
+                const showDate = match ? match[1] : song.albumIdentifier;
+                uniqueShows.add(showDate);
+              }
+
+              // Track unique venues
+              if (song.showVenue) {
+                uniqueVenues.add(song.showVenue);
+                // Also count for top venues
+                venueCounts[song.showVenue] = (venueCounts[song.showVenue] || 0) + 1;
+              }
+            });
+          }
+        });
       }
 
       // Collect years
@@ -82,6 +101,20 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
         const year = parseInt(album.showDate.split('-')[0], 10);
         if (!isNaN(year)) years.push(year);
       }
+    });
+
+    // Total shows = count of unique show identifiers from all songs
+    const totalShows = uniqueShows.size;
+
+    // Total venues = count of unique venues from all songs
+    const totalVenues = uniqueVenues.size;
+
+    console.log('[calculatedStats] Stats:', {
+      totalRecordings,
+      totalShows: uniqueShows.size,
+      totalVenues: uniqueVenues.size,
+      totalHours: Math.floor(totalDuration / 3600),
+      albumCategories: artist.albums.length
     });
 
     // Get top venues
@@ -102,11 +135,6 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
       ? { first: Math.min(...years), last: Math.max(...years) }
       : undefined;
 
-    // Calculate average set length (tracks per show)
-    const totalTracks = artist.albums.reduce((sum: number, album: any) =>
-      sum + (album.tracks?.length || 0), 0);
-    const averageSetLength = totalShows > 0 ? Math.round(totalTracks / totalShows) : undefined;
-
     // Format total runtime
     const totalHours = Math.floor(totalDuration / 3600);
 
@@ -114,10 +142,10 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
       totalShows,
       totalRecordings,
       totalHours,
+      totalVenues,
       yearsActive,
       topVenues: topVenues.length > 0 ? topVenues : undefined,
       mostPlayedTrack,
-      averageSetLength,
     };
   }, [artist.albums]);
 
@@ -346,7 +374,7 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
       {/* Two column: content left, images right */}
       <section className="max-w-[1000px] mx-auto px-4 md:px-8 pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6 lg:gap-12">
-          {/* Left Column: bio + members + stats + links */}
+          {/* Left Column: bio + members + stats */}
           <div className="space-y-8 md:space-y-12">
 
             {/* Biography Text Only */}
@@ -384,19 +412,20 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
                 statistics={{
                   totalShows: calculatedStats.totalShows,
                   totalHours: calculatedStats.totalHours,
+                  totalVenues: calculatedStats.totalVenues,
                   recordingStats: { total: calculatedStats.totalRecordings },
-                  yearsActive: calculatedStats.yearsActive,
+                  yearsActive: formationYear ? { first: parseInt(formationYear, 10), last: new Date().getFullYear() } : calculatedStats.yearsActive,
                   topVenues: calculatedStats.topVenues,
                   mostPlayedTrack: calculatedStats.mostPlayedTrack,
-                  averageSetLength: calculatedStats.averageSetLength,
                 }}
               />
             )}
 
             {/* Band Members */}
-            <BandMembers
+            <BandMembersTimeline
               members={bandData?.members?.current}
               formerMembers={bandData?.members?.former}
+              foundedYear={formationYear ? parseInt(formationYear, 10) : undefined}
             />
           </div>
 
