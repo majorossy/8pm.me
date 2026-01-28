@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { useMagentoAuth } from '@/context/MagentoAuthContext';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -10,25 +11,37 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }: AuthModalProps) {
-  const [mode, setMode] = useState<'signin' | 'signup' | 'magic-link'>(initialMode);
+  // Tab state: 'magic' for Supabase magic link, 'password' for Magento email/password
+  const [activeTab, setActiveTab] = useState<'magic' | 'password'>('magic');
+
+  // Magic link state (Supabase)
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { signIn, signUp, signInWithMagicLink, isConfigured } = useAuth();
+  // Password tab state (Magento)
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [firstname, setFirstname] = useState('');
+  const [lastname, setLastname] = useState('');
+  const [isRegistering, setIsRegistering] = useState(initialMode === 'signup');
+
+  const { signInWithMagicLink, isConfigured } = useAuth();
+  const magentoAuth = useMagentoAuth();
 
   // Reset form when modal opens/closes
   useEffect(() => {
     if (isOpen) {
-      setMode(initialMode);
+      setActiveTab('magic');
       setEmail('');
       setPassword('');
       setConfirmPassword('');
+      setFirstname('');
+      setLastname('');
       setError(null);
       setSuccess(null);
+      setIsRegistering(initialMode === 'signup');
     }
   }, [isOpen, initialMode]);
 
@@ -43,7 +56,8 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }: A
     return () => window.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
 
-  const handleSubmit = useCallback(async (e: React.FormEvent) => {
+  // Handle magic link submission (Supabase)
+  const handleMagicLinkSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
@@ -53,47 +67,75 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }: A
       return;
     }
 
-    if (mode === 'signup' && password !== confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
-
-    if (mode !== 'magic-link' && password.length < 6) {
-      setError('Password must be at least 6 characters');
-      return;
-    }
-
     setIsSubmitting(true);
 
     try {
-      if (mode === 'signin') {
-        const { error } = await signIn(email, password);
-        if (error) {
-          setError(error.message);
-        } else {
-          onClose();
-        }
-      } else if (mode === 'signup') {
-        const { error } = await signUp(email, password);
-        if (error) {
-          setError(error.message);
-        } else {
-          setSuccess('Check your email to confirm your account!');
-        }
-      } else if (mode === 'magic-link') {
-        const { error } = await signInWithMagicLink(email);
-        if (error) {
-          setError(error.message);
-        } else {
-          setSuccess('Check your email for the magic link!');
-        }
+      const { error } = await signInWithMagicLink(email);
+      if (error) {
+        setError(error.message);
+      } else {
+        setSuccess('Check your email for the magic link!');
       }
     } catch (err) {
       setError('An unexpected error occurred');
     } finally {
       setIsSubmitting(false);
     }
-  }, [mode, email, password, confirmPassword, signIn, signUp, signInWithMagicLink, isConfigured, onClose]);
+  }, [email, signInWithMagicLink, isConfigured]);
+
+  // Handle Magento password submission
+  const handlePasswordSubmit = useCallback(async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setSuccess(null);
+
+    if (isRegistering) {
+      // Validation for registration
+      if (password !== confirmPassword) {
+        setError('Passwords do not match');
+        return;
+      }
+      if (password.length < 6) {
+        setError('Password must be at least 6 characters');
+        return;
+      }
+      if (!firstname.trim() || !lastname.trim()) {
+        setError('First name and last name are required');
+        return;
+      }
+
+      setIsSubmitting(true);
+      const success = await magentoAuth.signUp({
+        email,
+        password,
+        firstname: firstname.trim(),
+        lastname: lastname.trim(),
+      });
+
+      setIsSubmitting(false);
+      if (success) {
+        onClose();
+      } else if (magentoAuth.error) {
+        setError(magentoAuth.error);
+      }
+    } else {
+      // Login
+      if (password.length < 6) {
+        setError('Password must be at least 6 characters');
+        return;
+      }
+
+      setIsSubmitting(true);
+      const success = await magentoAuth.signIn(email, password);
+
+      setIsSubmitting(false);
+      if (success) {
+        onClose();
+      } else if (magentoAuth.error) {
+        setError(magentoAuth.error);
+      }
+    }
+  }, [email, password, confirmPassword, firstname, lastname, isRegistering, magentoAuth, onClose]);
 
   if (!isOpen) return null;
 
@@ -119,40 +161,152 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }: A
         </button>
 
         {/* Header */}
-        <div className="text-center mb-6">
+        <div className="text-center mb-4">
           <span className="text-3xl">⚡</span>
           <h2 className="text-xl font-serif text-[#e8e0d4] mt-2">
-            {mode === 'signin' && 'Welcome Back'}
-            {mode === 'signup' && 'Create Account'}
-            {mode === 'magic-link' && 'Magic Link'}
+            {activeTab === 'magic' ? 'Quick Sign In' : (isRegistering ? 'Create Account' : 'Sign In')}
           </h2>
           <p className="text-[#8a8478] text-sm mt-1">
-            {mode === 'signin' && 'Sign in to sync your library across devices'}
-            {mode === 'signup' && 'Join to save your playlists and favorites'}
-            {mode === 'magic-link' && 'Sign in without a password'}
+            {activeTab === 'magic'
+              ? 'Sign in without a password'
+              : (isRegistering
+                  ? 'Join to save your playlists and favorites'
+                  : 'Sign in to sync your library across devices')}
           </p>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Email */}
-          <div>
-            <label htmlFor="email" className="block text-sm text-[#8a8478] mb-1">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full px-4 py-3 bg-[#2d2a26] border border-[#3a3632] rounded-md text-[#e8e0d4] placeholder-[#6a6458] focus:outline-none focus:ring-2 focus:ring-[#d4a060] focus:border-transparent"
-              placeholder="you@example.com"
-            />
-          </div>
+        {/* Tabs */}
+        <div className="flex gap-2 mb-6">
+          <button
+            onClick={() => setActiveTab('magic')}
+            className={`flex-1 py-2 px-4 rounded-full text-sm font-medium transition-colors ${
+              activeTab === 'magic'
+                ? 'bg-[#d4a060] text-black'
+                : 'bg-[#2d2a26] text-white hover:bg-[#3a3632]'
+            }`}
+          >
+            Quick Sign In
+          </button>
+          <button
+            onClick={() => setActiveTab('password')}
+            className={`flex-1 py-2 px-4 rounded-full text-sm font-medium transition-colors ${
+              activeTab === 'password'
+                ? 'bg-[#d4a060] text-black'
+                : 'bg-[#2d2a26] text-white hover:bg-[#3a3632]'
+            }`}
+          >
+            Email & Password
+          </button>
+        </div>
 
-          {/* Password (not for magic link) */}
-          {mode !== 'magic-link' && (
+        {/* Magic Link Form (Supabase) */}
+        {activeTab === 'magic' && (
+          <form onSubmit={handleMagicLinkSubmit} className="space-y-4">
+            {/* Email */}
+            <div>
+              <label htmlFor="magic-email" className="block text-sm text-[#8a8478] mb-1">
+                Email
+              </label>
+              <input
+                type="email"
+                id="magic-email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full px-4 py-3 bg-[#2d2a26] border border-[#3a3632] rounded-md text-[#e8e0d4] placeholder-[#6a6458] focus:outline-none focus:ring-2 focus:ring-[#d4a060] focus:border-transparent"
+                placeholder="you@example.com"
+              />
+            </div>
+
+            {/* Error message */}
+            {error && (
+              <div className="p-3 bg-red-900/30 border border-red-700/50 rounded-md text-red-300 text-sm">
+                {error}
+              </div>
+            )}
+
+            {/* Success message */}
+            {success && (
+              <div className="p-3 bg-green-900/30 border border-green-700/50 rounded-md text-green-300 text-sm">
+                {success}
+              </div>
+            )}
+
+            {/* Submit button */}
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full py-3 bg-[#d4a060] hover:bg-[#c49050] text-[#1c1a17] font-medium rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  Sending...
+                </span>
+              ) : (
+                'Send Magic Link'
+              )}
+            </button>
+          </form>
+        )}
+
+        {/* Password Form (Magento) */}
+        {activeTab === 'password' && (
+          <form onSubmit={handlePasswordSubmit} className="space-y-4">
+            {/* Email */}
+            <div>
+              <label htmlFor="password-email" className="block text-sm text-[#8a8478] mb-1">
+                Email
+              </label>
+              <input
+                type="email"
+                id="password-email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full px-4 py-3 bg-[#2d2a26] border border-[#3a3632] rounded-md text-[#e8e0d4] placeholder-[#6a6458] focus:outline-none focus:ring-2 focus:ring-[#d4a060] focus:border-transparent"
+                placeholder="you@example.com"
+              />
+            </div>
+
+            {/* First Name and Last Name (registration only) */}
+            {isRegistering && (
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label htmlFor="firstname" className="block text-sm text-[#8a8478] mb-1">
+                    First Name
+                  </label>
+                  <input
+                    type="text"
+                    id="firstname"
+                    value={firstname}
+                    onChange={(e) => setFirstname(e.target.value)}
+                    required
+                    className="w-full px-4 py-3 bg-[#2d2a26] border border-[#3a3632] rounded-md text-[#e8e0d4] placeholder-[#6a6458] focus:outline-none focus:ring-2 focus:ring-[#d4a060] focus:border-transparent"
+                    placeholder="John"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="lastname" className="block text-sm text-[#8a8478] mb-1">
+                    Last Name
+                  </label>
+                  <input
+                    type="text"
+                    id="lastname"
+                    value={lastname}
+                    onChange={(e) => setLastname(e.target.value)}
+                    required
+                    className="w-full px-4 py-3 bg-[#2d2a26] border border-[#3a3632] rounded-md text-[#e8e0d4] placeholder-[#6a6458] focus:outline-none focus:ring-2 focus:ring-[#d4a060] focus:border-transparent"
+                    placeholder="Doe"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Password */}
             <div>
               <label htmlFor="password" className="block text-sm text-[#8a8478] mb-1">
                 Password
@@ -168,110 +322,93 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }: A
                 placeholder="••••••••"
               />
             </div>
-          )}
 
-          {/* Confirm Password (signup only) */}
-          {mode === 'signup' && (
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm text-[#8a8478] mb-1">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                id="confirmPassword"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                minLength={6}
-                className="w-full px-4 py-3 bg-[#2d2a26] border border-[#3a3632] rounded-md text-[#e8e0d4] placeholder-[#6a6458] focus:outline-none focus:ring-2 focus:ring-[#d4a060] focus:border-transparent"
-                placeholder="••••••••"
-              />
-            </div>
-          )}
-
-          {/* Error message */}
-          {error && (
-            <div className="p-3 bg-red-900/30 border border-red-700/50 rounded-md text-red-300 text-sm">
-              {error}
-            </div>
-          )}
-
-          {/* Success message */}
-          {success && (
-            <div className="p-3 bg-green-900/30 border border-green-700/50 rounded-md text-green-300 text-sm">
-              {success}
-            </div>
-          )}
-
-          {/* Submit button */}
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full py-3 bg-[#d4a060] hover:bg-[#c49050] text-[#1c1a17] font-medium rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isSubmitting ? (
-              <span className="flex items-center justify-center gap-2">
-                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-                Loading...
-              </span>
-            ) : (
-              <>
-                {mode === 'signin' && 'Sign In'}
-                {mode === 'signup' && 'Create Account'}
-                {mode === 'magic-link' && 'Send Magic Link'}
-              </>
+            {/* Confirm Password (registration only) */}
+            {isRegistering && (
+              <div>
+                <label htmlFor="confirmPassword" className="block text-sm text-[#8a8478] mb-1">
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  className="w-full px-4 py-3 bg-[#2d2a26] border border-[#3a3632] rounded-md text-[#e8e0d4] placeholder-[#6a6458] focus:outline-none focus:ring-2 focus:ring-[#d4a060] focus:border-transparent"
+                  placeholder="••••••••"
+                />
+              </div>
             )}
-          </button>
-        </form>
 
-        {/* Divider */}
-        <div className="my-6 flex items-center gap-4">
-          <div className="flex-1 border-t border-[#3a3632]" />
-          <span className="text-[#6a6458] text-xs">or</span>
-          <div className="flex-1 border-t border-[#3a3632]" />
-        </div>
+            {/* Error message */}
+            {error && (
+              <div className="p-3 bg-red-900/30 border border-red-700/50 rounded-md text-red-300 text-sm">
+                {error}
+              </div>
+            )}
 
-        {/* Alternative options */}
-        <div className="space-y-3">
-          {mode !== 'magic-link' && (
+            {/* Success message */}
+            {success && (
+              <div className="p-3 bg-green-900/30 border border-green-700/50 rounded-md text-green-300 text-sm">
+                {success}
+              </div>
+            )}
+
+            {/* Submit button */}
             <button
-              type="button"
-              onClick={() => setMode('magic-link')}
-              className="w-full py-2 text-sm text-[#d4a060] hover:text-[#e8c090] transition-colors"
+              type="submit"
+              disabled={isSubmitting || magentoAuth.isLoading}
+              className="w-full py-3 bg-[#d4a060] hover:bg-[#c49050] text-[#1c1a17] font-medium rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Sign in with magic link
+              {isSubmitting || magentoAuth.isLoading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  Loading...
+                </span>
+              ) : (
+                isRegistering ? 'Create Account' : 'Sign In'
+              )}
             </button>
-          )}
 
-          {mode === 'signin' && (
+            {/* Toggle login/register */}
             <p className="text-center text-sm text-[#8a8478]">
-              Don&apos;t have an account?{' '}
-              <button
-                type="button"
-                onClick={() => setMode('signup')}
-                className="text-[#d4a060] hover:text-[#e8c090] transition-colors"
-              >
-                Sign up
-              </button>
+              {isRegistering ? (
+                <>
+                  Already have an account?{' '}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsRegistering(false);
+                      setError(null);
+                    }}
+                    className="text-[#d4a060] hover:text-[#e8c090] transition-colors"
+                  >
+                    Sign in
+                  </button>
+                </>
+              ) : (
+                <>
+                  Don&apos;t have an account?{' '}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsRegistering(true);
+                      setError(null);
+                    }}
+                    className="text-[#d4a060] hover:text-[#e8c090] transition-colors"
+                  >
+                    Sign up
+                  </button>
+                </>
+              )}
             </p>
-          )}
-
-          {(mode === 'signup' || mode === 'magic-link') && (
-            <p className="text-center text-sm text-[#8a8478]">
-              Already have an account?{' '}
-              <button
-                type="button"
-                onClick={() => setMode('signin')}
-                className="text-[#d4a060] hover:text-[#e8c090] transition-colors"
-              >
-                Sign in
-              </button>
-            </p>
-          )}
-        </div>
+          </form>
+        )}
       </div>
     </div>
   );

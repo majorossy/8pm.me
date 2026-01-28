@@ -183,3 +183,39 @@ export interface Customer {
   firstname: string;
   lastname: string;
 }
+
+// Magento Customer Authentication Types
+export interface MagentoCustomer {
+  id?: number;
+  email: string;
+  firstname: string;
+  lastname: string;
+  addresses?: MagentoCustomerAddress[];
+}
+
+export interface MagentoCustomerAddress {
+  id: number;
+  firstname: string;
+  lastname: string;
+  street: string[];
+  city: string;
+  region: { region: string; region_code: string; region_id: number };
+  postcode: string;
+  country_code: string;
+  telephone: string;
+  default_billing: boolean;
+  default_shipping: boolean;
+}
+
+export interface MagentoAuthTokenResponse {
+  generateCustomerToken: {
+    token: string;
+  };
+}
+
+export interface MagentoCustomerCreateInput {
+  email: string;
+  firstname: string;
+  lastname: string;
+  password: string;
+}

@@ -2,13 +2,48 @@
 
 import { useState } from 'react';
 import { usePlaylists } from '@/context/PlaylistContext';
+import { useQueue } from '@/context/QueueContext';
 import Link from 'next/link';
 
 export default function PlaylistsPage() {
-  const { playlists, createPlaylist, deletePlaylist } = usePlaylists();
+  const { playlists, createPlaylist, deletePlaylist, getPlaylist } = usePlaylists();
+  const { loadAlbum } = useQueue();
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState('');
   const [newPlaylistDescription, setNewPlaylistDescription] = useState('');
+
+  const handlePlayPlaylist = (playlistId: string) => {
+    const playlist = getPlaylist(playlistId);
+    if (!playlist || playlist.songs.length === 0) return;
+
+    const albumData = {
+      id: playlist.id,
+      identifier: playlist.id,
+      name: playlist.name,
+      slug: playlist.id,
+      artistId: playlist.songs[0]?.artistId || '',
+      artistName: playlist.songs[0]?.artistName || 'Various Artists',
+      artistSlug: playlist.songs[0]?.artistSlug || '',
+      tracks: [{
+        id: 'playlist-track',
+        title: playlist.name,
+        slug: playlist.id,
+        albumIdentifier: playlist.id,
+        albumName: playlist.name,
+        artistId: playlist.songs[0]?.artistId || '',
+        artistName: playlist.songs[0]?.artistName || 'Various Artists',
+        artistSlug: playlist.songs[0]?.artistSlug || '',
+        songs: playlist.songs,
+        totalDuration: playlist.songs.reduce((sum, s) => sum + s.duration, 0),
+        songCount: playlist.songs.length,
+      }],
+      totalTracks: 1,
+      totalSongs: playlist.songs.length,
+      totalDuration: playlist.songs.reduce((sum, s) => sum + s.duration, 0),
+      coverArt: playlist.coverArt,
+    };
+    loadAlbum(albumData, 0);
+  };
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -119,7 +154,7 @@ export default function PlaylistsPage() {
                 <button
                   onClick={(e) => {
                     e.preventDefault();
-                    // TODO: Play playlist
+                    handlePlayPlaylist(playlist.id);
                   }}
                   className="absolute bottom-2 right-2 w-12 h-12 rounded-full bg-[#d4a060] text-black flex items-center justify-center opacity-0 group-hover:opacity-100 hover:scale-105 transition-all shadow-lg btn-touch"
                   aria-label={`Play ${playlist.name}`}

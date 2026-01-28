@@ -11,6 +11,7 @@ import BandMembers from '@/components/artist/BandMembers';
 import BandStatistics from '@/components/artist/BandStatistics';
 import BandLinks from '@/components/artist/BandLinks';
 import DetailedCassette from '@/components/artist/DetailedCassette';
+import PolaroidCard from '@/components/artist/PolaroidCard';
 
 interface ArtistWithAlbums extends ArtistDetail {
   albums: any[];
@@ -200,22 +201,6 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
 
             {/* Action buttons */}
             <div className="flex items-center justify-center lg:justify-start gap-3 mb-8">
-              {/* Play All button */}
-              <button className="flex items-center gap-2 px-6 py-3 bg-[#d4a060] hover:bg-[#e0b070] text-[#1c1a17] font-semibold rounded-full transition-all hover:scale-105 shadow-lg">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-                <span>Play All</span>
-              </button>
-
-              {/* Shuffle button */}
-              <button className="flex items-center gap-2 px-5 py-3 border border-[#3a3632] hover:border-[#d4a060] text-[#e8e0d4] rounded-full transition-all hover:scale-105">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-                <span>Shuffle</span>
-              </button>
-
               {/* Follow/Heart button */}
               <button
                 onClick={handleFollowToggle}
@@ -244,6 +229,22 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
                 </p>
               </div>
             )}
+          </div>
+
+          {/* Polaroid Card - Right side */}
+          <div className="hidden lg:flex flex-shrink-0 items-start pt-8">
+            <PolaroidCard
+              imageUrl={artist.wikipediaSummary?.thumbnail?.source}
+              artistName={artist.name}
+              caption={formationYear ? `Est. ${formationYear}` : artist.name}
+              socialLinks={{
+                website: bandData?.socialLinks?.website,
+                youtube: bandData?.socialLinks?.youtube,
+                facebook: bandData?.socialLinks?.facebook,
+                instagram: bandData?.socialLinks?.instagram,
+                twitter: bandData?.socialLinks?.twitter,
+              }}
+            />
           </div>
         </div>
       </section>

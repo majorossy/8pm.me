@@ -39,8 +39,6 @@ export default function SearchPage() {
 
   // Perform search when debounced query changes
   useEffect(() => {
-    console.log('[SearchPage] Debounced query changed:', debouncedQuery);
-
     if (!debouncedQuery.trim()) {
       setResults({ artists: [], albums: [], tracks: [] });
       setIsSearching(false);
@@ -48,7 +46,6 @@ export default function SearchPage() {
     }
 
     const performSearch = async () => {
-      console.log('[SearchPage] Starting search for:', debouncedQuery);
       setIsSearching(true);
       try {
         // Call our API route instead of direct Magento (avoids CORS)
@@ -57,10 +54,8 @@ export default function SearchPage() {
           throw new Error(`Search API returned ${response.status}`);
         }
         const searchResults = await response.json();
-        console.log('[SearchPage] Search results:', searchResults);
         setResults(searchResults);
       } catch (error) {
-        console.error('[SearchPage] Search failed:', error);
         setResults({ artists: [], albums: [], tracks: [] });
       } finally {
         setIsSearching(false);

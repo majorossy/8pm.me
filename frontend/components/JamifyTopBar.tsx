@@ -1,43 +1,22 @@
 'use client';
 
-// JamifyTopBar - Spotify-style top navigation bar with back/forward buttons (desktop only)
+// JamifyTopBar - Top navigation bar with breadcrumbs
 
-import { useRouter } from 'next/navigation';
+import Breadcrumb from './Breadcrumb';
 
 interface JamifyTopBarProps {
   transparent?: boolean;
 }
 
 export default function JamifyTopBar({ transparent = false }: JamifyTopBarProps) {
-  const router = useRouter();
-
   return (
     <header
-      className={`sticky top-0 z-30 flex items-center justify-between px-8 py-4 transition-colors ${
+      className={`sticky top-0 z-30 flex items-center justify-between px-4 md:px-8 py-4 transition-colors ${
         transparent ? 'bg-transparent' : 'bg-[#1c1a17]/95 backdrop-blur-sm'
       }`}
     >
-      {/* Navigation buttons */}
-      <div className="flex items-center gap-2">
-        <button
-          onClick={() => router.back()}
-          className="w-8 h-8 rounded-full bg-black/70 flex items-center justify-center text-white hover:bg-black transition-colors"
-          aria-label="Go back"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        <button
-          onClick={() => router.forward()}
-          className="w-8 h-8 rounded-full bg-black/70 flex items-center justify-center text-white hover:bg-black transition-colors"
-          aria-label="Go forward"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
-      </div>
+      {/* Breadcrumb navigation */}
+      <Breadcrumb />
 
       {/* Right side - User menu */}
       <div className="flex items-center gap-4">

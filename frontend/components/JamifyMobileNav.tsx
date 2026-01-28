@@ -104,7 +104,7 @@ export default function JamifyMobileNav() {
 
   return (
     <>
-      <nav className="fixed bottom-0 left-0 right-0 h-[50px] bg-gradient-to-t from-[#1c1a17] via-[#1c1a17]/95 to-[#1c1a17]/90 border-t border-[#3a3632]/30 z-40 md:hidden safe-bottom" aria-label="Main navigation">
+      <nav className="fixed bottom-0 left-0 right-0 h-[50px] bg-gradient-to-t from-[#1c1a17] via-[#1c1a17]/95 to-[#1c1a17]/90 border-t border-[#3a3632]/30 z-40 safe-bottom" aria-label="Main navigation">
         <div className="flex items-center justify-around h-full px-4">
           {tabs.map((tab) => {
             const active = isActive(tab.href);

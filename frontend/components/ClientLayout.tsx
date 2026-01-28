@@ -11,9 +11,10 @@ import { ThemeProvider } from '@/context/ThemeContext';
 import { BreadcrumbProvider } from '@/context/BreadcrumbContext';
 import { MobileUIProvider, useMobileUI } from '@/context/MobileUIContext';
 import { AuthProvider } from '@/context/AuthContext';
+import { MagentoAuthProvider } from '@/context/MagentoAuthContext';
+import { UnifiedAuthProvider } from '@/context/UnifiedAuthContext';
 import BottomPlayer from '@/components/BottomPlayer';
 import Queue from '@/components/Queue';
-import JamifyNavSidebar from '@/components/JamifyNavSidebar';
 import JamifyTopBar from '@/components/JamifyTopBar';
 import JamifyMobileNav from '@/components/JamifyMobileNav';
 import JamifyFullPlayer from '@/components/JamifyFullPlayer';
@@ -25,7 +26,6 @@ import { ToastProvider } from '@/components/ToastContainer';
 import InstallPrompt from '@/components/InstallPrompt';
 import OfflineIndicator from '@/components/OfflineIndicator';
 import LoadingBar from '@/components/LoadingBar';
-import Link from 'next/link';
 
 // Inner layout that can access player state and contexts
 function InnerLayout({ children }: { children: ReactNode }) {
@@ -96,9 +96,6 @@ function InnerLayout({ children }: { children: ReactNode }) {
         Skip to main content
       </a>
 
-      {/* Desktop: Left navigation sidebar */}
-      {!isMobile && <JamifyNavSidebar />}
-
       {/* Organic blob background */}
       <div className="blob-bg" />
 
@@ -108,19 +105,27 @@ function InnerLayout({ children }: { children: ReactNode }) {
       {/* Main content area */}
       <main
         id="main-content"
-        className={`min-h-screen bg-[#1c1a17] relative z-10 ${
-          isMobile
-            ? 'pb-[120px]' // Space for mini player + bottom nav
-            : 'ml-[240px] pb-[90px]' // Desktop sidebar + player
-        }`}
+        className="min-h-screen bg-[#1c1a17] relative z-10 pb-[120px]"
       >
-        {/* Desktop: Top bar with nav buttons */}
-        {!isMobile && <JamifyTopBar />}
+        {/* Top bar with breadcrumbs */}
+        <JamifyTopBar />
         {children}
+
+        {/* Footer */}
+        <footer className="px-4 md:px-8 py-6 mt-8 border-t border-[#3a3632]/30">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-2 text-center md:text-left">
+            <p className="text-[10px] text-[#6a6458] uppercase tracking-wider font-sans">
+              Please copy freely - never sell
+            </p>
+            <p className="text-[9px] text-[#4a4640] uppercase tracking-wider font-sans">
+              Powered by Archive.org
+            </p>
+          </div>
+        </footer>
       </main>
 
-      {/* Mobile: Bottom navigation tabs */}
-      {isMobile && <JamifyMobileNav />}
+      {/* Bottom navigation tabs (all screen sizes) */}
+      <JamifyMobileNav />
 
       {/* Mini player (mobile) or full player bar (desktop) */}
       <BottomPlayer />
@@ -155,25 +160,29 @@ function InnerLayout({ children }: { children: ReactNode }) {
 function LayoutContent({ children }: { children: ReactNode }) {
   return (
     <AuthProvider>
-      <ToastProvider>
-        <CartProvider>
-          <WishlistProvider>
-            <PlaylistProvider>
-              <QueueProvider>
-                <RecentlyPlayedProvider>
-                  <PlayerProvider>
-                    <BreadcrumbProvider>
-                      <MobileUIProvider>
-                        <InnerLayout>{children}</InnerLayout>
-                      </MobileUIProvider>
-                    </BreadcrumbProvider>
-                  </PlayerProvider>
-                </RecentlyPlayedProvider>
-              </QueueProvider>
-            </PlaylistProvider>
-          </WishlistProvider>
-        </CartProvider>
-      </ToastProvider>
+      <MagentoAuthProvider>
+        <UnifiedAuthProvider>
+          <ToastProvider>
+            <CartProvider>
+              <WishlistProvider>
+                <PlaylistProvider>
+                  <QueueProvider>
+                    <RecentlyPlayedProvider>
+                      <PlayerProvider>
+                        <BreadcrumbProvider>
+                          <MobileUIProvider>
+                            <InnerLayout>{children}</InnerLayout>
+                          </MobileUIProvider>
+                        </BreadcrumbProvider>
+                      </PlayerProvider>
+                    </RecentlyPlayedProvider>
+                  </QueueProvider>
+                </PlaylistProvider>
+              </WishlistProvider>
+            </CartProvider>
+          </ToastProvider>
+        </UnifiedAuthProvider>
+      </MagentoAuthProvider>
     </AuthProvider>
   );
 }

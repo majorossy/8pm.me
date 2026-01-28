@@ -12,8 +12,7 @@ export async function GET(request: NextRequest) {
   try {
     const results = await search(query);
     return NextResponse.json(results);
-  } catch (error) {
-    console.error('[API] Search failed:', error);
+  } catch {
     return NextResponse.json(
       { error: 'Search failed' },
       { status: 500 }
