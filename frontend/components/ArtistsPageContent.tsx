@@ -40,7 +40,7 @@ export default function ArtistsPageContent({ artists }: ArtistsPageContentProps)
       />
 
       {/* Artists sections */}
-      <div id="artists-content" className="space-y-8 md:space-y-12 px-4 md:px-8 pt-8 md:pt-12 mx-auto">
+      <div id="artists-content" className="space-y-6 md:space-y-8 px-4 md:px-8 pt-4 md:pt-6 mx-auto">
         {artists.map((artist) => (
           <section key={artist.id} className="flex flex-col items-center">
             {/* Artist header */}

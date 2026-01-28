@@ -232,15 +232,19 @@ async function graphqlFetch<T>(
 }
 
 // GraphQL Queries
+// Use categories query with pagination to get all artists (categoryList has ~20 item limit)
 const GET_ARTISTS_QUERY = `
-  query GetArtists($parentId: String!) {
-    categoryList(filters: { parent_id: { eq: $parentId } }) {
-      uid
-      name
-      url_key
-      description
-      image
-      product_count
+  query GetArtists($parentId: String!, $pageSize: Int!, $currentPage: Int!) {
+    categories(filters: { parent_id: { eq: $parentId } }, pageSize: $pageSize, currentPage: $currentPage) {
+      total_count
+      items {
+        uid
+        name
+        url_key
+        description
+        image
+        product_count
+      }
     }
   }
 `;
@@ -682,11 +686,42 @@ function groupProductsIntoAlbums(
 // API Functions
 export async function getArtists(): Promise<Artist[]> {
   try {
-    const data = await graphqlFetch<{ categoryList: MagentoCategory[] }>(
-      GET_ARTISTS_QUERY,
-      { parentId: ARTISTS_PARENT_CATEGORY_ID }
-    );
-    return data.categoryList.map(categoryToArtist);
+    const PAGE_SIZE = 50; // Fetch 50 artists per page
+    let allArtists: MagentoCategory[] = [];
+    let currentPage = 1;
+    let totalCount = 0;
+
+    // Fetch first page to get total count
+    const firstPageData = await graphqlFetch<{
+      categories: { items: MagentoCategory[]; total_count: number };
+    }>(GET_ARTISTS_QUERY, {
+      parentId: ARTISTS_PARENT_CATEGORY_ID,
+      pageSize: PAGE_SIZE,
+      currentPage: 1,
+    });
+
+    allArtists = firstPageData.categories.items || [];
+    totalCount = firstPageData.categories.total_count || 0;
+    console.log(`[getArtists] Page 1: got ${allArtists.length} artists, total: ${totalCount}`);
+
+    // Fetch remaining pages if needed
+    const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+    for (currentPage = 2; currentPage <= totalPages; currentPage++) {
+      const pageData = await graphqlFetch<{
+        categories: { items: MagentoCategory[]; total_count: number };
+      }>(GET_ARTISTS_QUERY, {
+        parentId: ARTISTS_PARENT_CATEGORY_ID,
+        pageSize: PAGE_SIZE,
+        currentPage,
+      });
+
+      const pageArtists = pageData.categories.items || [];
+      allArtists = allArtists.concat(pageArtists);
+      console.log(`[getArtists] Page ${currentPage}: got ${pageArtists.length} more artists`);
+    }
+
+    console.log(`[getArtists] Total artists fetched: ${allArtists.length}`);
+    return allArtists.map(categoryToArtist);
   } catch (error) {
     console.error('Failed to fetch artists:', error);
     return [];

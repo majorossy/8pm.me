@@ -801,7 +801,7 @@ class AddTracksGroup3 implements DataPatchInterface
                 }
 
                 foreach ($albums as $albumName => $tracks) {
-                    $albumId = $this->findAlbumCategory($albumName, $artistId);
+                    $albumId = $this->findAlbumCategory((string) $albumName, $artistId);
                     if (!$albumId) {
                         $this->logger->warning(sprintf('Album category not found: %s - %s', $artistName, $albumName));
                         continue;
@@ -914,12 +914,7 @@ class AddTracksGroup3 implements DataPatchInterface
             return $categoryId;
         }
 
-        // Get parent path
-        $connection = $this->moduleDataSetup->getConnection();
-        $parentPath = $connection->fetchOne(
-            'SELECT path FROM catalog_category_entity WHERE entity_id = ?',
-            [$parentId]
-        );
+        // Create new category - Magento will calculate path from parent_id
 
         // Create new category
         $category = $this->categoryFactory->create();
@@ -929,7 +924,6 @@ class AddTracksGroup3 implements DataPatchInterface
         $category->setIsActive(true);
         $category->setIncludeInMenu(true);
         $category->setPosition($position);
-        $category->setPath($parentPath);
 
         // Set custom attributes
         foreach ($attributes as $key => $value) {

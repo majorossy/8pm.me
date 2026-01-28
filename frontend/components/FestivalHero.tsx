@@ -33,7 +33,17 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
   };
 
   return (
-    <section className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden bg-[#1c1a17] py-12 px-4 md:py-20 md:px-10">
+    <section
+      className="flex flex-col items-center relative overflow-hidden pt-0.5 pb-4 px-4 md:pt-1 md:pb-6 md:px-10"
+      style={{
+        background: `
+          radial-gradient(ellipse at 50% 120%, rgba(212,120,60,0.12) 0%, transparent 50%),
+          radial-gradient(ellipse at 30% 80%, rgba(212,100,40,0.06) 0%, transparent 40%),
+          radial-gradient(ellipse at 70% 90%, rgba(180,100,40,0.05) 0%, transparent 35%),
+          linear-gradient(180deg, #1c1a17 0%, #1e1c19 100%)
+        `,
+      }}
+    >
       {/* Decorative stars */}
       <span className="absolute top-[15%] left-[10%] text-4xl md:text-6xl text-[#d4a060] opacity-40 select-none hidden sm:block">
         &#9733;
@@ -57,24 +67,24 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
       {/* Main content */}
       <div className="flex flex-col items-center text-center z-10 max-w-4xl">
         {/* Top decoration */}
-        <div className="text-[#d4a060] text-base md:text-xl tracking-[4px] md:tracking-[8px] uppercase mb-4 md:mb-6">
+        <div className="text-[#d4a060] text-base md:text-xl tracking-[4px] md:tracking-[8px] uppercase mb-2 md:mb-3">
           &#9733; Live From The Archive &#9733;
         </div>
 
         {/* Main title */}
-        <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-[96px] font-bold text-[#e8dcc4] tracking-[3px] md:tracking-[6px] uppercase leading-none mb-4 md:mb-6">
+        <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-[96px] font-bold text-[#e8dcc4] tracking-[3px] md:tracking-[6px] uppercase leading-none mb-2 md:mb-3">
           Campfire
           <br />
           Tapes
         </h1>
 
         {/* Subtitle */}
-        <div className="text-[#8a8478] text-sm md:text-lg tracking-[2px] md:tracking-[4px] uppercase mb-8 md:mb-12 px-4">
+        <div className="text-[#8a8478] text-sm md:text-lg tracking-[2px] md:tracking-[4px] uppercase mb-4 md:mb-6 px-4">
           Streaming The Grateful Dead &amp; Beyond
         </div>
 
         {/* Tonight's lineup */}
-        <div className="mb-8 md:mb-12 w-full px-2">
+        <div className="mb-4 md:mb-6 w-full px-2">
           <div className="text-[#d4a060] text-xs md:text-sm tracking-[3px] md:tracking-[6px] uppercase mb-3 md:mb-4">
             Tonight&apos;s Lineup
           </div>
@@ -102,7 +112,7 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
         </div>
 
         {/* CTA buttons */}
-        <div className="flex flex-col sm:flex-row gap-3 md:gap-4 mb-10 md:mb-16 w-full sm:w-auto px-4 sm:px-0">
+        <div className="flex flex-col sm:flex-row gap-3 md:gap-4 mb-4 md:mb-6 w-full sm:w-auto px-4 sm:px-0">
           <button
             onClick={onStartListening}
             className="px-6 md:px-10 py-3 md:py-4 bg-[#d4a060] text-[#1c1a17] font-bold text-sm md:text-base uppercase tracking-[2px] md:tracking-[3px] rounded-full hover:bg-[#e8b470] transition-colors duration-200"
@@ -118,22 +128,22 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
         </div>
 
         {/* Stats */}
-        <div className="flex flex-wrap justify-center gap-6 md:gap-12 text-center">
+        <div className="flex flex-wrap justify-center gap-4 md:gap-8 text-center">
           <div>
-            <div className="text-2xl md:text-4xl font-bold text-[#e8dcc4]">10,000+</div>
-            <div className="text-xs md:text-sm text-[#8a8478] uppercase tracking-[1px] md:tracking-[2px] mt-1">
+            <div className="text-xl md:text-3xl font-bold text-[#e8dcc4]">10,000+</div>
+            <div className="text-xs text-[#8a8478] uppercase tracking-[1px] md:tracking-[2px]">
               Live Shows
             </div>
           </div>
           <div>
-            <div className="text-2xl md:text-4xl font-bold text-[#e8dcc4]">50+</div>
-            <div className="text-xs md:text-sm text-[#8a8478] uppercase tracking-[1px] md:tracking-[2px] mt-1">
+            <div className="text-xl md:text-3xl font-bold text-[#e8dcc4]">50+</div>
+            <div className="text-xs text-[#8a8478] uppercase tracking-[1px] md:tracking-[2px]">
               Years of Music
             </div>
           </div>
           <div>
-            <div className="text-2xl md:text-4xl font-bold text-[#e8dcc4]">Free</div>
-            <div className="text-xs md:text-sm text-[#8a8478] uppercase tracking-[1px] md:tracking-[2px] mt-1">
+            <div className="text-xl md:text-3xl font-bold text-[#e8dcc4]">Free</div>
+            <div className="text-xs text-[#8a8478] uppercase tracking-[1px] md:tracking-[2px]">
               Forever
             </div>
           </div>
@@ -141,7 +151,7 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
       </div>
 
       {/* Bottom decoration */}
-      <div className="absolute bottom-6 md:bottom-10 text-[#8a8478] text-xs md:text-sm tracking-[2px] md:tracking-[4px] uppercase opacity-60">
+      <div className="absolute bottom-3 md:bottom-4 text-[#8a8478] text-xs tracking-[2px] md:tracking-[4px] uppercase opacity-60">
         Powered by Archive.org
       </div>
     </section>
