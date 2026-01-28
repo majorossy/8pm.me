@@ -229,8 +229,6 @@ function CassetteTape({
                 </div>
               </div>
               <div className="flex items-center gap-2 relative">
-                {isPlaying && <VUMeter volume={analyzerData.volume} size="normal" />}
-
                 {/* Year display */}
                 <div className="text-[#8a6a50] text-sm sm:text-base italic font-serif">
                   '{year.slice(-2)}
@@ -367,6 +365,13 @@ function CassetteTape({
             </div>
           </div>
 
+          {/* VU Meter centered between reels */}
+          {isPlaying && (
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+              <VUMeter volume={volume} size="normal" />
+            </div>
+          )}
+
           {/* Right reel */}
           <div
             className={`absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 w-10 sm:w-[52px] h-10 sm:h-[52px] rounded-full border-2 border-[#2a2520] ${isPlaying ? 'reel-spin-right' : 'reel-spin-right reel-paused'}`}
@@ -460,14 +465,10 @@ function RecordingCard({
             {year}
           </span>
           {isPlaying && (
-            <div className="flex items-center gap-2">
-              <SpinningReel volume={analyzerData.volume} size="small" isPlaying={true} />
-              <span
-                className="text-[8px] font-bold px-2.5 py-1.5 rounded tracking-wider"
-                style={{ background: 'linear-gradient(135deg, #c85028, #a84020)' }}
-              >
-                ⚡ NOW
-              </span>
+            <div className="flex items-center justify-center">
+              <div style={{ transform: 'scale(2.5)' }}>
+                <SpinningReel volume={volume} size="small" isPlaying={true} />
+              </div>
             </div>
           )}
         </div>
@@ -610,7 +611,7 @@ function TrackRow({
       >
         <div className={`text-lg flex items-center justify-center ${isExpanded || isCurrentTrack ? 'text-[#e8a050]' : 'text-[#6a5a48]'}`}>
           {isCurrentTrack && isPlaying ? (
-            <Waveform waveform={analyzerData.waveform} size="small" />
+            <Waveform waveform={waveform} size="small" />
           ) : isExpanded ? (
             '▶'
           ) : (
@@ -685,7 +686,7 @@ function TrackRow({
                 song={song}
                 isSelected={idx === selectedIndex}
                 isPlaying={currentSong?.id === song.id && isPlaying}
-                volume={currentSong?.id === song.id ? volume : 0}
+                volume={currentSong?.id === song.id && isPlaying ? volume : 0}
                 onSelect={() => setSelectedIndex(idx)}
                 onPlay={() => onPlay(song, trackIndex)}
                 onQueue={() => addToUpNext(song)}

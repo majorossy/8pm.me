@@ -94,11 +94,13 @@ export function SpinningReel({ volume, size = 'normal', isPlaying = true }: Spin
       className="relative"
       style={{ width: `${diameter}px`, height: `${diameter}px` }}
     >
-      {/* Outer ring */}
+      {/* Outer ring with warm glow */}
       <div
-        className="absolute inset-0 rounded-full bg-[#3a3530]"
+        className="absolute inset-0 rounded-full"
         style={{
-          border: `${isSmall ? 2 : 3}px solid #2a2520`,
+          background: 'radial-gradient(circle at 40% 40%, #5a4530, #3a3530)',
+          border: `${isSmall ? 2 : 3}px solid #c85028`,
+          boxShadow: '0 0 8px rgba(232, 160, 80, 0.3), inset 0 0 4px rgba(232, 160, 80, 0.2)',
         }}
       />
 

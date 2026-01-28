@@ -311,6 +311,8 @@ class MetadataDownloader implements MetadataDownloaderInterface
             'TedeschiTrucksBand' => ['ttb', 'TTB', 'tedeschi'],
             'GracePotterandtheNocturnals' => ['gp', 'GP', 'gpn', 'GPN', 'gptn', 'GPTN', 'grace', 'Grace'],
             'OfARevolution' => ['oar', 'OAR', 'ofar'],
+            'MyMorningJacket' => ['mmj', 'MMJ', 'mymorningjacket', 'MyMorningJacket', 'JimJames'],
+            'Twiddle' => ['twiddle', 'Twiddle', 'tw', 'TW'],
         ];
 
         if (isset($knownPrefixes[$collectionId])) {

@@ -128,15 +128,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   // Audio analyzer for visualizations
   const { analyzerData, connectAudioElement, setVolume: setAnalyzerVolume } = useAudioAnalyzer();
 
-  // Debug: Log analyzer data when it changes
-  useEffect(() => {
-    console.log('[PlayerContext] analyzerData:', {
-      volume: analyzerData.volume,
-      waveformLength: analyzerData.waveform.length,
-      waveformSample: analyzerData.waveform.slice(0, 5)
-    });
-  }, [analyzerData]);
-
   // Connect analyzer to active audio element when it changes or playback starts
   useEffect(() => {
     const audio = getAudio();
