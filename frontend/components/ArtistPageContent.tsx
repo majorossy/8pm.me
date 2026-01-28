@@ -256,7 +256,7 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
 
             {/* Artist name - large Georgia serif */}
             <h1
-              className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-2"
+              className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-2"
               style={{ fontFamily: 'Georgia, serif' }}
             >
               {artist.name}
@@ -298,7 +298,7 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
 
             {/* Quote callout box */}
             {quoteExcerpt && (
-              <div className="relative pl-4 border-l-2 border-[#d4a060]/40 max-w-xl">
+              <div className="relative pl-4 border-l-2 border-[#d4a060]/40 max-w-3xl lg:-ml-32">
                 <p className="text-sm md:text-base text-[#a8a098] italic leading-relaxed">
                   &ldquo;{quoteExcerpt}&rdquo;
                 </p>
@@ -331,7 +331,7 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
       <section className="pb-8">
         <h2 className="text-xl md:text-2xl font-bold text-white mb-4 text-center px-4 md:px-8">Discography</h2>
         {artist.albums.length > 0 ? (
-          <div className="flex gap-4 md:gap-6 overflow-x-auto px-4 md:px-8 pb-4 scrollbar-thin scrollbar-thumb-[#3a3632] scrollbar-track-transparent">
+          <div className="flex justify-center gap-4 md:gap-6 overflow-x-auto px-4 md:px-8 pb-4 scrollbar-thin scrollbar-thumb-[#3a3632] scrollbar-track-transparent">
             {artist.albums.map((album) => (
               <div key={album.id} className="flex-shrink-0 w-[160px] sm:w-[180px] md:w-[200px]">
                 <AlbumCard album={album} />

@@ -72,7 +72,7 @@ export default function Breadcrumb() {
               {isLast || !crumb.href ? (
                 // Current page (non-clickable)
                 <span
-                  className="text-[#e8e0d4] font-medium truncate max-w-[200px]"
+                  className="text-[#e8e0d4] font-medium truncate max-w-[400px]"
                   title={displayLabel}
                 >
                   {prefix && <span className="text-[#6a6458]">{prefix}</span>}
@@ -82,7 +82,7 @@ export default function Breadcrumb() {
                 // Clickable link
                 <Link
                   href={crumb.href}
-                  className="text-[#8a8478] hover:text-[#e8e0d4] transition-colors truncate max-w-[200px]"
+                  className="text-[#8a8478] hover:text-[#e8e0d4] transition-colors truncate max-w-[400px]"
                   title={displayLabel}
                 >
                   {prefix && <span className="text-[#6a6458]">{prefix}</span>}

@@ -48,3 +48,77 @@ export function SkeletonAlbumGrid() {
     </div>
   );
 }
+
+export function SkeletonCassette() {
+  return (
+    <div className="w-[280px] sm:w-[340px] h-[180px] sm:h-[220px] rounded-xl bg-[#2a2520] animate-pulse">
+      {/* Label area */}
+      <div className="mx-5 mt-3 h-20 sm:h-24 rounded bg-[#3a3530]" />
+      {/* Tape window */}
+      <div className="mx-8 sm:mx-10 mt-4 h-14 sm:h-[75px] rounded-md bg-[#1a1815] flex items-center justify-between px-6">
+        <div className="w-10 sm:w-[52px] h-10 sm:h-[52px] rounded-full bg-[#2a2520]" />
+        <div className="w-10 sm:w-[52px] h-10 sm:h-[52px] rounded-full bg-[#2a2520]" />
+      </div>
+    </div>
+  );
+}
+
+export function SkeletonAlbumHeader() {
+  return (
+    <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center lg:items-start justify-center">
+      <SkeletonCassette />
+      <div className="pt-4 max-w-[400px] text-center lg:text-left">
+        <Skeleton className="h-3 w-24 mb-3 mx-auto lg:mx-0" />
+        <Skeleton className="h-12 w-64 mb-3 mx-auto lg:mx-0" />
+        <Skeleton className="h-6 w-48 mb-2 mx-auto lg:mx-0" />
+        <Skeleton className="h-4 w-40 mb-6 mx-auto lg:mx-0" />
+        <div className="flex gap-3 justify-center lg:justify-start">
+          <Skeleton className="w-14 h-14 rounded-full" />
+          <Skeleton className="w-24 h-12 rounded-md" />
+          <Skeleton className="w-11 h-11 rounded-full" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function SkeletonTrackRow() {
+  return (
+    <div className="flex items-center gap-4 px-4 py-4 border-b border-[#2a2520]">
+      <Skeleton className="w-8 h-6" />
+      <div className="flex-1">
+        <Skeleton className="h-5 w-48 mb-2" />
+        <Skeleton className="h-4 w-32" />
+      </div>
+      <Skeleton className="h-4 w-16" />
+    </div>
+  );
+}
+
+export function SkeletonAlbumPage() {
+  return (
+    <div className="min-h-screen font-serif text-[#e8d8c8]">
+      {/* Header badge */}
+      <div className="text-center pt-8 pb-4">
+        <Skeleton className="h-3 w-40 mx-auto" />
+      </div>
+
+      {/* Main content */}
+      <div className="max-w-[1000px] mx-auto px-4 sm:px-8 pb-36">
+        <SkeletonAlbumHeader />
+
+        {/* Side A divider */}
+        <div className="flex items-center gap-4 my-8">
+          <div className="flex-1 h-px bg-[#2a2520]" />
+          <Skeleton className="h-3 w-16" />
+          <div className="flex-1 h-px bg-[#2a2520]" />
+        </div>
+
+        {/* Tracks */}
+        {Array.from({ length: 6 }).map((_, i) => (
+          <SkeletonTrackRow key={i} />
+        ))}
+      </div>
+    </div>
+  );
+}

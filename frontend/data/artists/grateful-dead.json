@@ -105,8 +105,13 @@
   },
   "images": [
     {
-      "url": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Grateful_Dead_%2814579116190%29.jpg",
-      "caption": "Grateful Dead performing live",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Grateful_Dead_%281970%29.png/960px-Grateful_Dead_%281970%29.png",
+      "caption": "Grateful Dead, 1970",
+      "credit": "Wikimedia Commons"
+    },
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Mickey_Hart_and_band_mate_Bob_Weir_of_the_Grateful_Dead.jpg/960px-Mickey_Hart_and_band_mate_Bob_Weir_of_the_Grateful_Dead.jpg",
+      "caption": "Mickey Hart and Bob Weir of the Grateful Dead",
       "credit": "Wikimedia Commons"
     }
   ]

@@ -55,11 +55,6 @@ function CassetteTape({
 
   return (
     <div className="relative flex-shrink-0">
-      {/* Decorative rose */}
-      <div className="absolute -top-4 -right-5 text-3xl transform rotate-15 opacity-70 drop-shadow-md hidden md:block">
-        🌹
-      </div>
-
       {/* Main cassette body */}
       <div
         className="w-[280px] sm:w-[340px] h-[180px] sm:h-[220px] relative rounded-xl shadow-2xl"
@@ -211,10 +206,6 @@ function CassetteTape({
       {/* Fire glow under cassette */}
       <div className="cassette-glow" />
 
-      {/* Dancing bear decoration */}
-      <div className="absolute -bottom-2 -left-6 text-2xl opacity-60 transform -rotate-10 hidden md:block">
-        🐻
-      </div>
     </div>
   );
 }
@@ -275,15 +266,15 @@ function RecordingCard({
 
       {/* Card body */}
       <div className="px-4 py-3">
-        <div className={`text-sm font-medium mb-1 ${isSelected ? 'text-[#2a1810]' : 'text-[#c8b8a8]'}`}>
+        <div className={`text-base font-medium mb-1 ${isSelected ? 'text-[#2a1810]' : 'text-[#c8b8a8]'}`}>
           {truncate(song.showVenue, 24)}
         </div>
-        <div className={`text-xs italic mb-3 ${isSelected ? 'text-[#5a4030]' : 'text-[#8a7a68]'}`}>
+        <div className={`text-sm italic mb-3 ${isSelected ? 'text-[#5a4030]' : 'text-[#8a7a68]'}`}>
           {truncate(song.showLocation, 28)}
         </div>
 
         {/* Meta rows */}
-        <div className="space-y-1.5 text-[11px]">
+        <div className="space-y-1.5 text-sm">
           {[
             ['Date', formattedDate],
             ['Rating', song.avgRating ? `★★★★★ (${song.numReviews || 0})` : '—'],
@@ -385,28 +376,32 @@ function TrackRow({
   };
 
   return (
-    <div>
+    <div className={`
+      ${isExpanded
+        ? 'border-l border-r border-b border-[#e8a050]/25 rounded-b-xl bg-[rgba(232,160,80,0.02)] mb-2'
+        : 'border-b border-[#a88060]/8'
+      }
+    `}>
       {/* Track row */}
       <div
         onClick={onToggle}
         className={`
           grid grid-cols-[44px_1fr_auto] items-center px-4 py-4 cursor-pointer transition-all
           ${isExpanded
-            ? 'bg-[rgba(232,160,80,0.06)] border-l-[3px] border-[#e8a050] rounded-tl-lg'
-            : 'border-l-[3px] border-transparent hover:bg-[rgba(232,160,80,0.04)]'
+            ? 'bg-[rgba(232,160,80,0.06)] rounded-t-xl'
+            : 'hover:bg-[rgba(232,160,80,0.04)]'
           }
-          ${!isExpanded ? 'border-b border-[#a88060]/8' : ''}
         `}
       >
-        <div className={`text-base ${isExpanded || isCurrentTrack ? 'text-[#e8a050]' : 'text-[#6a5a48]'}`}>
+        <div className={`text-lg ${isExpanded || isCurrentTrack ? 'text-[#e8a050]' : 'text-[#6a5a48]'}`}>
           {isExpanded ? '▶' : `${index}.`}
         </div>
         <div className="min-w-0 flex-1">
-          <div className={`text-base font-serif mb-1 ${isExpanded || isCurrentTrack ? 'text-[#e8d8c8]' : 'text-[#c8b8a8]'}`}>
+          <div className={`text-lg font-serif mb-1 ${isExpanded || isCurrentTrack ? 'text-[#e8d8c8]' : 'text-[#c8b8a8]'}`}>
             {track.title}
           </div>
           {/* Selected version info */}
-          <div className="flex items-center gap-2 flex-wrap text-xs">
+          <div className="flex items-center gap-2 flex-wrap text-sm">
             {selectedYear && (
               <span className="text-[#e8a050] font-semibold">{selectedYear}</span>
             )}
@@ -434,7 +429,7 @@ function TrackRow({
             </span>
           </div>
         </div>
-        <div className="flex items-center justify-end gap-3 text-[#6a5a48] text-sm pl-3">
+        <div className="flex items-center justify-end gap-3 text-[#6a5a48] text-base pl-3">
           {isExpanded && <span className="text-[#e8a050] text-base">+</span>}
           {formatDuration(track.totalDuration)}
           <span className={`text-[11px] ${isExpanded ? 'text-[#e8a050]' : 'text-[#4a3a28]'}`}>
@@ -445,7 +440,7 @@ function TrackRow({
 
       {/* Expanded recordings panel */}
       {isExpanded && (
-        <div className="bg-[rgba(232,160,80,0.03)] border-l-[3px] border-[#e8a050] border-b border-[#a88060]/8 rounded-bl-lg px-5 py-5">
+        <div className="border-t border-[#e8a050]/20 px-5 py-5">
           {/* Controls bar */}
           <div className="flex justify-between items-center mb-5">
             <div className="text-[#8a7a68] text-sm">
@@ -655,7 +650,7 @@ export default function AlbumPageContent({ album }: AlbumPageContentProps) {
         <SideDivider side="A" />
 
         {/* Side A tracks */}
-        <div className="mb-8">
+        <div className="mb-8 bg-white/5 rounded-xl">
           {sideATracks.map((track, idx) => (
             <TrackRow
               key={track.id}
@@ -677,7 +672,7 @@ export default function AlbumPageContent({ album }: AlbumPageContentProps) {
             <SideDivider side="B" />
 
             {/* Side B tracks */}
-            <div className="mb-8">
+            <div className="mb-8 bg-white/5 rounded-xl">
               {sideBTracks.map((track, idx) => {
                 const actualIndex = midpoint + idx;
                 return (

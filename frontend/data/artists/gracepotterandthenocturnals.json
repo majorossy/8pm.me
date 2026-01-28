@@ -80,8 +80,13 @@
   },
   "images": [
     {
-      "url": "https://upload.wikimedia.org/wikipedia/commons/6/60/Grace_Potter_and_the_Nocturnals_at_The_Pub_in_California_State_University_Northridge_CA_April_2012.jpg",
-      "caption": "Grace Potter and the Nocturnals performing at CSU Northridge, April 2012",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Grace_Potter_2018_-2.jpg/835px-Grace_Potter_2018_-2.jpg",
+      "caption": "Grace Potter performing, 2018",
+      "credit": "Wikimedia Commons"
+    },
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Grace_Potter_and_the_Nocturnals_at_The_Pub_in_California_State_University_Northridge_CA_April_2012.jpg/960px-Grace_Potter_and_the_Nocturnals_at_The_Pub_in_California_State_University_Northridge_CA_April_2012.jpg",
+      "caption": "Grace Potter and the Nocturnals at CSU Northridge, April 2012",
       "credit": "Wikimedia Commons"
     }
   ]
