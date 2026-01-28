@@ -26,6 +26,7 @@ interface BandStatisticsProps {
       name: string;
       showCount: number;
     }>;
+    totalHours?: number;
   };
 }
 
@@ -42,6 +43,7 @@ const BandStatistics: React.FC<BandStatisticsProps> = ({ statistics }) => {
     averageSetLength,
     yearsActive,
     topVenues,
+    totalHours,
   } = statistics;
 
   // Jamify/Spotify styles
@@ -57,14 +59,14 @@ const BandStatistics: React.FC<BandStatisticsProps> = ({ statistics }) => {
 
   return (
     <div className={`${styles.container} rounded-lg p-6 mb-8`}>
-      <h2 className={`text-2xl ${styles.title} mb-6`}>Band Statistics</h2>
+      <h2 className={`text-2xl ${styles.title} mb-6`}>Archive Stats</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {/* Total Shows */}
+        {/* Shows in Archive */}
         {totalShows !== undefined && (
           <div className={`${styles.card} ${styles.glow} rounded-lg p-6`}>
             <div className={`text-sm ${styles.label} uppercase tracking-wider mb-2`}>
-              Total Shows
+              Shows in Archive
             </div>
             <div className={`text-4xl ${styles.value} mb-1`}>
               {totalShows.toLocaleString()}
@@ -74,6 +76,21 @@ const BandStatistics: React.FC<BandStatisticsProps> = ({ statistics }) => {
                 {yearsActive.first} - {yearsActive.last}
               </div>
             )}
+          </div>
+        )}
+
+        {/* Total Hours */}
+        {totalHours !== undefined && totalHours > 0 && (
+          <div className={`${styles.card} ${styles.glow} rounded-lg p-6`}>
+            <div className={`text-sm ${styles.label} uppercase tracking-wider mb-2`}>
+              Hours of Music
+            </div>
+            <div className={`text-4xl ${styles.value} mb-1`}>
+              {totalHours.toLocaleString()}+
+            </div>
+            <div className={`text-xs ${styles.label}`}>
+              of live recordings
+            </div>
           </div>
         )}
 

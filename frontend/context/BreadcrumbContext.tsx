@@ -2,10 +2,12 @@
 
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 
+export type BreadcrumbType = 'artist' | 'album' | 'track' | 'version';
+
 export interface BreadcrumbItem {
   label: string;
   href?: string;
-  type?: 'artist' | 'album';
+  type?: BreadcrumbType;
 }
 
 interface BreadcrumbContextType {

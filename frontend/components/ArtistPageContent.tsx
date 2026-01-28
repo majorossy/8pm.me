@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { ArtistDetail } from '@/lib/api';
 import { BandMemberData } from '@/lib/types';
 import { useBreadcrumbs } from '@/context/BreadcrumbContext';
@@ -43,6 +43,84 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
     }
   };
 
+  // Calculate real statistics from album data
+  const calculatedStats = useMemo(() => {
+    if (!artist.albums || artist.albums.length === 0) return null;
+
+    // Total shows (albums)
+    const totalShows = artist.albums.length;
+
+    // Total recordings and runtime
+    let totalRecordings = 0;
+    let totalDuration = 0;
+    const venueCounts: Record<string, number> = {};
+    const trackCounts: Record<string, number> = {};
+    const years: number[] = [];
+
+    artist.albums.forEach((album: any) => {
+      // Count recordings and duration
+      if (album.tracks) {
+        album.tracks.forEach((track: any) => {
+          totalRecordings += track.songCount || 1;
+          totalDuration += track.totalDuration || 0;
+
+          // Track song title frequency
+          const title = track.title;
+          if (title) {
+            trackCounts[title] = (trackCounts[title] || 0) + (track.songCount || 1);
+          }
+        });
+      }
+
+      // Count venues
+      if (album.showVenue) {
+        venueCounts[album.showVenue] = (venueCounts[album.showVenue] || 0) + 1;
+      }
+
+      // Collect years
+      if (album.showDate) {
+        const year = parseInt(album.showDate.split('-')[0], 10);
+        if (!isNaN(year)) years.push(year);
+      }
+    });
+
+    // Get top venues
+    const topVenues = Object.entries(venueCounts)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 3)
+      .map(([name, showCount]) => ({ name, showCount }));
+
+    // Get most played track
+    const mostPlayedEntry = Object.entries(trackCounts)
+      .sort(([, a], [, b]) => b - a)[0];
+    const mostPlayedTrack = mostPlayedEntry
+      ? { title: mostPlayedEntry[0], playCount: mostPlayedEntry[1] }
+      : undefined;
+
+    // Get year range
+    const yearsActive = years.length > 0
+      ? { first: Math.min(...years), last: Math.max(...years) }
+      : undefined;
+
+    // Calculate average set length (tracks per show)
+    const totalTracks = artist.albums.reduce((sum: number, album: any) =>
+      sum + (album.tracks?.length || 0), 0);
+    const averageSetLength = totalShows > 0 ? Math.round(totalTracks / totalShows) : undefined;
+
+    // Format total runtime
+    const totalHours = Math.floor(totalDuration / 3600);
+
+    return {
+      totalShows,
+      totalRecordings,
+      totalHours,
+      yearsActive,
+      topVenues: topVenues.length > 0 ? topVenues : undefined,
+      mostPlayedTrack,
+      averageSetLength,
+    };
+  }, [artist.albums]);
+
   // Combine all bio images (artist web images)
   const allImages = [];
   if (artist.wikipediaSummary?.thumbnail) {
@@ -67,7 +145,7 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
   return (
     <div className="min-h-screen">
       {/* Hero Section with Cassette Tape Design */}
-      <section className="relative px-4 md:px-8 pt-8 md:pt-12 pb-8 md:pb-12 overflow-hidden">
+      <section className="relative px-4 md:px-8 pt-4 md:pt-6 pb-8 md:pb-12 overflow-hidden">
         {/* Ambient background layers */}
         <div className="absolute inset-0 pointer-events-none">
           {/* Organic blob gradients */}
@@ -234,7 +312,7 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
           {/* Polaroid Card - Right side */}
           <div className="hidden lg:flex flex-shrink-0 items-start pt-8">
             <PolaroidCard
-              imageUrl={artist.wikipediaSummary?.thumbnail?.source}
+              imageUrl={artist.image}
               artistName={artist.name}
               caption={formationYear ? `Est. ${formationYear}` : artist.name}
               socialLinks={{
@@ -249,17 +327,19 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
         </div>
       </section>
 
-      {/* Discography - Full width */}
-      <section className="px-4 md:px-8 pb-8">
-        <h2 className="text-xl md:text-2xl font-bold text-white mb-4">Discography</h2>
+      {/* Discography - Carousel */}
+      <section className="pb-8">
+        <h2 className="text-xl md:text-2xl font-bold text-white mb-4 text-center px-4 md:px-8">Discography</h2>
         {artist.albums.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
+          <div className="flex gap-4 md:gap-6 overflow-x-auto px-4 md:px-8 pb-4 scrollbar-thin scrollbar-thumb-[#3a3632] scrollbar-track-transparent">
             {artist.albums.map((album) => (
-              <AlbumCard key={album.id} album={album} />
+              <div key={album.id} className="flex-shrink-0 w-[160px] sm:w-[180px] md:w-[200px]">
+                <AlbumCard album={album} />
+              </div>
             ))}
           </div>
         ) : (
-          <p className="text-[#8a8478]">No albums available.</p>
+          <p className="text-[#8a8478] text-center px-4 md:px-8">No albums available.</p>
         )}
       </section>
 
@@ -298,32 +378,25 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
               </div>
             </div>
 
+            {/* Band Statistics - from real API data */}
+            {calculatedStats && (
+              <BandStatistics
+                statistics={{
+                  totalShows: calculatedStats.totalShows,
+                  totalHours: calculatedStats.totalHours,
+                  recordingStats: { total: calculatedStats.totalRecordings },
+                  yearsActive: calculatedStats.yearsActive,
+                  topVenues: calculatedStats.topVenues,
+                  mostPlayedTrack: calculatedStats.mostPlayedTrack,
+                  averageSetLength: calculatedStats.averageSetLength,
+                }}
+              />
+            )}
+
             {/* Band Members */}
             <BandMembers
               members={bandData?.members?.current}
               formerMembers={bandData?.members?.former}
-            />
-
-            {/* Band Statistics */}
-            <BandStatistics
-              statistics={{
-                totalShows: bandData?.recordingStats?.totalShows,
-                recordingStats: bandData?.recordingStats ? {
-                  total: bandData.recordingStats.totalShows || 0
-                } : undefined
-              }}
-            />
-
-            {/* Band Links */}
-            <BandLinks
-              links={{
-                website: bandData?.socialLinks?.website,
-                youtube: bandData?.socialLinks?.youtube,
-                facebook: bandData?.socialLinks?.facebook,
-                instagram: bandData?.socialLinks?.instagram,
-                twitter: bandData?.socialLinks?.twitter
-              }}
-              artistName={artist.name}
             />
           </div>
 

@@ -47,7 +47,7 @@ export default function HomePageContent({ artists, songs }: HomePageContentProps
             Show all
           </Link>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-4 md:gap-x-6 gap-y-10 md:gap-y-16">
           {artists.slice(0, 6).map((artist) => (
             <ArtistCard key={artist.id} artist={artist} />
           ))}

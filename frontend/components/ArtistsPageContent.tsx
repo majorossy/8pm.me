@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Artist, Album } from '@/lib/api';
 import { useBreadcrumbs } from '@/context/BreadcrumbContext';
 import AlbumCarousel from '@/components/AlbumCarousel';
+import FestivalHero from '@/components/FestivalHero';
 
 interface ArtistWithAlbums extends Artist {
   albums: Album[];
@@ -22,30 +23,26 @@ export default function ArtistsPageContent({ artists }: ArtistsPageContentProps)
     setBreadcrumbs([]);
   }, [setBreadcrumbs]);
 
-  // Dynamic greeting based on time of day
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 18) return 'Good afternoon';
-    return 'Good evening';
+  const scrollToArtists = () => {
+    document.getElementById('artists-content')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
     <div className="pb-8 max-w-[1800px]">
-      {/* Hero section with gradient */}
-      <section className="relative mb-6 md:mb-8 px-4 md:px-8 pt-6 md:pt-8 pb-8 md:pb-12 bg-gradient-to-b from-[#d4a060]/30 via-[#1c1a17] to-[#1c1a17]">
-        <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
-          {getGreeting()}
-        </h1>
-        <p className="text-sm md:text-base text-[#8a8478]">
-          Stream live recordings from the Archive.org collection
-        </p>
-      </section>
+      {/* Festival Hero */}
+      <FestivalHero
+        artists={artists.map(a => ({
+          name: a.name,
+          slug: a.slug,
+          songCount: a.songCount ?? a.albums.reduce((sum, album) => sum + album.totalSongs, 0),
+        }))}
+        onStartListening={scrollToArtists}
+      />
 
       {/* Artists sections */}
-      <div className="space-y-8 md:space-y-12 px-4 md:px-8">
+      <div id="artists-content" className="space-y-8 md:space-y-12 px-4 md:px-8 pt-8 md:pt-12 mx-auto">
         {artists.map((artist) => (
-          <section key={artist.id}>
+          <section key={artist.id} className="flex flex-col items-center">
             {/* Artist header */}
             <div className="flex items-center gap-3 md:gap-4 mb-4">
               <Link href={`/artists/${artist.slug}`} className="flex items-center gap-3 md:gap-4 group">
@@ -77,17 +74,19 @@ export default function ArtistsPageContent({ artists }: ArtistsPageContentProps)
                 </div>
               </Link>
 
-              {/* View all link */}
+              {/* Show all link - next to name */}
               <Link
                 href={`/artists/${artist.slug}`}
-                className="ml-auto text-xs md:text-sm font-bold text-[#8a8478] hover:underline uppercase tracking-wider flex-shrink-0"
+                className="text-xs md:text-sm font-bold text-[#8a8478] hover:underline uppercase tracking-wider flex-shrink-0"
               >
                 Show all
               </Link>
             </div>
 
             {/* Albums carousel */}
-            <AlbumCarousel albums={artist.albums} artistSlug={artist.slug} />
+            <div className="w-full">
+              <AlbumCarousel albums={artist.albums} artistSlug={artist.slug} />
+            </div>
           </section>
         ))}
       </div>

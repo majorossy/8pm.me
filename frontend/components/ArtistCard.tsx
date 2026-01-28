@@ -49,6 +49,7 @@ export default function ArtistCard({ artist }: ArtistCardProps) {
                   className={`w-full h-full object-cover transition-opacity duration-500 ${
                     imageLoaded ? 'opacity-100' : 'opacity-0'
                   }`}
+                  style={{ objectPosition: 'left center' }}
                 />
               )}
             </>

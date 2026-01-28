@@ -1,18 +1,35 @@
 'use client';
 
 // Breadcrumb - Navigation breadcrumbs for the top bar
+// Format: 8pm.me > Artist: {name} > Album: {name} > Track: {name} > Version: {year / venue}
 
 import Link from 'next/link';
-import { useBreadcrumbs } from '@/context/BreadcrumbContext';
+import { useBreadcrumbs, BreadcrumbType } from '@/context/BreadcrumbContext';
+
+// Get the prefix for each breadcrumb type
+function getTypePrefix(type?: BreadcrumbType): string {
+  switch (type) {
+    case 'artist':
+      return 'Artist: ';
+    case 'album':
+      return 'Album: ';
+    case 'track':
+      return 'Track: ';
+    case 'version':
+      return 'Version: ';
+    default:
+      return '';
+  }
+}
 
 export default function Breadcrumb() {
   const { breadcrumbs } = useBreadcrumbs();
 
-  // Show "Home" when no breadcrumbs are set
+  // Show "8pm.me" when no breadcrumbs are set
   if (breadcrumbs.length === 0) {
     return (
       <nav aria-label="Breadcrumb" className="flex items-center text-sm">
-        <span className="text-[#e8e0d4] font-medium">Home</span>
+        <span className="text-[#e8e0d4] font-medium">8pm.me</span>
       </nav>
     );
   }
@@ -20,18 +37,20 @@ export default function Breadcrumb() {
   return (
     <nav aria-label="Breadcrumb" className="flex items-center text-sm overflow-hidden">
       <ol className="flex items-center gap-1 min-w-0">
-        {/* Always show Home link first */}
+        {/* Always show 8pm.me link first */}
         <li className="flex items-center shrink-0">
           <Link
             href="/"
             className="text-[#8a8478] hover:text-[#e8e0d4] transition-colors"
           >
-            Home
+            8pm.me
           </Link>
         </li>
 
         {breadcrumbs.map((crumb, index) => {
           const isLast = index === breadcrumbs.length - 1;
+          const prefix = getTypePrefix(crumb.type);
+          const displayLabel = prefix + crumb.label;
 
           return (
             <li key={index} className="flex items-center min-w-0">
@@ -54,8 +73,9 @@ export default function Breadcrumb() {
                 // Current page (non-clickable)
                 <span
                   className="text-[#e8e0d4] font-medium truncate max-w-[200px]"
-                  title={crumb.label}
+                  title={displayLabel}
                 >
+                  {prefix && <span className="text-[#6a6458]">{prefix}</span>}
                   {crumb.label}
                 </span>
               ) : (
@@ -63,8 +83,9 @@ export default function Breadcrumb() {
                 <Link
                   href={crumb.href}
                   className="text-[#8a8478] hover:text-[#e8e0d4] transition-colors truncate max-w-[200px]"
-                  title={crumb.label}
+                  title={displayLabel}
                 >
+                  {prefix && <span className="text-[#6a6458]">{prefix}</span>}
                   {crumb.label}
                 </Link>
               )}
