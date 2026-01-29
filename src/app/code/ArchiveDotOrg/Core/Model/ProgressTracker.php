@@ -293,7 +293,7 @@ class ProgressTracker implements ProgressTrackerInterface
     }
 
     /**
-     * Save job data to file
+     * Save job data to file (atomic write)
      *
      * @param string $jobId
      * @param array $data
@@ -303,6 +303,40 @@ class ProgressTracker implements ProgressTrackerInterface
     {
         $filePath = $this->getJobFilePath($jobId);
         $content = $this->jsonSerializer->serialize($data);
-        file_put_contents($filePath, $content);
+        $this->atomicWrite($filePath, $content);
+    }
+
+    /**
+     * Atomically write content to file
+     *
+     * Uses temp file + fsync + rename pattern to ensure crash safety.
+     * POSIX guarantees rename is atomic - file is either old or new, never partial.
+     *
+     * @param string $filePath Target file path
+     * @param string $content Content to write
+     * @throws \RuntimeException If write fails
+     */
+    private function atomicWrite(string $filePath, string $content): void
+    {
+        $tmpFile = $filePath . '.tmp.' . getmypid();
+
+        if (file_put_contents($tmpFile, $content) === false) {
+            throw new \RuntimeException("Failed to write temp file: $tmpFile");
+        }
+
+        // Sync to disk before rename (important on VirtioFS/Docker)
+        $fp = fopen($tmpFile, 'r');
+        if ($fp) {
+            if (function_exists('fsync')) {
+                fsync($fp);
+            }
+            fclose($fp);
+        }
+
+        // Atomic rename (POSIX guarantee)
+        if (!rename($tmpFile, $filePath)) {
+            @unlink($tmpFile);
+            throw new \RuntimeException("Failed to rename: $tmpFile -> $filePath");
+        }
     }
 }

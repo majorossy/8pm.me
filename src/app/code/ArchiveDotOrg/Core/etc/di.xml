@@ -78,6 +78,24 @@
     <preference for="ArchiveDotOrg\Core\Api\AlbumArtworkServiceInterface"
                 type="ArchiveDotOrg\Core\Model\AlbumArtworkService"/>
 
+    <preference for="ArchiveDotOrg\Core\Api\LockServiceInterface"
+                type="ArchiveDotOrg\Core\Model\LockService"/>
+
+    <preference for="ArchiveDotOrg\Core\Api\ArtistConfigValidatorInterface"
+                type="ArchiveDotOrg\Core\Model\ArtistConfigValidator"/>
+
+    <preference for="ArchiveDotOrg\Core\Api\TrackMatcherServiceInterface"
+                type="ArchiveDotOrg\Core\Model\TrackMatcherService"/>
+
+    <preference for="ArchiveDotOrg\Core\Api\Data\MatchResultInterface"
+                type="ArchiveDotOrg\Core\Model\Data\MatchResult"/>
+
+    <preference for="ArchiveDotOrg\Core\Api\StringNormalizerInterface"
+                type="ArchiveDotOrg\Core\Model\StringNormalizer"/>
+
+    <preference for="ArchiveDotOrg\Core\Api\ArtistConfigLoaderInterface"
+                type="ArchiveDotOrg\Core\Model\ArtistConfigLoader"/>
+
     <!-- Console Commands -->
     <type name="Magento\Framework\Console\CommandList">
         <arguments>

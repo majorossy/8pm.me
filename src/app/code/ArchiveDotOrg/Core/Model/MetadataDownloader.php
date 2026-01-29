@@ -609,13 +609,13 @@ class MetadataDownloader implements MetadataDownloaderInterface
     }
 
     /**
-     * Save metadata to cache file
+     * Save metadata to cache file (atomic write)
      */
     private function saveMetadataToCache(string $identifier, array $metadata): void
     {
         $path = $this->getCacheFilePath($identifier);
         $content = $this->jsonSerializer->serialize($metadata);
-        file_put_contents($path, $content);
+        $this->atomicWrite($path, $content);
     }
 
     /**
@@ -630,30 +630,111 @@ class MetadataDownloader implements MetadataDownloaderInterface
     }
 
     /**
-     * Load progress file
+     * Load progress file with validation and fallback
+     *
+     * If the progress file is corrupted or missing required fields,
+     * falls back to filesystem scanning to recover progress state.
      */
     private function loadProgress(): array
     {
         $path = $this->varDir . '/' . self::PROGRESS_FILE;
 
         if (!file_exists($path)) {
-            return [];
+            return ['version' => 2];
         }
 
         $content = file_get_contents($path);
         if ($content === false) {
-            return [];
+            $this->logger->warning('Progress file unreadable, scanning filesystem', ['path' => $path]);
+            return $this->scanFilesystemForProgress();
         }
 
         try {
-            return $this->jsonSerializer->unserialize($content) ?? [];
+            $progress = $this->jsonSerializer->unserialize($content);
+
+            // Validate structure - must be array with valid collection data
+            if (!is_array($progress)) {
+                $this->logger->warning('Progress file invalid (not array), scanning filesystem');
+                return $this->scanFilesystemForProgress();
+            }
+
+            // Migrate from version 1 to version 2 if needed
+            if (($progress['version'] ?? 1) < 2) {
+                $progress = $this->migrateProgressFile($progress);
+                $this->saveProgress($progress);
+            }
+
+            return $progress;
         } catch (\Exception $e) {
-            return [];
+            $this->logger->warning('Progress file corrupted, scanning filesystem', [
+                'error' => $e->getMessage(),
+                'path' => $path
+            ]);
+            return $this->scanFilesystemForProgress();
         }
     }
 
     /**
-     * Save progress file
+     * Migrate progress file from version 1 to version 2
+     *
+     * Adds cache_path for organized folder structure support.
+     */
+    private function migrateProgressFile(array $progress): array
+    {
+        foreach ($progress as $collection => $data) {
+            if ($collection === 'version') {
+                continue;
+            }
+            if (is_array($data) && !isset($data['cache_path'])) {
+                $progress[$collection]['cache_path'] = self::CACHE_DIR . '/' . $collection;
+            }
+        }
+        $progress['version'] = 2;
+        return $progress;
+    }
+
+    /**
+     * Scan filesystem to recover progress state when progress file is corrupted
+     *
+     * This is a fallback mechanism that builds progress from cached files.
+     */
+    private function scanFilesystemForProgress(): array
+    {
+        $progress = ['version' => 2];
+        $cacheDir = $this->varDir . '/' . self::CACHE_DIR;
+
+        if (!is_dir($cacheDir)) {
+            return $progress;
+        }
+
+        // Get all collections we know about
+        $collections = $this->getAllCollections();
+
+        foreach ($collections as $collectionId => $info) {
+            $downloadedIds = $this->getDownloadedIdentifiers($collectionId);
+            $downloadedCount = count($downloadedIds);
+
+            if ($downloadedCount > 0) {
+                $progress[$collectionId] = [
+                    'status' => 'recovered',
+                    'recovered_at' => date('c'),
+                    'downloaded' => $downloadedCount,
+                    'downloaded_identifiers' => $downloadedIds,
+                    'note' => 'Recovered from filesystem scan after progress file corruption',
+                ];
+
+                $this->logger->info('Recovered progress from filesystem', [
+                    'collection' => $collectionId,
+                    'files_found' => $downloadedCount
+                ]);
+            }
+        }
+
+        return $progress;
+    }
+
+    /**
+     * Save progress file (atomic write)
      */
     private function saveProgress(array $progress): void
     {
@@ -663,7 +744,41 @@ class MetadataDownloader implements MetadataDownloaderInterface
         }
 
         $content = $this->jsonSerializer->serialize($progress);
-        file_put_contents($this->varDir . '/' . self::PROGRESS_FILE, $content);
+        $this->atomicWrite($this->varDir . '/' . self::PROGRESS_FILE, $content);
+    }
+
+    /**
+     * Atomically write content to file
+     *
+     * Uses temp file + fsync + rename pattern to ensure crash safety.
+     * POSIX guarantees rename is atomic - file is either old or new, never partial.
+     *
+     * @param string $filePath Target file path
+     * @param string $content Content to write
+     * @throws \RuntimeException If write fails
+     */
+    private function atomicWrite(string $filePath, string $content): void
+    {
+        $tmpFile = $filePath . '.tmp.' . getmypid();
+
+        if (file_put_contents($tmpFile, $content) === false) {
+            throw new \RuntimeException("Failed to write temp file: $tmpFile");
+        }
+
+        // Sync to disk before rename (important on VirtioFS/Docker)
+        $fp = fopen($tmpFile, 'r');
+        if ($fp) {
+            if (function_exists('fsync')) {
+                fsync($fp);
+            }
+            fclose($fp);
+        }
+
+        // Atomic rename (POSIX guarantee)
+        if (!rename($tmpFile, $filePath)) {
+            @unlink($tmpFile);
+            throw new \RuntimeException("Failed to rename: $tmpFile -> $filePath");
+        }
     }
 
     /**
