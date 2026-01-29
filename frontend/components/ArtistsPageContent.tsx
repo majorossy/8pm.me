@@ -110,14 +110,24 @@ export default function ArtistsPageContent({ artists }: ArtistsPageContentProps)
     <div className="pb-8 max-w-[1800px]">
       {/* Festival Hero */}
       <FestivalHero
-        artists={artists.map(a => ({
-          name: a.name,
-          slug: a.slug,
-          songCount: a.songCount ?? a.albums.reduce((sum, album) => sum + album.totalSongs, 0),
-          albumCount: a.albumCount ?? a.albums.length,
-          totalShows: a.totalShows,
-          mostPlayedTrack: a.mostPlayedTrack,
-        }))}
+        artists={artists.map(a => {
+          const mapped = {
+            name: a.name,
+            slug: a.slug,
+            songCount: a.songCount ?? a.albums.reduce((sum, album) => sum + album.totalSongs, 0),
+            albumCount: a.albumCount ?? a.albums.length,
+            totalShows: a.totalShows,
+            mostPlayedTrack: a.mostPlayedTrack,
+            totalRecordings: a.totalRecordings,
+            totalHours: a.totalHours,
+            totalVenues: a.totalVenues,
+            formationYear: a.formationYear,
+          };
+          if (a.name === 'STS9') {
+            console.log('[ArtistsPageContent] STS9 data:', mapped);
+          }
+          return mapped;
+        })}
         onStartListening={scrollToArtists}
       />
 

@@ -301,9 +301,9 @@ export default function BottomPlayer() {
     );
   }
 
-  // DESKTOP: Full 3-column layout
+  // DESKTOP: Full 3-column layout - positioned above bottom nav (50px)
   return (
-      <div className="fixed bottom-0 left-0 right-0 h-[90px] bg-[#252220] border-t border-[#2d2a26] z-50 px-4 flex items-center">
+      <div className="fixed bottom-[50px] left-0 right-0 h-[90px] bg-[#252220] border-t border-[#2d2a26] z-50 px-4 flex items-center">
         {/* Left section - Now playing info (30%) */}
         <div className="w-[30%] min-w-[180px] flex items-center gap-3">
           {/* Album art */}

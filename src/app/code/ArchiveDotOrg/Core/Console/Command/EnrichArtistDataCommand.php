@@ -61,7 +61,7 @@ class EnrichArtistDataCommand extends Command
                 'fields',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Comma-separated fields to enrich (bio,origin,years_active,genres,website,facebook,instagram,twitter,stats)',
+                'Comma-separated fields to enrich (bio,origin,years_active,genres,website,facebook,instagram,twitter,stats,stats_extended)',
                 'all'
             )
             ->addOption(
@@ -180,7 +180,7 @@ class EnrichArtistDataCommand extends Command
      */
     private function parseFields(string $fieldsOption)
     {
-        $validFields = ['bio', 'origin', 'years_active', 'genres', 'website', 'facebook', 'instagram', 'twitter', 'stats'];
+        $validFields = ['bio', 'origin', 'years_active', 'genres', 'website', 'facebook', 'instagram', 'twitter', 'stats', 'stats_extended'];
 
         if ($fieldsOption === 'all') {
             return $validFields;

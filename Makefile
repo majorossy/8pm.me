@@ -29,8 +29,6 @@ help:
 	@echo "$(call format,cliq,'Run any CLI command but pipe all output to /dev/null.')"
 	@echo "$(call format,composer,'Run the composer binary.')"
 	@echo "$(call format,configure-linux,'Adds the Docker container IP address to /etc/hosts if not already present. Optionally enables port 9003 for Xdebug.')"
-	@echo "$(call format,copyfromcontainer,'Copy folders or files from container to host.')"
-	@echo "$(call format,copytocontainer,'Copy folders or files from host to container.')"
 	@echo "$(call format,create-user,'Create either an admin user or customer account.')"
 	@echo "$(call format,cron,'Start or stop the cron service.')"
 	@echo "$(call format,debug-cli,'Enable Xdebug for bin/magento$(comma) with an optional argument of the IDE key. Defaults to PHPSTORM.')"
@@ -115,12 +113,6 @@ composer:
 
 configure-linux:
 	@./bin/configure-linux
-
-copyfromcontainer:
-	@./bin/copyfromcontainer $(call args)
-
-copytocontainer:
-	@./bin/copytocontainer $(call args)
 
 cron:
 	@./bin/cron $(call args)

@@ -11,12 +11,14 @@ interface JamifyTopBarProps {
 export default function JamifyTopBar({ transparent = false }: JamifyTopBarProps) {
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-40 flex items-center px-4 md:px-6 py-1 transition-colors ${
+      className={`fixed top-0 left-0 right-0 z-40 transition-colors ${
         transparent ? 'bg-transparent' : 'bg-[#1c1a17]/95 backdrop-blur-sm'
       }`}
     >
-      {/* Breadcrumb navigation */}
-      <Breadcrumb />
+      {/* Breadcrumb navigation - constrained to same width as page content */}
+      <div className="max-w-[1000px] mx-auto px-4 md:px-8 py-1 flex items-center">
+        <Breadcrumb />
+      </div>
 
       {/* Soft gradient fade at bottom */}
       {!transparent && (

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRecentSearches } from '@/hooks/useRecentSearches';
 import { useRouter } from 'next/navigation';
 import { type Artist, type Album } from '@/lib/api';
+import { SearchTrackResult } from '@/components/SearchTrackResult';
 
 interface TrackCategory {
   uid: string;
@@ -84,11 +85,6 @@ export default function SearchPage() {
     router.push(`/artists/${album.artistSlug}`);
   };
 
-  const handleTrackClick = (track: TrackCategory) => {
-    addSearch(track.name);
-    // TODO: Navigate to track page when route is available
-    // router.push(`/tracks/${track.url_key}`);
-  };
 
   return (
     <div className="min-h-screen bg-[#1c1a17] pb-[140px] md:pb-[90px] safe-top">
@@ -241,35 +237,16 @@ export default function SearchPage() {
                   </div>
                 )}
 
-                {/* Tracks */}
+                {/* Tracks Section */}
                 {results.tracks.length > 0 && (
                   <section className="mb-8">
                     <h2 className="text-xl font-semibold text-[#e8dcc8] mb-4">Tracks</h2>
                     <div className="space-y-2">
                       {results.tracks.map((track) => (
-                        <div
+                        <SearchTrackResult
                           key={track.uid}
-                          onClick={() => handleTrackClick(track)}
-                          className="flex items-center gap-4 p-3 rounded-lg bg-[#252220] hover:bg-[#2a2520] transition-colors cursor-pointer"
-                        >
-                          <div className="w-12 h-12 rounded-lg bg-[#1c1a17] flex items-center justify-center flex-shrink-0">
-                            <svg className="w-6 h-6 text-[#d4a060]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                                    d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                            </svg>
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h3 className="text-[#e8dcc8] font-medium truncate">{track.name}</h3>
-                            <p className="text-sm text-[#a09080]">
-                              {track.product_count} {track.product_count === 1 ? 'version' : 'versions'}
-                            </p>
-                          </div>
-                          <div className="text-[#a09080]">
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                          </div>
-                        </div>
+                          track={track}
+                        />
                       ))}
                     </div>
                   </section>

@@ -51,13 +51,13 @@ export function SkeletonAlbumGrid() {
 
 export function SkeletonCassette() {
   return (
-    <div className="w-[280px] sm:w-[340px] h-[180px] sm:h-[220px] rounded-xl bg-[#2a2520] animate-pulse">
+    <div className="w-[280px] h-[180px] rounded-lg bg-[#2d2a26] animate-pulse border-2 border-[#4a4642]">
       {/* Label area */}
-      <div className="mx-5 mt-3 h-20 sm:h-24 rounded bg-[#3a3530]" />
+      <div className="mx-6 mt-4 h-[72px] rounded bg-[#3a3530]" />
       {/* Tape window */}
-      <div className="mx-8 sm:mx-10 mt-4 h-14 sm:h-[75px] rounded-md bg-[#1a1815] flex items-center justify-between px-6">
-        <div className="w-10 sm:w-[52px] h-10 sm:h-[52px] rounded-full bg-[#2a2520]" />
-        <div className="w-10 sm:w-[52px] h-10 sm:h-[52px] rounded-full bg-[#2a2520]" />
+      <div className="mx-auto mt-3 w-[200px] h-[52px] rounded bg-[#1a1816] flex items-center justify-between px-4">
+        <div className="w-10 h-10 rounded-full bg-[#2a2622] border-2 border-[#3a3632]" />
+        <div className="w-10 h-10 rounded-full bg-[#2a2622] border-2 border-[#3a3632]" />
       </div>
     </div>
   );
@@ -66,12 +66,14 @@ export function SkeletonCassette() {
 export function SkeletonAlbumHeader() {
   return (
     <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center lg:items-start justify-center">
-      <SkeletonCassette />
+      <div className="flex-shrink-0">
+        <SkeletonCassette />
+      </div>
       <div className="pt-4 max-w-[400px] text-center lg:text-left">
-        <Skeleton className="h-3 w-24 mb-3 mx-auto lg:mx-0" />
-        <Skeleton className="h-12 w-64 mb-3 mx-auto lg:mx-0" />
-        <Skeleton className="h-6 w-48 mb-2 mx-auto lg:mx-0" />
-        <Skeleton className="h-4 w-40 mb-6 mx-auto lg:mx-0" />
+        <Skeleton className="h-3 w-24 mb-3 mx-auto lg:mx-0 rounded" />
+        <Skeleton className="h-10 md:h-12 w-64 mb-3 mx-auto lg:mx-0 rounded" />
+        <Skeleton className="h-5 w-48 mb-2 mx-auto lg:mx-0 rounded" />
+        <Skeleton className="h-4 w-40 mb-6 mx-auto lg:mx-0 rounded" />
         <div className="flex gap-3 justify-center lg:justify-start">
           <Skeleton className="w-14 h-14 rounded-full" />
           <Skeleton className="w-24 h-12 rounded-md" />
@@ -118,6 +120,449 @@ export function SkeletonAlbumPage() {
         {Array.from({ length: 6 }).map((_, i) => (
           <SkeletonTrackRow key={i} />
         ))}
+      </div>
+    </div>
+  );
+}
+
+// ============================================
+// Page-Specific Skeletons (match actual layouts)
+// ============================================
+
+// Festival Hero skeleton - matches the FestivalHero component layout
+export function SkeletonFestivalHero() {
+  // Generate varied widths for artist name placeholders
+  const artistWidths = [
+    'w-16', 'w-28', 'w-40', 'w-20', 'w-24', 'w-32', 'w-20', 'w-36',
+    'w-28', 'w-24', 'w-44', 'w-20', 'w-32', 'w-24', 'w-28', 'w-20',
+    'w-36', 'w-24', 'w-28', 'w-32', 'w-20', 'w-40', 'w-24', 'w-28',
+    'w-32', 'w-20', 'w-24', 'w-36', 'w-20', 'w-28', 'w-24', 'w-32',
+    'w-20', 'w-40', 'w-24',
+  ];
+
+  // Generate varied heights for the "lineup" text sizes
+  const artistHeights = [
+    'h-6', 'h-5', 'h-7', 'h-4', 'h-5', 'h-6', 'h-4', 'h-5',
+    'h-5', 'h-4', 'h-6', 'h-4', 'h-5', 'h-4', 'h-5', 'h-4',
+    'h-5', 'h-4', 'h-5', 'h-4', 'h-4', 'h-5', 'h-4', 'h-4',
+    'h-5', 'h-4', 'h-4', 'h-5', 'h-4', 'h-4', 'h-4', 'h-5',
+    'h-4', 'h-5', 'h-4',
+  ];
+
+  return (
+    <section
+      className="flex flex-col items-center relative overflow-hidden pt-0.5 pb-4 px-4 md:pt-1 md:pb-6 md:px-10"
+      style={{
+        background: `
+          radial-gradient(ellipse at 50% 120%, rgba(212,120,60,0.12) 0%, transparent 50%),
+          radial-gradient(ellipse at 30% 80%, rgba(212,100,40,0.06) 0%, transparent 40%),
+          radial-gradient(ellipse at 70% 90%, rgba(180,100,40,0.05) 0%, transparent 35%),
+          linear-gradient(180deg, #1c1a17 0%, #1e1c19 100%)
+        `,
+      }}
+    >
+      {/* Decorative stars - static, not animated */}
+      <span className="absolute top-[15%] left-[10%] text-4xl md:text-6xl text-[#d4a060] opacity-20 select-none hidden sm:block">
+        &#9733;
+      </span>
+      <span className="absolute top-[20%] right-[15%] text-3xl md:text-5xl text-[#d4a060] opacity-15 select-none">
+        &#9733;
+      </span>
+      <span className="absolute top-[60%] left-[5%] text-2xl md:text-4xl text-[#d4a060] opacity-12 select-none hidden md:block">
+        &#9733;
+      </span>
+      <span className="absolute top-[70%] right-[8%] text-3xl md:text-5xl text-[#d4a060] opacity-18 select-none hidden sm:block">
+        &#9733;
+      </span>
+
+      {/* Main content */}
+      <div className="flex flex-col items-center text-center z-10 max-w-4xl w-full">
+        {/* Top decoration - "LIVE FROM THE ARCHIVE" */}
+        <Skeleton className="h-4 md:h-5 w-48 md:w-64 mb-2 md:mb-3 rounded" />
+
+        {/* Main title - "CAMPFIRE TAPES" */}
+        <div className="mb-2 md:mb-3">
+          <Skeleton className="h-12 sm:h-16 md:h-20 lg:h-24 w-72 sm:w-96 md:w-[480px] lg:w-[560px] mb-2 rounded" />
+          <Skeleton className="h-12 sm:h-16 md:h-20 lg:h-24 w-56 sm:w-72 md:w-[380px] lg:w-[440px] mx-auto rounded" />
+        </div>
+
+        {/* Subtitle - "STREAMING THE GRATEFUL DEAD & BEYOND" */}
+        <Skeleton className="h-3 md:h-4 w-64 md:w-80 mb-4 md:mb-6 rounded" />
+
+        {/* Tonight's lineup label */}
+        <Skeleton className="h-3 md:h-4 w-32 md:w-40 mb-3 md:mb-4 rounded" />
+
+        {/* Artist name cloud - varied sizes */}
+        <div className="flex flex-wrap items-baseline justify-center gap-x-2 md:gap-x-4 gap-y-2 mb-4 md:mb-6 w-full px-2 max-w-3xl">
+          {artistWidths.map((width, index) => (
+            <Skeleton
+              key={index}
+              className={`${width} ${artistHeights[index]} rounded`}
+            />
+          ))}
+        </div>
+
+        {/* CTA buttons */}
+        <div className="flex flex-col sm:flex-row gap-3 md:gap-4 mb-4 md:mb-6 w-full sm:w-auto px-4 sm:px-0">
+          <Skeleton className="h-12 md:h-14 w-full sm:w-48 md:w-52 rounded-full" />
+          <Skeleton className="h-12 md:h-14 w-full sm:w-48 md:w-52 rounded-full" />
+        </div>
+
+        {/* Stats */}
+        <div className="flex flex-wrap justify-center gap-4 md:gap-8">
+          <div className="flex flex-col items-center">
+            <Skeleton className="h-6 md:h-8 w-20 md:w-24 mb-1 rounded" />
+            <Skeleton className="h-2 md:h-3 w-16 md:w-20 rounded" />
+          </div>
+          <div className="flex flex-col items-center">
+            <Skeleton className="h-6 md:h-8 w-12 md:w-16 mb-1 rounded" />
+            <Skeleton className="h-2 md:h-3 w-20 md:w-24 rounded" />
+          </div>
+          <div className="flex flex-col items-center">
+            <Skeleton className="h-6 md:h-8 w-12 md:w-16 mb-1 rounded" />
+            <Skeleton className="h-2 md:h-3 w-14 md:w-16 rounded" />
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom decoration - "Powered by Archive.org" */}
+      <Skeleton className="absolute bottom-3 md:bottom-4 h-2 md:h-3 w-36 md:w-44 rounded" />
+    </section>
+  );
+}
+
+// Album grid skeleton - matches the album cards grid on homepage
+export function SkeletonAlbumGridHome() {
+  return (
+    <div className="px-4 md:px-8 pt-4 md:pt-6 mx-auto max-w-[1400px]">
+      <div className="flex flex-wrap gap-3 md:gap-4 justify-center">
+        {Array.from({ length: 24 }).map((_, i) => (
+          <div
+            key={i}
+            className="rounded-lg overflow-hidden bg-[#1a1410]"
+            style={{ width: '140px' }}
+          >
+            <Skeleton className="w-full aspect-square" />
+            <div className="p-2">
+              <Skeleton className="h-4 w-full mb-1 rounded" />
+              <Skeleton className="h-3 w-16 rounded" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Full home page skeleton
+export function SkeletonHomePage() {
+  return (
+    <div className="pb-8 max-w-[1800px]">
+      <SkeletonFestivalHero />
+      <SkeletonAlbumGridHome />
+    </div>
+  );
+}
+
+// Polaroid skeleton - matches PolaroidCard component
+export function SkeletonPolaroid() {
+  return (
+    <div
+      className="relative"
+      style={{ width: 320, perspective: '1000px' }}
+    >
+      {/* Push pin - copper/orange like the real one */}
+      <div
+        className="absolute -top-2.5 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full z-10"
+        style={{
+          background: 'radial-gradient(circle at 30% 30%, #c86a48, #8a4a28)',
+          boxShadow: '0 3px 6px rgba(0,0,0,0.4)',
+        }}
+      />
+
+      {/* Polaroid frame - cream/off-white like the real one */}
+      <div
+        className="relative w-full"
+        style={{
+          height: 400,
+          background: '#f5f0e8',
+          borderRadius: 4,
+          padding: 16,
+          boxShadow: '0 8px 32px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.2)',
+          transform: 'rotate(2deg)',
+        }}
+      >
+        {/* Photo area - dark placeholder */}
+        <div
+          className="w-full mb-4 bg-[#e0d8cc] animate-pulse"
+          style={{ height: 290 }}
+        />
+
+        {/* Caption skeleton - dark text placeholder on cream */}
+        <div className="flex justify-center">
+          <div className="h-4 w-24 bg-[#c8c0b4] animate-pulse rounded" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Artist page cassette stack hero - with cassettes left, info center, polaroid right
+export function SkeletonArtistHero() {
+  return (
+    <section className="relative px-4 md:px-8 pt-4 md:pt-6 pb-8 md:pb-12 overflow-hidden">
+      {/* Ambient background blobs */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div
+          className="absolute top-10 left-[5%] w-[400px] h-[350px] rounded-full opacity-[0.04]"
+          style={{
+            background: 'radial-gradient(ellipse, rgba(90,138,122,0.6) 0%, transparent 70%)',
+            filter: 'blur(40px)',
+          }}
+        />
+        <div
+          className="absolute top-20 right-[10%] w-[300px] h-[400px] rounded-full opacity-[0.03]"
+          style={{
+            background: 'radial-gradient(ellipse, rgba(212,160,96,0.6) 0%, transparent 70%)',
+            filter: 'blur(50px)',
+          }}
+        />
+      </div>
+
+      {/* Main hero content */}
+      <div className="relative z-10 flex flex-col lg:flex-row items-center gap-8 lg:gap-16 max-w-[1000px] mx-auto">
+        {/* Cassette stack - 4 stacked cassettes (matches ArtistPageContent layout) */}
+        <div className="relative w-[320px] h-[280px] flex-shrink-0">
+          {/* Bottom cassettes (slightly visible) - matching actual offsets */}
+          <div
+            className="absolute"
+            style={{ transform: 'translate(-15px, 60px) rotate(-8deg)' }}
+          >
+            <SkeletonCassette />
+          </div>
+          <div
+            className="absolute"
+            style={{ transform: 'translate(25px, 40px) rotate(5deg)' }}
+          >
+            <SkeletonCassette />
+          </div>
+          <div
+            className="absolute"
+            style={{ transform: 'translate(5px, 20px) rotate(-3deg)' }}
+          >
+            <SkeletonCassette />
+          </div>
+          {/* Top cassette */}
+          <div
+            className="absolute"
+            style={{ transform: 'translate(15px, 0px) rotate(2deg)', zIndex: 10 }}
+          >
+            <SkeletonCassette />
+          </div>
+
+          {/* Fire glow beneath */}
+          <div
+            className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[250px] h-[60px] opacity-30"
+            style={{
+              background: 'radial-gradient(ellipse at 50% 100%, rgba(212,120,50,0.5) 0%, rgba(180,100,40,0.2) 40%, transparent 70%)',
+              filter: 'blur(12px)',
+            }}
+          />
+        </div>
+
+        {/* Artist info - center */}
+        <div className="flex-1 text-center lg:text-left">
+          {/* Artist badge */}
+          <Skeleton className="h-6 w-16 rounded-full mb-4 mx-auto lg:mx-0" />
+
+          {/* Artist name */}
+          <Skeleton className="h-10 md:h-12 lg:h-14 w-64 md:w-80 mb-2 mx-auto lg:mx-0 rounded" />
+
+          {/* Full name subtitle */}
+          <Skeleton className="h-5 w-48 mb-4 mx-auto lg:mx-0 rounded" />
+
+          {/* Stats line */}
+          <Skeleton className="h-4 w-56 mb-6 mx-auto lg:mx-0 rounded" />
+
+          {/* Follow button */}
+          <div className="flex items-center justify-center lg:justify-start gap-3 mb-8">
+            <Skeleton className="w-11 h-11 rounded-full" />
+          </div>
+
+          {/* Quote callout */}
+          <div className="relative pl-4 border-l-2 border-[#3a3530] max-w-md lg:-ml-32">
+            <Skeleton className="h-4 w-full mb-2 rounded" />
+            <Skeleton className="h-4 w-full mb-2 rounded" />
+            <Skeleton className="h-4 w-3/4 mb-2 rounded" />
+            <Skeleton className="h-3 w-24 mt-2 rounded" />
+          </div>
+        </div>
+
+        {/* Polaroid Card - right side (desktop only) */}
+        <div className="hidden lg:flex flex-shrink-0 items-start pt-8">
+          <SkeletonPolaroid />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Artist discography carousel
+export function SkeletonDiscographyCarousel() {
+  return (
+    <section className="pb-8 max-w-[1000px] mx-auto px-4 md:px-8">
+      <Skeleton className="h-7 w-32 mb-4 mx-auto rounded" />
+      <div className="flex justify-center gap-4 md:gap-6 overflow-hidden pb-4">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div key={i} className="flex-shrink-0 w-[160px] sm:w-[180px] md:w-[200px]">
+            <Skeleton className="w-full aspect-square rounded-lg mb-3" />
+            <Skeleton className="h-4 w-3/4 mb-2 rounded" />
+            <Skeleton className="h-3 w-1/2 rounded" />
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// Artist bio section with sidebar - matches two-column layout
+export function SkeletonArtistBio() {
+  return (
+    <section className="max-w-[1000px] mx-auto px-4 md:px-8 pb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6 lg:gap-12">
+        {/* Left column: Bio, Stats, Members */}
+        <div className="space-y-8 md:space-y-12">
+          {/* Biography */}
+          <div>
+            <Skeleton className="h-7 w-28 mb-6 rounded" />
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-full rounded" />
+              <Skeleton className="h-4 w-full rounded" />
+              <Skeleton className="h-4 w-full rounded" />
+              <Skeleton className="h-4 w-5/6 rounded" />
+              <Skeleton className="h-4 w-full rounded" />
+              <Skeleton className="h-4 w-4/5 rounded" />
+            </div>
+            <Skeleton className="h-3 w-40 mt-4 rounded" />
+          </div>
+
+          {/* Band Statistics grid */}
+          <div>
+            <Skeleton className="h-6 w-36 mb-4 rounded" />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="bg-[#252220] rounded-lg p-4">
+                  <Skeleton className="h-8 w-16 mb-2 rounded" />
+                  <Skeleton className="h-3 w-20 rounded" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Band Members Timeline */}
+          <div>
+            <Skeleton className="h-6 w-32 mb-4 rounded" />
+            <div className="space-y-3">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-4 bg-[#252220] rounded-lg p-3">
+                  <Skeleton className="w-12 h-12 rounded-full" />
+                  <div className="flex-1">
+                    <Skeleton className="h-4 w-32 mb-2 rounded" />
+                    <Skeleton className="h-3 w-24 rounded" />
+                  </div>
+                  <Skeleton className="h-3 w-20 rounded" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Right column: Sticky image gallery */}
+        <div className="hidden lg:block lg:sticky lg:top-24 lg:self-start space-y-4">
+          {Array.from({ length: 2 }).map((_, i) => (
+            <div key={i} className="bg-[#252220] rounded-lg overflow-hidden">
+              <Skeleton className="w-full aspect-square" />
+              <div className="p-3">
+                <Skeleton className="h-3 w-full mb-1 rounded" />
+                <Skeleton className="h-2 w-20 rounded" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Full artist page skeleton
+export function SkeletonArtistPage() {
+  return (
+    <div className="min-h-screen bg-[#1c1a17]">
+      <SkeletonArtistHero />
+      <SkeletonDiscographyCarousel />
+      <SkeletonArtistBio />
+    </div>
+  );
+}
+
+// Search page skeleton
+export function SkeletonSearchPage() {
+  return (
+    <div className="min-h-screen bg-[#1c1a17] pb-[140px] md:pb-[90px]">
+      <div className="max-w-[1000px] mx-auto">
+        <div className="p-6 md:p-8 border-b border-white/10">
+          <Skeleton className="h-10 w-32 mb-4" />
+          <div className="relative max-w-2xl">
+            <Skeleton className="h-14 w-full rounded-full" />
+          </div>
+        </div>
+        <div className="px-6 md:px-8 py-6">
+          <Skeleton className="h-5 w-36 mb-4" />
+          <div className="flex flex-wrap gap-2">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-10 w-24 rounded-full" />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Playlists list skeleton
+export function SkeletonPlaylistsPage() {
+  return (
+    <div className="min-h-screen bg-[#1c1a17]">
+      <div className="max-w-[1000px] mx-auto px-4 md:px-8 py-6 md:py-8">
+        <Skeleton className="h-8 w-32 mb-4" />
+        <Skeleton className="h-12 w-40 rounded-full mb-8" />
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Playlist detail skeleton
+export function SkeletonPlaylistDetail() {
+  return (
+    <div className="min-h-screen bg-[#1c1a17]">
+      <div className="max-w-[1000px] mx-auto px-4 md:px-8 py-6 md:py-8">
+        <div className="flex flex-col md:flex-row items-center md:items-end gap-6 mb-8">
+          <Skeleton className="w-48 h-48 rounded" />
+          <div className="flex-1 text-center md:text-left">
+            <Skeleton className="h-8 w-48 mb-4 mx-auto md:mx-0" />
+            <Skeleton className="h-4 w-32 mx-auto md:mx-0" />
+          </div>
+        </div>
+        <div className="space-y-1">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <SkeletonTrack key={i} />
+          ))}
+        </div>
       </div>
     </div>
   );

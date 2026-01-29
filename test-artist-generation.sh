@@ -25,9 +25,6 @@ sed -i.tmp "659a\\
             'albums' => [],\\
         ]," src/app/code/ArchiveDotOrg/Core/Setup/Patch/Data/AddAdditionalArtists.php
 
-# Sync to container
-bin/copytocontainer app/code/ArchiveDotOrg/Core/Setup/Patch/Data/AddAdditionalArtists.php >/dev/null 2>&1
-
 # Run export (dry run)
 echo "Running export..."
 bin/magento archive:migrate:export --dry-run 2>&1 | grep -A1 "$TEST_ARTIST" || echo "Would create: joes-band-and-the-friends.yaml"
@@ -35,7 +32,6 @@ bin/magento archive:migrate:export --dry-run 2>&1 | grep -A1 "$TEST_ARTIST" || e
 # Restore original
 mv src/app/code/ArchiveDotOrg/Core/Setup/Patch/Data/AddAdditionalArtists.php.backup src/app/code/ArchiveDotOrg/Core/Setup/Patch/Data/AddAdditionalArtists.php
 rm -f src/app/code/ArchiveDotOrg/Core/Setup/Patch/Data/AddAdditionalArtists.php.tmp
-bin/copytocontainer app/code/ArchiveDotOrg/Core/Setup/Patch/Data/AddAdditionalArtists.php >/dev/null 2>&1
 
 echo ""
 echo "✅ Test complete! Restored original file."

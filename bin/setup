@@ -29,9 +29,6 @@ bin/clinotty composer config --no-plugins allow-plugins.laminas/laminas-dependen
 echo "Running, Magento setup:install..."
 bin/setup-install "${DOMAIN}"
 
-echo "Copying files from container to host after install..."
-bin/copyfromcontainer --all
-
 echo "Forcing deploy of static content to speed up initial requests..."
 bin/clinotty bin/magento setup:static-content:deploy -f
 

@@ -6,6 +6,7 @@ namespace ArchiveDotOrg\Core\Model;
 
 use Magento\Catalog\Api\CategoryRepositoryInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\App\ResourceConnection;
 use ArchiveDotOrg\Core\Logger\Logger;
 
 /**
@@ -15,6 +16,7 @@ use ArchiveDotOrg\Core\Logger\Logger;
  * Tier 2: Wikipedia Parse API + HTML parsing (origin, genres, years_active, website)
  * Tier 3: Brave Search API (social media links)
  * Tier 4: Archive.org Stats (total shows, most played track from local database)
+ * Tier 5: Extended Stats (recordings, hours, venues) saved to archivedotorg_artist_status
  */
 class ArtistEnrichmentService
 {
@@ -22,6 +24,7 @@ class ArtistEnrichmentService
     private BraveSearchClient $braveSearchClient;
     private ArchiveStatsService $archiveStatsService;
     private CategoryRepositoryInterface $categoryRepository;
+    private ResourceConnection $resourceConnection;
     private Logger $logger;
     private array $negativeCache = [];
 
@@ -30,12 +33,14 @@ class ArtistEnrichmentService
         BraveSearchClient $braveSearchClient,
         ArchiveStatsService $archiveStatsService,
         CategoryRepositoryInterface $categoryRepository,
+        ResourceConnection $resourceConnection,
         Logger $logger
     ) {
         $this->wikipediaClient = $wikipediaClient;
         $this->braveSearchClient = $braveSearchClient;
         $this->archiveStatsService = $archiveStatsService;
         $this->categoryRepository = $categoryRepository;
+        $this->resourceConnection = $resourceConnection;
         $this->logger = $logger;
     }
 
@@ -200,6 +205,48 @@ class ArtistEnrichmentService
             }
         }
 
+        // Tier 5: Extended Archive.org Stats (recordings, hours, venues)
+        // Saved to archivedotorg_artist_status table for performance
+        if (in_array('stats_extended', $fields)) {
+            $extendedStats = $this->archiveStatsService->getExtendedArtistStats($categoryId, $artistName);
+
+            // Update category attributes
+            if ($extendedStats['total_shows'] > 0) {
+                $category->setData('band_total_shows', $extendedStats['total_shows']);
+                $result['fields_updated'][] = 'band_total_shows';
+            }
+
+            if ($extendedStats['most_played_track']) {
+                $category->setData('band_most_played_track', $extendedStats['most_played_track']);
+                $result['fields_updated'][] = 'band_most_played_track';
+            }
+
+            // Save to archivedotorg_artist_status table
+            $this->updateArtistStatusTable($artistName, [
+                'imported_tracks' => $extendedStats['total_recordings'],
+                'total_hours' => $extendedStats['total_hours'],
+                'total_venues' => $extendedStats['total_venues'],
+            ]);
+
+            $result['fields_updated'][] = 'total_recordings';
+            $result['fields_updated'][] = 'total_hours';
+            $result['fields_updated'][] = 'total_venues';
+            $result['confidence']['total_recordings'] = 'high';
+            $result['confidence']['total_hours'] = 'high';
+            $result['confidence']['total_venues'] = 'high';
+            $result['data_sources']['total_recordings'] = 'Archive.org (local database)';
+            $result['data_sources']['total_hours'] = 'Archive.org (local database)';
+            $result['data_sources']['total_venues'] = 'Archive.org (local database)';
+
+            $this->logger->info(sprintf(
+                "Extended stats for %s: %d recordings, %d hours, %d venues",
+                $artistName,
+                $extendedStats['total_recordings'],
+                $extendedStats['total_hours'],
+                $extendedStats['total_venues']
+            ));
+        }
+
         // Save category
         try {
             $this->categoryRepository->save($category);
@@ -260,5 +307,49 @@ class ArtistEnrichmentService
         }
 
         return $results;
+    }
+
+    /**
+     * Update archivedotorg_artist_status table with extended stats
+     *
+     * @param string $artistName Artist name
+     * @param array $stats Stats to update ['imported_tracks', 'total_hours', 'total_venues']
+     * @return void
+     */
+    private function updateArtistStatusTable(string $artistName, array $stats): void
+    {
+        $connection = $this->resourceConnection->getConnection();
+        $tableName = $this->resourceConnection->getTableName('archivedotorg_artist_status');
+
+        // Check if row exists
+        $select = $connection->select()
+            ->from($tableName, ['status_id'])
+            ->where('artist_name = ?', $artistName)
+            ->limit(1);
+
+        $statusId = $connection->fetchOne($select);
+
+        $data = [
+            'imported_tracks' => $stats['imported_tracks'] ?? 0,
+            'total_hours' => $stats['total_hours'] ?? 0,
+            'total_venues' => $stats['total_venues'] ?? 0,
+            'updated_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+        ];
+
+        if ($statusId) {
+            // Update existing row
+            $connection->update(
+                $tableName,
+                $data,
+                ['status_id = ?' => $statusId]
+            );
+            $this->logger->info("Updated artist_status for $artistName (status_id: $statusId)");
+        } else {
+            // Insert new row
+            $data['artist_name'] = $artistName;
+            $data['created_at'] = (new \DateTime())->format('Y-m-d H:i:s');
+            $connection->insert($tableName, $data);
+            $this->logger->info("Inserted new artist_status for $artistName");
+        }
     }
 }

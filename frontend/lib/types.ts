@@ -101,6 +101,10 @@ export interface Artist {
   twitter?: string;              // Twitter handle/URL
   totalShows?: number;           // Total number of shows/albums
   mostPlayedTrack?: string;      // Most popular track name
+  totalRecordings?: number;      // Total number of recordings/tracks
+  totalHours?: number;           // Total hours of audio content
+  totalVenues?: number;          // Total unique venues played
+  formationYear?: number;        // Formation year (parsed from formationDate)
 }
 
 // Band member information

@@ -16,5 +16,3 @@ if [[ ! -f "src/${MYSQL_INTEGRATION_CONFIG}" ]]; then
   MAGENTO_MAJOR=$(bin/magento-version | cut -d'.' -f1,2)
   cp template/"${MYSQL_INTEGRATION_CONFIG}"."${MAGENTO_MAJOR}".dist src/${MYSQL_INTEGRATION_CONFIG}
 fi
-
-bin/copytocontainer ${MYSQL_INTEGRATION_CONFIG}

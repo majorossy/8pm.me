@@ -10,6 +10,10 @@ interface LineupArtist {
   albumCount: number;
   totalShows?: number;
   mostPlayedTrack?: string;
+  totalRecordings?: number;
+  totalHours?: number;
+  totalVenues?: number;
+  formationYear?: number;
 }
 
 interface FestivalHeroProps {
@@ -17,25 +21,89 @@ interface FestivalHeroProps {
   onStartListening?: () => void;
 }
 
-function ArtistStatsTooltip({ totalShows, mostPlayedTrack }: { totalShows?: number; mostPlayedTrack?: string }) {
+interface ArtistStatsTooltipProps {
+  totalShows?: number;
+  mostPlayedTrack?: string;
+  totalRecordings?: number;
+  totalHours?: number;
+  totalVenues?: number;
+  formationYear?: number;
+}
+
+function ArtistStatsTooltip({
+  totalShows,
+  mostPlayedTrack,
+  totalRecordings,
+  totalHours,
+  totalVenues,
+  formationYear
+}: ArtistStatsTooltipProps) {
+  // Debug logging
+  console.log('[ArtistStatsTooltip]', {
+    totalShows,
+    mostPlayedTrack,
+    totalRecordings,
+    totalHours,
+    totalVenues,
+    formationYear
+  });
+
   // Don't render if no stats available
-  if (!totalShows && !mostPlayedTrack) return null;
+  const hasStats = totalShows || mostPlayedTrack || totalRecordings || totalHours || totalVenues || formationYear;
+  if (!hasStats) {
+    console.log('[ArtistStatsTooltip] No stats, not rendering');
+    return null;
+  }
 
   return (
-    <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-out pointer-events-none z-50 whitespace-nowrap">
-      <div className="bg-[#1c1a17] border border-[#d4a060]/60 rounded-md px-3 py-1.5 shadow-2xl">
-        {totalShows && (
-          <div className="flex items-center gap-1.5 mb-0.5">
-            <span className="text-[#d4a060]">⭐</span>
-            <span className="text-[#d4a060] text-xs font-semibold">{totalShows.toLocaleString()} Shows</span>
-          </div>
-        )}
-        {mostPlayedTrack && (
-          <div className="flex items-center gap-1.5">
-            <span className="text-[#d4a060]">🎵</span>
-            <span className="text-[#e8dcc4] text-xs">Most Played: {mostPlayedTrack}</span>
-          </div>
-        )}
+    <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-out pointer-events-none z-50 hidden md:inline">
+      <div className="bg-[#1c1a17] border border-[#d4a060]/60 rounded-md px-3 py-2 shadow-2xl">
+        {/* Grid layout: 2 columns x 3 rows */}
+        <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs">
+          {/* Row 1 */}
+          {totalRecordings !== undefined && (
+            <div className="flex items-center gap-1.5">
+              <span className="text-[#d4a060]">🎵</span>
+              <span className="text-[#e8dcc4]">{totalRecordings.toLocaleString()} Recordings</span>
+            </div>
+          )}
+          {totalHours !== undefined && (
+            <div className="flex items-center gap-1.5">
+              <span className="text-[#d4a060]">⏱️</span>
+              <span className="text-[#e8dcc4]">{totalHours.toLocaleString()} Hours</span>
+            </div>
+          )}
+
+          {/* Row 2 */}
+          {totalShows !== undefined && (
+            <div className="flex items-center gap-1.5">
+              <span className="text-[#d4a060]">⭐</span>
+              <span className="text-[#e8dcc4]">{totalShows.toLocaleString()} Shows</span>
+            </div>
+          )}
+          {totalVenues !== undefined && (
+            <div className="flex items-center gap-1.5">
+              <span className="text-[#d4a060]">🏛️</span>
+              <span className="text-[#e8dcc4]">{totalVenues.toLocaleString()} Venues</span>
+            </div>
+          )}
+
+          {/* Row 3 */}
+          {formationYear !== undefined && (
+            <div className="flex items-center gap-1.5">
+              <span className="text-[#d4a060]">📅</span>
+              <span className="text-[#e8dcc4]">Since &apos;{formationYear.toString().slice(-2)}</span>
+            </div>
+          )}
+          {mostPlayedTrack && (
+            <div className="flex items-center gap-1.5">
+              <span className="text-[#d4a060]">🎸</span>
+              <span className="text-[#e8dcc4] truncate max-w-[120px]" title={mostPlayedTrack}>
+                {mostPlayedTrack}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
       {/* Arrow pointer */}
       <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-[#d4a060]/60"></div>
@@ -165,9 +233,24 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
                     >
                       {artist.name}
                     </Link>
-                    <span className="hidden md:inline">
-                      <ArtistStatsTooltip totalShows={artist.totalShows} mostPlayedTrack={artist.mostPlayedTrack} />
-                    </span>
+                    <ArtistStatsTooltip
+                      totalShows={artist.totalShows}
+                      mostPlayedTrack={artist.mostPlayedTrack}
+                      totalRecordings={artist.totalRecordings}
+                      totalHours={artist.totalHours}
+                      totalVenues={artist.totalVenues}
+                      formationYear={artist.formationYear}
+                    />
+                    {artist.name === 'STS9' && (
+                      <span className="text-red-500 text-xs" style={{display: 'none'}}>
+                        DEBUG: {JSON.stringify({
+                          totalShows: artist.totalShows,
+                          totalRecordings: artist.totalRecordings,
+                          totalHours: artist.totalHours,
+                          totalVenues: artist.totalVenues
+                        })}
+                      </span>
+                    )}
                   </span>
                 </span>
               );

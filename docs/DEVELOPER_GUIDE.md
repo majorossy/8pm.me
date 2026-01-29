@@ -712,22 +712,19 @@ bin/magento cache:flush config
 bin/magento list archivedotorg  # Verify command registered
 ```
 
-### File Watcher (Auto-sync to Docker)
+### File Sync (Automatic)
 
-If running in Docker with named volumes:
+Files sync **instantly** (<100ms) between host and container via VirtioFS bind mounts.
 
-```bash
-# Start file watcher
-bin/watch-start
+- Edit files in `src/` on your Mac
+- Changes appear immediately in the container at `/var/www/html`
+- No manual sync commands or watchers needed
 
-# Check watcher status
-bin/watch-status
-
-# Stop watcher
-bin/watch-stop
-```
-
-This auto-syncs changes from host (`src/`) to Docker container within 2 seconds.
+**Note:** Some directories use named volumes (container-only):
+- `generated/` - Auto-generated code
+- `var/` - Cache, logs, sessions
+- `vendor/` - Composer dependencies
+- `pub/static/` - Static content
 
 ---
 

@@ -187,12 +187,20 @@ interface GraphQLResponse<T> {
   errors?: Array<{ message: string }>;
 }
 
+// Breadcrumb for category hierarchy
+interface CategoryBreadcrumb {
+  category_uid: string;
+  category_name: string;
+  category_url_key: string;
+}
+
 // Track category interface for search
 export interface TrackCategory {
   uid: string;
   name: string;
   url_key: string;
   product_count: number;
+  breadcrumbs?: CategoryBreadcrumb[];
 }
 
 // Version filters for track search
@@ -267,6 +275,10 @@ const GET_ARTISTS_QUERY = `
         children_count
         band_total_shows
         band_most_played_track
+        band_formation_date
+        band_total_recordings
+        band_total_hours
+        band_total_venues
       }
     }
   }
@@ -491,6 +503,11 @@ const GET_TRACK_CATEGORIES_QUERY = `
         name
         url_key
         product_count
+        breadcrumbs {
+          category_uid
+          category_name
+          category_url_key
+        }
       }
       total_count
     }
@@ -519,6 +536,9 @@ interface MagentoCategory {
   band_twitter?: string;
   band_total_shows?: number;
   band_most_played_track?: string;
+  band_total_recordings?: number;
+  band_total_hours?: number;
+  band_total_venues?: number;
 }
 
 interface MagentoProduct {
@@ -570,6 +590,12 @@ function categoryToArtist(category: MagentoCategory): Artist {
     twitter: category.band_twitter || undefined,
     totalShows: category.band_total_shows || undefined,
     mostPlayedTrack: category.band_most_played_track || undefined,
+    totalRecordings: category.band_total_recordings || undefined,
+    totalHours: category.band_total_hours || undefined,
+    totalVenues: category.band_total_venues || undefined,
+    formationYear: category.band_formation_date
+      ? parseInt(category.band_formation_date)
+      : undefined,
   };
 }
 
@@ -1185,11 +1211,44 @@ export async function searchTrackCategories(query: string): Promise<TrackCategor
   const searchLower = query.toLowerCase();
 
   const matches = allTracks.filter(track =>
-    track.name.toLowerCase().includes(searchLower)
+    track.name && track.name.toLowerCase().includes(searchLower)
   );
 
   console.log('[searchTrackCategories] Query:', query, '-> Matches:', matches.length);
   return matches.slice(0, 20);
+}
+
+// Fetch all versions (products) for a track category
+export async function getVersionsForTrack(trackCategoryUid: string): Promise<Song[]> {
+  console.log('[getVersionsForTrack] Fetching versions for track:', trackCategoryUid);
+
+  try {
+    const data = await graphqlFetch<{
+      products: { items: MagentoProduct[]; total_count: number };
+    }>(GET_SONGS_BY_CATEGORY_QUERY, {
+      categoryUid: trackCategoryUid,
+      pageSize: 100, // Most tracks have <100 versions
+    });
+
+    const products = data.products.items || [];
+    console.log('[getVersionsForTrack] Found', products.length, 'versions');
+
+    // Convert MagentoProduct to Song using existing productToSong
+    // We need to get the album identifier from the product categories
+    const songs = products.map(product => {
+      // Find the album category (parent of track category)
+      const albumCategory = product.categories?.find(cat =>
+        cat.url_key && !cat.url_key.includes('artist')
+      );
+      const albumIdentifier = albumCategory?.url_key || 'unknown';
+      return productToSong(product, albumIdentifier);
+    });
+
+    return songs;
+  } catch (error) {
+    console.error('[getVersionsForTrack] Failed:', error);
+    return [];
+  }
 }
 
 // Search across artists, albums, and tracks
