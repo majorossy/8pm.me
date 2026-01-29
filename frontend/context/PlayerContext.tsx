@@ -7,6 +7,7 @@ import React, { createContext, useContext, useState, useRef, useEffect, useCallb
 import { Song, Album, Track } from '@/lib/types';
 import { useQueue } from './QueueContext';
 import { useRecentlyPlayed } from './RecentlyPlayedContext';
+import { useQuality } from './QualityContext';
 import { useMediaSession } from '@/hooks/useMediaSession';
 import { useCrossfade } from '@/hooks/useCrossfade';
 import { useToast } from '@/hooks/useToast';
@@ -65,6 +66,7 @@ const PlayerContext = createContext<PlayerContextType | null>(null);
 export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const queueContext = useQueue();
   const { trackPlay } = useRecentlyPlayed();
+  const { getStreamUrl } = useQuality();
   const trackedSongsRef = useRef<Set<string>>(new Set()); // Track which songs we've already counted
 
   // Toast notifications for playback errors
@@ -164,7 +166,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
     if (nextSong && audio) {
       console.log(`[PlayerContext] Skipping to next track: "${nextSong.title}"`);
-      audio.src = nextSong.streamUrl;
+      audio.src = getStreamUrl(nextSong);
       audio.play().catch((err) => {
         // If next track also fails, stop playback
         console.error('[PlayerContext] Next track also failed:', err);
@@ -175,7 +177,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       // No more tracks to play
       setState(prev => ({ ...prev, isPlaying: false }));
     }
-  }, [queueContext, toast]);
+  }, [queueContext, toast, getStreamUrl]);
 
   // Initialize audio element event handlers
   useEffect(() => {
@@ -200,7 +202,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         // Play the next song
         const currentAudio = getAudio();
         if (currentAudio) {
-          currentAudio.src = nextSong.streamUrl;
+          currentAudio.src = getStreamUrl(nextSong);
           currentAudio.play().catch(console.error);
           setState(prev => ({ ...prev, activeSong: nextSong }));
         }
@@ -266,7 +268,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
     // Check if we need to load a new source
     const currentSrc = audio.src;
-    const newSrc = currentSong.streamUrl;
+    const newSrc = getStreamUrl(currentSong);
 
     // Only reload if the source URL changed
     if (!currentSrc.endsWith(new URL(newSrc, window.location.origin).pathname)) {
@@ -275,7 +277,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         audio.play().catch(console.error);
       }
     }
-  }, [currentSong, crossfade.state.activeElement]);
+  }, [currentSong, crossfade.state.activeElement, getStreamUrl]);
 
   // Preload next track when 30 seconds remaining (or immediately if song is short)
   const preloadedSongIdRef = useRef<string | null>(null);
@@ -307,10 +309,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         // Set ref BEFORE calling preload to prevent duplicate calls
         const songToPreload = nextSong.id;
         preloadedSongIdRef.current = songToPreload;
-        crossfade.preloadNextTrack(nextSong.streamUrl);
+        crossfade.preloadNextTrack(getStreamUrl(nextSong));
       }
     }
-  }, [state.currentTime, state.duration, state.isPlaying, currentSong, queueContext, crossfade]);
+  }, [state.currentTime, state.duration, state.isPlaying, currentSong, queueContext, crossfade, getStreamUrl]);
 
   // Clear preload when queue structure changes (shuffle, repeat, queue cleared)
   useEffect(() => {
@@ -377,12 +379,12 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       activeSong: song, // Track what's actually playing
     }));
 
-    audio.src = song.streamUrl;
+    audio.src = getStreamUrl(song);
     audio.play().catch(err => {
       console.error('Audio play error:', err);
       handlePlaybackError(song, err);
     });
-  }, [queueContext, crossfade, handlePlaybackError, connectAudioElement, setAnalyzerVolume, state.volume]);
+  }, [queueContext, crossfade, handlePlaybackError, connectAudioElement, setAnalyzerVolume, state.volume, getStreamUrl]);
 
   const pause = useCallback(() => {
     const audio = getAudio();
@@ -426,11 +428,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       // Connect audio analyzer before playing
       connectAudioElement(audio);
       setAnalyzerVolume(state.volume);
-      audio.src = nextSong.streamUrl;
+      audio.src = getStreamUrl(nextSong);
       audio.play().catch(console.error);
       setState(prev => ({ ...prev, isPlaying: true, activeSong: nextSong }));
     }
-  }, [queueContext, crossfade, connectAudioElement, setAnalyzerVolume, state.volume]);
+  }, [queueContext, crossfade, connectAudioElement, setAnalyzerVolume, state.volume, getStreamUrl]);
 
   const playPrev = useCallback(() => {
     const audio = getAudio();
@@ -446,11 +448,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     // Get the new current song after prevTrack
     const newSong = queueContext.getSongAtTrack(queueContext.queue.currentTrackIndex - 1);
     if (newSong && audio) {
-      audio.src = newSong.streamUrl;
+      audio.src = getStreamUrl(newSong);
       audio.play().catch(console.error);
       setState(prev => ({ ...prev, isPlaying: true, activeSong: newSong }));
     }
-  }, [queueContext, crossfade]);
+  }, [queueContext, crossfade, getStreamUrl]);
 
   const toggleQueue = useCallback(() => {
     setState(prev => ({ ...prev, isQueueOpen: !prev.isQueueOpen }));
@@ -473,11 +475,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       // Connect audio analyzer before playing
       connectAudioElement(audio);
       setAnalyzerVolume(state.volume);
-      audio.src = song.streamUrl;
+      audio.src = getStreamUrl(song);
       audio.play().catch(console.error);
       setState(prev => ({ ...prev, isPlaying: true, activeSong: song }));
     }
-  }, [queueContext, crossfade, connectAudioElement, setAnalyzerVolume, state.volume]);
+  }, [queueContext, crossfade, connectAudioElement, setAnalyzerVolume, state.volume, getStreamUrl]);
 
   // Play all songs from an album, starting at a specific track index
   const playAlbum = useCallback((album: Album, startIndex: number = 0) => {
@@ -499,12 +501,12 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         // Connect audio analyzer before playing
         connectAudioElement(audio);
         setAnalyzerVolume(state.volume);
-        audio.src = song.streamUrl;
+        audio.src = getStreamUrl(song);
         audio.play().catch(console.error);
         setState(prev => ({ ...prev, isPlaying: true, activeSong: song }));
       }
     }, 0);
-  }, [queueContext, crossfade, connectAudioElement, setAnalyzerVolume, state.volume]);
+  }, [queueContext, crossfade, connectAudioElement, setAnalyzerVolume, state.volume, getStreamUrl]);
 
   // Play a specific track (adds to up next)
   const playTrack = useCallback((track: Track, songIndex: number = 0) => {
@@ -519,11 +521,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     // Play the start song
     const audio = getAudio();
     if (audio) {
-      audio.src = startSong.streamUrl;
+      audio.src = getStreamUrl(startSong);
       audio.play().catch(console.error);
       setState(prev => ({ ...prev, isPlaying: true, activeSong: startSong }));
     }
-  }, [queueContext, crossfade]);
+  }, [queueContext, crossfade, getStreamUrl]);
 
   // Play a specific version of a track within an album
   // This ensures track advancement works correctly (plays next track, not next version)
@@ -545,11 +547,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       // Connect audio analyzer before playing
       connectAudioElement(audio);
       setAnalyzerVolume(state.volume);
-      audio.src = song.streamUrl;
+      audio.src = getStreamUrl(song);
       audio.play().catch(console.error);
       setState(prev => ({ ...prev, isPlaying: true, activeSong: song }));
     }
-  }, [queueContext, crossfade, connectAudioElement, setAnalyzerVolume, state.volume]);
+  }, [queueContext, crossfade, connectAudioElement, setAnalyzerVolume, state.volume, getStreamUrl]);
 
   // Media Session API integration for lock screen controls
   useMediaSession({

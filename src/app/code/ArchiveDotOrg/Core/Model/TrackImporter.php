@@ -81,7 +81,8 @@ class TrackImporter implements TrackImporterInterface
         TrackInterface $track,
         ShowInterface $show,
         string $artistName,
-        ?int $existingProductId = null
+        ?int $existingProductId = null,
+        array $formatTracks = []
     ): int {
         $sku = $track->generateSku();
 
@@ -107,7 +108,7 @@ class TrackImporter implements TrackImporterInterface
             }
 
             // Set product data from track and show
-            $this->setProductData($product, $track, $show, $artistName);
+            $this->setProductData($product, $track, $show, $artistName, $formatTracks);
 
             // Save the product
             $savedProduct = $this->productRepository->save($product);
@@ -150,9 +151,14 @@ class TrackImporter implements TrackImporterInterface
 
         $tracks = $show->getTracks();
 
-        foreach ($tracks as $track) {
+        // Group tracks by base filename to collect all quality variations
+        $tracksByBasename = $this->groupTracksByBasename($tracks);
+
+        foreach ($tracksByBasename as $basename => $formatTracks) {
             try {
-                $sku = $track->generateSku();
+                // Use the first track for SKU generation and metadata
+                $primaryTrack = $formatTracks[0];
+                $sku = $primaryTrack->generateSku();
 
                 if (empty($sku)) {
                     $result['skipped']++;
@@ -163,8 +169,8 @@ class TrackImporter implements TrackImporterInterface
                 $existingProductId = $this->getProductIdBySku($sku);
                 $isUpdate = $existingProductId !== null;
 
-                // Pass the existing product ID to avoid redundant lookup in importTrack
-                $productId = $this->importTrack($track, $show, $artistName, $existingProductId);
+                // Pass all format tracks to build multi-quality URLs
+                $productId = $this->importTrack($primaryTrack, $show, $artistName, $existingProductId, $formatTracks);
                 $result['product_ids'][] = $productId;
 
                 if ($isUpdate) {
@@ -175,7 +181,7 @@ class TrackImporter implements TrackImporterInterface
             } catch (\Exception $e) {
                 $this->logger->logImportError('Track import failed', [
                     'show' => $show->getIdentifier(),
-                    'track' => $track->getTitle(),
+                    'track' => $primaryTrack->getTitle() ?? $basename,
                     'error' => $e->getMessage()
                 ]);
                 $result['skipped']++;
@@ -239,6 +245,7 @@ class TrackImporter implements TrackImporterInterface
      * @param TrackInterface $track
      * @param ShowInterface $show
      * @param string $artistName
+     * @param array $formatTracks
      * @return void
      * @throws LocalizedException
      */
@@ -246,7 +253,8 @@ class TrackImporter implements TrackImporterInterface
         Product $product,
         TrackInterface $track,
         ShowInterface $show,
-        string $artistName
+        string $artistName,
+        array $formatTracks = []
     ): void {
         // Generate name: Artist Title Year Venue
         $name = sprintf(
@@ -300,15 +308,31 @@ class TrackImporter implements TrackImporterInterface
             $product->setData('show_last_updated', date('Y-m-d H:i:s', $show->getLastUpdatedTimestamp()));
         }
 
-        // Build song URL
+        // Build multi-quality song URLs
         if ($show->getServerOne() && $show->getDir()) {
-            $filename = $this->getFilenameWithoutExtension($track->getName()) . '.flac';
-            $songUrl = $this->config->buildStreamingUrl(
-                $show->getServerOne(),
-                $show->getDir(),
-                $filename
-            );
-            $product->setData('song_url', $songUrl);
+            if (!empty($formatTracks)) {
+                // Build JSON with all available quality URLs
+                $qualityUrls = $this->buildMultiQualityUrls($formatTracks, $show);
+                $product->setData('song_urls', json_encode($qualityUrls, JSON_UNESCAPED_SLASHES));
+
+                // Keep legacy song_url for backward compatibility (use highest quality)
+                if (isset($qualityUrls['high'])) {
+                    $product->setData('song_url', $qualityUrls['high']['url']);
+                } elseif (isset($qualityUrls['medium'])) {
+                    $product->setData('song_url', $qualityUrls['medium']['url']);
+                } elseif (isset($qualityUrls['low'])) {
+                    $product->setData('song_url', $qualityUrls['low']['url']);
+                }
+            } else {
+                // Fallback for single track (backward compatibility)
+                $filename = $this->getFilenameWithoutExtension($track->getName()) . '.' . $track->getFormat();
+                $songUrl = $this->config->buildStreamingUrl(
+                    $show->getServerOne(),
+                    $show->getDir(),
+                    $filename
+                );
+                $product->setData('song_url', $songUrl);
+            }
         }
 
         // Dropdown attributes (using AttributeOptionManager)
@@ -391,5 +415,119 @@ class TrackImporter implements TrackImporterInterface
         }
 
         return sprintf('%d:%02d', $minutes, $secs);
+    }
+
+    /**
+     * Group tracks by base filename (without extension)
+     *
+     * @param TrackInterface[] $tracks
+     * @return array<string, TrackInterface[]>
+     */
+    private function groupTracksByBasename(array $tracks): array
+    {
+        $grouped = [];
+
+        foreach ($tracks as $track) {
+            $basename = $this->getFilenameWithoutExtension($track->getName());
+            if (!isset($grouped[$basename])) {
+                $grouped[$basename] = [];
+            }
+            $grouped[$basename][] = $track;
+        }
+
+        return $grouped;
+    }
+
+    /**
+     * Build multi-quality URLs from format tracks
+     *
+     * @param TrackInterface[] $formatTracks
+     * @param ShowInterface $show
+     * @return array
+     */
+    private function buildMultiQualityUrls(array $formatTracks, ShowInterface $show): array
+    {
+        $qualityUrls = [];
+
+        foreach ($formatTracks as $track) {
+            $format = $track->getFormat();
+            $filename = $track->getName();
+
+            $url = $this->config->buildStreamingUrl(
+                $show->getServerOne(),
+                $show->getDir(),
+                $filename
+            );
+
+            $quality = $this->determineQualityTier($format, $track->getFileSize());
+
+            $qualityUrls[$quality] = [
+                'url' => $url,
+                'format' => $format,
+                'bitrate' => $this->estimateBitrate($format, $track->getFileSize(), $track->getLength()),
+                'size_mb' => $track->getFileSize() ? round($track->getFileSize() / 1024 / 1024, 1) : null
+            ];
+        }
+
+        return $qualityUrls;
+    }
+
+    /**
+     * Determine quality tier based on format and file size
+     *
+     * @param string $format
+     * @param int|null $fileSize
+     * @return string
+     */
+    private function determineQualityTier(string $format, ?int $fileSize): string
+    {
+        // FLAC is always high quality
+        if ($format === 'flac') {
+            return 'high';
+        }
+
+        // For MP3, estimate bitrate from file size
+        // Rough estimate: 320kbps ~= 10MB per 3-min track, 128kbps ~= 4MB
+        if ($format === 'mp3' && $fileSize) {
+            $mbPerMinute = ($fileSize / 1024 / 1024) / 3; // Assume ~3 min tracks
+            return $mbPerMinute >= 3 ? 'medium' : 'low';
+        }
+
+        // Default to medium for OGG and unknown
+        return 'medium';
+    }
+
+    /**
+     * Estimate bitrate based on format, file size, and length
+     *
+     * @param string $format
+     * @param int|null $fileSize
+     * @param string|null $length
+     * @return string
+     */
+    private function estimateBitrate(string $format, ?int $fileSize, ?string $length): string
+    {
+        if ($format === 'flac') {
+            return 'lossless';
+        }
+
+        if ($fileSize && $length && is_numeric($length)) {
+            // Calculate kbps: (fileSize in bytes * 8) / (length in seconds * 1000)
+            $kbps = (int) (($fileSize * 8) / ((float) $length * 1000));
+
+            // Round to common bitrates
+            if ($kbps >= 280) {
+                return '320k';
+            } elseif ($kbps >= 200) {
+                return '256k';
+            } elseif ($kbps >= 160) {
+                return '192k';
+            } else {
+                return '128k';
+            }
+        }
+
+        // Default estimates based on format
+        return $format === 'mp3' ? '256k' : '192k';
     }
 }

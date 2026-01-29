@@ -14,9 +14,9 @@ Add studio album artwork from Wikipedia to display alongside live recordings fro
 
 ### Backend Services Created
 - ✅ `AlbumArtworkServiceInterface.php` - Service contract
-- ✅ `WikipediaClient.php` - Wikipedia API client for artwork (PRIMARY)
-- ✅ `MusicBrainzClient.php` - MusicBrainz API client (FALLBACK - currently blocked)
-- ✅ `AlbumArtworkService.php` - Main service implementation (uses Wikipedia)
+- ✅ `WikipediaClient.php` - Wikipedia API client for artwork
+- ✅ `MusicBrainzClient.php` - Legacy code (not currently used)
+- ✅ `AlbumArtworkService.php` - Main service implementation (uses Wikipedia only)
 - ✅ `DownloadAlbumArtCommand.php` - CLI: `bin/magento archive:artwork:download`
 - ✅ `di.xml` - Services registered in DI container
 - ✅ `db_schema.xml` - Database table created
@@ -54,7 +54,7 @@ archivedotorg_studio_albums:
 - ✅ High-quality album artwork available
 - ✅ Reliable and fast
 
-**MusicBrainz Status:** Proxy created but API still blocked. Keeping as fallback option.
+**MusicBrainz Status:** Proxy created but not actively used. AlbumArtworkService uses Wikipedia exclusively.
 
 ---
 

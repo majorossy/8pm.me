@@ -1,3 +1,10 @@
+interface ProductInterface {
+    song_urls_json: String @doc(description: "JSON object with quality URLs") @resolver(class: "ArchiveDotOrg\\Core\\Model\\Resolver\\SongUrlsJson")
+    song_url_high: String @doc(description: "High quality URL (FLAC or best available)") @resolver(class: "ArchiveDotOrg\\Core\\Model\\Resolver\\SongUrlHigh")
+    song_url_medium: String @doc(description: "Medium quality URL (MP3 320k)") @resolver(class: "ArchiveDotOrg\\Core\\Model\\Resolver\\SongUrlMedium")
+    song_url_low: String @doc(description: "Low quality URL (MP3 128k)") @resolver(class: "ArchiveDotOrg\\Core\\Model\\Resolver\\SongUrlLow")
+}
+
 interface CategoryInterface {
     wikipedia_artwork_url: String @doc(description: "Wikipedia artwork URL for album categories")
     band_extended_bio: String @doc(description: "Extended biography text from Wikipedia")

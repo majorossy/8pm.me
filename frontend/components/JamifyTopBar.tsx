@@ -3,6 +3,7 @@
 // JamifyTopBar - Top navigation bar with breadcrumbs
 
 import Breadcrumb from './Breadcrumb';
+import QualitySelector from './QualitySelector';
 
 interface JamifyTopBarProps {
   transparent?: boolean;
@@ -15,8 +16,11 @@ export default function JamifyTopBar({ transparent = false }: JamifyTopBarProps)
         transparent ? 'bg-transparent' : 'bg-[#1c1a17]/95 backdrop-blur-sm'
       }`}
     >
-      {/* Breadcrumb navigation */}
+      {/* Breadcrumb navigation (left) */}
       <Breadcrumb />
+
+      {/* Quality selector (right) */}
+      <QualitySelector />
     </header>
   );
 }

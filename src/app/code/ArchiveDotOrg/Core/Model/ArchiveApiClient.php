@@ -458,8 +458,10 @@ class ArchiveApiClient implements ArchiveApiClientInterface
         }
 
         // Parse tracks from files
-        $audioFormat = $this->config->getAudioFormat();
         $tracks = [];
+
+        // Collect all audio formats instead of filtering to one
+        $supportedFormats = ['flac', 'mp3', 'ogg'];
 
         if (isset($data['files']) && is_array($data['files'])) {
             foreach ($data['files'] as $file) {
@@ -468,8 +470,9 @@ class ArchiveApiClient implements ArchiveApiClientInterface
 
                 $name = $fileData['name'] ?? '';
 
-                // Only include files matching the configured audio format
-                if (!$this->endsWith($name, '.' . $audioFormat)) {
+                // Only include audio files with supported formats
+                $extension = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+                if (!in_array($extension, $supportedFormats)) {
                     continue;
                 }
 
@@ -485,7 +488,7 @@ class ArchiveApiClient implements ArchiveApiClientInterface
                 $track->setTrackNumber(isset($fileData['track']) ? (int) $fileData['track'] : null);
                 $track->setLength($fileData['length'] ?? null);
                 $track->setSha1($fileData['sha1'] ?? null);
-                $track->setFormat($audioFormat);
+                $track->setFormat($extension);  // Store actual file format
                 $track->setSource($fileData['source'] ?? null);
                 $track->setFileSize(isset($fileData['size']) ? (int) $fileData['size'] : null);
 

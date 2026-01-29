@@ -319,6 +319,9 @@ const GET_SONGS_BY_CATEGORY_QUERY = `
         song_title
         song_duration
         song_url
+        song_url_high
+        song_url_medium
+        song_url_low
         show_name
         identifier
         show_venue
@@ -353,6 +356,9 @@ const GET_SONGS_BY_SEARCH_QUERY = `
         song_title
         song_duration
         song_url
+        song_url_high
+        song_url_medium
+        song_url_low
         show_name
         identifier
         show_venue
@@ -387,6 +393,9 @@ const GET_ALL_SONGS_QUERY = `
         song_title
         song_duration
         song_url
+        song_url_high
+        song_url_medium
+        song_url_low
         show_name
         identifier
         show_venue
@@ -421,6 +430,9 @@ const GET_SONG_BY_ID_QUERY = `
         song_title
         song_duration
         song_url
+        song_url_high
+        song_url_medium
+        song_url_low
         show_name
         identifier
         show_venue
@@ -475,6 +487,9 @@ interface MagentoProduct {
   song_title?: string;
   song_duration?: number;
   song_url?: string;
+  song_url_high?: string;
+  song_url_medium?: string;
+  song_url_low?: string;
   show_name?: string;
   identifier?: string;          // Archive.org album identifier
   show_venue?: string;          // Archive.org: venue
@@ -604,6 +619,13 @@ function productToSong(product: MagentoProduct, albumIdentifier?: string): Song 
     duration: product.song_duration || 0, // API returns seconds from Archive.org
     streamUrl: product.song_url ? normalizeUrl(product.song_url) : '',
     albumArt: '/images/songs/default.jpg',
+    // Multi-quality support
+    qualityUrls: {
+      high: product.song_url_high ? normalizeUrl(product.song_url_high) : undefined,
+      medium: product.song_url_medium ? normalizeUrl(product.song_url_medium) : undefined,
+      low: product.song_url_low ? normalizeUrl(product.song_url_low) : undefined,
+    },
+    defaultQuality: 'medium', // Recommended default
     // Album/track context
     albumIdentifier: identifier,
     albumName,

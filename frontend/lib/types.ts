@@ -2,6 +2,8 @@
 // Song = Product, Artist = Category, Queue = Cart, Favorites = Wishlist
 // Hierarchy: Artist -> Album -> Track -> Song (recordings)
 
+export type AudioQuality = 'high' | 'medium' | 'low';
+
 export interface Song {
   id: string;                    // Magento product uid
   sku: string;                   // Magento product sku
@@ -10,9 +12,16 @@ export interface Song {
   artistName: string;            // category name
   artistSlug: string;            // category url_key
   duration: number;              // custom attribute: duration (seconds)
-  streamUrl: string;             // custom attribute: stream_url
+  streamUrl: string;             // custom attribute: stream_url (legacy fallback)
   albumArt: string;              // product.image.url
   price?: number;                // product.price_range.minimum_price.final_price.value
+  // Multi-quality support
+  qualityUrls?: {
+    high?: string;
+    medium?: string;
+    low?: string;
+  };
+  defaultQuality?: AudioQuality;
   // Album/track context
   albumIdentifier: string;       // Archive.org identifier (links to Album)
   albumName: string;             // show_name

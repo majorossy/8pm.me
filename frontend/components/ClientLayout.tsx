@@ -7,6 +7,7 @@ import { PlaylistProvider } from '@/context/PlaylistContext';
 import { QueueProvider, useQueue } from '@/context/QueueContext';
 import { PlayerProvider, usePlayer } from '@/context/PlayerContext';
 import { RecentlyPlayedProvider } from '@/context/RecentlyPlayedContext';
+import { QualityProvider } from '@/context/QualityContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { BreadcrumbProvider } from '@/context/BreadcrumbContext';
 import { MobileUIProvider, useMobileUI } from '@/context/MobileUIContext';
@@ -26,6 +27,7 @@ import { ToastProvider } from '@/components/ToastContainer';
 import InstallPrompt from '@/components/InstallPrompt';
 import OfflineIndicator from '@/components/OfflineIndicator';
 import LoadingBar from '@/components/LoadingBar';
+import Footer from '@/components/Footer';
 
 // Inner layout that can access player state and contexts
 function InnerLayout({ children }: { children: ReactNode }) {
@@ -112,35 +114,7 @@ function InnerLayout({ children }: { children: ReactNode }) {
         {children}
 
         {/* Footer */}
-        <footer className="px-4 md:px-8 py-6 mt-8 border-t border-[#3a3632]/30">
-          <div className="max-w-[1000px] mx-auto">
-            {/* Menu Items */}
-            <nav className="flex flex-wrap items-center justify-center gap-4 md:gap-6 mb-4" aria-label="Footer navigation">
-              <a href="/" className="text-sm text-[#8a8478] hover:text-[#d4a060] transition-colors font-sans">
-                Home
-              </a>
-              <a href="/search" className="text-sm text-[#8a8478] hover:text-[#d4a060] transition-colors font-sans">
-                Search
-              </a>
-              <a href="/library" className="text-sm text-[#8a8478] hover:text-[#d4a060] transition-colors font-sans">
-                Your Library
-              </a>
-              <a href="/account" className="text-sm text-[#8a8478] hover:text-[#d4a060] transition-colors font-sans">
-                Sign In
-              </a>
-            </nav>
-
-            {/* Copyright / Attribution */}
-            <div className="flex flex-col md:flex-row items-center justify-between gap-2 text-center md:text-left">
-              <p className="text-[10px] text-[#6a6458] uppercase tracking-wider font-sans">
-                Please copy freely - never sell
-              </p>
-              <p className="text-[9px] text-[#4a4640] uppercase tracking-wider font-sans">
-                Powered by Archive.org
-              </p>
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </main>
 
       {/* Bottom navigation tabs (all screen sizes) */}
@@ -187,13 +161,15 @@ function LayoutContent({ children }: { children: ReactNode }) {
                 <PlaylistProvider>
                   <QueueProvider>
                     <RecentlyPlayedProvider>
-                      <PlayerProvider>
-                        <BreadcrumbProvider>
-                          <MobileUIProvider>
-                            <InnerLayout>{children}</InnerLayout>
-                          </MobileUIProvider>
-                        </BreadcrumbProvider>
-                      </PlayerProvider>
+                      <QualityProvider>
+                        <PlayerProvider>
+                          <BreadcrumbProvider>
+                            <MobileUIProvider>
+                              <InnerLayout>{children}</InnerLayout>
+                            </MobileUIProvider>
+                          </BreadcrumbProvider>
+                        </PlayerProvider>
+                      </QualityProvider>
                     </RecentlyPlayedProvider>
                   </QueueProvider>
                 </PlaylistProvider>

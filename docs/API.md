@@ -481,7 +481,7 @@ The ArchiveDotOrg module extends Magento's GraphQL API with custom fields and qu
 
 ### Product Extensions
 
-All Archive.org imported products have 20+ custom fields available on `ProductInterface`:
+All Archive.org imported products have 17 custom fields available on `ProductInterface`:
 
 ```graphql
 {
@@ -493,10 +493,11 @@ All Archive.org imported products have 20+ custom fields available on `ProductIn
 
       # Archive.org custom fields
       song_title          # Track title
-      song_duration       # Duration in seconds (e.g., 342)
+      song_duration       # Duration in seconds (Float, e.g., 342.5)
       song_url            # Direct .mp3/.flac URL
       show_name           # Full show identifier
       identifier          # Archive.org identifier
+      server_one          # Archive.org server URL
       show_venue          # Venue name
       show_location       # City, State, Country
       show_taper          # Recording engineer
@@ -505,7 +506,7 @@ All Archive.org imported products have 20+ custom fields available on `ProductIn
       notes               # Performance notes
 
       # Archive.org statistics
-      archive_avg_rating      # 0-5 star rating
+      archive_avg_rating      # 0-5 star rating (Float)
       archive_num_reviews     # Number of reviews
       archive_downloads       # Total downloads
       archive_downloads_week  # Downloads this week
@@ -562,8 +563,6 @@ Fetch studio album artwork for an artist:
     musicbrainz_id
     artwork_url        # Direct image URL
     category_id        # Linked category
-    created_at
-    updated_at
   }
 }
 ```

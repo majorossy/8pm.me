@@ -1,5 +1,42 @@
 # Magento 2 Headless Docker Development Environment
 
+## SEO Keyword Research - COMPLETE (2026-01-29)
+
+**Status:** ✅ Research phase complete, ready for CARD-1 and CARD-2 implementation
+**Location:** `docs/seo-implementation/`
+
+**Created Documents (5,853 words total):**
+- `KEYWORD_RESEARCH.md` (1,945 words) - Master keyword strategy with title/description templates
+- `KEYWORD_RESEARCH_README.md` (1,539 words) - Navigation guide and implementation roadmap
+- `keywords/phish.md` (1,642 words) - Deep-dive Phish keyword research
+- `keywords/_TEMPLATE.md` (727 words) - Template for expanding to 35+ other artists
+
+**What's Ready:**
+- ✅ Title templates for artist/show/track pages
+- ✅ Meta description templates using rich data (band_total_shows, show_venue, etc.)
+- ✅ Competitor analysis (Archive.org, LivePhish.com, Phish.in)
+- ✅ Phish-specific keywords (high-volume to ultra long-tail)
+- ✅ Famous shows to prioritize (Baker's Dozen, Big Cypress, etc.)
+- ✅ Expandable structure for Grateful Dead, STS9, and 33 other artists
+
+**Key Insights:**
+- Users search "{artist} {venue} {date}" (ultra long-tail, high intent)
+- "Soundboard" is a major quality signal (3x volume vs "audience")
+- "Free streaming, no signup" is competitive advantage vs LivePhish
+- Archive.org titles too long (90+ chars), we can outrank with cleaner titles
+
+**Next Steps:**
+1. Reference `KEYWORD_RESEARCH.md` when implementing CARD-1 (backend meta fields)
+2. Reference `keywords/phish.md` when implementing CARD-2 (frontend metadata)
+3. Test with Phish data first, then expand to other artists
+
+**Quick Reference:**
+- Artist page title: `{Artist} Live Recordings & Concert Downloads | 8PM Archive`
+- Show page title: `{Artist} Live at {Venue} ({Date}) - Soundboard Recording | 8PM`
+- Keep titles under 60 characters, descriptions under 160 characters
+
+---
+
 ## Overview
 Mage-OS 1.0.5 (Magento Open Source fork) as headless backend with Next.js/React frontend.
 
@@ -384,7 +421,7 @@ See `docs/SPOTIFY_FEATURE_PARITY_ROADMAP.md` for full details.
 ### ArchiveDotOrg_Core
 Imports live concert recordings from Archive.org into Magento products.
 
-**CLI Commands (23 total):**
+**CLI Commands (26 total):**
 ```bash
 # Import & Sync
 bin/magento archive:import:shows "Grateful Dead" --limit=50
@@ -417,9 +454,9 @@ bin/magento archive:migrate:export                # Export to YAML
 bin/magento archive:migrate:organize-folders      # Reorganize folders
 
 # Performance Benchmarks
+bin/magento archive:benchmark:dashboard           # Benchmark dashboard queries
 bin/magento archive:benchmark:import              # Benchmark import strategies
 bin/magento archive:benchmark:matching            # Benchmark matching algorithms
-bin/magento archive:benchmark:dashboard           # Benchmark dashboard queries
 
 # Utilities
 bin/magento archive:status --test-collection=GratefulDead
@@ -439,10 +476,11 @@ DELETE /V1/archive/products/:sku       - Delete imported product
 **Cron Jobs:**
 | Job | Schedule | Purpose |
 |-----|----------|---------|
-| `archive_import_shows` | 2 AM daily | Auto-import from collections |
-| `archive_sync_albums` | 4 AM daily | Sync categories with products |
-| `archive_cleanup_progress` | Sunday midnight | Clean stale progress files |
-| `archive_process_import_queue` | Every minute | Process async import queue |
+| `archivedotorg_import_shows` | Configurable (default: 2 AM daily) | Auto-import from collections |
+| `archivedotorg_sync_albums` | 4 AM daily | Sync categories with products |
+| `archivedotorg_cleanup_progress` | Sunday midnight | Clean stale progress files |
+| `archivedotorg_process_import_queue` | Every minute | Process async import queue |
+| `aggregate_daily_metrics` | 4 AM daily | Aggregate admin dashboard metrics |
 
 **GraphQL Extensions:** 20+ fields on ProductInterface (song_title, show_venue, archive_downloads, etc.)
 
