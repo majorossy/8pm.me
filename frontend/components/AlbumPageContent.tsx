@@ -9,6 +9,7 @@ import { useQueue } from '@/context/QueueContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useHaptic } from '@/hooks/useHaptic';
 import { VUMeter, Waveform, SpinningReel } from '@/components/AudioVisualizations';
+import { getRecordingBadge } from '@/lib/lineageUtils';
 
 interface AlbumWithTracks extends Album {
   tracks: Track[];
@@ -464,13 +465,30 @@ function RecordingCard({
           <span className={`text-4xl font-bold font-serif leading-none ${isSelected ? 'text-[#1a0f08]' : 'text-[#a89080]'}`}>
             {year}
           </span>
-          {isPlaying && (
-            <div className="flex items-center justify-center">
-              <div style={{ transform: 'scale(2.5)' }}>
-                <SpinningReel volume={volume} size="small" isPlaying={true} />
+          <div className="flex items-center gap-2">
+            {(() => {
+              const recordingBadge = getRecordingBadge(song.lineage);
+              return recordingBadge ? (
+                <span
+                  className={`px-2 py-0.5 text-xs font-bold rounded-full ${
+                    isSelected
+                      ? 'bg-[#c88030] text-[#1a1410]'
+                      : 'bg-[#d4a060] text-[#1c1a17]'
+                  }`}
+                  title={`${recordingBadge.text} Recording`}
+                >
+                  {recordingBadge.text}
+                </span>
+              ) : null;
+            })()}
+            {isPlaying && (
+              <div className="flex items-center justify-center">
+                <div style={{ transform: 'scale(2.5)' }}>
+                  <SpinningReel volume={volume} size="small" isPlaying={true} />
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
 

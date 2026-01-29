@@ -22,24 +22,23 @@ function ArtistStatsTooltip({ totalShows, mostPlayedTrack }: { totalShows?: numb
   if (!totalShows && !mostPlayedTrack) return null;
 
   return (
-    <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 ease-out pointer-events-none z-50">
-      <span className="relative bg-[rgba(45,42,38,0.95)] border border-[#3a3632] rounded-lg px-3 py-2 shadow-lg backdrop-blur-sm whitespace-nowrap text-xs">
+    <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-out pointer-events-none z-50 whitespace-nowrap">
+      <div className="bg-[#1c1a17] border border-[#d4a060]/60 rounded-md px-3 py-1.5 shadow-2xl">
         {totalShows && (
-          <div className="flex items-center gap-1.5 text-[#d4a060]">
-            <span>⭐</span>
-            <span>{totalShows.toLocaleString()} Shows Recorded</span>
+          <div className="flex items-center gap-1.5 mb-0.5">
+            <span className="text-[#d4a060]">⭐</span>
+            <span className="text-[#d4a060] text-xs font-semibold">{totalShows.toLocaleString()} Shows</span>
           </div>
         )}
         {mostPlayedTrack && (
-          <div className="flex items-center gap-1.5 text-[#e8dcc4] max-w-xs truncate">
-            <span>🎵</span>
-            <span>Most Played: {mostPlayedTrack}</span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-[#d4a060]">🎵</span>
+            <span className="text-[#e8dcc4] text-xs">Most Played: {mostPlayedTrack}</span>
           </div>
         )}
-        {/* Arrow pointer pointing down */}
-        <span className="absolute top-full left-1/2 -translate-x-1/2 -mt-px border-[6px] border-transparent border-t-[#3a3632]"></span>
-        <span className="absolute top-full left-1/2 -translate-x-1/2 -mt-[2px] border-[5px] border-transparent border-t-[rgba(45,42,38,0.95)]"></span>
-      </span>
+      </div>
+      {/* Arrow pointer */}
+      <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-[#d4a060]/60"></div>
     </span>
   );
 }
