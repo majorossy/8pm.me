@@ -1,0 +1,184 @@
+#!/bin/bash
+# Import All Artists - Full Site Setup Script
+# Downloads and populates ALL configured artists for initial site setup
+# Date: 2026-01-29
+
+set -e  # Exit on error (disable with --continue-on-error)
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Configuration
+LIMIT=${1:-"all"}  # Default: import all shows (or pass a number)
+CONTINUE_ON_ERROR=false
+
+# Parse arguments
+for arg in "$@"; do
+    case $arg in
+        --continue-on-error)
+            CONTINUE_ON_ERROR=true
+            set +e  # Don't exit on error
+            shift
+            ;;
+        --limit=*)
+            LIMIT="${arg#*=}"
+            shift
+            ;;
+    esac
+done
+
+# Tracking
+TOTAL_ARTISTS=0
+SUCCESSFUL_ARTISTS=0
+FAILED_ARTISTS=0
+SKIPPED_ARTISTS=0
+START_TIME=$(date +%s)
+
+echo -e "${BLUE}========================================${NC}"
+echo -e "${BLUE}  Import All Artists - Full Site Setup${NC}"
+echo -e "${BLUE}========================================${NC}"
+echo ""
+echo "Limit per artist: $LIMIT"
+echo "Continue on error: $CONTINUE_ON_ERROR"
+echo ""
+
+# Get list of all artist YAML files
+ARTIST_FILES=$(ls src/app/code/ArchiveDotOrg/Core/config/artists/*.yaml 2>/dev/null)
+TOTAL_ARTISTS=$(echo "$ARTIST_FILES" | wc -l | tr -d ' ')
+
+echo -e "${GREEN}Found $TOTAL_ARTISTS artists configured${NC}"
+echo ""
+
+# Create log file
+LOG_FILE="var/log/import-all-artists-$(date +%Y%m%d-%H%M%S).log"
+mkdir -p var/log
+echo "Logging to: $LOG_FILE"
+echo ""
+
+# Initialize arrays for tracking
+declare -a SUCCESSFUL=()
+declare -a FAILED=()
+declare -a SKIPPED=()
+
+CURRENT=0
+
+# Loop through each artist
+for YAML_FILE in $ARTIST_FILES; do
+    CURRENT=$((CURRENT + 1))
+
+    # Extract artist name from filename (remove path and .yaml extension)
+    ARTIST_SLUG=$(basename "$YAML_FILE" .yaml)
+
+    # Convert slug to artist name (e.g., "grateful-dead" -> "Grateful Dead")
+    ARTIST_NAME=$(echo "$ARTIST_SLUG" | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+
+    echo -e "${BLUE}========================================${NC}"
+    echo -e "${BLUE}[$CURRENT/$TOTAL_ARTISTS] Processing: $ARTIST_NAME${NC}"
+    echo -e "${BLUE}========================================${NC}"
+
+    # Build limit argument
+    LIMIT_ARG=""
+    if [ "$LIMIT" != "all" ]; then
+        LIMIT_ARG="--limit=$LIMIT"
+    fi
+
+    # Download
+    echo -e "${YELLOW}Step 1/2: Downloading metadata...${NC}"
+    if bin/magento archive:download "$ARTIST_NAME" $LIMIT_ARG >> "$LOG_FILE" 2>&1; then
+        echo -e "${GREEN}✓ Download complete${NC}"
+    else
+        echo -e "${RED}✗ Download failed${NC}"
+        FAILED+=("$ARTIST_NAME (download)")
+        FAILED_ARTISTS=$((FAILED_ARTISTS + 1))
+
+        if [ "$CONTINUE_ON_ERROR" = false ]; then
+            echo -e "${RED}Stopping due to error. Use --continue-on-error to continue.${NC}"
+            exit 1
+        fi
+
+        echo "Skipping populate for $ARTIST_NAME"
+        continue
+    fi
+
+    # Populate
+    echo -e "${YELLOW}Step 2/2: Populating products...${NC}"
+    if bin/magento archive:populate "$ARTIST_NAME" $LIMIT_ARG >> "$LOG_FILE" 2>&1; then
+        echo -e "${GREEN}✓ Populate complete${NC}"
+        SUCCESSFUL+=("$ARTIST_NAME")
+        SUCCESSFUL_ARTISTS=$((SUCCESSFUL_ARTISTS + 1))
+    else
+        echo -e "${RED}✗ Populate failed${NC}"
+        FAILED+=("$ARTIST_NAME (populate)")
+        FAILED_ARTISTS=$((FAILED_ARTISTS + 1))
+
+        if [ "$CONTINUE_ON_ERROR" = false ]; then
+            echo -e "${RED}Stopping due to error. Use --continue-on-error to continue.${NC}"
+            exit 1
+        fi
+    fi
+
+    echo ""
+done
+
+# Calculate totals
+END_TIME=$(date +%s)
+DURATION=$((END_TIME - START_TIME))
+HOURS=$((DURATION / 3600))
+MINUTES=$(((DURATION % 3600) / 60))
+SECONDS=$((DURATION % 60))
+
+# Summary
+echo -e "${BLUE}========================================${NC}"
+echo -e "${BLUE}         IMPORT SUMMARY${NC}"
+echo -e "${BLUE}========================================${NC}"
+echo ""
+echo -e "${GREEN}Successful: $SUCCESSFUL_ARTISTS${NC}"
+echo -e "${RED}Failed: $FAILED_ARTISTS${NC}"
+echo -e "${YELLOW}Skipped: $SKIPPED_ARTISTS${NC}"
+echo -e "Total: $TOTAL_ARTISTS"
+echo ""
+echo "Duration: ${HOURS}h ${MINUTES}m ${SECONDS}s"
+echo "Log file: $LOG_FILE"
+echo ""
+
+# List successful artists
+if [ ${#SUCCESSFUL[@]} -gt 0 ]; then
+    echo -e "${GREEN}Successful Artists:${NC}"
+    for artist in "${SUCCESSFUL[@]}"; do
+        echo "  ✓ $artist"
+    done
+    echo ""
+fi
+
+# List failed artists
+if [ ${#FAILED[@]} -gt 0 ]; then
+    echo -e "${RED}Failed Artists:${NC}"
+    for artist in "${FAILED[@]}"; do
+        echo "  ✗ $artist"
+    done
+    echo ""
+    echo "Check log file for details: $LOG_FILE"
+fi
+
+# Reindex at the end
+echo -e "${YELLOW}Running final reindex...${NC}"
+if bin/magento indexer:reindex catalog_category_product catalog_product_category >> "$LOG_FILE" 2>&1; then
+    echo -e "${GREEN}✓ Reindex complete${NC}"
+else
+    echo -e "${RED}✗ Reindex failed - you may need to run manually${NC}"
+fi
+
+echo ""
+echo -e "${GREEN}========================================${NC}"
+echo -e "${GREEN}  Import Complete!${NC}"
+echo -e "${GREEN}========================================${NC}"
+echo ""
+echo "Visit: http://localhost:3001"
+echo "Admin: Catalog > Archive.org > Import History"
+echo ""
+
+exit 0

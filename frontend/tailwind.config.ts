@@ -43,8 +43,8 @@ const config: Config = {
           parchment: '#e0d8c8',
           text: '#e8e0d4',
           'text-body': '#c8c0b4',
-          muted: '#8a8478',
-          dim: '#6a6458',
+          muted: '#9a9488',
+          dim: '#7a7468',
         },
       },
       fontFamily: {

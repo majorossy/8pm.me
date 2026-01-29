@@ -19,10 +19,11 @@ This folder contains the complete SEO implementation plan broken down into actio
 - **CARD-5-CORE-WEB-VITALS.md** - Performance optimization (LCP, CLS, INP) (6-8h)
 - **CARD-6-SITEMAP-ROBOTS.md** - Sitemap and robots.txt for large catalog (5-6h)
 
-### Strategic Additions (Cards 7A-C)
+### Strategic Additions (Cards 7A-D)
 - **CARD-7A-VENUE-EVENT-SCHEMA.md** - Venue/local SEO with Event schema (3-4h) 🔴 HIGH ROI
 - **CARD-7B-CONTENT-ENRICHMENT.md** - Content depth, FAQ schema, voice search (4-6h)
 - **CARD-7C-ANALYTICS-MONITORING.md** - GA4, Search Console, monitoring (3h + 1h/month) 🔴 CRITICAL
+- **CARD-8-ADA-ACCESSIBILITY.md** - WCAG 2.1 AAA compliance (4-10h) 🔴 LEGAL + SEO
 
 ### Review Documentation
 - **IMPROVEMENTS_SUMMARY.md** - All fixes applied after swarm review
@@ -54,7 +55,7 @@ This folder contains the complete SEO implementation plan broken down into actio
 - **CARD-7B**: Content enrichment, FAQ schema, related artists (4-6h)
 - Testing, validation, refinement (4-6h)
 
-**Total Time:** 46-60 hours across 6-8 weeks
+**Total Time:** 50-70 hours across 6-8 weeks (includes ADA compliance)
 
 ---
 
@@ -114,23 +115,25 @@ This folder contains the complete SEO implementation plan broken down into actio
 2. **CARD-2** - Frontend metadata (required for indexing)
 3. **CARD-6** - Sitemap (search engines need this to discover pages)
 4. **CARD-7C** - Analytics (can't improve what you don't measure)
+5. **CARD-8** - ADA compliance AA minimum (legal requirement)
 
 ---
 
 ## 🟡 Medium-Priority Cards (Phase 1.5)
 
 **Complete within 2 weeks of launch:**
-5. **CARD-3** - Structured data (rich results)
-6. **CARD-7A** - Venue schema (highest ROI addition)
-7. **CARD-4** - Image optimization (Core Web Vitals)
+6. **CARD-3** - Structured data (rich results)
+7. **CARD-7A** - Venue schema (highest ROI addition)
+8. **CARD-4** - Image optimization (Core Web Vitals)
+9. **CARD-8** - ADA AAA enhancements (beyond minimum)
 
 ---
 
 ## 🟢 Lower-Priority Cards (Phase 2)
 
 **Complete within 1-2 months:**
-8. **CARD-5** - Advanced Core Web Vitals tuning
-9. **CARD-7B** - Content enrichment (editorial effort)
+10. **CARD-5** - Advanced Core Web Vitals tuning
+11. **CARD-7B** - Content enrichment (editorial effort)
 
 ---
 
