@@ -93,6 +93,14 @@ class DownloadMetadataCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
+        // Display deprecation warning
+        $io->warning([
+            'DEPRECATED: archive:download-metadata is deprecated.',
+            'Use archive:download instead for improved logging and safety.',
+            'This command will be removed in version 2.0.',
+        ]);
+        $io->newLine();
+
         // Set area code
         try {
             $this->state->setAreaCode(Area::AREA_ADMINHTML);

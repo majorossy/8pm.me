@@ -42,7 +42,7 @@ class PopulateTracksCommand extends Command
     protected function configure(): void
     {
         $this->setName('archive:populate:tracks')
-            ->setDescription('Populate track categories with products from cached metadata')
+            ->setDescription('[DEPRECATED] Populate track categories with products from cached metadata')
             ->addArgument(
                 'artist',
                 InputArgument::OPTIONAL,
@@ -84,6 +84,22 @@ class PopulateTracksCommand extends Command
         } catch (\Exception $e) {
             // Already set
         }
+
+        // DEPRECATION WARNING
+        $io->warning([
+            'DEPRECATED: archive:populate:tracks is deprecated.',
+            'Use archive:populate instead for improved logging and hybrid track matching.',
+            'This command will be removed in version 2.0.',
+            '',
+            'New command provides:',
+            '  • Hybrid matching (exact → alias → metaphone → fuzzy)',
+            '  • Match type and confidence display',
+            '  • Unmatched track export',
+            '  • Better progress reporting',
+            '',
+            'Example: bin/magento archive:populate lettuce --dry-run',
+        ]);
+        $io->newLine();
 
         $artist = $input->getArgument('artist');
         $collection = $input->getOption('collection');

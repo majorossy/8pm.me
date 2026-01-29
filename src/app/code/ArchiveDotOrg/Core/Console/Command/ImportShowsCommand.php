@@ -33,6 +33,7 @@ class ImportShowsCommand extends Command
     private const OPTION_LIMIT = 'limit';
     private const OPTION_OFFSET = 'offset';
     private const OPTION_DRY_RUN = 'dry-run';
+    private const OPTION_YES = 'yes';
 
     private ShowImporterInterface $showImporter;
     private Config $config;
@@ -91,6 +92,12 @@ class ImportShowsCommand extends Command
                 'd',
                 InputOption::VALUE_NONE,
                 'Preview what would be imported without making changes'
+            )
+            ->addOption(
+                self::OPTION_YES,
+                'y',
+                InputOption::VALUE_NONE,
+                'Skip deprecation confirmation prompt'
             );
     }
 
@@ -106,6 +113,27 @@ class ImportShowsCommand extends Command
             $this->state->setAreaCode(Area::AREA_ADMINHTML);
         } catch (\Exception $e) {
             // Already set
+        }
+
+        // Show deprecation warning
+        $skipConfirmation = $input->getOption(self::OPTION_YES);
+        if (!$skipConfirmation) {
+            $io->warning([
+                'DEPRECATION WARNING',
+                '',
+                'archive:import-shows bypasses permanent storage.',
+                'Downloaded metadata is not saved to disk for future use.',
+                '',
+                'Recommended workflow:',
+                '  1. bin/magento archive:download {artist}',
+                '  2. bin/magento archive:populate {artist}',
+                ''
+            ]);
+
+            if (!$io->confirm('Continue anyway?', false)) {
+                $io->writeln('Operation cancelled.');
+                return Command::SUCCESS;
+            }
         }
 
         // Check if module is enabled
