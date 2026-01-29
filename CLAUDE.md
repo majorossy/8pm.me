@@ -203,12 +203,8 @@ bin/status                # Check container status
 bin/xdebug enable         # Enable Xdebug
 bin/xdebug disable        # Disable Xdebug
 bin/cache-clean           # Watch and auto-clean cache
-
-# Auto-sync files from host to Docker container
-bin/watch-start           # Start file watcher (background)
-bin/watch-stop            # Stop file watcher
-bin/watch-status          # Check watcher status
-bin/watch                 # Run watcher in foreground (see logs)
+bin/fixowns               # Fix file ownership
+bin/fixperms              # Fix file permissions
 ```
 
 ## Magento CLI Examples
@@ -275,51 +271,33 @@ bin/mysql
 - SSL certificate auto-generated and trusted locally
 - **Docker loads multiple compose files:** compose.yaml + compose.healthcheck.yaml + compose.dev.yaml
 - **75+ bin/ scripts available** - run `ls bin/` to see all options
+- **Bind mounts with `:cached` flag** - Entire `src/` directory syncs instantly (<100ms) via VirtioFS
 
-## Docker File Sync System
+## File Sync (Automatic via Bind Mounts)
 
-**Why named volumes instead of bind mounts?**
+Files are automatically synchronized between your Mac and Docker containers using **bind mounts with VirtioFS**. Changes appear instantly in both directions (<100ms).
 
-This project uses Docker **named volumes** (`appdata`) instead of **bind mounts** for Magento files because bind mounts are extremely slow on macOS (10-50x slower due to virtualization overhead). The frontend runs directly on the host to avoid this issue entirely.
+**What gets synced (bind mounts):**
+- `src/` - Entire Magento installation (instant bidirectional sync)
 
-**How it works:**
+**What stays in containers only (named volumes):**
+- `/var/www/html/generated/` - Auto-generated code
+- `/var/www/html/var/` - Cache, logs, sessions
+- `/var/www/html/vendor/` - Composer dependencies
+- `/var/www/html/pub/static/` - Static content cache
 
-1. **Edit files on your host** (in `src/`)
-2. **Auto-sync with file watcher:**
-   ```bash
-   bin/watch-start   # Starts background watcher
-   ```
-   - Watches `src/app/code/ArchiveDotOrg/` for changes
-   - Auto-syncs to container within 2 seconds of save
-   - Runs in background (logs to `/tmp/8pm-watch.log`)
+**Workflow:**
+1. Edit files on your Mac in `src/`
+2. Changes appear **instantly** in Docker container (<100ms)
+3. Files created in container appear instantly on Mac
+4. No manual scripts needed!
 
-3. **Manual sync (if needed):**
-   ```bash
-   bin/copytocontainer app/code/ArchiveDotOrg    # Sync specific path
-   bin/copytocontainer --all                      # Sync everything (slow)
-   ```
-
-**File watcher commands:**
-
+**Permissions:**
+If you create new files and see permission errors:
 ```bash
-bin/watch-start    # Start auto-sync in background
-bin/watch-stop     # Stop auto-sync
-bin/watch-status   # Check if running + recent activity
-bin/watch          # Run in foreground (see live logs)
+bin/fixowns   # Fix ownership (www-data:www-data)
+bin/fixperms  # Fix permissions (755/644)
 ```
-
-**Recommended workflow:**
-
-1. Start watcher once: `bin/watch-start`
-2. Edit files normally in your IDE
-3. Changes auto-sync to container
-4. Watcher stays running until you stop it or reboot
-
-**When to restart watcher:**
-
-- After system reboot (PID file in `/tmp`)
-- If you see "changes not appearing" issues
-- Check status first: `bin/watch-status`
 
 ## Troubleshooting
 

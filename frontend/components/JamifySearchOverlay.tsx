@@ -3,18 +3,24 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRecentSearches } from '@/hooks/useRecentSearches';
 import { useRouter } from 'next/navigation';
-import { type Artist, type Album, type Song } from '@/lib/api';
-import { useQueue } from '@/context/QueueContext';
+import { type Artist, type Album } from '@/lib/api';
 
 interface JamifySearchOverlayProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+interface TrackCategory {
+  uid: string;
+  name: string;
+  url_key: string;
+  product_count: number;
+}
+
 interface SearchResults {
   artists: Artist[];
   albums: Album[];
-  tracks: Song[];
+  tracks: TrackCategory[];
 }
 
 export function JamifySearchOverlay({ isOpen, onClose }: JamifySearchOverlayProps) {
@@ -26,7 +32,6 @@ export function JamifySearchOverlay({ isOpen, onClose }: JamifySearchOverlayProp
   const inputRef = useRef<HTMLInputElement>(null);
   const { recentSearches, addSearch, removeSearch, clearSearches } = useRecentSearches();
   const router = useRouter();
-  const { addToUpNext } = useQueue();
 
   // Handle animation state
   useEffect(() => {
@@ -123,9 +128,9 @@ export function JamifySearchOverlay({ isOpen, onClose }: JamifySearchOverlayProp
     router.push(`/artists/${album.artistSlug}`);
   };
 
-  const handleTrackClick = (track: Song) => {
-    addSearch(track.title);
-    addToUpNext(track);
+  const handleTrackClick = (track: TrackCategory) => {
+    addSearch(track.name);
+    // TODO: Navigate to track page or show versions
     onClose();
   };
 
@@ -328,28 +333,28 @@ export function JamifySearchOverlay({ isOpen, onClose }: JamifySearchOverlayProp
 
                     {/* Tracks */}
                     {results.tracks.length > 0 && (
-                      <div>
-                        <h3 className="text-white font-bold text-lg mb-3 flex items-center gap-2">
-                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
-                          </svg>
+                      <div className="mb-6">
+                        <h3 className="text-xs font-medium text-[#a09080] uppercase tracking-wider mb-3">
                           Tracks
                         </h3>
-                        <div className="space-y-2">
+                        <div className="space-y-1">
                           {results.tracks.map((track) => (
                             <button
-                              key={track.id}
+                              key={track.uid}
                               onClick={() => handleTrackClick(track)}
-                              className="w-full flex items-center gap-3 p-3 bg-[#2d2a26] hover:bg-[#3a3632] rounded-lg cursor-pointer transition-colors btn-touch text-left"
+                              className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-[#2a2520] transition-colors text-left"
                             >
-                              <div className="w-12 h-12 bg-gray-700 rounded flex items-center justify-center flex-shrink-0">
-                                <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
-                                  <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
+                              <div className="w-10 h-10 rounded bg-[#2a2520] flex items-center justify-center flex-shrink-0">
+                                <svg className="w-5 h-5 text-[#d4a060]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                        d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
                                 </svg>
                               </div>
                               <div className="flex-1 min-w-0">
-                                <p className="text-white font-medium truncate">{track.title}</p>
-                                <p className="text-gray-400 text-sm truncate">{track.artistName}</p>
+                                <p className="text-[#e8dcc8] font-medium truncate">{track.name}</p>
+                                <p className="text-sm text-[#a09080]">
+                                  {track.product_count} {track.product_count === 1 ? 'version' : 'versions'}
+                                </p>
                               </div>
                             </button>
                           ))}

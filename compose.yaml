@@ -20,7 +20,18 @@ services:
       - ~/.composer:/var/www/.composer:cached
       - ~/.ssh/id_rsa:/var/www/.ssh/id_rsa:cached
       - ~/.ssh/known_hosts:/var/www/.ssh/known_hosts:cached
-      - appdata:/var/www/html
+
+      # BIND MOUNT: Entire Magento src/ directory (instant sync for all files)
+      - ./src:/var/www/html:cached
+
+      # NAMED VOLUMES: Override specific subdirs with container-only storage
+      # (more specific mounts take precedence over less specific)
+      - generateddata:/var/www/html/generated
+      - vardata:/var/www/html/var
+      - vendordata:/var/www/html/vendor
+      - pubstaticdata:/var/www/html/pub/static
+
+      # Infrastructure
       - sockdata:/sock
       - ssldata:/etc/nginx/certs
     #extra_hosts: &appextrahosts
@@ -165,7 +176,10 @@ services:
   #  env_file: env/blackfire.env
 
 volumes:
-  appdata:
+  generateddata:
+  vardata:
+  vendordata:
+  pubstaticdata:
   dbdata:
   opensearchdata:
   rabbitmqdata:

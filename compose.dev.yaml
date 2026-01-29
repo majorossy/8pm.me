@@ -1,25 +1,15 @@
 services:
+  ## compose.dev.yaml no longer needs volume overrides
+  ## All src/ files are bind mounted in compose.yaml
+  ## Named volumes (generated/, var/, vendor/, pub/static/) override as needed
+
   app:
-    volumes: &appvolumes
-      ## Host mounts with performance penalty, only put what is necessary here
-      - ./src/app/code:/var/www/html/app/code:cached
-      - ./src/app/design:/var/www/html/app/design:cached
-      - ./src/app/etc:/var/www/html/app/etc:cached
-      - ./src/composer.json:/var/www/html/composer.json:cached
-      - ./src/composer.lock:/var/www/html/composer.lock:cached
-      - ./src/grunt-config.json.sample:/var/www/html/grunt-config.json:cached
-      - ./src/Gruntfile.js.sample:/var/www/html/Gruntfile.js:cached
-      - ./src/dev/tools/grunt/configs:/var/www/html/dev/tools/grunt/configs:cached
-      - ./src/nginx.conf.sample:/var/www/html/nginx.conf:cached
-      - ./src/package.json.sample:/var/www/html/package.json:cached
-      - ./src/generated:/var/www/html/generated:cached
-      - ./src/var:/var/www/html/var:cached
-      #- ./src/auth.json:/var/www/html/auth.json:cached
-      #- ./src/m2-hotfixes:/var/www/html/m2-hotfixes:cached
-      #- ./src/patches:/var/www/html/patches:cached
+    ## No additional volumes needed - src/ bind mount covers everything
+    volumes: []
 
   phpfpm:
-    volumes: *appvolumes
+    ## No additional volumes needed - inherits from compose.yaml
+    volumes: []
 
   phpmyadmin:
     image: linuxserver/phpmyadmin

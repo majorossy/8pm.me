@@ -5,6 +5,9 @@ import { fetchWikipediaSummary } from './wikipedia';
 
 export type { Song, Artist, ArtistDetail, Album, Track } from './types';
 
+// Track category cache for search
+let trackCategoryCache: TrackCategory[] | null = null;
+
 // Cache duration in seconds
 const CACHE_DURATION = 60 * 5; // 5 minutes
 
@@ -182,6 +185,23 @@ function getCategoryImageUrl(urlKey: string): string {
 interface GraphQLResponse<T> {
   data?: T;
   errors?: Array<{ message: string }>;
+}
+
+// Track category interface for search
+export interface TrackCategory {
+  uid: string;
+  name: string;
+  url_key: string;
+  product_count: number;
+}
+
+// Version filters for track search
+export interface VersionFilters {
+  year?: number;
+  dateFrom?: string;
+  dateTo?: string;
+  venue?: string;
+  isSoundboard?: boolean;
 }
 
 interface FetchOptions {
@@ -454,6 +474,25 @@ const GET_SONG_BY_ID_QUERY = `
           url_key
         }
       }
+    }
+  }
+`;
+
+// Query to get track categories (categories where is_song = 1)
+const GET_TRACK_CATEGORIES_QUERY = `
+  query GetTrackCategories($pageSize: Int!, $currentPage: Int!) {
+    categories(
+      filters: { is_song: { eq: "1" } }
+      pageSize: $pageSize
+      currentPage: $currentPage
+    ) {
+      items {
+        uid
+        name
+        url_key
+        product_count
+      }
+      total_count
     }
   }
 `;
@@ -1102,11 +1141,62 @@ export async function getTrack(
   return album.tracks.find(t => t.slug === trackSlug) || null;
 }
 
+// Get all track categories (categories where is_song = 1)
+// Used for track search - caches results for performance
+async function getTrackCategories(): Promise<TrackCategory[]> {
+  if (trackCategoryCache) {
+    console.log('[getTrackCategories] Using cache:', trackCategoryCache.length, 'tracks');
+    return trackCategoryCache;
+  }
+
+  console.log('[getTrackCategories] Fetching all track categories...');
+  const PAGE_SIZE = 200;
+  let allTracks: TrackCategory[] = [];
+  let currentPage = 1;
+  let totalCount = 0;
+
+  // Fetch first page
+  const firstPage = await graphqlFetch<{
+    categories: { items: TrackCategory[]; total_count: number };
+  }>(GET_TRACK_CATEGORIES_QUERY, { pageSize: PAGE_SIZE, currentPage: 1 });
+
+  allTracks = firstPage.categories.items || [];
+  totalCount = firstPage.categories.total_count || 0;
+
+  // Fetch remaining pages
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+  for (currentPage = 2; currentPage <= totalPages; currentPage++) {
+    const page = await graphqlFetch<{
+      categories: { items: TrackCategory[]; total_count: number };
+    }>(GET_TRACK_CATEGORIES_QUERY, { pageSize: PAGE_SIZE, currentPage });
+    allTracks = allTracks.concat(page.categories.items || []);
+  }
+
+  console.log('[getTrackCategories] Fetched', allTracks.length, 'track categories');
+  trackCategoryCache = allTracks;
+  return allTracks;
+}
+
+// Search track categories by name
+export async function searchTrackCategories(query: string): Promise<TrackCategory[]> {
+  if (!query.trim()) return [];
+
+  const allTracks = await getTrackCategories();
+  const searchLower = query.toLowerCase();
+
+  const matches = allTracks.filter(track =>
+    track.name.toLowerCase().includes(searchLower)
+  );
+
+  console.log('[searchTrackCategories] Query:', query, '-> Matches:', matches.length);
+  return matches.slice(0, 20);
+}
+
 // Search across artists, albums, and tracks
 export async function search(query: string): Promise<{
   artists: Artist[];
   albums: Album[];
-  tracks: Song[];
+  tracks: TrackCategory[];
 }> {
   console.log('[search] Starting search for:', query);
 
@@ -1115,25 +1205,21 @@ export async function search(query: string): Promise<{
   }
 
   try {
-    // Search artists - get all and filter client-side
-    // (Magento categoryList doesn't support name search/match)
-    console.log('[search] Fetching all artists...');
-    const allArtists = await getArtists();
-    console.log('[search] Got artists:', allArtists.length);
+    // Search artists and track categories in parallel
+    const [allArtists, matchingTracks] = await Promise.all([
+      getArtists(),
+      searchTrackCategories(query)
+    ]);
 
     const searchLower = query.toLowerCase();
     const artists = allArtists.filter(artist =>
       artist.name.toLowerCase().includes(searchLower)
-    ).slice(0, 10); // Limit to 10 results
+    ).slice(0, 10);
 
-    console.log('[search] Filtered artists:', artists.length);
-
-    // For now, just return artists
-    // Product search has issues with Magento GraphQL - will fix separately
-    console.log('[search] Returning results:', { artists: artists.length, albums: 0, tracks: 0 });
-    return { artists, albums: [], tracks: [] };
+    console.log('[search] Results:', { artists: artists.length, tracks: matchingTracks.length });
+    return { artists, albums: [], tracks: matchingTracks };
   } catch (error) {
-    console.error('[search] Search failed with error:', error);
+    console.error('[search] Search failed:', error);
     return { artists: [], albums: [], tracks: [] };
   }
 }

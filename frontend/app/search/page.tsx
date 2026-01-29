@@ -1,16 +1,21 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRecentSearches } from '@/hooks/useRecentSearches';
 import { useRouter } from 'next/navigation';
-import { type Artist, type Album, type Song } from '@/lib/api';
-import { useQueue } from '@/context/QueueContext';
-import Link from 'next/link';
+import { type Artist, type Album } from '@/lib/api';
+
+interface TrackCategory {
+  uid: string;
+  name: string;
+  url_key: string;
+  product_count: number;
+}
 
 interface SearchResults {
   artists: Artist[];
   albums: Album[];
-  tracks: Song[];
+  tracks: TrackCategory[];
 }
 
 export default function SearchPage() {
@@ -21,7 +26,6 @@ export default function SearchPage() {
   const inputRef = useRef<HTMLInputElement>(null);
   const { recentSearches, addSearch, removeSearch, clearSearches } = useRecentSearches();
   const router = useRouter();
-  const { addToUpNext } = useQueue();
 
   // Auto-focus input on mount
   useEffect(() => {
@@ -80,9 +84,10 @@ export default function SearchPage() {
     router.push(`/artists/${album.artistSlug}`);
   };
 
-  const handleTrackClick = (track: Song) => {
-    addSearch(track.title);
-    addToUpNext(track);
+  const handleTrackClick = (track: TrackCategory) => {
+    addSearch(track.name);
+    // TODO: Navigate to track page when route is available
+    // router.push(`/tracks/${track.url_key}`);
   };
 
   return (
@@ -238,28 +243,36 @@ export default function SearchPage() {
 
                 {/* Tracks */}
                 {results.tracks.length > 0 && (
-                  <div>
-                    <h3 className="text-white font-bold text-xl mb-4">Tracks</h3>
-                    <div className="space-y-1">
+                  <section className="mb-8">
+                    <h2 className="text-xl font-semibold text-[#e8dcc8] mb-4">Tracks</h2>
+                    <div className="space-y-2">
                       {results.tracks.map((track) => (
-                        <button
-                          key={track.id}
+                        <div
+                          key={track.uid}
                           onClick={() => handleTrackClick(track)}
-                          className="w-full flex items-center gap-3 p-3 hover:bg-[#2d2a26] rounded transition-colors text-left"
+                          className="flex items-center gap-4 p-3 rounded-lg bg-[#252220] hover:bg-[#2a2520] transition-colors cursor-pointer"
                         >
-                          <div className="w-12 h-12 bg-gray-700 rounded flex items-center justify-center flex-shrink-0">
-                            <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
+                          <div className="w-12 h-12 rounded-lg bg-[#1c1a17] flex items-center justify-center flex-shrink-0">
+                            <svg className="w-6 h-6 text-[#d4a060]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                    d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
                             </svg>
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-white font-medium truncate">{track.title}</p>
-                            <p className="text-gray-400 text-sm truncate">{track.artistName}</p>
+                            <h3 className="text-[#e8dcc8] font-medium truncate">{track.name}</h3>
+                            <p className="text-sm text-[#a09080]">
+                              {track.product_count} {track.product_count === 1 ? 'version' : 'versions'}
+                            </p>
                           </div>
-                        </button>
+                          <div className="text-[#a09080]">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </div>
+                        </div>
                       ))}
                     </div>
-                  </div>
+                  </section>
                 )}
               </>
             )}
