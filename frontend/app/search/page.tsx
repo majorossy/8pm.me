@@ -87,8 +87,9 @@ export default function SearchPage() {
 
   return (
     <div className="min-h-screen bg-[#1c1a17] pb-[140px] md:pb-[90px] safe-top">
-      {/* Header */}
-      <div className="p-6 md:p-8 border-b border-white/10">
+      <div className="max-w-[1000px] mx-auto">
+        {/* Header */}
+        <div className="p-6 md:p-8 border-b border-white/10">
         <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">Search</h1>
 
         {/* Search input */}
@@ -264,6 +265,7 @@ export default function SearchPage() {
             )}
           </div>
         )}
+      </div>
       </div>
     </div>
   );

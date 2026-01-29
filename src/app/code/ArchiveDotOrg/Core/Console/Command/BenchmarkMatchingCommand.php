@@ -33,7 +33,7 @@ class BenchmarkMatchingCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName('archivedotorg:benchmark-matching')
+        $this->setName('archive:benchmark:matching')
             ->setDescription('Run performance benchmarks for track matching algorithms')
             ->addOption(
                 'tracks',

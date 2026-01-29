@@ -136,14 +136,12 @@ class DownloadCommand extends BaseLoggedCommand
         $io->title("Downloading: {$artistInfo['artist_name']} ($collectionId)");
         $io->text("Correlation ID: $correlationId");
 
+        // Set current artist for progress tracking
+        $this->setCurrentArtist($artistInfo['artist_name']);
+
         // Acquire lock
         try {
-            $lockAcquired = $this->lockService->acquire('download', $collectionId, 300);
-            if (!$lockAcquired) {
-                $io->error("Another download is already running for $collectionId");
-                $io->text('Use bin/magento archive:status to check progress');
-                return self::FAILURE;
-            }
+            $lockToken = $this->lockService->acquire('download', $collectionId, 300);
         } catch (LockException $e) {
             $io->error($e->getMessage());
             return self::FAILURE;
@@ -225,7 +223,7 @@ class DownloadCommand extends BaseLoggedCommand
         } finally {
             // Always release lock
             try {
-                $this->lockService->release('download', $collectionId);
+                $this->lockService->release($lockToken);
             } catch (\Exception $e) {
                 $this->logger->error('Failed to release lock', [
                     'collection_id' => $collectionId,

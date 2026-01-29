@@ -1,0 +1,198 @@
+# ========================================
+# Cabinet Configuration
+# ========================================
+#
+# Generated: 2026-01-29 14:55:14
+# Albums Populated: 3
+# Tracks Populated: 17
+# Status: Ready for use
+#
+# TODO:
+#   1. Add year to each album
+#   2. Add track aliases for better matching
+#   3. Add medley patterns (if applicable)
+#   4. Run validation: bin/magento archive:validate cabinet
+#
+# See template.yaml for structure reference.
+# ========================================
+
+# ========================================
+# ARTIST SECTION
+# ========================================
+artist:
+  name: "Cabinet"
+  collection_id: "Cabinet"
+  url_key: "cabinet"
+
+# ========================================
+# ALBUMS SECTION
+# ========================================
+albums:
+  - key: "cabinet"
+    name: "Cabinet"
+    url_key: "cabinetalbum"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "leap"
+    name: "Leap"
+    url_key: "leap"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "stand-and-sway"
+    name: "Stand and Sway"
+    url_key: "standandsway"
+    type: "studio"
+    # TODO: Add year field
+
+# ========================================
+# TRACKS SECTION
+# ========================================
+tracks:
+  - key: "doors"
+    name: "Doors"
+    url_key: "doors"
+    albums: ["leap"]
+    canonical_album: "leap"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "heavy-rain"
+    name: "Heavy Rain"
+    url_key: "heavyrain"
+    albums: ["leap"]
+    canonical_album: "leap"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "two-timer"
+    name: "Two Timer"
+    url_key: "twotimer"
+    albums: ["leap"]
+    canonical_album: "leap"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "eleanor"
+    name: "Eleanor"
+    url_key: "eleanor"
+    albums: ["leap"]
+    canonical_album: "leap"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "susquehanna-breakdown"
+    name: "Susquehanna Breakdown"
+    url_key: "susquehannabreakdown"
+    albums: ["leap"]
+    canonical_album: "leap"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "hit-it-on-the-head"
+    name: "Hit It On The Head"
+    url_key: "hititonthehead"
+    albums: ["leap"]
+    canonical_album: "leap"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "wine-and-shine"
+    name: "Wine And Shine"
+    url_key: "wineandshine"
+    albums: ["leap"]
+    canonical_album: "leap"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "carry-me-in-a-bucket"
+    name: "Carry Me In A Bucket"
+    url_key: "carrymeinabucket"
+    albums: ["leap"]
+    canonical_album: "leap"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "oxygen"
+    name: "Oxygen"
+    url_key: "oxygen"
+    albums: ["leap"]
+    canonical_album: "leap"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "diamond-joe"
+    name: "Diamond Joe"
+    url_key: "diamondjoe"
+    albums: ["leap"]
+    canonical_album: "leap"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "gather-all-ye"
+    name: "Gather All Ye"
+    url_key: "gatherallye"
+    albums: ["leap"]
+    canonical_album: "leap"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "old-time-songs"
+    name: "Old Time Songs"
+    url_key: "oldtimesongs"
+    albums: ["celebration"]
+    canonical_album: "celebration"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "pennsylvania"
+    name: "Pennsylvania"
+    url_key: "pennsylvania"
+    albums: ["celebration"]
+    canonical_album: "celebration"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "red-river-valley"
+    name: "Red River Valley"
+    url_key: "redrivervalley"
+    albums: ["celebration"]
+    canonical_album: "celebration"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "celebration"
+    name: "Celebration"
+    url_key: "celebration"
+    albums: ["celebration"]
+    canonical_album: "celebration"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "pine-billy"
+    name: "Pine Billy"
+    url_key: "pinebilly"
+    albums: ["celebration"]
+    canonical_album: "celebration"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "home-now"
+    name: "Home Now"
+    url_key: "homenow"
+    albums: ["celebration"]
+    canonical_album: "celebration"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+# ========================================
+# MEDLEYS SECTION (Optional)
+# ========================================
+# TODO: Add common medley patterns if applicable
+# Example:
+# medleys:
+#   - pattern: "Track A > Track B"
+#     tracks: ["track-a-key", "track-b-key"]
+#     separator: ">"
+# medleys: []

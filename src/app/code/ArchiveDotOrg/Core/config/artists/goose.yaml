@@ -1,0 +1,434 @@
+# ========================================
+# Goose Configuration
+# ========================================
+#
+# Generated: 2026-01-29 14:55:14
+# Albums Populated: 5
+# Tracks Populated: 45
+# Status: Ready for use
+#
+# TODO:
+#   1. Add year to each album
+#   2. Add track aliases for better matching
+#   3. Add medley patterns (if applicable)
+#   4. Run validation: bin/magento archive:validate goose
+#
+# See template.yaml for structure reference.
+# ========================================
+
+# ========================================
+# ARTIST SECTION
+# ========================================
+artist:
+  name: "Goose"
+  collection_id: "Goose"
+  url_key: "goose"
+
+# ========================================
+# ALBUMS SECTION
+# ========================================
+albums:
+  - key: "moon-cabin"
+    name: "Moon Cabin"
+    url_key: "mooncabin"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "shenanigans-nite-club"
+    name: "Shenanigans Nite Club"
+    url_key: "shenanigansiteclub"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "dripfield"
+    name: "Dripfield"
+    url_key: "dripfield"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "everything-must-go"
+    name: "Everything Must Go"
+    url_key: "everythingmustgo"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "chain-yer-dragon"
+    name: "Chain Yer Dragon"
+    url_key: "chainyerdragon"
+    type: "studio"
+    # TODO: Add year field
+
+# ========================================
+# TRACKS SECTION
+# ========================================
+tracks:
+  - key: "so-ready"
+    name: "So Ready"
+    url_key: "soready"
+    albums: ["shenanigans-nite-club"]
+    canonical_album: "shenanigans-nite-club"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "stellite"
+    name: "(s∆tellite)"
+    url_key: "satellite"
+    albums: ["shenanigans-nite-club"]
+    canonical_album: "shenanigans-nite-club"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "madhuvan"
+    name: "Madhuvan"
+    url_key: "madhuvan"
+    albums: ["shenanigans-nite-club"]
+    canonical_album: "shenanigans-nite-club"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "sos"
+    name: "SOS"
+    url_key: "sos"
+    albums: ["shenanigans-nite-club"]
+    canonical_album: "shenanigans-nite-club"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dawn"
+    name: "(dawn)"
+    url_key: "dawn"
+    albums: ["shenanigans-nite-club"]
+    canonical_album: "shenanigans-nite-club"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "flodown"
+    name: "Flodown"
+    url_key: "flodown"
+    albums: ["shenanigans-nite-club"]
+    canonical_album: "shenanigans-nite-club"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "spirit-of-the-dark-horse"
+    name: "Spirit Of The Dark Horse"
+    url_key: "spiritofthedarkhorse"
+    albums: ["shenanigans-nite-club"]
+    canonical_album: "shenanigans-nite-club"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "7hunder"
+    name: "(7hunder)"
+    url_key: "thunder"
+    albums: ["shenanigans-nite-club"]
+    canonical_album: "shenanigans-nite-club"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-labyrinth"
+    name: "The Labyrinth"
+    url_key: "thelabyrinth"
+    albums: ["shenanigans-nite-club"]
+    canonical_album: "shenanigans-nite-club"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "borne"
+    name: "Borne"
+    url_key: "borne"
+    albums: ["dripfield"]
+    canonical_album: "dripfield"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "hungersite"
+    name: "Hungersite"
+    url_key: "hungersite"
+    albums: ["dripfield"]
+    canonical_album: "dripfield"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dripfield"
+    name: "Dripfield"
+    url_key: "dripfield"
+    albums: ["dripfield"]
+    canonical_album: "dripfield"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "slow-ready"
+    name: "Slow Ready"
+    url_key: "slowready"
+    albums: ["dripfield"]
+    canonical_album: "dripfield"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-whales"
+    name: "The Whales"
+    url_key: "thewhales"
+    albums: ["dripfield"]
+    canonical_album: "dripfield"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "arrow"
+    name: "Arrow"
+    url_key: "arrow"
+    albums: ["dripfield"]
+    canonical_album: "dripfield"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "hot-tea"
+    name: "Hot Tea"
+    url_key: "hottea"
+    albums: ["dripfield"]
+    canonical_album: "dripfield"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "moonrise"
+    name: "Moonrise"
+    url_key: "moonrise"
+    albums: ["dripfield"]
+    canonical_album: "dripfield"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "honeybee"
+    name: "Honeybee"
+    url_key: "honeybee"
+    albums: ["dripfield"]
+    canonical_album: "dripfield"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "726"
+    name: "726"
+    url_key: "album726"
+    albums: ["dripfield"]
+    canonical_album: "dripfield"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "everything-must-go"
+    name: "Everything Must Go"
+    url_key: "everythingmustgo"
+    albums: ["everything-must-go"]
+    canonical_album: "everything-must-go"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "give-it-time"
+    name: "Give It Time"
+    url_key: "giveittime"
+    albums: ["everything-must-go"]
+    canonical_album: "everything-must-go"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dustin-hoffman"
+    name: "Dustin Hoffman"
+    url_key: "dustinhoffman"
+    albums: ["everything-must-go"]
+    canonical_album: "everything-must-go"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "your-direction"
+    name: "Your Direction"
+    url_key: "yourdirection"
+    albums: ["everything-must-go"]
+    canonical_album: "everything-must-go"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "thatch"
+    name: "Thatch"
+    url_key: "thatch"
+    albums: ["everything-must-go"]
+    canonical_album: "everything-must-go"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "lead-up"
+    name: "Lead Up"
+    url_key: "leadup"
+    albums: ["everything-must-go"]
+    canonical_album: "everything-must-go"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "animal"
+    name: "Animal"
+    url_key: "animal"
+    albums: ["everything-must-go"]
+    canonical_album: "everything-must-go"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "red-bird"
+    name: "Red Bird"
+    url_key: "redbird"
+    albums: ["everything-must-go"]
+    canonical_album: "everything-must-go"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "atlas-dogs"
+    name: "Atlas Dogs"
+    url_key: "atlasdogs"
+    albums: ["everything-must-go"]
+    canonical_album: "everything-must-go"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "california-magic"
+    name: "California Magic"
+    url_key: "californiamagic"
+    albums: ["everything-must-go"]
+    canonical_album: "everything-must-go"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "feel-it-now"
+    name: "Feel It Now"
+    url_key: "feelitnow"
+    albums: ["everything-must-go"]
+    canonical_album: "everything-must-go"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "iguana-song"
+    name: "Iguana Song"
+    url_key: "iguanasong"
+    albums: ["everything-must-go"]
+    canonical_album: "everything-must-go"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "silver-rising"
+    name: "Silver Rising"
+    url_key: "silverrising"
+    albums: ["everything-must-go"]
+    canonical_album: "everything-must-go"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "how-it-ends"
+    name: "How It Ends"
+    url_key: "howitends"
+    albums: ["everything-must-go"]
+    canonical_album: "everything-must-go"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "hot-love-and-the-lazy-poet"
+    name: "Hot Love & The Lazy Poet"
+    url_key: "hotlovethelazy poet"
+    albums: ["chain-yer-dragon"]
+    canonical_album: "chain-yer-dragon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "madalena"
+    name: "Madalena"
+    url_key: "madalena"
+    albums: ["chain-yer-dragon"]
+    canonical_album: "chain-yer-dragon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "royal"
+    name: "Royal"
+    url_key: "royal"
+    albums: ["chain-yer-dragon"]
+    canonical_album: "chain-yer-dragon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "turbulence-and-the-night-rays"
+    name: "Turbulence & The Night Rays"
+    url_key: "turbulencethenightrays"
+    albums: ["chain-yer-dragon"]
+    canonical_album: "chain-yer-dragon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "echoes-of-a-rose"
+    name: "Echoes of a Rose"
+    url_key: "echoesofarose"
+    albums: ["chain-yer-dragon"]
+    canonical_album: "chain-yer-dragon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "mr-action"
+    name: "Mr. Action"
+    url_key: "mraction"
+    albums: ["chain-yer-dragon"]
+    canonical_album: "chain-yer-dragon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: ""
+    name: "....."
+    url_key: "fiveperiods"
+    albums: ["chain-yer-dragon"]
+    canonical_album: "chain-yer-dragon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dr-darkness"
+    name: "Dr. Darkness"
+    url_key: "drdarkness"
+    albums: ["chain-yer-dragon"]
+    canonical_album: "chain-yer-dragon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "empress-of-organos"
+    name: "Empress of Organos"
+    url_key: "empressoforganos"
+    albums: ["chain-yer-dragon"]
+    canonical_album: "chain-yer-dragon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "jed-stone"
+    name: "Jed Stone"
+    url_key: "jedstone"
+    albums: ["chain-yer-dragon"]
+    canonical_album: "chain-yer-dragon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "rockdale"
+    name: "Rockdale"
+    url_key: "rockdale"
+    albums: ["chain-yer-dragon"]
+    canonical_album: "chain-yer-dragon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "factory-fiction"
+    name: "Factory Fiction"
+    url_key: "factoryfiction"
+    albums: ["chain-yer-dragon"]
+    canonical_album: "chain-yer-dragon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+# ========================================
+# MEDLEYS SECTION (Optional)
+# ========================================
+# TODO: Add common medley patterns if applicable
+# Example:
+# medleys:
+#   - pattern: "Track A > Track B"
+#     tracks: ["track-a-key", "track-b-key"]
+#     separator: ">"
+# medleys: []

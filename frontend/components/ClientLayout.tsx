@@ -15,7 +15,6 @@ import { MagentoAuthProvider } from '@/context/MagentoAuthContext';
 import { UnifiedAuthProvider } from '@/context/UnifiedAuthContext';
 import BottomPlayer from '@/components/BottomPlayer';
 import Queue from '@/components/Queue';
-import NavDrawer from '@/components/NavDrawer';
 import JamifyTopBar from '@/components/JamifyTopBar';
 import JamifyMobileNav from '@/components/JamifyMobileNav';
 import JamifyFullPlayer from '@/components/JamifyFullPlayer';
@@ -114,13 +113,32 @@ function InnerLayout({ children }: { children: ReactNode }) {
 
         {/* Footer */}
         <footer className="px-4 md:px-8 py-6 mt-8 border-t border-[#3a3632]/30">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-2 text-center md:text-left">
-            <p className="text-[10px] text-[#6a6458] uppercase tracking-wider font-sans">
-              Please copy freely - never sell
-            </p>
-            <p className="text-[9px] text-[#4a4640] uppercase tracking-wider font-sans">
-              Powered by Archive.org
-            </p>
+          <div className="max-w-[1000px] mx-auto">
+            {/* Menu Items */}
+            <nav className="flex flex-wrap items-center justify-center gap-4 md:gap-6 mb-4" aria-label="Footer navigation">
+              <a href="/" className="text-sm text-[#8a8478] hover:text-[#d4a060] transition-colors font-sans">
+                Home
+              </a>
+              <a href="/search" className="text-sm text-[#8a8478] hover:text-[#d4a060] transition-colors font-sans">
+                Search
+              </a>
+              <a href="/library" className="text-sm text-[#8a8478] hover:text-[#d4a060] transition-colors font-sans">
+                Your Library
+              </a>
+              <a href="/account" className="text-sm text-[#8a8478] hover:text-[#d4a060] transition-colors font-sans">
+                Sign In
+              </a>
+            </nav>
+
+            {/* Copyright / Attribution */}
+            <div className="flex flex-col md:flex-row items-center justify-between gap-2 text-center md:text-left">
+              <p className="text-[10px] text-[#6a6458] uppercase tracking-wider font-sans">
+                Please copy freely - never sell
+              </p>
+              <p className="text-[9px] text-[#4a4640] uppercase tracking-wider font-sans">
+                Powered by Archive.org
+              </p>
+            </div>
           </div>
         </footer>
       </main>
@@ -134,10 +152,7 @@ function InnerLayout({ children }: { children: ReactNode }) {
       {/* Mobile: Full-screen player (expands from mini player) */}
       {isMobile && <JamifyFullPlayer />}
 
-      {/* Navigation drawer (left side) */}
-      <NavDrawer />
-
-      {/* Queue drawer (right side) */}
+      {/* Queue drawer (left side) */}
       <Queue />
 
       {/* Search overlay */}

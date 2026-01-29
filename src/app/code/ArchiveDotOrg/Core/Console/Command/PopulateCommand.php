@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace ArchiveDotOrg\Core\Console\Command;
 
+use ArchiveDotOrg\Core\Api\LockServiceInterface;
 use ArchiveDotOrg\Core\Api\MetadataDownloaderInterface;
 use ArchiveDotOrg\Core\Api\TrackPopulatorServiceInterface;
 use ArchiveDotOrg\Core\Api\TrackMatcherServiceInterface;
+use ArchiveDotOrg\Core\Exception\LockException;
 use ArchiveDotOrg\Core\Model\Config;
+use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\App\State;
 use Magento\Framework\App\Area;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,14 +30,16 @@ use Symfony\Component\Console\Helper\ProgressBar;
  * - Unmatched track export
  * - Better progress reporting
  * - Match type/confidence display
+ * - Auto-logging to archivedotorg_import_run table
  */
-class PopulateCommand extends Command
+class PopulateCommand extends BaseLoggedCommand
 {
     private TrackPopulatorServiceInterface $trackPopulatorService;
     private TrackMatcherServiceInterface $trackMatcherService;
     private MetadataDownloaderInterface $metadataDownloader;
     private Config $config;
     private State $state;
+    private LockServiceInterface $lockService;
 
     public function __construct(
         TrackPopulatorServiceInterface $trackPopulatorService,
@@ -41,14 +47,20 @@ class PopulateCommand extends Command
         MetadataDownloaderInterface $metadataDownloader,
         Config $config,
         State $state,
+        LockServiceInterface $lockService,
+        LoggerInterface $logger,
+        ResourceConnection $resourceConnection,
         ?string $name = null
     ) {
-        parent::__construct($name);
         $this->trackPopulatorService = $trackPopulatorService;
         $this->trackMatcherService = $trackMatcherService;
         $this->metadataDownloader = $metadataDownloader;
         $this->config = $config;
         $this->state = $state;
+        $this->lockService = $lockService;
+        $this->logger = $logger;
+        $this->resourceConnection = $resourceConnection;
+        parent::__construct($name);
     }
 
     protected function configure(): void
@@ -110,7 +122,11 @@ HELP
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function doExecute(
+        InputInterface $input,
+        OutputInterface $output,
+        string $correlationId
+    ): int
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -165,106 +181,140 @@ HELP
 
         $io->title("Archive.org Track Populate: $artistName");
 
+        // Set artist for progress tracking
+        $this->setCurrentArtist($artistName);
+
         if ($dryRun) {
             $io->note('DRY RUN MODE - No products will be created');
         }
 
-        // Build indexes for matching
-        $io->section('Building track matching indexes...');
+        // Acquire lock
         try {
-            $this->trackMatcherService->buildIndexes($artistKey);
-            $io->success("Indexes built for: $artistKey");
-        } catch (\Exception $e) {
-            $io->error("Failed to build indexes: " . $e->getMessage());
-            $io->text('This may indicate missing or invalid YAML configuration.');
+            $lockToken = $this->lockService->acquire('populate', $collectionId, 300);
+        } catch (LockException $e) {
+            $io->error($e->getMessage());
             return Command::FAILURE;
         }
 
-        // Track unmatched for export
-        $unmatchedTracks = [];
-
-        // Progress callback
-        $progressBar = null;
-        $progressCallback = function (string $message) use ($io, &$progressBar) {
-            if ($progressBar) {
-                $progressBar->clear();
-            }
-            $io->text($message);
-            if ($progressBar) {
-                $progressBar->display();
-            }
-        };
-
-        // Execute population
-        $io->section('Processing cached metadata...');
-
         try {
-            $result = $this->trackPopulatorService->populate(
-                $artistName,
-                $collectionId,
-                $limit,
-                $dryRun,
-                $progressCallback
-            );
-
-            // Display results
-            $io->newLine();
-            $io->section('Results');
-
-            $io->table(
-                ['Metric', 'Count'],
-                [
-                    ['Shows processed', $result['shows_processed']],
-                    ['Tracks matched', $result['tracks_matched']],
-                    ['Tracks unmatched', $result['tracks_unmatched']],
-                    ['Products created', $result['products_created']],
-                    ['Products skipped', $result['products_skipped']],
-                    ['Categories populated', $result['categories_populated']],
-                    ['Categories empty', $result['categories_empty']],
-                ]
-            );
-
-            // Calculate match rate
-            $totalTracks = $result['tracks_matched'] + $result['tracks_unmatched'];
-            if ($totalTracks > 0) {
-                $matchRate = ($result['tracks_matched'] / $totalTracks) * 100;
-                $io->text(sprintf('Match rate: <info>%.1f%%</info>', $matchRate));
+            // Build indexes for matching
+            $io->section('Building track matching indexes...');
+            try {
+                $this->trackMatcherService->buildIndexes($artistKey);
+                $io->success("Indexes built for: $artistKey");
+            } catch (\Exception $e) {
+                $io->error("Failed to build indexes: " . $e->getMessage());
+                $io->text('This may indicate missing or invalid YAML configuration.');
+                return Command::FAILURE;
             }
 
-            // Display errors if any
-            if (!empty($result['errors'])) {
-                $io->section('Errors');
-                foreach ($result['errors'] as $error) {
-                    $io->text("  • $error");
+            // Track unmatched for export
+            $unmatchedTracks = [];
+
+            // Progress callback
+            $progressBar = null;
+            $progressCallback = function (string $message) use ($io, &$progressBar) {
+                if ($progressBar) {
+                    $progressBar->clear();
                 }
+                $io->text($message);
+                if ($progressBar) {
+                    $progressBar->display();
+                }
+            };
+
+            // Execute population
+            $io->section('Processing cached metadata...');
+
+            try {
+                $result = $this->trackPopulatorService->populate(
+                    $artistName,
+                    $collectionId,
+                    $limit,
+                    $dryRun,
+                    $progressCallback
+                );
+
+                // Update progress tracking in database
+                if (!$dryRun) {
+                    $this->updateProgress(
+                        $correlationId,
+                        $result['shows_processed'],      // items_processed
+                        $result['tracks_matched'] ?? 0   // items_successful
+                    );
+                }
+
+                // Display results
+                $io->newLine();
+                $io->section('Results');
+
+                $io->table(
+                    ['Metric', 'Count'],
+                    [
+                        ['Shows processed', $result['shows_processed']],
+                        ['Tracks matched', $result['tracks_matched']],
+                        ['Tracks unmatched', $result['tracks_unmatched']],
+                        ['Products created', $result['products_created']],
+                        ['Products updated', $result['products_updated']],
+                        ['Products skipped', $result['products_skipped']],
+                        ['Categories populated', $result['categories_populated']],
+                        ['Categories empty', $result['categories_empty']],
+                    ]
+                );
+
+                // Calculate match rate
+                $totalTracks = $result['tracks_matched'] + $result['tracks_unmatched'];
+                if ($totalTracks > 0) {
+                    $matchRate = ($result['tracks_matched'] / $totalTracks) * 100;
+                    $io->text(sprintf('Match rate: <info>%.1f%%</info>', $matchRate));
+                }
+
+                // Display errors if any
+                if (!empty($result['errors'])) {
+                    $io->section('Errors');
+                    foreach ($result['errors'] as $error) {
+                        $io->text("  • $error");
+                    }
+                }
+
+                // Export unmatched tracks if requested
+                if ($exportUnmatched && $result['tracks_unmatched'] > 0) {
+                    $io->section('Exporting unmatched tracks...');
+                    // Note: This requires TrackPopulatorService to track unmatched names
+                    $io->warning('Unmatched track export not yet implemented in TrackPopulatorService');
+                    $io->text("Run: bin/magento archive:show-unmatched $artistName");
+                }
+
+                if ($dryRun) {
+                    $io->note('This was a dry run. Use without --dry-run to create products.');
+                } else {
+                    $io->success("Population complete for: $artistName");
+                }
+
+                // Clean up indexes to free memory
+                $this->trackMatcherService->clearIndexes($artistKey);
+
+                return Command::SUCCESS;
+
+            } catch (\Exception $e) {
+                if ($progressBar) {
+                    $progressBar->finish();
+                }
+                $io->error("Population failed: " . $e->getMessage());
+                $this->trackMatcherService->clearIndexes($artistKey);
+                return Command::FAILURE;
             }
 
-            // Export unmatched tracks if requested
-            if ($exportUnmatched && $result['tracks_unmatched'] > 0) {
-                $io->section('Exporting unmatched tracks...');
-                // Note: This requires TrackPopulatorService to track unmatched names
-                $io->warning('Unmatched track export not yet implemented in TrackPopulatorService');
-                $io->text("Run: bin/magento archive:show-unmatched $artistName");
+        } finally {
+            // Always release lock
+            try {
+                $this->lockService->release($lockToken);
+            } catch (\Exception $e) {
+                $this->logger->error('Failed to release lock', [
+                    'collection_id' => $collectionId,
+                    'error' => $e->getMessage()
+                ]);
             }
-
-            if ($dryRun) {
-                $io->note('This was a dry run. Use without --dry-run to create products.');
-            } else {
-                $io->success("Population complete for: $artistName");
-            }
-
-            // Clean up indexes to free memory
-            $this->trackMatcherService->clearIndexes($artistKey);
-
-            return Command::SUCCESS;
-
-        } catch (\Exception $e) {
-            if ($progressBar) {
-                $progressBar->finish();
-            }
-            $io->error("Population failed: " . $e->getMessage());
-            $this->trackMatcherService->clearIndexes($artistKey);
-            return Command::FAILURE;
         }
     }
 }

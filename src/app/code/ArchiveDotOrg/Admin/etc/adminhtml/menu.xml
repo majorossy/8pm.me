@@ -1,43 +1,40 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
     <menu>
-        <add id="ArchiveDotOrg_Admin::main"
-             title="Archive.org Import"
-             module="ArchiveDotOrg_Admin"
-             sortOrder="100"
-             resource="ArchiveDotOrg_Admin::main"
-             parent="Magento_Backend::content"/>
-        
+        <!-- Admin Dashboard with new route to avoid conflict -->
         <add id="ArchiveDotOrg_Admin::dashboard"
              title="Dashboard"
              module="ArchiveDotOrg_Admin"
-             sortOrder="10"
-             action="archivedotorg/dashboard/index"
+             sortOrder="2"
+             action="archivedotorg/admindashboard/index"
              resource="ArchiveDotOrg_Admin::dashboard"
-             parent="ArchiveDotOrg_Admin::main"/>
-        
+             parent="ArchiveDotOrg_Core::archive"/>
+
+        <!-- Artists Grid -->
         <add id="ArchiveDotOrg_Admin::artists"
              title="Artists"
              module="ArchiveDotOrg_Admin"
-             sortOrder="20"
+             sortOrder="15"
              action="archivedotorg/artist/index"
              resource="ArchiveDotOrg_Admin::artists"
-             parent="ArchiveDotOrg_Admin::main"/>
-        
+             parent="ArchiveDotOrg_Core::archive"/>
+
+        <!-- Import History Grid -->
         <add id="ArchiveDotOrg_Admin::history"
              title="Import History"
              module="ArchiveDotOrg_Admin"
-             sortOrder="30"
+             sortOrder="25"
              action="archivedotorg/history/index"
              resource="ArchiveDotOrg_Admin::history"
-             parent="ArchiveDotOrg_Admin::main"/>
-        
+             parent="ArchiveDotOrg_Core::archive"/>
+
+        <!-- Unmatched Tracks Grid -->
         <add id="ArchiveDotOrg_Admin::unmatched"
              title="Unmatched Tracks"
              module="ArchiveDotOrg_Admin"
-             sortOrder="40"
+             sortOrder="35"
              action="archivedotorg/unmatched/index"
              resource="ArchiveDotOrg_Admin::unmatched"
-             parent="ArchiveDotOrg_Admin::main"/>
+             parent="ArchiveDotOrg_Core::archive"/>
     </menu>
 </config>

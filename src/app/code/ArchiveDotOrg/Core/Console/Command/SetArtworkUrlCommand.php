@@ -40,7 +40,7 @@ class SetArtworkUrlCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName('archivedotorg:set-artwork-url')
+        $this->setName('archive:artwork:set-url')
             ->setDescription('Manually set Wikipedia artwork URL for an album category')
             ->addArgument(
                 self::ARG_CATEGORY_ID,
@@ -81,9 +81,9 @@ class SetArtworkUrlCommand extends Command
             $output->writeln('<error>Please provide both category-id and artwork-url, or use --list-missing</error>');
             $output->writeln('');
             $output->writeln('<info>Usage:</info>');
-            $output->writeln('  Set artwork:  bin/magento archivedotorg:set-artwork-url 1234 "https://url"');
-            $output->writeln('  Clear artwork: bin/magento archivedotorg:set-artwork-url 1234 none');
-            $output->writeln('  List missing:  bin/magento archivedotorg:set-artwork-url --list-missing');
+            $output->writeln('  Set artwork:  bin/magento archive:artwork:set-url 1234 "https://url"');
+            $output->writeln('  Clear artwork: bin/magento archive:artwork:set-url 1234 none');
+            $output->writeln('  List missing:  bin/magento archive:artwork:set-url --list-missing');
             return Command::FAILURE;
         }
 
@@ -243,10 +243,10 @@ class SetArtworkUrlCommand extends Command
 
         $output->writeln('');
         $output->writeln('<info>To set artwork:</info>');
-        $output->writeln('  bin/magento archivedotorg:set-artwork-url <category-id> "<wikipedia-url>"');
+        $output->writeln('  bin/magento archive:artwork:set-url <category-id> "<wikipedia-url>"');
         $output->writeln('');
         $output->writeln('<info>Example:</info>');
-        $output->writeln('  bin/magento archivedotorg:set-artwork-url 1234 "https://upload.wikimedia.org/wikipedia/en/a/ab/Album.jpg"');
+        $output->writeln('  bin/magento archive:artwork:set-url 1234 "https://upload.wikimedia.org/wikipedia/en/a/ab/Album.jpg"');
 
         return Command::SUCCESS;
     }

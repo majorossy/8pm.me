@@ -29,7 +29,7 @@ class RetryMissingArtworkCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName('archivedotorg:retry-missing-artwork')
+        $this->setName('archive:artwork:retry')
             ->setDescription('Retry enrichment for albums missing artwork with improved matching')
             ->addOption(
                 self::OPTION_LIMIT,

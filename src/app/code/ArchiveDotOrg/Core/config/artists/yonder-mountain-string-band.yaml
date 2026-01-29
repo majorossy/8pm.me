@@ -1,0 +1,724 @@
+# ========================================
+# Yonder Mountain String Band Configuration
+# ========================================
+#
+# Generated: 2026-01-29 14:55:14
+# Albums Populated: 8
+# Tracks Populated: 79
+# Status: Ready for use
+#
+# TODO:
+#   1. Add year to each album
+#   2. Add track aliases for better matching
+#   3. Add medley patterns (if applicable)
+#   4. Run validation: bin/magento archive:validate yonder-mountain-string-band
+#
+# See template.yaml for structure reference.
+# ========================================
+
+# ========================================
+# ARTIST SECTION
+# ========================================
+artist:
+  name: "Yonder Mountain String Band"
+  collection_id: "YonderMountainStringBand"
+  url_key: "yonder-mountain-string-band"
+
+# ========================================
+# ALBUMS SECTION
+# ========================================
+albums:
+  - key: "elevation"
+    name: "Elevation"
+    url_key: "elevation"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "town-by-town"
+    name: "Town By Town"
+    url_key: "townbytown"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "mountain-tracks-volume-2"
+    name: "Mountain Tracks: Volume 2"
+    url_key: "mountaintracks2"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "yonder-mountain-string-band"
+    name: "Yonder Mountain String Band"
+    url_key: "yondermountainstringbandalbum"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "the-show"
+    name: "The Show"
+    url_key: "theshow"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "black-sheep"
+    name: "Black Sheep"
+    url_key: "blacksheep"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "get-yourself-outside"
+    name: "Get Yourself Outside"
+    url_key: "getyourselfoutside"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "nowhere-next"
+    name: "Nowhere Next"
+    url_key: "nowherenext"
+    type: "studio"
+    # TODO: Add year field
+
+# ========================================
+# TRACKS SECTION
+# ========================================
+tracks:
+  - key: "ramblers-anthem"
+    name: "Rambler's Anthem"
+    url_key: "ramblersanthem"
+    albums: ["town-by-town"]
+    canonical_album: "town-by-town"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "easy-as-pie"
+    name: "Easy as Pie"
+    url_key: "easyaspie"
+    albums: ["town-by-town"]
+    canonical_album: "town-by-town"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "idaho"
+    name: "Idaho"
+    url_key: "idaho"
+    albums: ["town-by-town"]
+    canonical_album: "town-by-town"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "loved-you-enough"
+    name: "Loved You Enough"
+    url_key: "lovedyouenough"
+    albums: ["town-by-town"]
+    canonical_album: "town-by-town"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "sorrow-is-a-highway"
+    name: "Sorrow Is a Highway"
+    url_key: "sorrowisahighway"
+    albums: ["town-by-town"]
+    canonical_album: "town-by-town"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "mustve-had-your-reasons"
+    name: "Must've Had Your Reasons"
+    url_key: "mustvehadyourreasons"
+    albums: ["town-by-town"]
+    canonical_album: "town-by-town"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "wildewood-drive"
+    name: "Wildewood Drive"
+    url_key: "wildewooddrive"
+    albums: ["town-by-town"]
+    canonical_album: "town-by-town"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "new-horizons"
+    name: "New Horizons"
+    url_key: "newhorizons"
+    albums: ["town-by-town"]
+    canonical_album: "town-by-town"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "check-out-time"
+    name: "Check out Time"
+    url_key: "checkouttime"
+    albums: ["town-by-town"]
+    canonical_album: "town-by-town"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "to-see-you-comin-round-the-bend"
+    name: "To See You Comin' Round The Bend"
+    url_key: "toseeyoucomινroundthebend"
+    albums: ["town-by-town"]
+    canonical_album: "town-by-town"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "red-tail-lights"
+    name: "Red Tail Lights"
+    url_key: "redtaillights"
+    albums: ["town-by-town"]
+    canonical_album: "town-by-town"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "a-fathers-arms"
+    name: "A Father's Arms"
+    url_key: "afathersarms"
+    albums: ["town-by-town"]
+    canonical_album: "town-by-town"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "hog-potato"
+    name: "Hog Potato"
+    url_key: "hogpotato"
+    albums: ["town-by-town"]
+    canonical_album: "town-by-town"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "peace-of-mind"
+    name: "Peace of Mind"
+    url_key: "peaceofmind"
+    albums: ["town-by-town"]
+    canonical_album: "town-by-town"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "at-the-end-of-the-day"
+    name: "At the End of the Day"
+    url_key: "attheendoftheday"
+    albums: ["mountain-tracks-volume-2"]
+    canonical_album: "mountain-tracks-volume-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dawns-early-light"
+    name: "Dawn's Early Light"
+    url_key: "dawnsearlylight"
+    albums: ["mountain-tracks-volume-2"]
+    canonical_album: "mountain-tracks-volume-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "two-hits-and-the-joint-turned-brown"
+    name: "Two Hits and the Joint Turned Brown"
+    url_key: "twohitsandthejointturnedbrown"
+    albums: ["mountain-tracks-volume-2"]
+    canonical_album: "mountain-tracks-volume-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "raleigh-and-spencer"
+    name: "Raleigh and Spencer"
+    url_key: "raleighandspencer"
+    albums: ["mountain-tracks-volume-2"]
+    canonical_album: "mountain-tracks-volume-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "good-hearted-woman"
+    name: "Good Hearted Woman"
+    url_key: "goodheartedwoman"
+    albums: ["mountain-tracks-volume-2"]
+    canonical_album: "mountain-tracks-volume-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "no-expectations"
+    name: "No Expectations"
+    url_key: "noexpectations"
+    albums: ["mountain-tracks-volume-2"]
+    canonical_album: "mountain-tracks-volume-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "peace-of-mind-follow-me-down-to-the-riverside-peace-of-mind"
+    name: "Peace of Mind / Follow Me Down to the Riverside / Peace of Mind"
+    url_key: "peaceofmindfollowmedowntotheriverside"
+    albums: ["mountain-tracks-volume-2"]
+    canonical_album: "mountain-tracks-volume-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "untitled-goodbye-blue-sky"
+    name: "Untitled (Goodbye Blue Sky)"
+    url_key: "untitledgoodbyebluesky"
+    albums: ["mountain-tracks-volume-2"]
+    canonical_album: "mountain-tracks-volume-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "sidewalk-stars"
+    name: "Sidewalk Stars"
+    url_key: "sidewalkstars"
+    albums: ["yonder-mountain-string-band"]
+    canonical_album: "yonder-mountain-string-band"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "i-aint-been-myself-in-years"
+    name: "I Ain't Been Myself In Years"
+    url_key: "iaintbeenmyselfinyears"
+    albums: ["yonder-mountain-string-band"]
+    canonical_album: "yonder-mountain-string-band"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "how-bout-you"
+    name: "How 'Bout You?"
+    url_key: "howboutyou"
+    albums: ["yonder-mountain-string-band"]
+    canonical_album: "yonder-mountain-string-band"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "angel"
+    name: "Angel"
+    url_key: "angel"
+    albums: ["yonder-mountain-string-band"]
+    canonical_album: "yonder-mountain-string-band"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "fastball"
+    name: "Fastball"
+    url_key: "fastball"
+    albums: ["yonder-mountain-string-band"]
+    canonical_album: "yonder-mountain-string-band"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "east-nashville-easter"
+    name: "East Nashville Easter"
+    url_key: "eastnashvilleeaster"
+    albums: ["yonder-mountain-string-band"]
+    canonical_album: "yonder-mountain-string-band"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "just-the-same"
+    name: "Just The Same"
+    url_key: "justthesame"
+    albums: ["yonder-mountain-string-band"]
+    canonical_album: "yonder-mountain-string-band"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "classic-situation"
+    name: "Classic Situation"
+    url_key: "classicsituation"
+    albums: ["yonder-mountain-string-band"]
+    canonical_album: "yonder-mountain-string-band"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "night-out"
+    name: "Night Out"
+    url_key: "nightout"
+    albums: ["yonder-mountain-string-band"]
+    canonical_album: "yonder-mountain-string-band"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "midwest-gospel-radio"
+    name: "Midwest Gospel Radio"
+    url_key: "midwestgospelradio"
+    albums: ["yonder-mountain-string-band"]
+    canonical_album: "yonder-mountain-string-band"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "troubled-mind"
+    name: "Troubled Mind"
+    url_key: "troubledmind"
+    albums: ["yonder-mountain-string-band"]
+    canonical_album: "yonder-mountain-string-band"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "winds-on-fire"
+    name: "Wind's On Fire"
+    url_key: "windsonfire"
+    albums: ["yonder-mountain-string-band"]
+    canonical_album: "yonder-mountain-string-band"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "out-of-the-blue"
+    name: "Out of the Blue"
+    url_key: "outoftheblue"
+    albums: ["the-show"]
+    canonical_album: "the-show"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "complicated"
+    name: "Complicated"
+    url_key: "complicated"
+    albums: ["the-show"]
+    canonical_album: "the-show"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "fingerprint"
+    name: "Fingerprint"
+    url_key: "fingerprint"
+    albums: ["the-show"]
+    canonical_album: "the-show"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dreams"
+    name: "Dreams"
+    url_key: "dreams"
+    albums: ["the-show"]
+    canonical_album: "the-show"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "honestly"
+    name: "Honestly"
+    url_key: "honestly"
+    albums: ["the-show"]
+    canonical_album: "the-show"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "steep-grade-sharp-curves"
+    name: "Steep Grade, Sharp Curves"
+    url_key: "steepgradesharpcurves"
+    albums: ["the-show"]
+    canonical_album: "the-show"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "isolate"
+    name: "Isolate"
+    url_key: "isolate"
+    albums: ["the-show"]
+    canonical_album: "the-show"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "in-the-seam"
+    name: "In The Seam"
+    url_key: "intheseam"
+    albums: ["the-show"]
+    canonical_album: "the-show"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "belle-parker"
+    name: "Belle Parker"
+    url_key: "belleparker"
+    albums: ["the-show"]
+    canonical_album: "the-show"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "criminal"
+    name: "Criminal"
+    url_key: "criminal"
+    albums: ["the-show"]
+    canonical_album: "the-show"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "rain-still-falls"
+    name: "Rain Still Falls"
+    url_key: "rainstillfalls"
+    albums: ["the-show"]
+    canonical_album: "the-show"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "fine-excuses"
+    name: "Fine Excuses"
+    url_key: "fineexcuses"
+    albums: ["the-show"]
+    canonical_album: "the-show"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "casualty"
+    name: "Casualty"
+    url_key: "casualty"
+    albums: ["the-show"]
+    canonical_album: "the-show"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "insult-and-elbow"
+    name: "Insult and Elbow"
+    url_key: "insultandelbow"
+    albums: ["black-sheep"]
+    canonical_album: "black-sheep"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "black-sheep"
+    name: "Black Sheep"
+    url_key: "blacksheep"
+    albums: ["black-sheep"]
+    canonical_album: "black-sheep"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "ever-fallen-in-love"
+    name: "Ever Fallen In Love"
+    url_key: "everfalleninlove"
+    albums: ["black-sheep"]
+    canonical_album: "black-sheep"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "annalee"
+    name: "Annalee"
+    url_key: "annalee"
+    albums: ["black-sheep"]
+    canonical_album: "black-sheep"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "landfall"
+    name: "Landfall"
+    url_key: "landfall"
+    albums: ["black-sheep"]
+    canonical_album: "black-sheep"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "im-lost"
+    name: "I'm Lost"
+    url_key: "imlost"
+    albums: ["black-sheep"]
+    canonical_album: "black-sheep"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "around-you"
+    name: "Around You"
+    url_key: "aroundyou"
+    albums: ["black-sheep"]
+    canonical_album: "black-sheep"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "love-before-you-cant"
+    name: "Love Before You Can't"
+    url_key: "lovebeforeyoucant"
+    albums: ["black-sheep"]
+    canonical_album: "black-sheep"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "drawing-a-melody"
+    name: "Drawing a Melody"
+    url_key: "drawingamelody"
+    albums: ["black-sheep"]
+    canonical_album: "black-sheep"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "new-dusty-miller"
+    name: "New Dusty Miller"
+    url_key: "newdustymiller"
+    albums: ["black-sheep"]
+    canonical_album: "black-sheep"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "beside-myself"
+    name: "Beside Myself"
+    url_key: "besidemyself"
+    albums: ["get-yourself-outside"]
+    canonical_album: "get-yourself-outside"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "i-just-cant"
+    name: "I Just Can't"
+    url_key: "ijustcant"
+    albums: ["get-yourself-outside"]
+    canonical_album: "get-yourself-outside"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "small-house"
+    name: "Small House"
+    url_key: "smallhouse"
+    albums: ["get-yourself-outside"]
+    canonical_album: "get-yourself-outside"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "if-only"
+    name: "If Only"
+    url_key: "ifonly"
+    albums: ["get-yourself-outside"]
+    canonical_album: "get-yourself-outside"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "up-this-hill"
+    name: "Up This Hill"
+    url_key: "upthishill"
+    albums: ["get-yourself-outside"]
+    canonical_album: "get-yourself-outside"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "no-leg-left"
+    name: "No Leg Left"
+    url_key: "nolegleft"
+    albums: ["get-yourself-outside"]
+    canonical_album: "get-yourself-outside"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "out-of-the-pan"
+    name: "Out Of The Pan"
+    url_key: "outofthepan"
+    albums: ["get-yourself-outside"]
+    canonical_album: "get-yourself-outside"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "into-the-fire"
+    name: "Into the Fire"
+    url_key: "intothefire"
+    albums: ["get-yourself-outside"]
+    canonical_album: "get-yourself-outside"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "broken-records"
+    name: "Broken Records"
+    url_key: "brokenrecords"
+    albums: ["get-yourself-outside"]
+    canonical_album: "get-yourself-outside"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "change-of-heart"
+    name: "Change of Heart"
+    url_key: "changeofheart"
+    albums: ["get-yourself-outside"]
+    canonical_album: "get-yourself-outside"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "suburban-girl"
+    name: "Suburban Girl"
+    url_key: "suburbangirl"
+    albums: ["get-yourself-outside"]
+    canonical_album: "get-yourself-outside"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-truth-fits"
+    name: "The Truth Fits"
+    url_key: "thetruthfits"
+    albums: ["nowhere-next"]
+    canonical_album: "nowhere-next"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "crusin"
+    name: "Crusin'"
+    url_key: "crusin"
+    albums: ["nowhere-next"]
+    canonical_album: "nowhere-next"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "here-i-go-featuring-jerry-douglas"
+    name: "Here I Go (featuring Jerry Douglas)"
+    url_key: "hereigo"
+    albums: ["nowhere-next"]
+    canonical_album: "nowhere-next"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "didnt-go-wrong-featuring-jerry-douglas"
+    name: "Didn't Go Wrong (featuring Jerry Douglas)"
+    url_key: "didntgowrong"
+    albums: ["nowhere-next"]
+    canonical_album: "nowhere-next"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "nowhere-next"
+    name: "Nowhere Next"
+    url_key: "nowherenext"
+    albums: ["nowhere-next"]
+    canonical_album: "nowhere-next"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "leave-the-midwest"
+    name: "Leave The Midwest"
+    url_key: "leavethemidwest"
+    albums: ["nowhere-next"]
+    canonical_album: "nowhere-next"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "secondhand-smoke"
+    name: "Secondhand Smoke"
+    url_key: "secondhandsmoke"
+    albums: ["nowhere-next"]
+    canonical_album: "nowhere-next"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "come-see-me"
+    name: "Come See Me"
+    url_key: "comeseeme"
+    albums: ["nowhere-next"]
+    canonical_album: "nowhere-next"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "outlaw"
+    name: "Outlaw"
+    url_key: "outlaw"
+    albums: ["nowhere-next"]
+    canonical_album: "nowhere-next"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "wasting-time-featuring-jerry-douglas"
+    name: "Wasting Time (featuring Jerry Douglas)"
+    url_key: "wastingtime"
+    albums: ["nowhere-next"]
+    canonical_album: "nowhere-next"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "river"
+    name: "River"
+    url_key: "river"
+    albums: ["nowhere-next"]
+    canonical_album: "nowhere-next"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+# ========================================
+# MEDLEYS SECTION (Optional)
+# ========================================
+# TODO: Add common medley patterns if applicable
+# Example:
+# medleys:
+#   - pattern: "Track A > Track B"
+#     tracks: ["track-a-key", "track-b-key"]
+#     separator: ">"
+# medleys: []

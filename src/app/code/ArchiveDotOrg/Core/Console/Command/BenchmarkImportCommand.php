@@ -36,7 +36,7 @@ class BenchmarkImportCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName('archivedotorg:benchmark-import')
+        $this->setName('archive:benchmark:import')
             ->setDescription('Run performance benchmarks for product import strategies')
             ->addOption(
                 'products',
@@ -127,7 +127,7 @@ class BenchmarkImportCommand extends Command
             $output->writeln('');
             $output->writeln('<comment>Skipping cleanup. Test products remain in database.</comment>');
             $output->writeln('<comment>To clean up manually, run:</comment>');
-            $output->writeln('<comment>bin/magento archivedotorg:cleanup-products --collection=test-artist</comment>');
+            $output->writeln('<comment>bin/magento archive:cleanup:products --collection=test-artist</comment>');
         }
 
         $output->writeln('');

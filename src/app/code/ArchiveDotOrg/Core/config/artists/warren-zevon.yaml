@@ -1,0 +1,768 @@
+# ========================================
+# Warren Zevon Configuration
+# ========================================
+#
+# Generated: 2026-01-29 14:55:14
+# Albums Populated: 10
+# Tracks Populated: 83
+# Status: Ready for use
+#
+# TODO:
+#   1. Add year to each album
+#   2. Add track aliases for better matching
+#   3. Add medley patterns (if applicable)
+#   4. Run validation: bin/magento archive:validate warren-zevon
+#
+# See template.yaml for structure reference.
+# ========================================
+
+# ========================================
+# ARTIST SECTION
+# ========================================
+artist:
+  name: "Warren Zevon"
+  collection_id: "WarrenZevon"
+  url_key: "warren-zevon"
+
+# ========================================
+# ALBUMS SECTION
+# ========================================
+albums:
+  - key: "wanted-dead-or-alive"
+    name: "Wanted Dead or Alive"
+    url_key: "wanteddeadoralive"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "warren-zevon"
+    name: "Warren Zevon"
+    url_key: "warrenzevonalbum"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "excitable-boy"
+    name: "Excitable Boy"
+    url_key: "excitableboy"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "bad-luck-streak-in-dancing-school"
+    name: "Bad Luck Streak in Dancing School"
+    url_key: "badluckstreak"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "the-envoy"
+    name: "The Envoy"
+    url_key: "theenvoy"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "sentimental-hygiene"
+    name: "Sentimental Hygiene"
+    url_key: "sentimentalhygiene"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "transverse-city"
+    name: "Transverse City"
+    url_key: "transversecity"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "mr-bad-example"
+    name: "Mr. Bad Example"
+    url_key: "mrbadexample"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "mutineer"
+    name: "Mutineer"
+    url_key: "mutineer"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "the-wind"
+    name: "The Wind"
+    url_key: "thewind"
+    type: "studio"
+    # TODO: Add year field
+
+# ========================================
+# TRACKS SECTION
+# ========================================
+tracks:
+  - key: "frank-and-jesse-james"
+    name: "Frank and Jesse James"
+    url_key: "frankandjessejames"
+    albums: ["warren-zevon"]
+    canonical_album: "warren-zevon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "mama-couldnt-be-persuaded"
+    name: "Mama Couldn't Be Persuaded"
+    url_key: "mamacouldntbepersuaded"
+    albums: ["warren-zevon"]
+    canonical_album: "warren-zevon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "backs-turned-looking-down-the-path"
+    name: "Backs Turned Looking Down the Path"
+    url_key: "backsturnedlookingdownthepath"
+    albums: ["warren-zevon"]
+    canonical_album: "warren-zevon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "hasten-down-the-wind"
+    name: "Hasten Down the Wind"
+    url_key: "hastendownthewind"
+    albums: ["warren-zevon"]
+    canonical_album: "warren-zevon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "poor-poor-pitiful-me"
+    name: "Poor Poor Pitiful Me"
+    url_key: "poorpoorpitifulme"
+    albums: ["warren-zevon"]
+    canonical_album: "warren-zevon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-french-inhaler"
+    name: "The French Inhaler"
+    url_key: "thefrenchinhaler"
+    albums: ["warren-zevon"]
+    canonical_album: "warren-zevon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "mohammeds-radio"
+    name: "Mohammed's Radio"
+    url_key: "mohammedsradio"
+    albums: ["warren-zevon"]
+    canonical_album: "warren-zevon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "ill-sleep-when-im-dead"
+    name: "I'll Sleep When I'm Dead"
+    url_key: "illsleepwhenimdead"
+    albums: ["warren-zevon"]
+    canonical_album: "warren-zevon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "carmelita"
+    name: "Carmelita"
+    url_key: "carmelita"
+    albums: ["warren-zevon"]
+    canonical_album: "warren-zevon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "join-me-in-la"
+    name: "Join Me in L.A."
+    url_key: "joinmeinla"
+    albums: ["warren-zevon"]
+    canonical_album: "warren-zevon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "desperados-under-the-eaves"
+    name: "Desperados Under the Eaves"
+    url_key: "desperadosundertheeaves"
+    albums: ["warren-zevon"]
+    canonical_album: "warren-zevon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "bad-luck-streak-in-dancing-school"
+    name: "Bad Luck Streak In Dancing School"
+    url_key: "badluckstreakindancingschool"
+    albums: ["bad-luck-streak-in-dancing-school"]
+    canonical_album: "bad-luck-streak-in-dancing-school"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "a-certain-girl"
+    name: "A Certain Girl"
+    url_key: "acertaingirl"
+    albums: ["bad-luck-streak-in-dancing-school"]
+    canonical_album: "bad-luck-streak-in-dancing-school"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "jungle-work"
+    name: "Jungle Work"
+    url_key: "junglework"
+    albums: ["bad-luck-streak-in-dancing-school"]
+    canonical_album: "bad-luck-streak-in-dancing-school"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "empty-handed-heart"
+    name: "Empty-Handed Heart"
+    url_key: "emptyhandedheart"
+    albums: ["bad-luck-streak-in-dancing-school"]
+    canonical_album: "bad-luck-streak-in-dancing-school"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "interlude-no-1"
+    name: "Interlude No. 1"
+    url_key: "interlude1"
+    albums: ["bad-luck-streak-in-dancing-school"]
+    canonical_album: "bad-luck-streak-in-dancing-school"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "play-it-all-night-long"
+    name: "Play It All Night Long"
+    url_key: "playitallnightlong"
+    albums: ["bad-luck-streak-in-dancing-school"]
+    canonical_album: "bad-luck-streak-in-dancing-school"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "jeannie-needs-a-shooter"
+    name: "Jeannie Needs A Shooter"
+    url_key: "jeannieneedsashooter"
+    albums: ["bad-luck-streak-in-dancing-school"]
+    canonical_album: "bad-luck-streak-in-dancing-school"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "interlude-no-2"
+    name: "Interlude No. 2"
+    url_key: "interlude2"
+    albums: ["bad-luck-streak-in-dancing-school"]
+    canonical_album: "bad-luck-streak-in-dancing-school"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "bill-lee"
+    name: "Bill Lee"
+    url_key: "billlee"
+    albums: ["bad-luck-streak-in-dancing-school"]
+    canonical_album: "bad-luck-streak-in-dancing-school"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "gorilla-youre-a-desperado"
+    name: "Gorilla, You're A Desperado"
+    url_key: "gorillayoureadesperado"
+    albums: ["bad-luck-streak-in-dancing-school"]
+    canonical_album: "bad-luck-streak-in-dancing-school"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "bed-of-coals"
+    name: "Bed Of Coals"
+    url_key: "bedofcoals"
+    albums: ["bad-luck-streak-in-dancing-school"]
+    canonical_album: "bad-luck-streak-in-dancing-school"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "wild-age"
+    name: "Wild Age"
+    url_key: "wildage"
+    albums: ["bad-luck-streak-in-dancing-school"]
+    canonical_album: "bad-luck-streak-in-dancing-school"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-envoy"
+    name: "The Envoy"
+    url_key: "theenvoy"
+    albums: ["the-envoy"]
+    canonical_album: "the-envoy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-overdraft"
+    name: "The Overdraft"
+    url_key: "theoverdraft"
+    albums: ["the-envoy"]
+    canonical_album: "the-envoy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-hula-hula-boys"
+    name: "The Hula Hula Boys"
+    url_key: "thehulahulaboys"
+    albums: ["the-envoy"]
+    canonical_album: "the-envoy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "jesus-mentioned"
+    name: "Jesus Mentioned"
+    url_key: "jesusmentioned"
+    albums: ["the-envoy"]
+    canonical_album: "the-envoy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "let-nothing-come-between-you"
+    name: "Let Nothing Come Between You"
+    url_key: "letnothingcomebetweenyou"
+    albums: ["the-envoy"]
+    canonical_album: "the-envoy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "aint-that-pretty-at-all"
+    name: "Ain't That Pretty At All"
+    url_key: "aintthatprettyatall"
+    albums: ["the-envoy"]
+    canonical_album: "the-envoy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "charlies-medicine"
+    name: "Charlie's Medicine"
+    url_key: "charliesmedicine"
+    albums: ["the-envoy"]
+    canonical_album: "the-envoy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "looking-for-the-next-best-thing"
+    name: "Looking For The Next Best Thing"
+    url_key: "lookingforthenextbestthing"
+    albums: ["the-envoy"]
+    canonical_album: "the-envoy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "never-too-late-for-love"
+    name: "Never Too Late For Love"
+    url_key: "nevertoolateforlove"
+    albums: ["the-envoy"]
+    canonical_album: "the-envoy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "sentimental-hygiene"
+    name: "Sentimental Hygiene"
+    url_key: "sentimentalhygiene"
+    albums: ["sentimental-hygiene"]
+    canonical_album: "sentimental-hygiene"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "boom-boom-mancini"
+    name: "Boom Boom Mancini"
+    url_key: "boomboommancini"
+    albums: ["sentimental-hygiene"]
+    canonical_album: "sentimental-hygiene"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-factory"
+    name: "The Factory"
+    url_key: "thefactory"
+    albums: ["sentimental-hygiene"]
+    canonical_album: "sentimental-hygiene"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "trouble-waiting-to-happen"
+    name: "Trouble Waiting To Happen"
+    url_key: "troublewaitingtohappen"
+    albums: ["sentimental-hygiene"]
+    canonical_album: "sentimental-hygiene"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "reconsider-me"
+    name: "Reconsider Me"
+    url_key: "reconsiderme"
+    albums: ["sentimental-hygiene"]
+    canonical_album: "sentimental-hygiene"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "detox-mansion"
+    name: "Detox Mansion"
+    url_key: "detoxmansion"
+    albums: ["sentimental-hygiene"]
+    canonical_album: "sentimental-hygiene"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "bad-karma"
+    name: "Bad Karma"
+    url_key: "badkarma"
+    albums: ["sentimental-hygiene"]
+    canonical_album: "sentimental-hygiene"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "even-a-dog-can-shake-hands"
+    name: "Even A Dog Can Shake Hands"
+    url_key: "evenadogcanshakehands"
+    albums: ["sentimental-hygiene"]
+    canonical_album: "sentimental-hygiene"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-heartache"
+    name: "The Heartache"
+    url_key: "theheartache"
+    albums: ["sentimental-hygiene"]
+    canonical_album: "sentimental-hygiene"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "leave-my-monkey-alone"
+    name: "Leave My Monkey Alone"
+    url_key: "leavemymonkeyalone"
+    albums: ["sentimental-hygiene"]
+    canonical_album: "sentimental-hygiene"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "transverse-city-feat-jerry-garcia"
+    name: "Transverse City (feat. Jerry Garcia)"
+    url_key: "transversecity"
+    albums: ["transverse-city"]
+    canonical_album: "transverse-city"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "run-straight-down"
+    name: "Run Straight Down"
+    url_key: "runstraightdown"
+    albums: ["transverse-city"]
+    canonical_album: "transverse-city"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-long-arm-of-the-law"
+    name: "The Long Arm of the Law"
+    url_key: "thelongarmofthelaw"
+    albums: ["transverse-city"]
+    canonical_album: "transverse-city"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "turbulence"
+    name: "Turbulence"
+    url_key: "turbulence"
+    albums: ["transverse-city"]
+    canonical_album: "transverse-city"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "they-moved-the-moon"
+    name: "They Moved the Moon"
+    url_key: "theymovedthemoon"
+    albums: ["transverse-city"]
+    canonical_album: "transverse-city"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "splendid-isolation"
+    name: "Splendid Isolation"
+    url_key: "splendidisolation"
+    albums: ["transverse-city"]
+    canonical_album: "transverse-city"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "networking"
+    name: "Networking"
+    url_key: "networking"
+    albums: ["transverse-city"]
+    canonical_album: "transverse-city"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "down-in-the-mall"
+    name: "Down in the Mall"
+    url_key: "downinthemall"
+    albums: ["transverse-city"]
+    canonical_album: "transverse-city"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "gridlock"
+    name: "Gridlock"
+    url_key: "gridlock"
+    albums: ["transverse-city"]
+    canonical_album: "transverse-city"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "nobodys-in-love-this-year"
+    name: "Nobody's in Love This Year"
+    url_key: "nobodysinlovethisyear"
+    albums: ["transverse-city"]
+    canonical_album: "transverse-city"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "finishing-touches"
+    name: "Finishing Touches"
+    url_key: "finishingtouches"
+    albums: ["mr-bad-example"]
+    canonical_album: "mr-bad-example"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "suzie-lightning"
+    name: "Suzie Lightning"
+    url_key: "suzielightning"
+    albums: ["mr-bad-example"]
+    canonical_album: "mr-bad-example"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "model-citizen"
+    name: "Model Citizen"
+    url_key: "modelcitizen"
+    albums: ["mr-bad-example"]
+    canonical_album: "mr-bad-example"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "angel-dressed-in-black"
+    name: "Angel Dressed in Black"
+    url_key: "angeldressedinblack"
+    albums: ["mr-bad-example"]
+    canonical_album: "mr-bad-example"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "mr-bad-example"
+    name: "Mr. Bad Example"
+    url_key: "mrbadexample"
+    albums: ["mr-bad-example"]
+    canonical_album: "mr-bad-example"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "renegade"
+    name: "Renegade"
+    url_key: "renegade"
+    albums: ["mr-bad-example"]
+    canonical_album: "mr-bad-example"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "heartache-spoken-here"
+    name: "Heartache Spoken Here"
+    url_key: "heartachespokenhere"
+    albums: ["mr-bad-example"]
+    canonical_album: "mr-bad-example"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "quite-ugly-one-morning"
+    name: "Quite Ugly One Morning"
+    url_key: "quiteuglyonemorning"
+    albums: ["mr-bad-example"]
+    canonical_album: "mr-bad-example"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "things-to-do-in-denver-when-youre-dead"
+    name: "Things to Do in Denver When You're Dead"
+    url_key: "thingstodoindenverwhenyouredead"
+    albums: ["mr-bad-example"]
+    canonical_album: "mr-bad-example"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "searching-for-a-heart"
+    name: "Searching for a Heart"
+    url_key: "searchingforaheart"
+    albums: ["mr-bad-example"]
+    canonical_album: "mr-bad-example"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "seminole-bingo"
+    name: "Seminole Bingo"
+    url_key: "seminolebingo"
+    albums: ["mutineer"]
+    canonical_album: "mutineer"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "something-bad-happened-to-a-clown"
+    name: "Something Bad Happened to a Clown"
+    url_key: "somethingbadhappenedtoaclown"
+    albums: ["mutineer"]
+    canonical_album: "mutineer"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "similar-to-rain"
+    name: "Similar to Rain"
+    url_key: "similartorain"
+    albums: ["mutineer"]
+    canonical_album: "mutineer"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-indifference-of-heaven"
+    name: "The Indifference of Heaven"
+    url_key: "theindifferenceofheaven"
+    albums: ["mutineer"]
+    canonical_album: "mutineer"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "jesus-was-a-cross-maker"
+    name: "Jesus Was a Cross Maker"
+    url_key: "jesuswasacrossmaker"
+    albums: ["mutineer"]
+    canonical_album: "mutineer"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "poisonous-lookalike"
+    name: "Poisonous Lookalike"
+    url_key: "poisonouslookalike"
+    albums: ["mutineer"]
+    canonical_album: "mutineer"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "piano-fighter"
+    name: "Piano Fighter"
+    url_key: "pianofighter"
+    albums: ["mutineer"]
+    canonical_album: "mutineer"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "rottweiler-blues"
+    name: "Rottweiler Blues"
+    url_key: "rottweilerblues"
+    albums: ["mutineer"]
+    canonical_album: "mutineer"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "monkey-wash-donkey-rinse"
+    name: "Monkey Wash Donkey Rinse"
+    url_key: "monkeywashdonkeyrinse"
+    albums: ["mutineer"]
+    canonical_album: "mutineer"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "mutineer"
+    name: "Mutineer"
+    url_key: "mutineer"
+    albums: ["mutineer"]
+    canonical_album: "mutineer"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dirty-life-and-times"
+    name: "Dirty Life And Times"
+    url_key: "dirtylifeandtimes"
+    albums: ["the-wind"]
+    canonical_album: "the-wind"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "disorder-in-the-house"
+    name: "Disorder In The House"
+    url_key: "disorderinthehouse"
+    albums: ["the-wind"]
+    canonical_album: "the-wind"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "knockin-on-heavens-door"
+    name: "Knockin' On Heaven's Door"
+    url_key: "knockinonheavensdoor"
+    albums: ["the-wind"]
+    canonical_album: "the-wind"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "numb-as-a-statue"
+    name: "Numb As A Statue"
+    url_key: "numbasastatue"
+    albums: ["the-wind"]
+    canonical_album: "the-wind"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "shes-too-good-for-me"
+    name: "She's Too Good For Me"
+    url_key: "shestoοgoodforme"
+    albums: ["the-wind"]
+    canonical_album: "the-wind"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "prison-grove"
+    name: "Prison Grove"
+    url_key: "prisongrove"
+    albums: ["the-wind"]
+    canonical_album: "the-wind"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "el-amor-de-mi-vida"
+    name: "El Amor De Mi Vida"
+    url_key: "elamordemivida"
+    albums: ["the-wind"]
+    canonical_album: "the-wind"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-rest-of-the-night"
+    name: "The Rest Of The Night"
+    url_key: "therestofthenight"
+    albums: ["the-wind"]
+    canonical_album: "the-wind"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "please-stay"
+    name: "Please Stay"
+    url_key: "pleasestay"
+    albums: ["the-wind"]
+    canonical_album: "the-wind"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "rub-me-raw"
+    name: "Rub Me Raw"
+    url_key: "rubmeraw"
+    albums: ["the-wind"]
+    canonical_album: "the-wind"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "keep-me-in-your-heart"
+    name: "Keep Me In Your Heart"
+    url_key: "keepmeinyourheart"
+    albums: ["the-wind"]
+    canonical_album: "the-wind"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+# ========================================
+# MEDLEYS SECTION (Optional)
+# ========================================
+# TODO: Add common medley patterns if applicable
+# Example:
+# medleys:
+#   - pattern: "Track A > Track B"
+#     tracks: ["track-a-key", "track-b-key"]
+#     separator: ">"
+# medleys: []

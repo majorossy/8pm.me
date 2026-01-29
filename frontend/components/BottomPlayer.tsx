@@ -378,7 +378,8 @@ export default function BottomPlayer() {
         <div className="w-[30%] min-w-[180px] flex items-center justify-end gap-3">
           {/* Queue button */}
           <button
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               vibrate(BUTTON_PRESS);
               toggleQueue();
             }}

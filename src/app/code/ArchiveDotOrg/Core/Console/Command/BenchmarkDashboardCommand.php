@@ -26,7 +26,7 @@ class BenchmarkDashboardCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName('archivedotorg:benchmark-dashboard')
+        $this->setName('archive:benchmark:dashboard')
             ->setDescription('Run performance benchmarks for admin dashboard queries');
     }
 

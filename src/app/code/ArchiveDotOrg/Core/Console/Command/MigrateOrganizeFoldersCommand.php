@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ArchiveDotOrg\Core\Console\Command;
 
+use ArchiveDotOrg\Core\Api\LockServiceInterface;
+use ArchiveDotOrg\Core\Exception\LockException;
 use ArchiveDotOrg\Core\Logger\Logger;
 use ArchiveDotOrg\Core\Model\FileManifestService;
 use Magento\Framework\App\Filesystem\DirectoryList;
@@ -70,6 +72,7 @@ class MigrateOrganizeFoldersCommand extends Command
     private Json $jsonSerializer;
     private Logger $logger;
     private FileManifestService $manifestService;
+    private LockServiceInterface $lockService;
     private string $varDir;
 
     public function __construct(
@@ -78,6 +81,7 @@ class MigrateOrganizeFoldersCommand extends Command
         Json $jsonSerializer,
         Logger $logger,
         FileManifestService $manifestService,
+        LockServiceInterface $lockService,
         string $name = null
     ) {
         parent::__construct($name);
@@ -86,6 +90,7 @@ class MigrateOrganizeFoldersCommand extends Command
         $this->jsonSerializer = $jsonSerializer;
         $this->logger = $logger;
         $this->manifestService = $manifestService;
+        $this->lockService = $lockService;
         $this->varDir = $directoryList->getPath('var');
     }
 
@@ -121,164 +126,184 @@ class MigrateOrganizeFoldersCommand extends Command
         $backupDir = $this->varDir . '/archivedotorg/' . self::BACKUP_DIR;
         $unmappedDir = $metadataDir . '/' . self::UNMAPPED_DIR;
 
-        // Check if metadata directory exists
-        if (!$this->file->isDirectory($metadataDir)) {
-            $output->writeln('<comment>No metadata directory found. Nothing to migrate.</comment>');
-            return Command::SUCCESS;
+        // Acquire lock (use 'global' as resource since this operates on all collections)
+        try {
+            $lockToken = $this->lockService->acquire('migrate', 'metadata', 300);
+        } catch (LockException $e) {
+            $output->writeln('<error>' . $e->getMessage() . '</error>');
+            return Command::FAILURE;
         }
 
-        // Find all JSON files
-        $files = $this->findJsonFiles($metadataDir);
-        $totalFiles = count($files);
-
-        if ($totalFiles === 0) {
-            $output->writeln('<comment>No JSON files found in metadata directory.</comment>');
-            return Command::SUCCESS;
-        }
-
-        $output->writeln("Found <info>$totalFiles</info> metadata files");
-
-        // Analyze files for mapping
-        $analysis = $this->analyzeFiles($files);
-        $mappable = $analysis['mappable'];
-        $unmappable = $analysis['unmappable'];
-
-        $output->writeln('');
-        $output->writeln('<info>Migration Plan:</info>');
-        $output->writeln("  Mappable files:   {$mappable['count']}");
-        $output->writeln("  Unmappable files: {$unmappable['count']}");
-
-        if (!empty($mappable['by_artist'])) {
-            $output->writeln('');
-            $output->writeln('<info>Files by Artist:</info>');
-            foreach ($mappable['by_artist'] as $artist => $count) {
-                $output->writeln("  $artist: $count");
-            }
-        }
-
-        if ($unmappable['count'] > 0) {
-            $output->writeln('');
-            $output->writeln('<comment>Unmappable files will be quarantined to: ' . self::UNMAPPED_DIR . '/</comment>');
-            if (count($unmappable['examples']) > 0) {
-                $output->writeln('  Examples:');
-                foreach (array_slice($unmappable['examples'], 0, 5) as $example) {
-                    $output->writeln("    - $example");
-                }
-            }
-        }
-
-        if ($dryRun) {
-            $output->writeln('');
-            $output->writeln('<comment>DRY RUN - No files will be moved</comment>');
-            return Command::SUCCESS;
-        }
-
-        // Confirm migration
-        if (!$force) {
-            $output->writeln('');
-            $helper = $this->getHelper('question');
-            $question = new ConfirmationQuestion(
-                'Proceed with migration? [y/N] ',
-                false
-            );
-
-            if (!$helper->ask($input, $output, $question)) {
-                $output->writeln('<comment>Migration cancelled</comment>');
+        try {
+                // Check if metadata directory exists
+            if (!$this->file->isDirectory($metadataDir)) {
+                $output->writeln('<comment>No metadata directory found. Nothing to migrate.</comment>');
                 return Command::SUCCESS;
             }
-        }
 
-        // Create backup
-        if (!$force) {
-            $output->writeln('');
-            $output->writeln('Creating backup...');
-            $this->createBackup($metadataDir, $backupDir);
-            $output->writeln("  Backup created at: $backupDir");
-        }
+            // Find all JSON files
+            $files = $this->findJsonFiles($metadataDir);
+            $totalFiles = count($files);
 
-        // Load migration state
-        $state = $this->loadMigrationState();
-
-        // Migrate files
-        $output->writeln('');
-        $output->writeln('Migrating files...');
-
-        $migrated = 0;
-        $quarantined = 0;
-        $skipped = 0;
-
-        foreach ($files as $file) {
-            $basename = basename($file);
-
-            // Skip if already processed
-            if (isset($state['processed'][$basename])) {
-                $skipped++;
-                continue;
+            if ($totalFiles === 0) {
+                $output->writeln('<comment>No JSON files found in metadata directory.</comment>');
+                return Command::SUCCESS;
             }
 
-            $artist = $this->mapFileToArtist($basename);
+            $output->writeln("Found <info>$totalFiles</info> metadata files");
 
+            // Analyze files for mapping
+            $analysis = $this->analyzeFiles($files);
+            $mappable = $analysis['mappable'];
+            $unmappable = $analysis['unmappable'];
+
+            $output->writeln('');
+            $output->writeln('<info>Migration Plan:</info>');
+            $output->writeln("  Mappable files:   {$mappable['count']}");
+            $output->writeln("  Unmappable files: {$unmappable['count']}");
+
+            if (!empty($mappable['by_artist'])) {
+                $output->writeln('');
+                $output->writeln('<info>Files by Artist:</info>');
+                foreach ($mappable['by_artist'] as $artist => $count) {
+                    $output->writeln("  $artist: $count");
+                }
+            }
+
+            if ($unmappable['count'] > 0) {
+                $output->writeln('');
+                $output->writeln('<comment>Unmappable files will be quarantined to: ' . self::UNMAPPED_DIR . '/</comment>');
+                if (count($unmappable['examples']) > 0) {
+                    $output->writeln('  Examples:');
+                    foreach (array_slice($unmappable['examples'], 0, 5) as $example) {
+                        $output->writeln("    - $example");
+                    }
+                }
+            }
+
+            if ($dryRun) {
+                $output->writeln('');
+                $output->writeln('<comment>DRY RUN - No files will be moved</comment>');
+                return Command::SUCCESS;
+            }
+
+            // Confirm migration
+            if (!$force) {
+                $output->writeln('');
+                $helper = $this->getHelper('question');
+                $question = new ConfirmationQuestion(
+                    'Proceed with migration? [y/N] ',
+                    false
+                );
+
+                if (!$helper->ask($input, $output, $question)) {
+                    $output->writeln('<comment>Migration cancelled</comment>');
+                    return Command::SUCCESS;
+                }
+            }
+
+            // Create backup
+            if (!$force) {
+                $output->writeln('');
+                $output->writeln('Creating backup...');
+                $this->createBackup($metadataDir, $backupDir);
+                $output->writeln("  Backup created at: $backupDir");
+            }
+
+            // Load migration state
+            $state = $this->loadMigrationState();
+
+            // Migrate files
+            $output->writeln('');
+            $output->writeln('Migrating files...');
+
+            $migrated = 0;
+            $quarantined = 0;
+            $skipped = 0;
+
+            foreach ($files as $file) {
+                $basename = basename($file);
+
+                // Skip if already processed
+                if (isset($state['processed'][$basename])) {
+                    $skipped++;
+                    continue;
+                }
+
+                $artist = $this->mapFileToArtist($basename);
+
+                try {
+                    if ($artist !== null) {
+                        // Move to artist folder
+                        $targetDir = $metadataDir . '/' . $artist;
+                        $this->ensureDirectory($targetDir);
+                        $targetPath = $targetDir . '/' . $basename;
+                        $this->file->rename($file, $targetPath);
+                        $migrated++;
+
+                        // Update manifest
+                        $this->manifestService->addFile($artist, $basename, filesize($targetPath));
+                    } else {
+                        // Quarantine unmappable file
+                        $this->ensureDirectory($unmappedDir);
+                        $targetPath = $unmappedDir . '/' . $basename;
+                        $this->file->rename($file, $targetPath);
+                        $quarantined++;
+                    }
+
+                    // Update state
+                    $state['processed'][$basename] = [
+                        'timestamp' => date('c'),
+                        'artist' => $artist,
+                        'quarantined' => $artist === null,
+                    ];
+                    $this->saveMigrationState($state);
+
+                    // Progress output
+                    $total = $migrated + $quarantined + $skipped;
+                    if ($total % 50 === 0) {
+                        $output->writeln("  Processed: $total / $totalFiles");
+                    }
+                } catch (\Exception $e) {
+                    $this->logger->error("Failed to migrate file: $basename", [
+                        'error' => $e->getMessage(),
+                    ]);
+                    $output->writeln("  <error>Failed: $basename - {$e->getMessage()}</error>");
+                }
+            }
+
+            $output->writeln('');
+            $output->writeln('<info>Migration Complete!</info>');
+            $output->writeln("  Migrated:     $migrated");
+            $output->writeln("  Quarantined:  $quarantined");
+            $output->writeln("  Skipped:      $skipped");
+
+            if ($quarantined > 0) {
+                $output->writeln('');
+                $output->writeln("<comment>Review quarantined files in: $unmappedDir</comment>");
+            }
+
+            // Clean up migration state
+            $this->file->deleteFile($this->varDir . '/' . self::MIGRATION_STATE_FILE);
+
+            $this->logger->info('Folder migration complete', [
+                'migrated' => $migrated,
+                'quarantined' => $quarantined,
+                'skipped' => $skipped,
+            ]);
+
+            return Command::SUCCESS;
+
+        } finally {
+            // Always release lock
             try {
-                if ($artist !== null) {
-                    // Move to artist folder
-                    $targetDir = $metadataDir . '/' . $artist;
-                    $this->ensureDirectory($targetDir);
-                    $targetPath = $targetDir . '/' . $basename;
-                    $this->file->rename($file, $targetPath);
-                    $migrated++;
-
-                    // Update manifest
-                    $this->manifestService->addFile($artist, $basename, filesize($targetPath));
-                } else {
-                    // Quarantine unmappable file
-                    $this->ensureDirectory($unmappedDir);
-                    $targetPath = $unmappedDir . '/' . $basename;
-                    $this->file->rename($file, $targetPath);
-                    $quarantined++;
-                }
-
-                // Update state
-                $state['processed'][$basename] = [
-                    'timestamp' => date('c'),
-                    'artist' => $artist,
-                    'quarantined' => $artist === null,
-                ];
-                $this->saveMigrationState($state);
-
-                // Progress output
-                $total = $migrated + $quarantined + $skipped;
-                if ($total % 50 === 0) {
-                    $output->writeln("  Processed: $total / $totalFiles");
-                }
+                $this->lockService->release($lockToken);
             } catch (\Exception $e) {
-                $this->logger->error("Failed to migrate file: $basename", [
-                    'error' => $e->getMessage(),
+                $this->logger->error('Failed to release lock', [
+                    'error' => $e->getMessage()
                 ]);
-                $output->writeln("  <error>Failed: $basename - {$e->getMessage()}</error>");
             }
         }
-
-        $output->writeln('');
-        $output->writeln('<info>Migration Complete!</info>');
-        $output->writeln("  Migrated:     $migrated");
-        $output->writeln("  Quarantined:  $quarantined");
-        $output->writeln("  Skipped:      $skipped");
-
-        if ($quarantined > 0) {
-            $output->writeln('');
-            $output->writeln("<comment>Review quarantined files in: $unmappedDir</comment>");
-        }
-
-        // Clean up migration state
-        $this->file->deleteFile($this->varDir . '/' . self::MIGRATION_STATE_FILE);
-
-        $this->logger->info('Folder migration complete', [
-            'migrated' => $migrated,
-            'quarantined' => $quarantined,
-            'skipped' => $skipped,
-        ]);
-
-        return Command::SUCCESS;
     }
 
     /**

@@ -165,6 +165,6 @@ class ArtistConfigLoader implements ArtistConfigLoaderInterface
             $rootDir = BP;
         }
 
-        return $rootDir . '/src/' . self::YAML_DIR;
+        return $rootDir . '/' . self::YAML_DIR;
     }
 }

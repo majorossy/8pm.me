@@ -1,0 +1,577 @@
+# ========================================
+# STS9 Configuration
+# ========================================
+#
+# Generated: 2026-01-29 14:55:14
+# Albums Populated: 42
+# Tracks Populated:       40
+# Status: Ready for use
+#
+# TODO:
+#   1. Add year to each album
+#   2. Add track aliases for better matching
+#   3. Add medley patterns (if applicable)
+#   4. Run validation: bin/magento archive:validate sts9
+#
+# See template.yaml for structure reference.
+# ========================================
+
+# ========================================
+# ARTIST SECTION
+# ========================================
+artist:
+  name: "STS9"
+  collection_id: "STS9"
+  url_key: "sts9"
+
+# ========================================
+# ALBUMS SECTION
+# ========================================
+albums:
+  - key: "moon-socket"
+    name: "Moon Socket"
+    url_key: "moonsocket"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "hubble"
+    name: "Hubble"
+    url_key: "hubble"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "wika-chikana"
+    name: "Wika Chikana"
+    url_key: "wikachikana"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "h-b-walks-to-school"
+    name: "H B Walks To School"
+    url_key: "hbwalkstoschool"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "four-year-puma"
+    name: "Four Year Puma"
+    url_key: "fouryearpuma"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "tap-in"
+    name: "Tap-In"
+    url_key: "tapin"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "quests"
+    name: "Quests"
+    url_key: "quests"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "evasive-manuvers"
+    name: "Evasive Manuvers"
+    url_key: "evasivemanuvers"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "forward"
+    name: "Forward"
+    url_key: "forward"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "squares-and-cubes"
+    name: "Squares And Cubes"
+    url_key: "squaresandcubes"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "otherwise-formless"
+    name: "Otherwise Formless"
+    url_key: "otherwiseformless"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "kamuy"
+    name: "Kamuy"
+    url_key: "kamuy"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "water-song"
+    name: "Water Song"
+    url_key: "watersong"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "common-objects-strangely-placed"
+    name: "Common Objects Strangely Placed"
+    url_key: "commonobjectsstrangelyplaced"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "and-some-are-angels"
+    name: "And Some Are Angels"
+    url_key: "andsomeareangels"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "turtle"
+    name: "Turtle"
+    url_key: "turtle"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "mischief-of-the-sleepwalker"
+    name: "Mischief Of The Sleepwalker"
+    url_key: "mischiefofthesleepwalker"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "inspire-strikes-back"
+    name: "Inspire Strikes Back"
+    url_key: "inspirestrikesback"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "eb"
+    name: "Eb"
+    url_key: "eb"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "musical-story-yes"
+    name: "Musical Story, Yes"
+    url_key: "musicalstoryyes"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "better-day"
+    name: "Better Day"
+    url_key: "betterday"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "by-the-morning-sun"
+    name: "By The Morning Sun"
+    url_key: "bythemorningsun"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "tokyo"
+    name: "Tokyo"
+    url_key: "tokyo"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "artifact"
+    name: "Artifact"
+    url_key: "artifact88970"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "native-end"
+    name: "Native End"
+    url_key: "nativeend"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "reemergence"
+    name: "ReEmergence"
+    url_key: "reemergence"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "peoples"
+    name: "Peoples"
+    url_key: "peoples"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "glogli"
+    name: "GLOgli"
+    url_key: "glogli"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "today"
+    name: "Today"
+    url_key: "today"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "tonight-the-ocean-swallowed-the-moon"
+    name: "Tonight The Ocean Swallowed The Moon"
+    url_key: "tonighttheoceanswallowedthemoon"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "forest-hu"
+    name: "Forest Hu"
+    url_key: "foresthu"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "somesing"
+    name: "Somesing"
+    url_key: "somesing"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "trinocular"
+    name: "Trinocular"
+    url_key: "trinocular"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "vibyl"
+    name: "Vibyl"
+    url_key: "vibyl"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "8-and-a-extra"
+    name: "8 & A Extra"
+    url_key: "8aextra"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "possibilities"
+    name: "Possibilities"
+    url_key: "possibilities"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "peoples-pt-2"
+    name: "Peoples, Pt. 2"
+    url_key: "peoplespt2"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "first-mist-over-clear-lake"
+    name: "First Mist Over Clear Lake"
+    url_key: "firstmistoverclearlake"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "music-us"
+    name: "Music, Us"
+    url_key: "musicus"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "peaceblaster68"
+    name: "peaceblaster68"
+    url_key: "peaceblaster68"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "peaceblaster08"
+    name: "peaceblaster08"
+    url_key: "peaceblaster08"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "metameme"
+    name: "Metameme"
+    url_key: "metameme"
+    type: "studio"
+    # TODO: Add year field
+
+# ========================================
+# TRACKS SECTION
+# ========================================
+tracks:
+  - key: "a-extra"
+    name: "8 & A Extra"
+    url_key: "8aextra"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "and-some-are-angels"
+    name: "And Some Are Angels"
+    url_key: "andsomeareangels"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "artifact"
+    name: "Artifact"
+    url_key: "artifact88970"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "better-day"
+    name: "Better Day"
+    url_key: "betterday"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "by-the-morning-sun"
+    name: "By The Morning Sun"
+    url_key: "bythemorningsun"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "common-objects-strangely-placed"
+    name: "Common Objects Strangely Placed"
+    url_key: "commonobjectsstrangelyplaced"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "eb"
+    name: "Eb"
+    url_key: "eb"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "evasive-manuvers"
+    name: "Evasive Manuvers"
+    url_key: "evasivemanuvers"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "first-mist-over-clear-lake"
+    name: "First Mist Over Clear Lake"
+    url_key: "firstmistoverclearlake"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "forest-hu"
+    name: "Forest Hu"
+    url_key: "foresthu"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "forward"
+    name: "Forward"
+    url_key: "forward"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "four-year-puma"
+    name: "Four Year Puma"
+    url_key: "fouryearpuma"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "glogli"
+    name: "GLOgli"
+    url_key: "glogli"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "h-b-walks-to-school"
+    name: "H B Walks To School"
+    url_key: "hbwalkstoschool"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "hubble"
+    name: "Hubble"
+    url_key: "hubble"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "inspire-strikes-back"
+    name: "Inspire Strikes Back"
+    url_key: "inspirestrikesback"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "kamuy"
+    name: "Kamuy"
+    url_key: "kamuy"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "metameme"
+    name: "Metameme"
+    url_key: "metameme"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "mischief-of-the-sleepwalker"
+    name: "Mischief Of The Sleepwalker"
+    url_key: "mischiefofthesleepwalker"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "moon-socket"
+    name: "Moon Socket"
+    url_key: "moonsocket"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "music--us"
+    name: "Music, Us"
+    url_key: "musicus"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "musical-story--yes"
+    name: "Musical Story, Yes"
+    url_key: "musicalstoryyes"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "native-end"
+    name: "Native End"
+    url_key: "nativeend"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "otherwise-formless"
+    name: "Otherwise Formless"
+    url_key: "otherwiseformless"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "peoples"
+    name: "Peoples"
+    url_key: "peoples"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "peoples--pt--2"
+    name: "Peoples, Pt. 2"
+    url_key: "peoplespt2"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "possibilities"
+    name: "Possibilities"
+    url_key: "possibilities"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "quests"
+    name: "Quests"
+    url_key: "quests"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "reemergence"
+    name: "ReEmergence"
+    url_key: "reemergence"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "somesing"
+    name: "Somesing"
+    url_key: "somesing"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "squares-and-cubes"
+    name: "Squares And Cubes"
+    url_key: "squaresandcubes"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "tap-in"
+    name: "Tap-In"
+    url_key: "tapin"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "today"
+    name: "Today"
+    url_key: "today"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "tokyo"
+    name: "Tokyo"
+    url_key: "tokyo"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "tonight-the-ocean-swallowed-the-moon"
+    name: "Tonight The Ocean Swallowed The Moon"
+    url_key: "tonighttheoceanswallowedthemoon"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "trinocular"
+    name: "Trinocular"
+    url_key: "trinocular"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "turtle"
+    name: "Turtle"
+    url_key: "turtle"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "vibyl"
+    name: "Vibyl"
+    url_key: "vibyl"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "water-song"
+    name: "Water Song"
+    url_key: "watersong"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "wika-chikana"
+    name: "Wika Chikana"
+    url_key: "wikachikana"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+
+# ========================================
+# MEDLEYS SECTION (Optional)
+# ========================================
+# TODO: Add common medley patterns if applicable
+# Example:
+# medleys:
+#   - pattern: "Track A > Track B"
+#     tracks: ["track-a-key", "track-b-key"]
+#     separator: ">"
+# medleys: []

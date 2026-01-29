@@ -17,16 +17,6 @@ export default function JamifyTopBar({ transparent = false }: JamifyTopBarProps)
     >
       {/* Breadcrumb navigation */}
       <Breadcrumb />
-
-      {/* Right side - User menu */}
-      <div className="flex items-center gap-4">
-        <button
-          className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition-colors hover:bg-[rgba(200,180,150,0.2)]"
-          style={{ background: 'rgba(200,180,150,0.1)' }}
-        >
-          <span className="text-sm">👤</span>
-        </button>
-      </div>
     </header>
   );
 }

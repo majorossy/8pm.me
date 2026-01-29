@@ -240,6 +240,74 @@ class JobStatusManager
     }
 
     /**
+     * Cleanup stuck jobs (Fix #38)
+     *
+     * Marks jobs as failed if they've been running for more than the specified hours.
+     * Useful for recovering from crashed processes that didn't update job status.
+     *
+     * @param int $stuckAfterHours Hours before considering a job stuck (default: 6)
+     * @return int Number of stuck jobs marked as failed
+     */
+    public function cleanupStuckJobs(int $stuckAfterHours = 6): int
+    {
+        $directory = $this->getVarDirectory();
+        $jobsPath = self::JOBS_DIR;
+
+        if (!$directory->isExist($jobsPath)) {
+            return 0;
+        }
+
+        $cutoffTime = time() - ($stuckAfterHours * 3600);
+        $cleaned = 0;
+
+        foreach ($directory->read($jobsPath) as $file) {
+            if (substr($file, -5) !== '.json') {
+                continue;
+            }
+
+            try {
+                $content = $directory->readFile($file);
+                $data = $this->json->unserialize($content);
+
+                // Only process jobs stuck in 'running' status
+                if (($data['status'] ?? '') !== 'running') {
+                    continue;
+                }
+
+                // Check when job started
+                $startedAt = $data['started_at'] ?? $data['queued_at'] ?? null;
+                if ($startedAt === null) {
+                    continue;
+                }
+
+                $startedTimestamp = strtotime($startedAt);
+                if ($startedTimestamp === false || $startedTimestamp >= $cutoffTime) {
+                    continue; // Not old enough
+                }
+
+                // Mark as failed
+                $data['status'] = 'failed';
+                $data['error'] = sprintf(
+                    'Job stuck in running status for %d hours - marked as failed by cleanup',
+                    round((time() - $startedTimestamp) / 3600, 1)
+                );
+                $data['completed_at'] = date('Y-m-d H:i:s');
+                $data['updated_at'] = date('Y-m-d H:i:s');
+
+                // Save updated status
+                $directory->writeFile($file, $this->json->serialize($data));
+                $cleaned++;
+
+            } catch (\Exception $e) {
+                // Skip files we can't process
+                continue;
+            }
+        }
+
+        return $cleaned;
+    }
+
+    /**
      * Get var directory writer
      *
      * @return WriteInterface

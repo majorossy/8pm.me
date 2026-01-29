@@ -144,9 +144,24 @@ interface TrackInterface
     public function setFileSize(?int $fileSize): TrackInterface;
 
     /**
-     * Generate SKU from SHA1 hash
+     * Generate unique product SKU from SHA1 hash (Fix #6)
      *
-     * @return string
+     * SKU Format: archive-{sha1_hash}
+     * Example: archive-a1b2c3d4e5f6789012345678901234567890abcd
+     *
+     * The SHA1 hash is computed from the full Archive.org file path:
+     * - Show identifier (e.g., "gd1977-05-08.sbd.miller.32601")
+     * - File name (e.g., "gd1977-05-08d1t01.flac")
+     * - Combined path: "gd1977-05-08.sbd.miller.32601/gd1977-05-08d1t01.flac"
+     *
+     * Benefits:
+     * - Uniqueness: SHA1 guarantees no collisions across all tracks
+     * - Stability: SKU never changes even if metadata updates
+     * - Traceability: Can map back to original Archive.org file path
+     * - Collision-proof: Same track from same show always gets same SKU
+     *
+     * @return string SHA1-based SKU (40 character hex + "archive-" prefix)
+     * @see \ArchiveDotOrg\Core\Model\Data\Track::generateSku() for implementation
      */
     public function generateSku(): string;
 

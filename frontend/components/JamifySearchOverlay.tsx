@@ -43,6 +43,23 @@ export function JamifySearchOverlay({ isOpen, onClose }: JamifySearchOverlayProp
     }
   }, [isOpen]);
 
+  // Handle Escape key to close overlay
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isOpen, onClose]);
+
   // Debounce search query
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -143,8 +160,9 @@ export function JamifySearchOverlay({ isOpen, onClose }: JamifySearchOverlayProp
         }`}
       >
         <div className="flex flex-col h-full safe-top">
-          {/* Header */}
-          <div className="flex items-center gap-3 p-4 border-b border-white/10">
+          <div className="max-w-[1000px] mx-auto w-full">
+            {/* Header */}
+            <div className="flex items-center gap-3 p-4 border-b border-white/10">
             <button
               onClick={onClose}
               className="p-2 -ml-2 hover:bg-white/10 rounded-full transition-colors btn-touch"
@@ -177,9 +195,11 @@ export function JamifySearchOverlay({ isOpen, onClose }: JamifySearchOverlayProp
               )}
             </div>
           </div>
+          </div>
 
           {/* Content */}
           <div className="flex-1 overflow-y-auto">
+            <div className="max-w-[1000px] mx-auto w-full">
             {!debouncedQuery ? (
               /* Recent Searches */
               recentSearches.length > 0 && (
@@ -340,6 +360,7 @@ export function JamifySearchOverlay({ isOpen, onClose }: JamifySearchOverlayProp
                 )}
               </div>
             )}
+            </div>
           </div>
         </div>
       </div>

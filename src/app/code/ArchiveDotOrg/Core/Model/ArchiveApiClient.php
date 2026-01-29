@@ -42,6 +42,22 @@ class ArchiveApiClient implements ArchiveApiClientInterface
     private static int $cacheHitCount = 0;
 
     /**
+     * Circuit breaker settings
+     */
+    private const CIRCUIT_BREAKER_THRESHOLD = 5;
+    private const CIRCUIT_BREAKER_RESET_TIME = 300; // 5 minutes
+
+    /**
+     * @var int Consecutive failure count
+     */
+    private int $failureCount = 0;
+
+    /**
+     * @var int|null Timestamp when circuit breaker opened
+     */
+    private ?int $circuitOpenedAt = null;
+
+    /**
      * @param Config $config
      * @param Curl $httpClient
      * @param Json $jsonSerializer
@@ -244,7 +260,7 @@ class ArchiveApiClient implements ArchiveApiClientInterface
     }
 
     /**
-     * Execute HTTP request with retry logic
+     * Execute HTTP request with retry logic and circuit breaker
      *
      * @param string $url
      * @return string
@@ -252,6 +268,13 @@ class ArchiveApiClient implements ArchiveApiClientInterface
      */
     private function executeWithRetry(string $url): string
     {
+        // Check circuit breaker before making request
+        if ($this->isCircuitOpen()) {
+            throw new LocalizedException(
+                __('Circuit breaker open - too many API failures. Try again in 5 minutes.')
+            );
+        }
+
         $attempts = $this->config->getRetryAttempts();
         $delay = $this->config->getRetryDelay();
         $lastException = null;
@@ -272,6 +295,8 @@ class ArchiveApiClient implements ArchiveApiClientInterface
 
                 if ($status === 200) {
                     self::$apiCallCount++;
+                    // Reset failure count on success
+                    $this->failureCount = 0;
                     return $body;
                 }
 
@@ -290,6 +315,8 @@ class ArchiveApiClient implements ArchiveApiClientInterface
                     );
                 }
 
+                // Reset on success
+                $this->failureCount = 0;
                 return $body;
             } catch (LocalizedException $e) {
                 $lastException = $e;
@@ -316,11 +343,45 @@ class ArchiveApiClient implements ArchiveApiClientInterface
             }
         }
 
+        // All retries failed - increment failure count
+        $this->failureCount++;
+
+        // Open circuit breaker if threshold reached
+        if ($this->failureCount >= self::CIRCUIT_BREAKER_THRESHOLD) {
+            $this->circuitOpenedAt = time();
+            $this->logger->error('Circuit breaker opened - too many API failures', [
+                'failures' => $this->failureCount,
+                'url' => $url
+            ]);
+        }
+
         $this->logger->logApiError($url, $lastException?->getMessage() ?? 'Unknown error');
 
         throw $lastException ?? new LocalizedException(
             __('API request failed after %1 attempts', $attempts)
         );
+    }
+
+    /**
+     * Check if circuit breaker is open
+     *
+     * @return bool True if circuit is open (requests should be blocked)
+     */
+    private function isCircuitOpen(): bool
+    {
+        if ($this->circuitOpenedAt === null) {
+            return false;
+        }
+
+        // Reset circuit after timeout
+        if (time() - $this->circuitOpenedAt > self::CIRCUIT_BREAKER_RESET_TIME) {
+            $this->circuitOpenedAt = null;
+            $this->failureCount = 0;
+            $this->logger->info('Circuit breaker reset after timeout');
+            return false;
+        }
+
+        return true;
     }
 
     /**

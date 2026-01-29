@@ -5,7 +5,7 @@
 
 import Link from 'next/link';
 import { useBreadcrumbs, BreadcrumbType } from '@/context/BreadcrumbContext';
-import { useMobileUI } from '@/context/MobileUIContext';
+import { usePlayer } from '@/context/PlayerContext';
 
 // Get the prefix for each breadcrumb type
 function getTypePrefix(type?: BreadcrumbType): string {
@@ -29,7 +29,7 @@ function HamburgerButton({ onClick }: { onClick: () => void }) {
     <button
       onClick={onClick}
       className="p-1 -ml-1 mr-2 text-[#8a8478] hover:brightness-110 transition-all"
-      aria-label="Open navigation menu"
+      aria-label="Open queue"
     >
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="32" height="32">
         <defs>
@@ -76,13 +76,13 @@ function HamburgerButton({ onClick }: { onClick: () => void }) {
 
 export default function Breadcrumb() {
   const { breadcrumbs } = useBreadcrumbs();
-  const { toggleSidebar } = useMobileUI();
+  const player = usePlayer();
 
   // Show "8pm.me" when no breadcrumbs are set
   if (breadcrumbs.length === 0) {
     return (
       <nav aria-label="Breadcrumb" className="flex items-center text-sm">
-        <HamburgerButton onClick={toggleSidebar} />
+        <HamburgerButton onClick={player.toggleQueue} />
         <svg
           className="w-4 h-4 text-[#6a6458] shrink-0 mx-1"
           fill="none"
@@ -96,14 +96,16 @@ export default function Breadcrumb() {
             d="M9 5l7 7-7 7"
           />
         </svg>
-        <span className="text-[#e8e0d4] font-medium">8pm.me</span>
+        <Link href="/" className="text-[#e8e0d4] font-medium hover:text-[#d4a060] transition-colors">
+          8pm.me
+        </Link>
       </nav>
     );
   }
 
   return (
     <nav aria-label="Breadcrumb" className="flex items-center text-sm overflow-hidden">
-      <HamburgerButton onClick={toggleSidebar} />
+      <HamburgerButton onClick={player.toggleQueue} />
       <svg
         className="w-4 h-4 text-[#6a6458] shrink-0 mx-1"
         fill="none"

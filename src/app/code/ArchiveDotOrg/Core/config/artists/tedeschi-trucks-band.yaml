@@ -1,0 +1,428 @@
+# ========================================
+# Tedeschi Trucks Band Configuration
+# ========================================
+#
+# Generated: 2026-01-29 14:55:14
+# Albums Populated: 4
+# Tracks Populated: 45
+# Status: Ready for use
+#
+# TODO:
+#   1. Add year to each album
+#   2. Add track aliases for better matching
+#   3. Add medley patterns (if applicable)
+#   4. Run validation: bin/magento archive:validate tedeschi-trucks-band
+#
+# See template.yaml for structure reference.
+# ========================================
+
+# ========================================
+# ARTIST SECTION
+# ========================================
+artist:
+  name: "Tedeschi Trucks Band"
+  collection_id: "TedeschiTrucksBand"
+  url_key: "tedeschi-trucks-band"
+
+# ========================================
+# ALBUMS SECTION
+# ========================================
+albums:
+  - key: "revelator"
+    name: "Revelator"
+    url_key: "revelator"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "let-me-get-by"
+    name: "Let Me Get By"
+    url_key: "letmegetby"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "signs"
+    name: "Signs"
+    url_key: "signs"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "i-am-the-moon"
+    name: "I Am the Moon"
+    url_key: "iamthemoon"
+    type: "studio"
+    # TODO: Add year field
+
+# ========================================
+# TRACKS SECTION
+# ========================================
+tracks:
+  - key: "anyhow"
+    name: "Anyhow"
+    url_key: "anyhow"
+    albums: ["let-me-get-by"]
+    canonical_album: "let-me-get-by"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "laugh-about-it"
+    name: "Laugh About It"
+    url_key: "laughaboutit"
+    albums: ["let-me-get-by"]
+    canonical_album: "let-me-get-by"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dont-know-what-it-means"
+    name: "Don't Know What It Means"
+    url_key: "dontknowwhatitmeans"
+    albums: ["let-me-get-by"]
+    canonical_album: "let-me-get-by"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "right-on-time"
+    name: "Right On Time"
+    url_key: "rightontime"
+    albums: ["let-me-get-by"]
+    canonical_album: "let-me-get-by"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "let-me-get-by"
+    name: "Let Me Get By"
+    url_key: "letmegetby"
+    albums: ["let-me-get-by"]
+    canonical_album: "let-me-get-by"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "just-as-strange"
+    name: "Just As Strange"
+    url_key: "justasstrange"
+    albums: ["let-me-get-by"]
+    canonical_album: "let-me-get-by"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "crying-over-you-swamp-raga-for-hozapfel-lefebvre-flute-and-harmonium"
+    name: "Crying Over You / Swamp Raga for Hozapfel, Lefebvre, Flute and Harmonium"
+    url_key: "cryingoveryou"
+    albums: ["let-me-get-by"]
+    canonical_album: "let-me-get-by"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "hear-me"
+    name: "Hear Me"
+    url_key: "hearme"
+    albums: ["let-me-get-by"]
+    canonical_album: "let-me-get-by"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "i-want-more"
+    name: "I Want More"
+    url_key: "iwantmore"
+    albums: ["let-me-get-by"]
+    canonical_album: "let-me-get-by"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "in-every-heart"
+    name: "In Every Heart"
+    url_key: "ineveryheart"
+    albums: ["let-me-get-by"]
+    canonical_album: "let-me-get-by"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "signs-high-times"
+    name: "Signs (High Times)"
+    url_key: "signshightimes"
+    albums: ["signs"]
+    canonical_album: "signs"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "im-gonna-be-there"
+    name: "I'm Gonna Be There"
+    url_key: "imgonnabethere"
+    albums: ["signs"]
+    canonical_album: "signs"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "when-will-i-begin"
+    name: "When Will I Begin"
+    url_key: "whenwillibegin"
+    albums: ["signs"]
+    canonical_album: "signs"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "walk-through-this-life"
+    name: "Walk Through This Life"
+    url_key: "walkthroughthislife"
+    albums: ["signs"]
+    canonical_album: "signs"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "strengthen-what-remains"
+    name: "Strengthen What Remains"
+    url_key: "strengthenwhatremains"
+    albums: ["signs"]
+    canonical_album: "signs"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "still-your-mind"
+    name: "Still Your Mind"
+    url_key: "stillyourmind"
+    albums: ["signs"]
+    canonical_album: "signs"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "hard-case"
+    name: "Hard Case"
+    url_key: "hardcase"
+    albums: ["signs"]
+    canonical_album: "signs"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "shame"
+    name: "Shame"
+    url_key: "shame"
+    albums: ["signs"]
+    canonical_album: "signs"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "all-the-world"
+    name: "All the World"
+    url_key: "alltheworld"
+    albums: ["signs"]
+    canonical_album: "signs"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "they-dont-shine"
+    name: "They Don't Shine"
+    url_key: "theydontshine"
+    albums: ["signs"]
+    canonical_album: "signs"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-ending"
+    name: "The Ending"
+    url_key: "theending"
+    albums: ["signs"]
+    canonical_album: "signs"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "hear-my-dear"
+    name: "Hear My Dear"
+    url_key: "hearmydear"
+    albums: ["i-am-the-moon"]
+    canonical_album: "i-am-the-moon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "fall-in"
+    name: "Fall In"
+    url_key: "fallin"
+    albums: ["i-am-the-moon"]
+    canonical_album: "i-am-the-moon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "i-am-the-moon"
+    name: "I Am The Moon"
+    url_key: "iamthemoon"
+    albums: ["i-am-the-moon"]
+    canonical_album: "i-am-the-moon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "circles-round-the-sun"
+    name: "Circles 'Round The Sun"
+    url_key: "circlesroundthesun"
+    albums: ["i-am-the-moon"]
+    canonical_album: "i-am-the-moon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "pasaquan"
+    name: "Pasaquan"
+    url_key: "pasaquan"
+    albums: ["i-am-the-moon"]
+    canonical_album: "i-am-the-moon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "playing-with-my-emotions"
+    name: "Playing With My Emotions"
+    url_key: "playingwithmyemotions"
+    albums: ["i-am-the-moon"]
+    canonical_album: "i-am-the-moon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "aint-that-something"
+    name: "Ain't That Something"
+    url_key: "aintthatsomething"
+    albums: ["i-am-the-moon"]
+    canonical_album: "i-am-the-moon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "all-the-love"
+    name: "All The Love"
+    url_key: "allthelove"
+    albums: ["i-am-the-moon"]
+    canonical_album: "i-am-the-moon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "so-long-savior"
+    name: "So Long Savior"
+    url_key: "solongsavior"
+    albums: ["i-am-the-moon"]
+    canonical_album: "i-am-the-moon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "rainy-day"
+    name: "Rainy Day"
+    url_key: "rainyday"
+    albums: ["i-am-the-moon"]
+    canonical_album: "i-am-the-moon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "la-di-da"
+    name: "La Di Da"
+    url_key: "ladida"
+    albums: ["i-am-the-moon"]
+    canonical_album: "i-am-the-moon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "hold-that-line"
+    name: "Hold That Line"
+    url_key: "holdthatline"
+    albums: ["i-am-the-moon"]
+    canonical_album: "i-am-the-moon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "somehow"
+    name: "Somehow"
+    url_key: "somehow"
+    albums: ["i-am-the-moon"]
+    canonical_album: "i-am-the-moon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "none-above"
+    name: "None Above"
+    url_key: "noneabove"
+    albums: ["i-am-the-moon"]
+    canonical_album: "i-am-the-moon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "yes-we-will"
+    name: "Yes We Will"
+    url_key: "yeswewill"
+    albums: ["i-am-the-moon"]
+    canonical_album: "i-am-the-moon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "gravity"
+    name: "Gravity"
+    url_key: "gravity"
+    albums: ["i-am-the-moon"]
+    canonical_album: "i-am-the-moon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "emmaline"
+    name: "Emmaline"
+    url_key: "emmaline"
+    albums: ["i-am-the-moon"]
+    canonical_album: "i-am-the-moon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "take-me-as-i-am"
+    name: "Take Me As I Am"
+    url_key: "takemeasiam"
+    albums: ["i-am-the-moon"]
+    canonical_album: "i-am-the-moon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "last-night-in-the-rain"
+    name: "Last Night In The Rain"
+    url_key: "lastnightintherain"
+    albums: ["i-am-the-moon"]
+    canonical_album: "i-am-the-moon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "soul-sweet-song"
+    name: "Soul Sweet Song"
+    url_key: "soulsweetsong"
+    albums: ["i-am-the-moon"]
+    canonical_album: "i-am-the-moon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dgary"
+    name: "D'Gary"
+    url_key: "dgary"
+    albums: ["i-am-the-moon"]
+    canonical_album: "i-am-the-moon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "where-are-my-friends"
+    name: "Where Are My Friends?"
+    url_key: "wherearemyfriends"
+    albums: ["i-am-the-moon"]
+    canonical_album: "i-am-the-moon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "i-can-feel-you-smiling"
+    name: "I Can Feel You Smiling"
+    url_key: "icanfeelyousmiling"
+    albums: ["i-am-the-moon"]
+    canonical_album: "i-am-the-moon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "another-day"
+    name: "Another Day"
+    url_key: "anotherday"
+    albums: ["i-am-the-moon"]
+    canonical_album: "i-am-the-moon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+# ========================================
+# MEDLEYS SECTION (Optional)
+# ========================================
+# TODO: Add common medley patterns if applicable
+# Example:
+# medleys:
+#   - pattern: "Track A > Track B"
+#     tracks: ["track-a-key", "track-b-key"]
+#     separator: ">"
+# medleys: []

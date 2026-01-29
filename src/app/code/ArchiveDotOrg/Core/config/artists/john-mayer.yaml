@@ -1,0 +1,620 @@
+# ========================================
+# John Mayer Configuration
+# ========================================
+#
+# Generated: 2026-01-29 14:55:14
+# Albums Populated: 8
+# Tracks Populated: 66
+# Status: Ready for use
+#
+# TODO:
+#   1. Add year to each album
+#   2. Add track aliases for better matching
+#   3. Add medley patterns (if applicable)
+#   4. Run validation: bin/magento archive:validate john-mayer
+#
+# See template.yaml for structure reference.
+# ========================================
+
+# ========================================
+# ARTIST SECTION
+# ========================================
+artist:
+  name: "John Mayer"
+  collection_id: "JohnMayer"
+  url_key: "john-mayer"
+
+# ========================================
+# ALBUMS SECTION
+# ========================================
+albums:
+  - key: "room-for-squares"
+    name: "Room for Squares"
+    url_key: "roomforsquares"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "heavier-things"
+    name: "Heavier Things"
+    url_key: "heavierthings"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "continuum"
+    name: "Continuum"
+    url_key: "continuum"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "battle-studies"
+    name: "Battle Studies"
+    url_key: "battlestudies"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "born-and-raised"
+    name: "Born and Raised"
+    url_key: "bornandraised"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "paradise-valley"
+    name: "Paradise Valley"
+    url_key: "paradisevalley"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "the-search-for-everything"
+    name: "The Search for Everything"
+    url_key: "thesearchforeverything"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "sob-rock"
+    name: "Sob Rock"
+    url_key: "sobrock"
+    type: "studio"
+    # TODO: Add year field
+
+# ========================================
+# TRACKS SECTION
+# ========================================
+tracks:
+  - key: "clarity"
+    name: "Clarity"
+    url_key: "clarity"
+    albums: ["heavier-things"]
+    canonical_album: "heavier-things"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "bigger-than-my-body"
+    name: "Bigger Than My Body"
+    url_key: "biggerthanmybody"
+    albums: ["heavier-things"]
+    canonical_album: "heavier-things"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "somethings-missing"
+    name: "Something's Missing"
+    url_key: "somethingsmissing"
+    albums: ["heavier-things"]
+    canonical_album: "heavier-things"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "new-deep"
+    name: "New Deep"
+    url_key: "newdeep"
+    albums: ["heavier-things"]
+    canonical_album: "heavier-things"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "come-back-to-bed"
+    name: "Come Back to Bed"
+    url_key: "comebacktobed"
+    albums: ["heavier-things"]
+    canonical_album: "heavier-things"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "home-life"
+    name: "Home Life"
+    url_key: "homelife"
+    albums: ["heavier-things"]
+    canonical_album: "heavier-things"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "split-screen-sadness"
+    name: "Split Screen Sadness"
+    url_key: "splitscreensadness"
+    albums: ["heavier-things"]
+    canonical_album: "heavier-things"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "daughters"
+    name: "Daughters"
+    url_key: "daughters"
+    albums: ["heavier-things"]
+    canonical_album: "heavier-things"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "only-heart"
+    name: "Only Heart"
+    url_key: "onlyheart"
+    albums: ["heavier-things"]
+    canonical_album: "heavier-things"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "wheel"
+    name: "Wheel"
+    url_key: "wheel"
+    albums: ["heavier-things"]
+    canonical_album: "heavier-things"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "waiting-on-the-world-to-change"
+    name: "Waiting on the World to Change"
+    url_key: "waitingontheworldtochange"
+    albums: ["continuum"]
+    canonical_album: "continuum"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "i-dont-trust-myself-with-loving-you"
+    name: "I Don't Trust Myself (With Loving You)"
+    url_key: "idonttrustmyselfwithlovingyou"
+    albums: ["continuum"]
+    canonical_album: "continuum"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "belief"
+    name: "Belief"
+    url_key: "belief"
+    albums: ["continuum"]
+    canonical_album: "continuum"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "gravity"
+    name: "Gravity"
+    url_key: "gravity"
+    albums: ["continuum"]
+    canonical_album: "continuum"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-heart-of-life"
+    name: "The Heart of Life"
+    url_key: "theheartoflife"
+    albums: ["continuum"]
+    canonical_album: "continuum"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "vultures"
+    name: "Vultures"
+    url_key: "vultures"
+    albums: ["continuum"]
+    canonical_album: "continuum"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "stop-this-train"
+    name: "Stop This Train"
+    url_key: "stopthistrain"
+    albums: ["continuum"]
+    canonical_album: "continuum"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "slow-dancing-in-a-burning-room"
+    name: "Slow Dancing in a Burning Room"
+    url_key: "slowdancinginaburningroom"
+    albums: ["continuum"]
+    canonical_album: "continuum"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "bold-as-love"
+    name: "Bold as Love"
+    url_key: "boldaslove"
+    albums: ["continuum"]
+    canonical_album: "continuum"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dreaming-with-a-broken-heart"
+    name: "Dreaming with a Broken Heart"
+    url_key: "dreamingwithabrokenheart"
+    albums: ["continuum"]
+    canonical_album: "continuum"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "in-repair"
+    name: "In Repair"
+    url_key: "inrepair"
+    albums: ["continuum"]
+    canonical_album: "continuum"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "im-gonna-find-another-you"
+    name: "I'm Gonna Find Another You"
+    url_key: "imgonnafindanotheryou"
+    albums: ["continuum"]
+    canonical_album: "continuum"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "heartbreak-warfare"
+    name: "Heartbreak Warfare"
+    url_key: "heartbreakwarfare"
+    albums: ["battle-studies"]
+    canonical_album: "battle-studies"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "all-we-ever-do-is-say-goodbye"
+    name: "All We Ever Do Is Say Goodbye"
+    url_key: "allweeverdoissaygoodbye"
+    albums: ["battle-studies"]
+    canonical_album: "battle-studies"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "half-of-my-heart"
+    name: "Half of My Heart"
+    url_key: "halfofmyheart"
+    albums: ["battle-studies"]
+    canonical_album: "battle-studies"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "who-says"
+    name: "Who Says"
+    url_key: "whosays"
+    albums: ["battle-studies"]
+    canonical_album: "battle-studies"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "perfectly-lonely"
+    name: "Perfectly Lonely"
+    url_key: "perfectlylonely"
+    albums: ["battle-studies"]
+    canonical_album: "battle-studies"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "assassin"
+    name: "Assassin"
+    url_key: "assassin"
+    albums: ["battle-studies"]
+    canonical_album: "battle-studies"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "crossroads"
+    name: "Crossroads"
+    url_key: "crossroads"
+    albums: ["battle-studies"]
+    canonical_album: "battle-studies"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "war-of-my-life"
+    name: "War of My Life"
+    url_key: "warofmylife"
+    albums: ["battle-studies"]
+    canonical_album: "battle-studies"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "edge-of-desire"
+    name: "Edge of Desire"
+    url_key: "edgeofdesire"
+    albums: ["battle-studies"]
+    canonical_album: "battle-studies"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "do-you-know-me"
+    name: "Do You Know Me"
+    url_key: "doyouknowme"
+    albums: ["battle-studies"]
+    canonical_album: "battle-studies"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "friends-lovers-or-nothing"
+    name: "Friends, Lovers or Nothing"
+    url_key: "friendsloversornothing"
+    albums: ["battle-studies"]
+    canonical_album: "battle-studies"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "wildfire"
+    name: "Wildfire"
+    url_key: "wildfire"
+    albums: ["paradise-valley"]
+    canonical_album: "paradise-valley"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dear-marie"
+    name: "Dear Marie"
+    url_key: "dearmarie"
+    albums: ["paradise-valley"]
+    canonical_album: "paradise-valley"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "waitin-on-the-day"
+    name: "Waitin' On The Day"
+    url_key: "waitinontheday"
+    albums: ["paradise-valley"]
+    canonical_album: "paradise-valley"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "paper-doll"
+    name: "Paper Doll"
+    url_key: "paperdoll"
+    albums: ["paradise-valley"]
+    canonical_album: "paradise-valley"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "call-me-the-breeze"
+    name: "Call Me The Breeze"
+    url_key: "callmethebreeze"
+    albums: ["paradise-valley"]
+    canonical_album: "paradise-valley"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "who-you-love-feat-katy-perry"
+    name: "Who You Love (feat. Katy Perry)"
+    url_key: "whoyoulove"
+    albums: ["paradise-valley"]
+    canonical_album: "paradise-valley"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "i-will-be-found-lost-at-sea"
+    name: "I Will Be Found (Lost At Sea)"
+    url_key: "iwillbefoundlostatsea"
+    albums: ["paradise-valley"]
+    canonical_album: "paradise-valley"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "wildfire-feat-frank-ocean"
+    name: "Wildfire (feat. Frank Ocean)"
+    url_key: "wildfirefeatfrankocean"
+    albums: ["paradise-valley"]
+    canonical_album: "paradise-valley"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "youre-no-one-til-someone-lets-you-down"
+    name: "You're No One 'Til Someone Lets You Down"
+    url_key: "yourenoοnetilsomeονeletsyoudown"
+    albums: ["paradise-valley"]
+    canonical_album: "paradise-valley"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "badge-and-gun"
+    name: "Badge And Gun"
+    url_key: "badgeandgun"
+    albums: ["paradise-valley"]
+    canonical_album: "paradise-valley"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "on-the-way-home"
+    name: "On The Way Home"
+    url_key: "onthewayhome"
+    albums: ["paradise-valley"]
+    canonical_album: "paradise-valley"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "still-feel-like-your-man"
+    name: "Still Feel Like Your Man"
+    url_key: "stillfeellikeyourman"
+    albums: ["the-search-for-everything"]
+    canonical_album: "the-search-for-everything"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "emoji-of-a-wave"
+    name: "Emoji of a Wave"
+    url_key: "emojiofawave"
+    albums: ["the-search-for-everything"]
+    canonical_album: "the-search-for-everything"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "helpless"
+    name: "Helpless"
+    url_key: "helpless"
+    albums: ["the-search-for-everything"]
+    canonical_album: "the-search-for-everything"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "love-on-the-weekend"
+    name: "Love On the Weekend"
+    url_key: "loveontheweekend"
+    albums: ["the-search-for-everything"]
+    canonical_album: "the-search-for-everything"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "in-the-blood"
+    name: "In the Blood"
+    url_key: "intheblood"
+    albums: ["the-search-for-everything"]
+    canonical_album: "the-search-for-everything"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "changing"
+    name: "Changing"
+    url_key: "changing"
+    albums: ["the-search-for-everything"]
+    canonical_album: "the-search-for-everything"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "theme-from-the-search-for-everything"
+    name: "Theme from 'The Search for Everything'"
+    url_key: "themefromthesearchforeverything"
+    albums: ["the-search-for-everything"]
+    canonical_album: "the-search-for-everything"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "moving-on-and-getting-over"
+    name: "Moving On and Getting Over"
+    url_key: "movingonandgettingover"
+    albums: ["the-search-for-everything"]
+    canonical_album: "the-search-for-everything"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "never-on-the-day-you-leave"
+    name: "Never On the Day You Leave"
+    url_key: "neveronthedayyοuleave"
+    albums: ["the-search-for-everything"]
+    canonical_album: "the-search-for-everything"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "rosie"
+    name: "Rosie"
+    url_key: "rosie"
+    albums: ["the-search-for-everything"]
+    canonical_album: "the-search-for-everything"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "roll-it-on-home"
+    name: "Roll It On Home"
+    url_key: "rollitonhome"
+    albums: ["the-search-for-everything"]
+    canonical_album: "the-search-for-everything"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "youre-gonna-live-forever-in-me"
+    name: "You're Gonna Live Forever in Me"
+    url_key: "youregonnaliveforeverinme"
+    albums: ["the-search-for-everything"]
+    canonical_album: "the-search-for-everything"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "last-train-home"
+    name: "Last Train Home"
+    url_key: "lasttrainhome"
+    albums: ["sob-rock"]
+    canonical_album: "sob-rock"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "shouldnt-matter-but-it-does"
+    name: "Shouldn't Matter but It Does"
+    url_key: "shouldntmatterbutitdoes"
+    albums: ["sob-rock"]
+    canonical_album: "sob-rock"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "new-light"
+    name: "New Light"
+    url_key: "newlight"
+    albums: ["sob-rock"]
+    canonical_album: "sob-rock"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "why-you-no-love-me"
+    name: "Why You No Love Me"
+    url_key: "whyyounoloveme"
+    albums: ["sob-rock"]
+    canonical_album: "sob-rock"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "wild-blue"
+    name: "Wild Blue"
+    url_key: "wildblue"
+    albums: ["sob-rock"]
+    canonical_album: "sob-rock"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "shot-in-the-dark"
+    name: "Shot in the Dark"
+    url_key: "shotinthedark"
+    albums: ["sob-rock"]
+    canonical_album: "sob-rock"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "i-guess-i-just-feel-like"
+    name: "I Guess I Just Feel Like"
+    url_key: "iguessiјustfeellike"
+    albums: ["sob-rock"]
+    canonical_album: "sob-rock"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "til-the-right-one-comes"
+    name: "Til the Right One Comes"
+    url_key: "tiltherightοnecomes"
+    albums: ["sob-rock"]
+    canonical_album: "sob-rock"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "carry-me-away"
+    name: "Carry Me Away"
+    url_key: "carrymeaway"
+    albums: ["sob-rock"]
+    canonical_album: "sob-rock"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "all-i-want-is-to-be-with-you"
+    name: "All I Want Is to Be With You"
+    url_key: "alliwantistobewithyou"
+    albums: ["sob-rock"]
+    canonical_album: "sob-rock"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+# ========================================
+# MEDLEYS SECTION (Optional)
+# ========================================
+# TODO: Add common medley patterns if applicable
+# Example:
+# medleys:
+#   - pattern: "Track A > Track B"
+#     tracks: ["track-a-key", "track-b-key"]
+#     separator: ">"
+# medleys: []

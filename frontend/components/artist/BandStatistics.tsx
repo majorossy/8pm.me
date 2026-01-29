@@ -39,6 +39,7 @@ const BandStatistics: React.FC<BandStatisticsProps> = ({ statistics }) => {
   const {
     totalShows,
     totalVenues,
+    mostPlayedTrack,
     recordingStats,
     totalHours,
     yearsActive,
@@ -83,6 +84,13 @@ const BandStatistics: React.FC<BandStatisticsProps> = ({ statistics }) => {
     stats.push({
       value: shortYear,
       label: 'since year',
+    });
+  }
+
+  if (mostPlayedTrack?.title) {
+    stats.push({
+      value: mostPlayedTrack.title,
+      label: 'top track',
     });
   }
 
@@ -161,6 +169,7 @@ const BandStatistics: React.FC<BandStatisticsProps> = ({ statistics }) => {
           .ember-2 { animation: ember-flicker-2 1.8s ease-in-out infinite; }
           .ember-3 { animation: ember-flicker-3 2.1s ease-in-out infinite; }
           .ember-4 { animation: ember-flicker-4 2.4s ease-in-out infinite; }
+          .ember-5 { animation: ember-flicker-5 2.2s ease-in-out infinite; }
 
           @keyframes ember-flicker-0 {
             0%, 100% { opacity: 1; filter: drop-shadow(0 0 10px rgba(255,150,50,0.4)); }
@@ -181,6 +190,10 @@ const BandStatistics: React.FC<BandStatisticsProps> = ({ statistics }) => {
           @keyframes ember-flicker-4 {
             0%, 100% { opacity: 1; filter: drop-shadow(0 0 9px rgba(255,150,50,0.45)); }
             50% { opacity: 0.9; filter: drop-shadow(0 0 16px rgba(255,150,50,0.55)); }
+          }
+          @keyframes ember-flicker-5 {
+            0%, 100% { opacity: 0.92; filter: drop-shadow(0 0 11px rgba(255,150,50,0.48)); }
+            50% { opacity: 0.95; filter: drop-shadow(0 0 13px rgba(255,150,50,0.52)); }
           }
         `}</style>
       </div>

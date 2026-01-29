@@ -1,0 +1,1547 @@
+# ========================================
+# The String Cheese Incident Configuration
+# ========================================
+#
+# Generated: 2026-01-29 14:55:14
+# Albums Populated: 108
+# Tracks Populated:      122
+# Status: Ready for use
+#
+# TODO:
+#   1. Add year to each album
+#   2. Add track aliases for better matching
+#   3. Add medley patterns (if applicable)
+#   4. Run validation: bin/magento archive:validate the-string-cheese-incident
+#
+# See template.yaml for structure reference.
+# ========================================
+
+# ========================================
+# ARTIST SECTION
+# ========================================
+artist:
+  name: "The String Cheese Incident"
+  collection_id: "TheStringCheeseIncident"
+  url_key: "the-string-cheese-incident"
+
+# ========================================
+# ALBUMS SECTION
+# ========================================
+albums:
+  - key: "black-clouds"
+    name: "Black Clouds"
+    url_key: "blackclouds"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "born-on-the-wrong-planet"
+    name: "Born On The Wrong Planet"
+    url_key: "bornonthewrongplanet25393"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "the-remington-ride"
+    name: "The Remington Ride"
+    url_key: "theremingtonride"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "resume-man"
+    name: "Resume Man"
+    url_key: "resumeman"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "elvis-wild-ride"
+    name: "Elvis Wild Ride"
+    url_key: "elviswildride"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "johnny-cash"
+    name: "Johnny Cash"
+    url_key: "johnnycash"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "lester-had-a-coconut"
+    name: "Lester Had A Coconut"
+    url_key: "lesterhadacoconut"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "texas"
+    name: "Texas"
+    url_key: "texas"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "jellyfish"
+    name: "Jellyfish"
+    url_key: "jellyfish"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "lonesome-fiddle-blues"
+    name: "Lonesome Fiddle Blues"
+    url_key: "lonesomefiddleblues"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "little-hands"
+    name: "Little Hands"
+    url_key: "littlehands"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "rhythm-of-the-road"
+    name: "Rhythm Of The Road"
+    url_key: "rhythmoftheroad"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "how-mountain-girls-can-love"
+    name: "How Mountain Girls Can Love"
+    url_key: "howmountaingirlscanlove"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "pirates"
+    name: "Pirates"
+    url_key: "pirates"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "wake-up"
+    name: "Wake Up"
+    url_key: "wakeup"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "san-jose"
+    name: "San Jose"
+    url_key: "sanjos"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "walk-this-way"
+    name: "Walk This Way"
+    url_key: "walkthisway"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "samba-degreeley"
+    name: "Samba DeGreeley"
+    url_key: "sambadegreeley"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "come-as-you-are"
+    name: "Come As You Are"
+    url_key: "comeasyouare"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "restless-wind"
+    name: "Restless Wind"
+    url_key: "restlesswind"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "on-the-road"
+    name: "On The Road"
+    url_key: "ontheroad"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "road-home"
+    name: "Road Home"
+    url_key: "roadhome"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "galactic"
+    name: "Galactic"
+    url_key: "galactic"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "100-year-flood"
+    name: "100 Year Flood"
+    url_key: "100yearflood"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "mlt"
+    name: "MLT"
+    url_key: "mlt"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "got-what-he-wanted"
+    name: "Got What He Wanted"
+    url_key: "gotwhathewanted"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "good-times-around-the-bend"
+    name: "Good Times Around The Bend"
+    url_key: "goodtimesaroundthebend"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "shenandoah-breakdown"
+    name: "Shenandoah Breakdown"
+    url_key: "shenandoahbreakdown"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "mouna-bowa"
+    name: "Mouna Bowa"
+    url_key: "mounabowa"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "bar-stool"
+    name: "Bar Stool"
+    url_key: "barstool"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "take-five"
+    name: "Take Five"
+    url_key: "takefive"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "hey-pocky-way"
+    name: "Hey Pocky Way"
+    url_key: "heypockyway"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "black-clouds"
+    name: "Black Clouds"
+    url_key: "blackclouds70723"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "lesters-rant"
+    name: "Lesters Rant"
+    url_key: "lestersrant"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "footprints"
+    name: "Footprints"
+    url_key: "footprints"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "birdland"
+    name: "Birdland"
+    url_key: "birdland"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "hold-whatcha-got"
+    name: "Hold Whatcha Got"
+    url_key: "holdwhatchagot"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "jellyfish"
+    name: "Jellyfish"
+    url_key: "jellyfish46930"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "drum-jam"
+    name: "Drum Jam"
+    url_key: "drumjam"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "texas"
+    name: "Texas"
+    url_key: "texas14345"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "outside-inside"
+    name: "Outside Inside"
+    url_key: "outsideinside31911"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "joyful-sound"
+    name: "Joyful Sound"
+    url_key: "joyfulsound"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "close-your-eyes"
+    name: "Close Your Eyes"
+    url_key: "closeyoureyes"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "search"
+    name: "Search"
+    url_key: "search"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "drifting"
+    name: "Drifting"
+    url_key: "drifting"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "black-and-white"
+    name: "Black And White"
+    url_key: "blackandwhite"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "lost"
+    name: "Lost"
+    url_key: "lost"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "latinissmo"
+    name: "Latinissmo"
+    url_key: "latinissmo"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "sing-a-new-song"
+    name: "Sing A New Song"
+    url_key: "singanewsong"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "rollover"
+    name: "Rollover"
+    url_key: "rollover"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "up-the-canyon"
+    name: "Up The Canyon"
+    url_key: "upthecanyon"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "wake-up"
+    name: "Wake Up"
+    url_key: "wakeup35704"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "sirens"
+    name: "Sirens"
+    url_key: "sirens"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "looking-glass"
+    name: "Looking Glass"
+    url_key: "lookingglass"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "orions-belt"
+    name: "Orions Belt"
+    url_key: "orionsbelt"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "mountain-girl"
+    name: "Mountain Girl"
+    url_key: "mountaingirl"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "lonesome-road-blues"
+    name: "Lonesome Road Blues"
+    url_key: "lonesomeroadblues"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "elijah"
+    name: "Elijah"
+    url_key: "elijah"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "valley-of-the-jig"
+    name: "Valley Of The Jig"
+    url_key: "valleyofthejig"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "tinder-box"
+    name: "Tinder Box"
+    url_key: "tinderbox"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "who-am-i"
+    name: "Who Am I"
+    url_key: "whoami"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "time-alive"
+    name: "Time Alive"
+    url_key: "timealive"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "on-my-way"
+    name: "On My Way"
+    url_key: "onmyway"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "give-me-the-love"
+    name: "Give Me The Love"
+    url_key: "givemethelove"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "sometimes-a-river"
+    name: "Sometimes A River"
+    url_key: "sometimesariver"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "big-compromise"
+    name: "Big Compromise"
+    url_key: "bigcompromise"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "silence-in-your-head"
+    name: "Silence In Your Head"
+    url_key: "silenceinyourhead"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "farther"
+    name: "Farther"
+    url_key: "farther"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "drive"
+    name: "Drive"
+    url_key: "drive"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "betray-the-dark"
+    name: "Betray The Dark"
+    url_key: "betraythedark"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "45th-of-november"
+    name: "45th of November"
+    url_key: "45thofnovember"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "one-step-closer"
+    name: "One Step Closer"
+    url_key: "onestepcloser88021"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "rainbow-serpent"
+    name: "Rainbow Serpent"
+    url_key: "rainbowserpent"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "swampy-waters"
+    name: "Swampy Waters"
+    url_key: "swampywaters"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "brand-new-start"
+    name: "Brand New Start"
+    url_key: "brandnewstart"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "walking-on-the-moon"
+    name: "Walking On The Moon"
+    url_key: "walkingonthemoon"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "come-together"
+    name: "Come Together"
+    url_key: "cometogether"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "the-wedge"
+    name: "The Wedge"
+    url_key: "thewedge"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "get-down-tonight"
+    name: "Get Down Tonight"
+    url_key: "getdowntonight"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "being-for-the-benefit-of-mr-kite"
+    name: "Being For The Benefit Of Mr. Kite!"
+    url_key: "beingforthebenefitofmrkite"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "hot-in-herre"
+    name: "Hot In Herre"
+    url_key: "hotinherre"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "war-pigs"
+    name: "War Pigs"
+    url_key: "warpigs"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "freeker-by-the-speaker"
+    name: "Freeker By The Speaker"
+    url_key: "freekerbythespeaker"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "exodus"
+    name: "Exodus"
+    url_key: "exodus"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "under-african-skies"
+    name: "Under African Skies"
+    url_key: "underafricanskies"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "tightrope"
+    name: "Tightrope"
+    url_key: "tightrope"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "la-woman"
+    name: "L.A. Woman"
+    url_key: "lawoman"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "peace-train"
+    name: "Peace Train"
+    url_key: "peacetrain"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "rock-the-casbah"
+    name: "Rock The Casbah"
+    url_key: "rockthecasbah"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "so-what"
+    name: "So What"
+    url_key: "sowhat"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "restless-wind"
+    name: "Restless Wind"
+    url_key: "restlesswind66522"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "colorado-bluebird-sky"
+    name: "Colorado Bluebird Sky"
+    url_key: "coloradobluebirdsky"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "betray-the-dark"
+    name: "Betray The Dark"
+    url_key: "betraythedark97612"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "song-in-my-head"
+    name: "Song In My Head"
+    url_key: "songinmyhead34536"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "struggling-angel"
+    name: "Struggling Angel"
+    url_key: "strugglingangel"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "so-far-from-home"
+    name: "So Far From Home"
+    url_key: "sofarfromhome"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "rosie"
+    name: "Rosie"
+    url_key: "rosie"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "stay-through"
+    name: "Stay Through"
+    url_key: "staythrough"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "colliding"
+    name: "Colliding"
+    url_key: "colliding"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "believe"
+    name: "Believe"
+    url_key: "believe33779"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "sweet-spot"
+    name: "Sweet Spot"
+    url_key: "sweetspot"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "my-one-and-only"
+    name: "My One and Only"
+    url_key: "myoneandonly"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "down-a-river"
+    name: "Down a River"
+    url_key: "downariver"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "get-tight"
+    name: "Get Tight"
+    url_key: "gettight"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "stop-drop-roll"
+    name: "Stop Drop Roll"
+    url_key: "stopdroproll"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "flying"
+    name: "Flying"
+    url_key: "flying"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "so-much-fun"
+    name: "So Much Fun"
+    url_key: "somuchfun"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "beautiful"
+    name: "Beautiful"
+    url_key: "beautiful"
+    type: "studio"
+    # TODO: Add year field
+
+# ========================================
+# TRACKS SECTION
+# ========================================
+tracks:
+  - key: "round-the-wheel"
+    name: "'Round The Wheel"
+    url_key: "roundthewheel76917"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "round-the-wheel"
+    name: "'Round The Wheel"
+    url_key: "roundthewheel52539"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "year-flood"
+    name: "100 Year Flood"
+    url_key: "100yearflood"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "th-of-november"
+    name: "45th of November"
+    url_key: "45thofnovember"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "bar-stool"
+    name: "Bar Stool"
+    url_key: "barstool"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "beautiful"
+    name: "Beautiful"
+    url_key: "beautiful"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "being-for-the-benefit-of-mr--kite-"
+    name: "Being For The Benefit Of Mr. Kite!"
+    url_key: "beingforthebenefitofmrkite"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "believe"
+    name: "Believe"
+    url_key: "believe33779"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "betray-the-dark"
+    name: "Betray The Dark"
+    url_key: "betraythedark97612"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "betray-the-dark"
+    name: "Betray The Dark"
+    url_key: "betraythedark"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "big-compromise"
+    name: "Big Compromise"
+    url_key: "bigcompromise"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "bigger-isn-t-better"
+    name: "Bigger Isn't Better"
+    url_key: "biggerisntbetter"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "birdland"
+    name: "Birdland"
+    url_key: "birdland"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "black-and-white"
+    name: "Black And White"
+    url_key: "blackandwhite"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "black-clouds"
+    name: "Black Clouds"
+    url_key: "blackclouds70723"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "black-clouds-"
+    name: "Black Clouds "
+    url_key: "blackclouds"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "born-on-the-wrong-planet"
+    name: "Born On The Wrong Planet"
+    url_key: "bornonthewrongplanet25393"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "brand-new-start"
+    name: "Brand New Start"
+    url_key: "brandnewstart"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "can-t-wait-another-day"
+    name: "Can't Wait Another Day"
+    url_key: "cantwaitanotherday"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "close-your-eyes"
+    name: "Close Your Eyes"
+    url_key: "closeyoureyes"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "colliding"
+    name: "Colliding"
+    url_key: "colliding"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "colorado-bluebird-sky"
+    name: "Colorado Bluebird Sky"
+    url_key: "coloradobluebirdsky"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "come-as-you-are"
+    name: "Come As You Are"
+    url_key: "comeasyouare"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "come-together"
+    name: "Come Together"
+    url_key: "cometogether"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "diggin--in"
+    name: "Diggin' In"
+    url_key: "digginin"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "don-t-say"
+    name: "Don't Say"
+    url_key: "dontsay"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "down-a-river"
+    name: "Down a River"
+    url_key: "downariver"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "drifting"
+    name: "Drifting"
+    url_key: "drifting"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "drive"
+    name: "Drive"
+    url_key: "drive"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "drum-jam"
+    name: "Drum Jam"
+    url_key: "drumjam"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "dudley-s-kitchen"
+    name: "Dudley's Kitchen"
+    url_key: "dudleyskitchen"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "elijah"
+    name: "Elijah"
+    url_key: "elijah"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "elvis-wild-ride"
+    name: "Elvis Wild Ride"
+    url_key: "elviswildride"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "exodus"
+    name: "Exodus"
+    url_key: "exodus"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "farther"
+    name: "Farther"
+    url_key: "farther"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "flying"
+    name: "Flying"
+    url_key: "flying"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "footprints"
+    name: "Footprints"
+    url_key: "footprints"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "freeker-by-the-speaker"
+    name: "Freeker By The Speaker"
+    url_key: "freekerbythespeaker"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "galactic"
+    name: "Galactic"
+    url_key: "galactic"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "get-down-tonight"
+    name: "Get Down Tonight"
+    url_key: "getdowntonight"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "get-tight"
+    name: "Get Tight"
+    url_key: "gettight"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "give-me-the-love"
+    name: "Give Me The Love"
+    url_key: "givemethelove"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "good-times-around-the-bend"
+    name: "Good Times Around The Bend"
+    url_key: "goodtimesaroundthebend"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "got-what-he-wanted"
+    name: "Got What He Wanted"
+    url_key: "gotwhathewanted"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "hey-pocky-way"
+    name: "Hey Pocky Way"
+    url_key: "heypockyway"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "hold-whatcha-got"
+    name: "Hold Whatcha Got"
+    url_key: "holdwhatchagot"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "hot-in-herre"
+    name: "Hot In Herre"
+    url_key: "hotinherre"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "how-mountain-girls-can-love"
+    name: "How Mountain Girls Can Love"
+    url_key: "howmountaingirlscanlove"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "jellyfish"
+    name: "Jellyfish"
+    url_key: "jellyfish"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "jellyfish"
+    name: "Jellyfish"
+    url_key: "jellyfish46930"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "johnny-cash"
+    name: "Johnny Cash"
+    url_key: "johnnycash"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "joyful-sound"
+    name: "Joyful Sound"
+    url_key: "joyfulsound"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "just-passin--through"
+    name: "Just Passin' Through"
+    url_key: "justpassinthrough"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "l-a--woman"
+    name: "L.A. Woman"
+    url_key: "lawoman"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "land-s-end"
+    name: "Land's End"
+    url_key: "landsend59460"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "land-s-end"
+    name: "Land's End"
+    url_key: "landsend53564"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "land-s-end"
+    name: "Land's End"
+    url_key: "landsend"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "latinissmo"
+    name: "Latinissmo"
+    url_key: "latinissmo"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "lester-had-a-coconut"
+    name: "Lester Had A Coconut"
+    url_key: "lesterhadacoconut"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "lesters-rant"
+    name: "Lesters Rant"
+    url_key: "lestersrant"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "let-s-go-outside"
+    name: "Let's Go Outside"
+    url_key: "letsgooutside"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "little-hands"
+    name: "Little Hands"
+    url_key: "littlehands"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "lonesome-fiddle-blues"
+    name: "Lonesome Fiddle Blues"
+    url_key: "lonesomefiddleblues"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "lonesome-road-blues"
+    name: "Lonesome Road Blues"
+    url_key: "lonesomeroadblues"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "looking-glass"
+    name: "Looking Glass"
+    url_key: "lookingglass"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "lost"
+    name: "Lost"
+    url_key: "lost"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "missin--me"
+    name: "Missin' Me"
+    url_key: "missinme"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "mlt"
+    name: "MLT"
+    url_key: "mlt"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "mouna-bowa"
+    name: "Mouna Bowa"
+    url_key: "mounabowa"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "mountain-girl"
+    name: "Mountain Girl"
+    url_key: "mountaingirl"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "my-one-and-only"
+    name: "My One and Only"
+    url_key: "myoneandonly"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "on-my-way"
+    name: "On My Way"
+    url_key: "onmyway"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "on-the-road"
+    name: "On The Road"
+    url_key: "ontheroad"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "one-step-closer"
+    name: "One Step Closer"
+    url_key: "onestepcloser88021"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "orions-belt"
+    name: "Orions Belt"
+    url_key: "orionsbelt"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "outside-inside"
+    name: "Outside Inside"
+    url_key: "outsideinside31911"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "peace-train"
+    name: "Peace Train"
+    url_key: "peacetrain"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "pirates"
+    name: "Pirates"
+    url_key: "pirates"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "rainbow-serpent"
+    name: "Rainbow Serpent"
+    url_key: "rainbowserpent"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "restless-wind"
+    name: "Restless Wind"
+    url_key: "restlesswind66522"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "restless-wind"
+    name: "Restless Wind"
+    url_key: "restlesswind"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "resume-man"
+    name: "Resume Man"
+    url_key: "resumeman"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "rhythm-of-the-road"
+    name: "Rhythm Of The Road"
+    url_key: "rhythmoftheroad"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "road-home"
+    name: "Road Home"
+    url_key: "roadhome"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "rock-the-casbah"
+    name: "Rock The Casbah"
+    url_key: "rockthecasbah"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "rollover"
+    name: "Rollover"
+    url_key: "rollover"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "rosie"
+    name: "Rosie"
+    url_key: "rosie"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "samba-degreeley"
+    name: "Samba DeGreeley"
+    url_key: "sambadegreeley"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "san-jos-"
+    name: "San Jos_"
+    url_key: "sanjos"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "search"
+    name: "Search"
+    url_key: "search"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "shenandoah-breakdown"
+    name: "Shenandoah Breakdown"
+    url_key: "shenandoahbreakdown"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "silence-in-your-head"
+    name: "Silence In Your Head"
+    url_key: "silenceinyourhead"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "sing-a-new-song"
+    name: "Sing A New Song"
+    url_key: "singanewsong"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "sirens"
+    name: "Sirens"
+    url_key: "sirens"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "so-far-from-home"
+    name: "So Far From Home"
+    url_key: "sofarfromhome"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "so-much-fun"
+    name: "So Much Fun"
+    url_key: "somuchfun"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "so-what"
+    name: "So What"
+    url_key: "sowhat"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "sometimes-a-river"
+    name: "Sometimes A River"
+    url_key: "sometimesariver"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "song-in-my-head"
+    name: "Song In My Head"
+    url_key: "songinmyhead34536"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "stay-through"
+    name: "Stay Through"
+    url_key: "staythrough"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "stop-drop-roll"
+    name: "Stop Drop Roll"
+    url_key: "stopdroproll"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "struggling-angel"
+    name: "Struggling Angel"
+    url_key: "strugglingangel"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "swampy-waters"
+    name: "Swampy Waters"
+    url_key: "swampywaters"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "sweet-spot"
+    name: "Sweet Spot"
+    url_key: "sweetspot"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "take-five"
+    name: "Take Five"
+    url_key: "takefive"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "texas"
+    name: "Texas"
+    url_key: "texas"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "texas"
+    name: "Texas"
+    url_key: "texas14345"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "the-remington-ride-"
+    name: "The Remington Ride "
+    url_key: "theremingtonride"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "the-wedge"
+    name: "The Wedge"
+    url_key: "thewedge"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "tightrope"
+    name: "Tightrope"
+    url_key: "tightrope"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "time-alive"
+    name: "Time Alive"
+    url_key: "timealive"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "tinder-box"
+    name: "Tinder Box"
+    url_key: "tinderbox"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "under-african-skies"
+    name: "Under African Skies"
+    url_key: "underafricanskies"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "until-the-music-s-over"
+    name: "Until The Music's Over"
+    url_key: "untilthemusicsover"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "up-the-canyon"
+    name: "Up The Canyon"
+    url_key: "upthecanyon"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "valley-of-the-jig"
+    name: "Valley Of The Jig"
+    url_key: "valleyofthejig"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "wake-up"
+    name: "Wake Up"
+    url_key: "wakeup35704"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "wake-up"
+    name: "Wake Up"
+    url_key: "wakeup"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "walk-this-way"
+    name: "Walk This Way"
+    url_key: "walkthisway"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "walking-on-the-moon"
+    name: "Walking On The Moon"
+    url_key: "walkingonthemoon"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "war-pigs"
+    name: "War Pigs"
+    url_key: "warpigs"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "who-am-i"
+    name: "Who Am I"
+    url_key: "whoami"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+
+# ========================================
+# MEDLEYS SECTION (Optional)
+# ========================================
+# TODO: Add common medley patterns if applicable
+# Example:
+# medleys:
+#   - pattern: "Track A > Track B"
+#     tracks: ["track-a-key", "track-b-key"]
+#     separator: ">"
+# medleys: []

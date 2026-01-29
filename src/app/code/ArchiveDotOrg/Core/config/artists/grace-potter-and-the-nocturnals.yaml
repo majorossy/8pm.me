@@ -1,0 +1,358 @@
+# ========================================
+# Grace Potter and the Nocturnals Configuration
+# ========================================
+#
+# Generated: 2026-01-29 14:55:14
+# Albums Populated: 23
+# Tracks Populated:       25
+# Status: Ready for use
+#
+# TODO:
+#   1. Add year to each album
+#   2. Add track aliases for better matching
+#   3. Add medley patterns (if applicable)
+#   4. Run validation: bin/magento archive:validate grace-potter-and-the-nocturnals
+#
+# See template.yaml for structure reference.
+# ========================================
+
+# ========================================
+# ARTIST SECTION
+# ========================================
+artist:
+  name: "Grace Potter and the Nocturnals"
+  collection_id: "GracePotterandtheNocturnals"
+  url_key: "grace-potter-and-the-nocturnals"
+
+# ========================================
+# ALBUMS SECTION
+# ========================================
+albums:
+  - key: "at-your-request"
+    name: "At Your Request"
+    url_key: "atyourrequest"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "go-down-low"
+    name: "Go Down Low"
+    url_key: "godownlow"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "crazy-parade"
+    name: "Crazy Parade"
+    url_key: "crazyparade"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "i-chose-you"
+    name: "I Chose You"
+    url_key: "ichoseyou"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "deliverance-road"
+    name: "Deliverance Road"
+    url_key: "deliveranceroad"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "gumbo-moon"
+    name: "Gumbo Moon"
+    url_key: "gumbomoon"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "hidden-superstition"
+    name: "Hidden Superstition"
+    url_key: "hiddensuperstition"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "moonbeams"
+    name: "Moonbeams"
+    url_key: "moonbeams"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "no-good-mean-old-lowdown-lover-man"
+    name: "No Good, Mean Old, Lowdown Lover Man"
+    url_key: "nogoodmeanoldlowdownloverman"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "somebody-fix-me"
+    name: "Somebody Fix Me"
+    url_key: "somebodyfixme"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "driving-blind"
+    name: "Driving Blind"
+    url_key: "drivingblind"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "bull-in-a-china-shop"
+    name: "Bull in a China Shop"
+    url_key: "bullinachinashop"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "kissing-in-a-tree"
+    name: "Kissing in a Tree"
+    url_key: "kissinginatree"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "hot-to-the-touch"
+    name: "Hot to the Touch"
+    url_key: "hottothetouch"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "alive-tonight"
+    name: "Alive Tonight"
+    url_key: "alivetonight"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "your-girl"
+    name: "Your Girl"
+    url_key: "yourgirl"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "empty-heart"
+    name: "Empty Heart"
+    url_key: "emptyheart"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "the-miner"
+    name: "The Miner"
+    url_key: "theminer"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "delirious"
+    name: "Delirious"
+    url_key: "delirious"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "instigators"
+    name: "Instigators"
+    url_key: "instigators"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "biggest-fan"
+    name: "Biggest Fan"
+    url_key: "biggestfan"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "low"
+    name: "Low"
+    url_key: "low"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "let-you-go"
+    name: "Let You Go"
+    url_key: "letyougo"
+    type: "studio"
+    # TODO: Add year field
+
+# ========================================
+# TRACKS SECTION
+# ========================================
+tracks:
+  - key: "alive-tonight"
+    name: "Alive Tonight"
+    url_key: "alivetonight"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "at-your-request"
+    name: "At Your Request"
+    url_key: "atyourrequest"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "biggest-fan"
+    name: "Biggest Fan"
+    url_key: "biggestfan"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "bull-in-a-china-shop"
+    name: "Bull in a China Shop"
+    url_key: "bullinachinashop"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "crazy-parade"
+    name: "Crazy Parade"
+    url_key: "crazyparade"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "delirious"
+    name: "Delirious"
+    url_key: "delirious"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "deliverance-road"
+    name: "Deliverance Road"
+    url_key: "deliveranceroad"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "driving-blind"
+    name: "Driving Blind"
+    url_key: "drivingblind"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "empty-heart"
+    name: "Empty Heart"
+    url_key: "emptyheart"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "go-down-low"
+    name: "Go Down Low"
+    url_key: "godownlow"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "gumbo-moon"
+    name: "Gumbo Moon"
+    url_key: "gumbomoon"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "hidden-superstition"
+    name: "Hidden Superstition"
+    url_key: "hiddensuperstition"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "hot-to-the-touch"
+    name: "Hot to the Touch"
+    url_key: "hottothetouch"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "i-chose-you"
+    name: "I Chose You"
+    url_key: "ichoseyou"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "instigators"
+    name: "Instigators"
+    url_key: "instigators"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "kissing-in-a-tree"
+    name: "Kissing in a Tree"
+    url_key: "kissinginatree"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "let-you-go"
+    name: "Let You Go"
+    url_key: "letyougo"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "look-what-we-ve-become"
+    name: "Look What We've Become"
+    url_key: "lookwhatwevebecome"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "low"
+    name: "Low"
+    url_key: "low"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "moonbeams"
+    name: "Moonbeams"
+    url_key: "moonbeams"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "no-good--mean-old--lowdown-lover-man"
+    name: "No Good, Mean Old, Lowdown Lover Man"
+    url_key: "nogoodmeanoldlowdownloverman"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "nobody-s-born-with-a-broken-heart"
+    name: "Nobody's Born with a Broken Heart"
+    url_key: "nobodysbornwithabrokenheart"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "somebody-fix-me"
+    name: "Somebody Fix Me"
+    url_key: "somebodyfixme"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "the-miner"
+    name: "The Miner"
+    url_key: "theminer"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "your-girl"
+    name: "Your Girl"
+    url_key: "yourgirl"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+
+# ========================================
+# MEDLEYS SECTION (Optional)
+# ========================================
+# TODO: Add common medley patterns if applicable
+# Example:
+# medleys:
+#   - pattern: "Track A > Track B"
+#     tracks: ["track-a-key", "track-b-key"]
+#     separator: ">"
+# medleys: []

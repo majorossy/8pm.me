@@ -523,4 +523,346 @@ class ArchiveApiClientTest extends TestCase
 
         $apiClient->fetchShowMetadata('test-identifier');
     }
+
+    /**
+     * @test
+     */
+    public function testApiTimeoutHandling(): void
+    {
+        $collectionId = 'TestCollection';
+
+        $this->configMock->method('buildPaginatedSearchUrl')->willReturn('https://archive.org/search');
+        $this->configMock->method('getRetryAttempts')->willReturn(3);
+        $this->configMock->method('getRetryDelay')->willReturn(1);
+
+        // Simulate timeout by throwing exception on each attempt
+        $this->httpClientMock->method('get')
+            ->willThrowException(new \Exception('Connection timeout after 30 seconds'));
+
+        $this->httpClientMock->expects($this->exactly(3))->method('get');
+
+        $this->loggerMock->expects($this->atLeast(1))
+            ->method('debug');
+
+        $this->expectException(LocalizedException::class);
+        $this->expectExceptionMessageMatches('/timeout/i');
+
+        $this->apiClient->fetchCollectionIdentifiers($collectionId);
+    }
+
+    /**
+     * @test
+     */
+    public function testRateLimitingResponse(): void
+    {
+        $collectionId = 'TestCollection';
+
+        $this->configMock->method('buildPaginatedSearchUrl')->willReturn('https://archive.org/search');
+        $this->configMock->method('getRetryAttempts')->willReturn(3);
+        $this->configMock->method('getRetryDelay')->willReturn(100);
+
+        // First call returns 429, second succeeds
+        $callCount = 0;
+        $this->httpClientMock->method('getStatus')
+            ->willReturnCallback(function () use (&$callCount) {
+                return $callCount++ === 0 ? 429 : 200;
+            });
+
+        $this->httpClientMock->method('getBody')
+            ->willReturn('{"response":{"docs":[{"identifier":"show1"}],"numFound":1}}');
+
+        $this->jsonSerializerMock->method('unserialize')
+            ->willReturn(['response' => ['docs' => [['identifier' => 'show1']], 'numFound' => 1]]);
+
+        $this->loggerMock->expects($this->atLeast(1))
+            ->method('debug')
+            ->with($this->stringContains('429'));
+
+        $result = $this->apiClient->fetchCollectionIdentifiers($collectionId);
+
+        $this->assertEquals(['show1'], $result);
+    }
+
+    /**
+     * @test
+     */
+    public function testNetworkInterruptionRecovery(): void
+    {
+        $collectionId = 'TestCollection';
+
+        $this->configMock->method('buildPaginatedSearchUrl')->willReturn('https://archive.org/search');
+        $this->configMock->method('getRetryAttempts')->willReturn(3);
+        $this->configMock->method('getRetryDelay')->willReturn(1);
+
+        // First two attempts fail, third succeeds
+        $attemptCount = 0;
+        $this->httpClientMock->method('get')
+            ->willReturnCallback(function () use (&$attemptCount) {
+                $attemptCount++;
+                if ($attemptCount <= 2) {
+                    throw new \Exception('Network error: Connection refused');
+                }
+            });
+
+        $this->httpClientMock->method('getStatus')->willReturn(200);
+        $this->httpClientMock->method('getBody')
+            ->willReturn('{"response":{"docs":[{"identifier":"show1"}],"numFound":1}}');
+
+        $this->jsonSerializerMock->method('unserialize')
+            ->willReturn(['response' => ['docs' => [['identifier' => 'show1']], 'numFound' => 1]]);
+
+        $result = $this->apiClient->fetchCollectionIdentifiers($collectionId);
+
+        $this->assertEquals(['show1'], $result);
+        $this->assertEquals(3, $attemptCount);
+    }
+
+    /**
+     * @test
+     */
+    public function testCircuitBreakerOpensAfterThreshold(): void
+    {
+        // Use real circuit breaker instance
+        $cacheMock = $this->createMock(\Magento\Framework\App\CacheInterface::class);
+        $cacheMock->method('load')->willReturn(false);
+
+        $this->configMock->method('getCircuitThreshold')->willReturn(5);
+        $this->configMock->method('getCircuitResetSeconds')->willReturn(300);
+
+        $circuitBreaker = new \ArchiveDotOrg\Core\Model\Resilience\CircuitBreaker(
+            $cacheMock,
+            $this->configMock
+        );
+
+        // Simulate 5 consecutive failures
+        for ($i = 0; $i < 5; $i++) {
+            $circuitBreaker->onFailure();
+        }
+
+        $this->assertTrue($circuitBreaker->isOpen());
+        $this->assertEquals(5, $circuitBreaker->getFailureCount());
+    }
+
+    /**
+     * @test
+     */
+    public function testCircuitBreakerResetsAfterTimeout(): void
+    {
+        // Use real circuit breaker with time mocking
+        $cacheMock = $this->createMock(\Magento\Framework\App\CacheInterface::class);
+
+        // Track cache state
+        $cacheState = [
+            'archivedotorg_circuit_state' => 'open',
+            'archivedotorg_circuit_failures' => '5',
+            'archivedotorg_circuit_last_failure' => (string)(time() - 301) // 301 seconds ago
+        ];
+
+        $cacheMock->method('load')
+            ->willReturnCallback(function ($key) use (&$cacheState) {
+                return $cacheState[$key] ?? false;
+            });
+
+        $cacheMock->method('save')
+            ->willReturnCallback(function ($value, $key) use (&$cacheState) {
+                $cacheState[$key] = $value;
+            });
+
+        $this->configMock->method('getCircuitThreshold')->willReturn(5);
+        $this->configMock->method('getCircuitResetSeconds')->willReturn(300);
+
+        $circuitBreaker = new \ArchiveDotOrg\Core\Model\Resilience\CircuitBreaker(
+            $cacheMock,
+            $this->configMock
+        );
+
+        // Circuit should be open initially
+        $this->assertTrue($circuitBreaker->isOpen());
+
+        // Call operation to trigger state transition
+        try {
+            $circuitBreaker->call(function () {
+                return true;
+            });
+        } catch (\Exception $e) {
+            // May throw during transition
+        }
+
+        // After timeout, successful call should reset circuit
+        $this->assertFalse($circuitBreaker->isOpen());
+    }
+
+    /**
+     * @test
+     */
+    public function testConnectionTimeoutWithMultipleRetries(): void
+    {
+        $collectionId = 'TestCollection';
+
+        $this->configMock->method('buildPaginatedSearchUrl')->willReturn('https://archive.org/search');
+        $this->configMock->method('getRetryAttempts')->willReturn(3);
+        $this->configMock->method('getRetryDelay')->willReturn(1);
+
+        // Simulate connection timeout on every attempt
+        $this->httpClientMock->method('get')
+            ->willThrowException(new \Exception('Connection timeout after 30 seconds'));
+
+        // Should attempt exactly 3 times before giving up
+        $this->httpClientMock->expects($this->exactly(3))->method('get');
+
+        // Should log retry attempts
+        $this->loggerMock->expects($this->atLeast(1))
+            ->method('debug')
+            ->with($this->stringContains('Retry attempt'));
+
+        $this->expectException(LocalizedException::class);
+        $this->expectExceptionMessageMatches('/timeout|Connection/i');
+
+        $this->apiClient->fetchCollectionIdentifiers($collectionId);
+    }
+
+    /**
+     * @test
+     */
+    public function testRateLimitRetryWithBackoff(): void
+    {
+        $collectionId = 'TestCollection';
+
+        $this->configMock->method('buildPaginatedSearchUrl')->willReturn('https://archive.org/search');
+        $this->configMock->method('getRetryAttempts')->willReturn(3);
+        $this->configMock->method('getRetryDelay')->willReturn(100);
+
+        // First call returns 429 (rate limited), second succeeds
+        $callCount = 0;
+        $this->httpClientMock->method('getStatus')
+            ->willReturnCallback(function () use (&$callCount) {
+                return $callCount++ === 0 ? 429 : 200;
+            });
+
+        $this->httpClientMock->method('getBody')
+            ->willReturn('{"response":{"docs":[{"identifier":"show1"}],"numFound":1}}');
+
+        $this->jsonSerializerMock->method('unserialize')
+            ->willReturn(['response' => ['docs' => [['identifier' => 'show1']], 'numFound' => 1]]);
+
+        // Should log the rate limit response
+        $this->loggerMock->expects($this->atLeast(1))
+            ->method('debug')
+            ->with($this->stringContains('429'));
+
+        $result = $this->apiClient->fetchCollectionIdentifiers($collectionId);
+
+        // Should eventually succeed after retry
+        $this->assertEquals(['show1'], $result);
+        $this->assertEquals(2, $callCount); // 1 failed + 1 succeeded
+    }
+
+    /**
+     * @test
+     */
+    public function testIntermittentNetworkFailureRecovery(): void
+    {
+        $identifier = 'test-show-2023';
+
+        $this->configMock->method('buildMetadataUrl')->willReturn('https://archive.org/metadata/' . $identifier);
+        $this->configMock->method('getRetryAttempts')->willReturn(3);
+        $this->configMock->method('getRetryDelay')->willReturn(1);
+
+        $showMock = $this->createMock(ShowInterface::class);
+        $this->showFactoryMock->method('create')->willReturn($showMock);
+
+        // First two attempts fail with network error, third succeeds
+        $attemptCount = 0;
+        $this->httpClientMock->method('get')
+            ->willReturnCallback(function () use (&$attemptCount) {
+                $attemptCount++;
+                if ($attemptCount <= 2) {
+                    throw new \Exception('Network error: Connection refused');
+                }
+            });
+
+        $this->httpClientMock->method('getStatus')->willReturn(200);
+        $this->httpClientMock->method('getBody')->willReturn('{}');
+
+        $this->jsonSerializerMock->method('unserialize')
+            ->willReturn([
+                'metadata' => ['title' => 'Test Show'],
+                'files' => [],
+                'd1' => 'ia600001.us.archive.org'
+            ]);
+
+        // Should log retry attempts
+        $this->loggerMock->expects($this->atLeast(2))
+            ->method('debug');
+
+        $result = $this->apiClient->fetchShowMetadata($identifier);
+
+        // Should succeed after retries
+        $this->assertSame($showMock, $result);
+        $this->assertEquals(3, $attemptCount);
+    }
+
+    /**
+     * @test
+     */
+    public function testCircuitBreakerOpensAfterFailureThreshold(): void
+    {
+        // Use real circuit breaker instance
+        $cacheMock = $this->createMock(\Magento\Framework\App\CacheInterface::class);
+        $cacheMock->method('load')->willReturn(false);
+
+        $this->configMock->method('getCircuitThreshold')->willReturn(5);
+        $this->configMock->method('getCircuitResetSeconds')->willReturn(300);
+
+        $circuitBreaker = new \ArchiveDotOrg\Core\Model\Resilience\CircuitBreaker(
+            $cacheMock,
+            $this->configMock
+        );
+
+        // Simulate 5 consecutive failures
+        for ($i = 0; $i < 5; $i++) {
+            $circuitBreaker->onFailure();
+        }
+
+        // Circuit should now be open
+        $this->assertTrue($circuitBreaker->isOpen());
+        $this->assertEquals(5, $circuitBreaker->getFailureCount());
+
+        // Should log circuit open state
+        $this->loggerMock->expects($this->once())
+            ->method('debug')
+            ->with($this->stringContains('Circuit breaker opened'));
+    }
+
+    /**
+     * @test
+     */
+    public function testCircuitBreakerBlocksRequestsWhenOpen(): void
+    {
+        // Create a circuit breaker that is already open
+        $this->circuitBreakerMock = $this->createMock(CircuitBreaker::class);
+        $this->circuitBreakerMock->method('call')
+            ->willThrowException(CircuitOpenException::fromString('Circuit breaker is open'));
+
+        $apiClient = new ArchiveApiClient(
+            $this->configMock,
+            $this->httpClientMock,
+            $this->jsonSerializerMock,
+            $this->loggerMock,
+            $this->showFactoryMock,
+            $this->trackFactoryMock,
+            $this->apiCacheMock,
+            $this->circuitBreakerMock
+        );
+
+        $this->configMock->method('buildPaginatedSearchUrl')->willReturn('https://archive.org/search');
+
+        // HTTP client should NOT be called when circuit is open
+        $this->httpClientMock->expects($this->never())->method('get');
+
+        $this->expectException(CircuitOpenException::class);
+        $this->expectExceptionMessage('Circuit breaker is open');
+
+        $apiClient->fetchCollectionIdentifiers('TestCollection');
+    }
 }

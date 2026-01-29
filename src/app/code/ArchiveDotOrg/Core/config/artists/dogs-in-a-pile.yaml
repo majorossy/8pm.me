@@ -1,0 +1,128 @@
+# ========================================
+# Dogs in a Pile Configuration
+# ========================================
+#
+# Generated: 2026-01-29 14:55:14
+# Albums Populated: 2
+# Tracks Populated: 9
+# Status: Ready for use
+#
+# TODO:
+#   1. Add year to each album
+#   2. Add track aliases for better matching
+#   3. Add medley patterns (if applicable)
+#   4. Run validation: bin/magento archive:validate dogs-in-a-pile
+#
+# See template.yaml for structure reference.
+# ========================================
+
+# ========================================
+# ARTIST SECTION
+# ========================================
+artist:
+  name: "Dogs in a Pile"
+  collection_id: "DogsinaPile"
+  url_key: "dogs-in-a-pile"
+
+# ========================================
+# ALBUMS SECTION
+# ========================================
+albums:
+  - key: "bloom"
+    name: "Bloom"
+    url_key: "bloom"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "not-your-average-beagle"
+    name: "Not Your Average Beagle"
+    url_key: "notyouraveragebeagle"
+    type: "studio"
+    # TODO: Add year field
+
+# ========================================
+# TRACKS SECTION
+# ========================================
+tracks:
+  - key: "today"
+    name: "Today"
+    url_key: "today"
+    albums: ["bloom"]
+    canonical_album: "bloom"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "bent-strange"
+    name: "Bent Strange"
+    url_key: "bentstrange"
+    albums: ["bloom"]
+    canonical_album: "bloom"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "all-the-same"
+    name: "All the Same"
+    url_key: "allthesame"
+    albums: ["bloom"]
+    canonical_album: "bloom"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "stranger"
+    name: "Stranger"
+    url_key: "stranger"
+    albums: ["bloom"]
+    canonical_album: "bloom"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "fenway"
+    name: "Fenway"
+    url_key: "fenway"
+    albums: ["bloom"]
+    canonical_album: "bloom"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "hesitate"
+    name: "Hesitate"
+    url_key: "hesitate"
+    albums: ["bloom"]
+    canonical_album: "bloom"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "trunk-rum"
+    name: "Trunk Rum"
+    url_key: "trunkrum"
+    albums: ["bloom"]
+    canonical_album: "bloom"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "rum-and-roses"
+    name: "Rum and Roses"
+    url_key: "rumandroses"
+    albums: ["bloom"]
+    canonical_album: "bloom"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "say-something"
+    name: "Say Something"
+    url_key: "saysomething"
+    albums: ["bloom"]
+    canonical_album: "bloom"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+# ========================================
+# MEDLEYS SECTION (Optional)
+# ========================================
+# TODO: Add common medley patterns if applicable
+# Example:
+# medleys:
+#   - pattern: "Track A > Track B"
+#     tracks: ["track-a-key", "track-b-key"]
+#     separator: ">"
+# medleys: []

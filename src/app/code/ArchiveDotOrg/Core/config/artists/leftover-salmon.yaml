@@ -1,0 +1,740 @@
+# ========================================
+# Leftover Salmon Configuration
+# ========================================
+#
+# Generated: 2026-01-29 14:55:14
+# Albums Populated: 8
+# Tracks Populated: 81
+# Status: Ready for use
+#
+# TODO:
+#   1. Add year to each album
+#   2. Add track aliases for better matching
+#   3. Add medley patterns (if applicable)
+#   4. Run validation: bin/magento archive:validate leftover-salmon
+#
+# See template.yaml for structure reference.
+# ========================================
+
+# ========================================
+# ARTIST SECTION
+# ========================================
+artist:
+  name: "Leftover Salmon"
+  collection_id: "LeftoverSalmon"
+  url_key: "leftover-salmon"
+
+# ========================================
+# ALBUMS SECTION
+# ========================================
+albums:
+  - key: "bridges-to-bert"
+    name: "Bridges to Bert"
+    url_key: "bridgestobert"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "euphoria"
+    name: "Euphoria"
+    url_key: "euphoria"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "nashville-sessions"
+    name: "Nashville Sessions"
+    url_key: "nashvillesessions"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "leftover-salmon"
+    name: "Leftover Salmon"
+    url_key: "leftoversalmonalbum"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "aquatic-hitchhiker"
+    name: "Aquatic Hitchhiker"
+    url_key: "aquatichitchhiker"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "high-country"
+    name: "High Country"
+    url_key: "highcountry"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "something-higher"
+    name: "Something Higher"
+    url_key: "somethinghigher"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "brand-new-good-old-days"
+    name: "Brand New Good Old Days"
+    url_key: "brandnewgoodolddays"
+    type: "studio"
+    # TODO: Add year field
+
+# ========================================
+# TRACKS SECTION
+# ========================================
+tracks:
+  - key: "better"
+    name: "Better"
+    url_key: "better"
+    albums: ["euphoria"]
+    canonical_album: "euphoria"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "highway-song"
+    name: "Highway Song"
+    url_key: "highwaysong"
+    albums: ["euphoria"]
+    canonical_album: "euphoria"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "baby-hold-on"
+    name: "Baby Hold On"
+    url_key: "babyholdon"
+    albums: ["euphoria"]
+    canonical_album: "euphoria"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "rivers-rising"
+    name: "River's Rising"
+    url_key: "riversrising"
+    albums: ["euphoria"]
+    canonical_album: "euphoria"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "mama-boulet"
+    name: "Mama Boulet"
+    url_key: "mamaboulet"
+    albums: ["euphoria"]
+    canonical_album: "euphoria"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "funky-mountain-fogdown"
+    name: "Funky Mountain Fogdown"
+    url_key: "funkymountainfogdown"
+    albums: ["euphoria"]
+    canonical_album: "euphoria"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "cash-on-the-barrelhead"
+    name: "Cash on the Barrelhead"
+    url_key: "cashonthebarrelhead"
+    albums: ["euphoria"]
+    canonical_album: "euphoria"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "muddy-water-home"
+    name: "Muddy Water Home"
+    url_key: "muddywaterhome"
+    albums: ["euphoria"]
+    canonical_album: "euphoria"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "aint-gonna-work"
+    name: "Ain't Gonna Work"
+    url_key: "aintgonnawork"
+    albums: ["euphoria"]
+    canonical_album: "euphoria"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "this-is-the-time"
+    name: "This is the Time"
+    url_key: "thisisthetime"
+    albums: ["euphoria"]
+    canonical_album: "euphoria"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "euphoria"
+    name: "Euphoria"
+    url_key: "euphoria"
+    albums: ["euphoria"]
+    canonical_album: "euphoria"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "midnight-blues-feat-del-mccoury-and-ronnie-mccoury"
+    name: "Midnight Blues (feat. Del McCoury & Ronnie McCoury)"
+    url_key: "midnightblues"
+    albums: ["the-nashville-sessions"]
+    canonical_album: "the-nashville-sessions"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "lovin-in-my-babys-eyes-feat-taj-mahal-and-sally-van-meter"
+    name: "Lovin' in My Baby's Eyes (feat. Taj Mahal & Sally Van Meter)"
+    url_key: "lovinmybabyseyes"
+    albums: ["the-nashville-sessions"]
+    canonical_album: "the-nashville-sessions"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dance-on-your-head-feat-bla-fleck-and-reese-wynans"
+    name: "Dance on Your Head (feat. Béla Fleck & Reese Wynans)"
+    url_key: "danceonyourhead"
+    albums: ["the-nashville-sessions"]
+    canonical_album: "the-nashville-sessions"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "are-you-sure-hank-done-it-this-way-feat-sally-van-meter-waylon-jennings-sam-bush"
+    name: "Are You Sure Hank Done It This Way (feat. Sally Van Meter, Waylon Jennings, Sam Bush)"
+    url_key: "areyousurehankdoneitthisway"
+    albums: ["the-nashville-sessions"]
+    canonical_album: "the-nashville-sessions"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "five-alive-feat-earl-scruggs"
+    name: "Five Alive (feat. Earl Scruggs)"
+    url_key: "fivealive"
+    albums: ["the-nashville-sessions"]
+    canonical_album: "the-nashville-sessions"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "breakin-thru-feat-reese-wynans-jerry-douglas-john-cowan"
+    name: "Breakin' Thru (feat. Reese Wynans, Jerry Douglas, John Cowan)"
+    url_key: "breakinthru"
+    albums: ["the-nashville-sessions"]
+    canonical_album: "the-nashville-sessions"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "lines-around-your-eyes-feat-lucinda-williams-and-jo-el-sonnier"
+    name: "Lines Around Your Eyes (feat. Lucinda Williams & Jo-El Sonnier)"
+    url_key: "linesaroundyoureyes"
+    albums: ["the-nashville-sessions"]
+    canonical_album: "the-nashville-sessions"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "another-way-to-turn"
+    name: "Another Way To Turn"
+    url_key: "anotherwaytoturn"
+    albums: ["the-nashville-sessions"]
+    canonical_album: "the-nashville-sessions"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "up-on-the-hill-where-we-do-the-boogie"
+    name: "Up On The Hill Where We Do The Boogie"
+    url_key: "uponthehillwherewedoboogie"
+    albums: ["the-nashville-sessions"]
+    canonical_album: "the-nashville-sessions"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "its-your-world"
+    name: "It's Your World"
+    url_key: "itsyourworld"
+    albums: ["the-nashville-sessions"]
+    canonical_album: "the-nashville-sessions"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "troubled-times"
+    name: "Troubled Times"
+    url_key: "troubledtimes"
+    albums: ["the-nashville-sessions"]
+    canonical_album: "the-nashville-sessions"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "on-the-other-side"
+    name: "On The Other Side"
+    url_key: "ontheotherside"
+    albums: ["the-nashville-sessions"]
+    canonical_album: "the-nashville-sessions"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "nobodys-fault-but-mine"
+    name: "Nobody's Fault But Mine"
+    url_key: "nobodysfaultbutmine"
+    albums: ["the-nashville-sessions"]
+    canonical_album: "the-nashville-sessions"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "down-in-the-hollow"
+    name: "Down In the Hollow"
+    url_key: "downinthehollow"
+    albums: ["leftover-salmon"]
+    canonical_album: "leftover-salmon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "mountain-top"
+    name: "Mountain Top"
+    url_key: "mountaintop"
+    albums: ["leftover-salmon"]
+    canonical_album: "leftover-salmon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "delta-queen"
+    name: "Delta Queen"
+    url_key: "deltaqueen"
+    albums: ["leftover-salmon"]
+    canonical_album: "leftover-salmon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "lincoln-at-nevada"
+    name: "Lincoln At Nevada"
+    url_key: "lincolnatnevada"
+    albums: ["leftover-salmon"]
+    canonical_album: "leftover-salmon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "woody-guthrie"
+    name: "Woody Guthrie"
+    url_key: "woodyguthrie"
+    albums: ["leftover-salmon"]
+    canonical_album: "leftover-salmon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "fayetteville-line"
+    name: "Fayetteville Line"
+    url_key: "fayettevilleline"
+    albums: ["leftover-salmon"]
+    canonical_album: "leftover-salmon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "everything-is-round"
+    name: "Everything Is Round"
+    url_key: "everythingisround"
+    albums: ["leftover-salmon"]
+    canonical_album: "leftover-salmon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "whispering-waters"
+    name: "Whispering Waters"
+    url_key: "whisperingwaters"
+    albums: ["leftover-salmon"]
+    canonical_album: "leftover-salmon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "last-days-of-autumn"
+    name: "Last Days Of Autumn"
+    url_key: "lastdaysofautumn"
+    albums: ["leftover-salmon"]
+    canonical_album: "leftover-salmon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "just-keep-walkin"
+    name: "Just Keep Walkin'"
+    url_key: "justkeepwalkin"
+    albums: ["leftover-salmon"]
+    canonical_album: "leftover-salmon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "weary-traveler"
+    name: "Weary Traveler"
+    url_key: "wearytraveler"
+    albums: ["leftover-salmon"]
+    canonical_album: "leftover-salmon"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "gulf-of-mexico"
+    name: "Gulf of Mexico"
+    url_key: "gulfofmexico"
+    albums: ["aquatic-hitchhiker"]
+    canonical_album: "aquatic-hitchhiker"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "keep-driving"
+    name: "Keep Driving"
+    url_key: "keepdriving"
+    albums: ["aquatic-hitchhiker"]
+    canonical_album: "aquatic-hitchhiker"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "liza"
+    name: "Liza"
+    url_key: "liza"
+    albums: ["aquatic-hitchhiker"]
+    canonical_album: "aquatic-hitchhiker"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "aquatic-hitchhiker"
+    name: "Aquatic Hitchhiker"
+    url_key: "aquatichitchhiker"
+    albums: ["aquatic-hitchhiker"]
+    canonical_album: "aquatic-hitchhiker"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "bayou-town"
+    name: "Bayou Town"
+    url_key: "bayoutown"
+    albums: ["aquatic-hitchhiker"]
+    canonical_album: "aquatic-hitchhiker"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "sing-up-to-the-moon"
+    name: "Sing Up to the Moon"
+    url_key: "singuptothemoon"
+    albums: ["aquatic-hitchhiker"]
+    canonical_album: "aquatic-hitchhiker"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "light-behind-the-rain"
+    name: "Light Behind the Rain"
+    url_key: "lightbehindtherain"
+    albums: ["aquatic-hitchhiker"]
+    canonical_album: "aquatic-hitchhiker"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "stop-all-your-worrying"
+    name: "Stop All Your Worrying"
+    url_key: "stopallyourworrying"
+    albums: ["aquatic-hitchhiker"]
+    canonical_album: "aquatic-hitchhiker"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "walking-shoes"
+    name: "Walking Shoes"
+    url_key: "walkingshoes"
+    albums: ["aquatic-hitchhiker"]
+    canonical_album: "aquatic-hitchhiker"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "kentucky-skies"
+    name: "Kentucky Skies"
+    url_key: "kentuckyskies"
+    albums: ["aquatic-hitchhiker"]
+    canonical_album: "aquatic-hitchhiker"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "gone-for-long"
+    name: "Gone for Long"
+    url_key: "goneforlong"
+    albums: ["aquatic-hitchhiker"]
+    canonical_album: "aquatic-hitchhiker"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "here-comes-the-night"
+    name: "Here Comes the Night"
+    url_key: "herecomesthenight"
+    albums: ["aquatic-hitchhiker"]
+    canonical_album: "aquatic-hitchhiker"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "get-up-and-go"
+    name: "Get up and Go"
+    url_key: "getupandgo"
+    albums: ["high-country"]
+    canonical_album: "high-country"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "western-skies"
+    name: "Western Skies"
+    url_key: "westernskies"
+    albums: ["high-country"]
+    canonical_album: "high-country"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "home-cookin"
+    name: "Home Cookin'"
+    url_key: "homecookin"
+    albums: ["high-country"]
+    canonical_album: "high-country"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "high-country"
+    name: "High Country"
+    url_key: "highcountry"
+    albums: ["high-country"]
+    canonical_album: "high-country"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "bluegrass-pines"
+    name: "Bluegrass Pines"
+    url_key: "bluegrasspines"
+    albums: ["high-country"]
+    canonical_album: "high-country"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "better-day"
+    name: "Better Day"
+    url_key: "betterday"
+    albums: ["high-country"]
+    canonical_album: "high-country"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "six-feet-of-snow"
+    name: "Six Feet of Snow"
+    url_key: "sixfeetofsnow"
+    albums: ["high-country"]
+    canonical_album: "high-country"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "so-lonesome"
+    name: "So Lonesome"
+    url_key: "solonesome"
+    albums: ["high-country"]
+    canonical_album: "high-country"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "light-in-the-woods"
+    name: "Light in the Woods"
+    url_key: "lightinthewoods"
+    albums: ["high-country"]
+    canonical_album: "high-country"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "thornpipe"
+    name: "Thornpipe"
+    url_key: "thornpipe"
+    albums: ["high-country"]
+    canonical_album: "high-country"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "two-highways"
+    name: "Two Highways"
+    url_key: "twohighways"
+    albums: ["high-country"]
+    canonical_album: "high-country"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "finish-your-beer"
+    name: "Finish Your Beer"
+    url_key: "finishyourbeer"
+    albums: ["high-country"]
+    canonical_album: "high-country"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "places"
+    name: "Places"
+    url_key: "places"
+    albums: ["something-higher"]
+    canonical_album: "something-higher"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "show-me-something-higher"
+    name: "Show Me Something Higher"
+    url_key: "showmesomethinghigher"
+    albums: ["something-higher"]
+    canonical_album: "something-higher"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "southern-belle"
+    name: "Southern Belle"
+    url_key: "southernbelle"
+    albums: ["something-higher"]
+    canonical_album: "something-higher"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "analog"
+    name: "Analog"
+    url_key: "analog"
+    albums: ["something-higher"]
+    canonical_album: "something-higher"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "house-of-cards"
+    name: "House Of Cards"
+    url_key: "houseofcards"
+    albums: ["something-higher"]
+    canonical_album: "something-higher"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "evermore"
+    name: "Evermore"
+    url_key: "evermore"
+    albums: ["something-higher"]
+    canonical_album: "something-higher"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "astral-traveler"
+    name: "Astral Traveler"
+    url_key: "astraltraveler"
+    albums: ["something-higher"]
+    canonical_album: "something-higher"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "foreign-fields"
+    name: "Foreign Fields"
+    url_key: "foreignfields"
+    albums: ["something-higher"]
+    canonical_album: "something-higher"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "game-of-thorns"
+    name: "Game Of Thorns"
+    url_key: "gameofthorns"
+    albums: ["something-higher"]
+    canonical_album: "something-higher"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "let-in-a-little-light"
+    name: "Let In A Little Light"
+    url_key: "letinalittlelight"
+    albums: ["something-higher"]
+    canonical_album: "something-higher"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "winters-gone"
+    name: "Winter's Gone"
+    url_key: "wintersgone"
+    albums: ["something-higher"]
+    canonical_album: "something-higher"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "burdened-heart"
+    name: "Burdened Heart"
+    url_key: "burdenedheart"
+    albums: ["something-higher"]
+    canonical_album: "something-higher"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "waterfront"
+    name: "Waterfront"
+    url_key: "waterfront"
+    albums: ["brand-new-good-old-days"]
+    canonical_album: "brand-new-good-old-days"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "black-hole-sun"
+    name: "Black Hole Sun"
+    url_key: "blackholesun"
+    albums: ["brand-new-good-old-days"]
+    canonical_album: "brand-new-good-old-days"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "well-get-by"
+    name: "We'll Get By"
+    url_key: "wellgetby"
+    albums: ["brand-new-good-old-days"]
+    canonical_album: "brand-new-good-old-days"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "red-fox-run"
+    name: "Red Fox Run"
+    url_key: "redfoxrun"
+    albums: ["brand-new-good-old-days"]
+    canonical_album: "brand-new-good-old-days"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "flyin-at-night"
+    name: "Flyin' at Night"
+    url_key: "flyinatnight"
+    albums: ["brand-new-good-old-days"]
+    canonical_album: "brand-new-good-old-days"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "left-unsung"
+    name: "Left Unsung"
+    url_key: "leftunsung"
+    albums: ["brand-new-good-old-days"]
+    canonical_album: "brand-new-good-old-days"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "category-stomp"
+    name: "Category Stomp"
+    url_key: "categorystomp"
+    albums: ["brand-new-good-old-days"]
+    canonical_album: "brand-new-good-old-days"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "sunday"
+    name: "Sunday"
+    url_key: "sunday"
+    albums: ["brand-new-good-old-days"]
+    canonical_album: "brand-new-good-old-days"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "boogie-grass-band"
+    name: "Boogie Grass Band"
+    url_key: "boogiegrassband"
+    albums: ["brand-new-good-old-days"]
+    canonical_album: "brand-new-good-old-days"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "brand-new-good-old-days"
+    name: "Brand New Good Old Days"
+    url_key: "brandnewgoodolddays"
+    albums: ["brand-new-good-old-days"]
+    canonical_album: "brand-new-good-old-days"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+# ========================================
+# MEDLEYS SECTION (Optional)
+# ========================================
+# TODO: Add common medley patterns if applicable
+# Example:
+# medleys:
+#   - pattern: "Track A > Track B"
+#     tracks: ["track-a-key", "track-b-key"]
+#     separator: ">"
+# medleys: []

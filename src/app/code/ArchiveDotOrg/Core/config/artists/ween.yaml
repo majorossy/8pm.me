@@ -1,0 +1,890 @@
+# ========================================
+# Ween Configuration
+# ========================================
+#
+# Generated: 2026-01-29 14:55:14
+# Albums Populated: 9
+# Tracks Populated: 99
+# Status: Ready for use
+#
+# TODO:
+#   1. Add year to each album
+#   2. Add track aliases for better matching
+#   3. Add medley patterns (if applicable)
+#   4. Run validation: bin/magento archive:validate ween
+#
+# See template.yaml for structure reference.
+# ========================================
+
+# ========================================
+# ARTIST SECTION
+# ========================================
+artist:
+  name: "Ween"
+  collection_id: "Ween"
+  url_key: "ween"
+
+# ========================================
+# ALBUMS SECTION
+# ========================================
+albums:
+  - key: "godweensatan-the-oneness"
+    name: "GodWeenSatan: The Oneness"
+    url_key: "godweensatan"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "the-pod"
+    name: "The Pod"
+    url_key: "thepod"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "pure-guava"
+    name: "Pure Guava"
+    url_key: "pureguava"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "chocolate-and-cheese"
+    name: "Chocolate and Cheese"
+    url_key: "chocolateandcheese"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "12-golden-country-greats"
+    name: "12 Golden Country Greats"
+    url_key: "12goldencountrygreats"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "the-mollusk"
+    name: "The Mollusk"
+    url_key: "themollusk"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "white-pepper"
+    name: "White Pepper"
+    url_key: "whitepepper"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "quebec"
+    name: "Quebec"
+    url_key: "quebec"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "la-cucaracha"
+    name: "La Cucaracha"
+    url_key: "lacucaracha"
+    type: "studio"
+    # TODO: Add year field
+
+# ========================================
+# TRACKS SECTION
+# ========================================
+tracks:
+  - key: "little-birdy"
+    name: "Little Birdy"
+    url_key: "littlebirdy"
+    albums: ["pure-guava"]
+    canonical_album: "pure-guava"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "tender-situation"
+    name: "Tender Situation"
+    url_key: "tendersituation"
+    albums: ["pure-guava"]
+    canonical_album: "pure-guava"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-stallion-pt-3"
+    name: "The Stallion Pt. 3"
+    url_key: "thestallionpt3"
+    albums: ["pure-guava"]
+    canonical_album: "pure-guava"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "big-jilm"
+    name: "Big Jilm"
+    url_key: "bigjilm"
+    albums: ["pure-guava"]
+    canonical_album: "pure-guava"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "push-th-little-daisies"
+    name: "Push Th' Little Daisies"
+    url_key: "pushthlittledaisies"
+    albums: ["pure-guava"]
+    canonical_album: "pure-guava"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-goin-gets-tough-from-the-getgo"
+    name: "The Goin' Gets Tough From The Getgo"
+    url_key: "thegoingetstoughfromthegetgo"
+    albums: ["pure-guava"]
+    canonical_album: "pure-guava"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "reggaejunkiejew"
+    name: "Reggaejunkiejew"
+    url_key: "reggaejunkiejew"
+    albums: ["pure-guava"]
+    canonical_album: "pure-guava"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "i-play-it-off-legit"
+    name: "I Play It Off Legit"
+    url_key: "iplayitofflegit"
+    albums: ["pure-guava"]
+    canonical_album: "pure-guava"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "pumpin-4-the-man"
+    name: "Pumpin' 4 The Man"
+    url_key: "pumpin4theman"
+    albums: ["pure-guava"]
+    canonical_album: "pure-guava"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "sarah"
+    name: "Sarah"
+    url_key: "sarah"
+    albums: ["pure-guava"]
+    canonical_album: "pure-guava"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "springtheme"
+    name: "Springtheme"
+    url_key: "springtheme"
+    albums: ["pure-guava"]
+    canonical_album: "pure-guava"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "flies-on-my-dick"
+    name: "Flies On My Dick"
+    url_key: "fliesonmydick"
+    albums: ["pure-guava"]
+    canonical_album: "pure-guava"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "i-saw-gener-cryin-in-his-sleep"
+    name: "I Saw Gener Cryin' In His Sleep"
+    url_key: "isawgenercryininhissleep"
+    albums: ["pure-guava"]
+    canonical_album: "pure-guava"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "touch-my-tooter"
+    name: "Touch My Tooter"
+    url_key: "touchmytooter"
+    albums: ["pure-guava"]
+    canonical_album: "pure-guava"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "mourning-glory"
+    name: "Mourning Glory"
+    url_key: "mourningglory"
+    albums: ["pure-guava"]
+    canonical_album: "pure-guava"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "loving-u-thru-it-all"
+    name: "Loving U Thru It All"
+    url_key: "lovinguthruiall"
+    albums: ["pure-guava"]
+    canonical_album: "pure-guava"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "hey-fat-boy-asshole"
+    name: "Hey Fat Boy (Asshole)"
+    url_key: "heyfatboyasshole"
+    albums: ["pure-guava"]
+    canonical_album: "pure-guava"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dont-get-2-close-2-my-fantasy"
+    name: "Don't Get 2 Close (2 My Fantasy)"
+    url_key: "dontget2close2myfantasy"
+    albums: ["pure-guava"]
+    canonical_album: "pure-guava"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "poop-ship-destroyer"
+    name: "Poop Ship Destroyer"
+    url_key: "poopshipdestroyer"
+    albums: ["pure-guava"]
+    canonical_album: "pure-guava"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "take-me-away"
+    name: "Take Me Away"
+    url_key: "takemeaway"
+    albums: ["chocolate-and-cheese"]
+    canonical_album: "chocolate-and-cheese"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "spinal-meningitis-got-me-down"
+    name: "Spinal Meningitis (Got Me Down)"
+    url_key: "spinalmeningitisgotmedown"
+    albums: ["chocolate-and-cheese"]
+    canonical_album: "chocolate-and-cheese"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "freedom-of-76"
+    name: "Freedom of '76"
+    url_key: "freedomof76"
+    albums: ["chocolate-and-cheese"]
+    canonical_album: "chocolate-and-cheese"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "i-cant-put-my-finger-on-it"
+    name: "I Can't Put My Finger on It"
+    url_key: "icantputmyfingeronit"
+    albums: ["chocolate-and-cheese"]
+    canonical_album: "chocolate-and-cheese"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "a-tear-for-eddie"
+    name: "A Tear for Eddie"
+    url_key: "atearforeddie"
+    albums: ["chocolate-and-cheese"]
+    canonical_album: "chocolate-and-cheese"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "roses-are-free"
+    name: "Roses Are Free"
+    url_key: "rosesarefree"
+    albums: ["chocolate-and-cheese"]
+    canonical_album: "chocolate-and-cheese"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "baby-bitch"
+    name: "Baby Bitch"
+    url_key: "babybitch"
+    albums: ["chocolate-and-cheese"]
+    canonical_album: "chocolate-and-cheese"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "mister-would-you-please-help-my-pony"
+    name: "Mister, Would You Please Help My Pony?"
+    url_key: "misterwouldyoupleasehelpmypony"
+    albums: ["chocolate-and-cheese"]
+    canonical_album: "chocolate-and-cheese"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "drifter-in-the-dark"
+    name: "Drifter in the Dark"
+    url_key: "drifterinthedark"
+    albums: ["chocolate-and-cheese"]
+    canonical_album: "chocolate-and-cheese"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "voodoo-lady"
+    name: "Voodoo Lady"
+    url_key: "voodoolady"
+    albums: ["chocolate-and-cheese"]
+    canonical_album: "chocolate-and-cheese"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "joppa-road"
+    name: "Joppa Road"
+    url_key: "jopparoad"
+    albums: ["chocolate-and-cheese"]
+    canonical_album: "chocolate-and-cheese"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "candi"
+    name: "Candi"
+    url_key: "candi"
+    albums: ["chocolate-and-cheese"]
+    canonical_album: "chocolate-and-cheese"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "buenas-tardes-amigo"
+    name: "Buenas Tardes Amigo"
+    url_key: "buenastardesamigo"
+    albums: ["chocolate-and-cheese"]
+    canonical_album: "chocolate-and-cheese"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-hiv-song"
+    name: "The HIV Song"
+    url_key: "thehivsong"
+    albums: ["chocolate-and-cheese"]
+    canonical_album: "chocolate-and-cheese"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "what-deaner-was-talkin-about"
+    name: "What Deaner Was Talkin' About"
+    url_key: "whatdeanerwastalkinabout"
+    albums: ["chocolate-and-cheese"]
+    canonical_album: "chocolate-and-cheese"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dont-shit-where-you-eat"
+    name: "Don't Shit Where You Eat"
+    url_key: "dontshitwhereyoueat"
+    albums: ["chocolate-and-cheese"]
+    canonical_album: "chocolate-and-cheese"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "im-holding-you"
+    name: "I'm Holding You"
+    url_key: "imholdingyou"
+    albums: ["12-golden-country-greats"]
+    canonical_album: "12-golden-country-greats"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "japanese-cowboy"
+    name: "Japanese Cowboy"
+    url_key: "japanesecowboy"
+    albums: ["12-golden-country-greats"]
+    canonical_album: "12-golden-country-greats"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "piss-up-a-rope"
+    name: "Piss up a Rope"
+    url_key: "pissuparope"
+    albums: ["12-golden-country-greats"]
+    canonical_album: "12-golden-country-greats"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "i-dont-wanna-leave-you-on-the-farm"
+    name: "I Don't Wanna Leave You on the Farm"
+    url_key: "idontwannaleaveyouonthefarm"
+    albums: ["12-golden-country-greats"]
+    canonical_album: "12-golden-country-greats"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "pretty-girl"
+    name: "Pretty Girl"
+    url_key: "prettygirl"
+    albums: ["12-golden-country-greats"]
+    canonical_album: "12-golden-country-greats"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "powder-blue"
+    name: "Powder Blue"
+    url_key: "powderblue"
+    albums: ["12-golden-country-greats"]
+    canonical_album: "12-golden-country-greats"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "mister-richard-smoker"
+    name: "Mister Richard Smoker"
+    url_key: "misterrichardsmoker"
+    albums: ["12-golden-country-greats"]
+    canonical_album: "12-golden-country-greats"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "help-me-scrape-the-mucus-off-my-brain"
+    name: "Help Me Scrape the Mucus off My Brain"
+    url_key: "helpmescrapethemucusoffmybrain"
+    albums: ["12-golden-country-greats"]
+    canonical_album: "12-golden-country-greats"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "you-were-the-fool"
+    name: "You Were the Fool"
+    url_key: "youwerethefool"
+    albums: ["12-golden-country-greats"]
+    canonical_album: "12-golden-country-greats"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "fluffy"
+    name: "Fluffy"
+    url_key: "fluffy"
+    albums: ["12-golden-country-greats"]
+    canonical_album: "12-golden-country-greats"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "im-dancing-in-the-show-tonight"
+    name: "I'm Dancing in the Show Tonight"
+    url_key: "imdancingintheshowtonight"
+    albums: ["the-mollusk"]
+    canonical_album: "the-mollusk"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-mollusk"
+    name: "The Mollusk"
+    url_key: "themollusk"
+    albums: ["the-mollusk"]
+    canonical_album: "the-mollusk"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "polka-dot-tail"
+    name: "Polka Dot Tail"
+    url_key: "polkadottail"
+    albums: ["the-mollusk"]
+    canonical_album: "the-mollusk"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "ill-be-your-jonny-on-the-spot"
+    name: "I'll Be Your Jonny on the Spot"
+    url_key: "illbeyourjonnyonthespot"
+    albums: ["the-mollusk"]
+    canonical_album: "the-mollusk"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "mutilated-lips"
+    name: "Mutilated Lips"
+    url_key: "mutilatedlips"
+    albums: ["the-mollusk"]
+    canonical_album: "the-mollusk"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-blarney-stone"
+    name: "The Blarney Stone"
+    url_key: "theblarneystone"
+    albums: ["the-mollusk"]
+    canonical_album: "the-mollusk"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "its-gonna-be-alright"
+    name: "It's Gonna Be (Alright)"
+    url_key: "itsgonnabealright"
+    albums: ["the-mollusk"]
+    canonical_album: "the-mollusk"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-golden-eel"
+    name: "The Golden Eel"
+    url_key: "thegoldeneel"
+    albums: ["the-mollusk"]
+    canonical_album: "the-mollusk"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "cold-blows-the-wind"
+    name: "Cold Blows the Wind"
+    url_key: "coldblowsthewind"
+    albums: ["the-mollusk"]
+    canonical_album: "the-mollusk"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "pink-eye-on-my-leg"
+    name: "Pink Eye (On My Leg)"
+    url_key: "pinkeyeonmyleg"
+    albums: ["the-mollusk"]
+    canonical_album: "the-mollusk"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "waving-my-dick-in-the-wind"
+    name: "Waving My Dick in the Wind"
+    url_key: "wavingmydickinthewind"
+    albums: ["the-mollusk"]
+    canonical_album: "the-mollusk"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "buckingham-green"
+    name: "Buckingham Green"
+    url_key: "buckinghamgreen"
+    albums: ["the-mollusk"]
+    canonical_album: "the-mollusk"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "ocean-man"
+    name: "Ocean Man"
+    url_key: "oceanman"
+    albums: ["the-mollusk"]
+    canonical_album: "the-mollusk"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "she-wanted-to-leave"
+    name: "She Wanted to Leave"
+    url_key: "shewantedtoleave"
+    albums: ["the-mollusk"]
+    canonical_album: "the-mollusk"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "exactly-where-im-at"
+    name: "Exactly Where I'm At"
+    url_key: "exactlywhereimat"
+    albums: ["white-pepper"]
+    canonical_album: "white-pepper"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-grobe"
+    name: "The Grobe"
+    url_key: "thegrobe"
+    albums: ["white-pepper"]
+    canonical_album: "white-pepper"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "flutes-of-chi"
+    name: "Flutes of Chi"
+    url_key: "flutesofchi"
+    albums: ["white-pepper"]
+    canonical_album: "white-pepper"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "even-if-you-dont"
+    name: "Even If You Don't"
+    url_key: "evenifyoudont"
+    albums: ["white-pepper"]
+    canonical_album: "white-pepper"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "bananas-and-blow"
+    name: "Bananas and Blow"
+    url_key: "bananasandblow"
+    albums: ["white-pepper"]
+    canonical_album: "white-pepper"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "stroker-ace"
+    name: "Stroker Ace"
+    url_key: "strokerace"
+    albums: ["white-pepper"]
+    canonical_album: "white-pepper"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "ice-castles"
+    name: "Ice Castles"
+    url_key: "icecastles"
+    albums: ["white-pepper"]
+    canonical_album: "white-pepper"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "back-to-basom"
+    name: "Back to Basom"
+    url_key: "backtobasom"
+    albums: ["white-pepper"]
+    canonical_album: "white-pepper"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "pandy-fackler"
+    name: "Pandy Fackler"
+    url_key: "pandyfackler"
+    albums: ["white-pepper"]
+    canonical_album: "white-pepper"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "stay-forever"
+    name: "Stay Forever"
+    url_key: "stayforever"
+    albums: ["white-pepper"]
+    canonical_album: "white-pepper"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "falling-out"
+    name: "Falling Out"
+    url_key: "fallingout"
+    albums: ["white-pepper"]
+    canonical_album: "white-pepper"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "shes-your-baby"
+    name: "She's Your Baby"
+    url_key: "shesyourbaby"
+    albums: ["white-pepper"]
+    canonical_album: "white-pepper"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "its-gonna-be-a-long-night"
+    name: "It's Gonna Be a Long Night"
+    url_key: "itsgonnaבealongnight"
+    albums: ["quebec"]
+    canonical_album: "quebec"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "zoloft"
+    name: "Zoloft"
+    url_key: "zoloft"
+    albums: ["quebec"]
+    canonical_album: "quebec"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "transdermal-celebration"
+    name: "Transdermal Celebration"
+    url_key: "transdermalcelebration"
+    albums: ["quebec"]
+    canonical_album: "quebec"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "among-his-tribe"
+    name: "Among His Tribe"
+    url_key: "amonghistribe"
+    albums: ["quebec"]
+    canonical_album: "quebec"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "so-many-people-in-the-neighborhood"
+    name: "So Many People in the Neighborhood"
+    url_key: "somanypeople­intheneighborhood"
+    albums: ["quebec"]
+    canonical_album: "quebec"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "tried-and-true"
+    name: "Tried and True"
+    url_key: "triedandtrue"
+    albums: ["quebec"]
+    canonical_album: "quebec"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "happy-colored-marbles"
+    name: "Happy Colored Marbles"
+    url_key: "happycoloredmarbles"
+    albums: ["quebec"]
+    canonical_album: "quebec"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "hey-there-fancypants"
+    name: "Hey There Fancypants"
+    url_key: "heytherefancypants"
+    albums: ["quebec"]
+    canonical_album: "quebec"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "captain"
+    name: "Captain"
+    url_key: "captain"
+    albums: ["quebec"]
+    canonical_album: "quebec"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "chocolate-town"
+    name: "Chocolate Town"
+    url_key: "chocolatetown"
+    albums: ["quebec"]
+    canonical_album: "quebec"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "i-dont-want-it"
+    name: "I Don't Want It"
+    url_key: "idontwantit"
+    albums: ["quebec"]
+    canonical_album: "quebec"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-fucked-jam"
+    name: "The Fucked Jam"
+    url_key: "thefuckedjam"
+    albums: ["quebec"]
+    canonical_album: "quebec"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "alcan-road"
+    name: "Alcan Road"
+    url_key: "alcanroad"
+    albums: ["quebec"]
+    canonical_album: "quebec"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-argus"
+    name: "The Argus"
+    url_key: "theargus"
+    albums: ["quebec"]
+    canonical_album: "quebec"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "if-you-could-save-yourself-youd-save-us-all"
+    name: "If You Could Save Yourself (You'd Save Us All)"
+    url_key: "ifyoucoulsaveyourselfyoudsaveusall"
+    albums: ["quebec"]
+    canonical_album: "quebec"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "fiesta"
+    name: "Fiesta"
+    url_key: "fiesta"
+    albums: ["la-cucaracha"]
+    canonical_album: "la-cucaracha"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "blue-balloon"
+    name: "Blue Balloon"
+    url_key: "blueballoon"
+    albums: ["la-cucaracha"]
+    canonical_album: "la-cucaracha"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "friends"
+    name: "Friends"
+    url_key: "friends"
+    albums: ["la-cucaracha"]
+    canonical_album: "la-cucaracha"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "object"
+    name: "Object"
+    url_key: "object"
+    albums: ["la-cucaracha"]
+    canonical_album: "la-cucaracha"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "learnin-to-love"
+    name: "Learnin' To Love"
+    url_key: "learnintolove"
+    albums: ["la-cucaracha"]
+    canonical_album: "la-cucaracha"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "with-my-own-bare-hands"
+    name: "With My Own Bare Hands"
+    url_key: "withmyownbarehands"
+    albums: ["la-cucaracha"]
+    canonical_album: "la-cucaracha"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-fruit-man"
+    name: "The Fruit Man"
+    url_key: "thefruitman"
+    albums: ["la-cucaracha"]
+    canonical_album: "la-cucaracha"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "spirit-walker"
+    name: "Spirit Walker"
+    url_key: "spiritwalker"
+    albums: ["la-cucaracha"]
+    canonical_album: "la-cucaracha"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "shamemaker"
+    name: "Shamemaker"
+    url_key: "shamemaker"
+    albums: ["la-cucaracha"]
+    canonical_album: "la-cucaracha"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "sweetheart"
+    name: "Sweetheart"
+    url_key: "sweetheart"
+    albums: ["la-cucaracha"]
+    canonical_album: "la-cucaracha"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "lullaby"
+    name: "Lullaby"
+    url_key: "lullaby"
+    albums: ["la-cucaracha"]
+    canonical_album: "la-cucaracha"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "woman-and-man"
+    name: "Woman And Man"
+    url_key: "womanandman"
+    albums: ["la-cucaracha"]
+    canonical_album: "la-cucaracha"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "your-party"
+    name: "Your Party"
+    url_key: "yourparty"
+    albums: ["la-cucaracha"]
+    canonical_album: "la-cucaracha"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+# ========================================
+# MEDLEYS SECTION (Optional)
+# ========================================
+# TODO: Add common medley patterns if applicable
+# Example:
+# medleys:
+#   - pattern: "Track A > Track B"
+#     tracks: ["track-a-key", "track-b-key"]
+#     separator: ">"
+# medleys: []

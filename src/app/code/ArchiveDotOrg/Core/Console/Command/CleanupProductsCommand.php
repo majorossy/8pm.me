@@ -12,6 +12,7 @@ use ArchiveDotOrg\Core\Model\Config;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 use Magento\Framework\App\Area;
+use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\App\State;
 use Magento\Framework\Exception\LocalizedException;
 use Symfony\Component\Console\Command\Command;
@@ -38,6 +39,7 @@ class CleanupProductsCommand extends Command
 
     private ProductCollectionFactory $productCollectionFactory;
     private ProductRepositoryInterface $productRepository;
+    private ResourceConnection $resourceConnection;
     private Config $config;
     private State $state;
     private Logger $logger;
@@ -45,6 +47,7 @@ class CleanupProductsCommand extends Command
     /**
      * @param ProductCollectionFactory $productCollectionFactory
      * @param ProductRepositoryInterface $productRepository
+     * @param ResourceConnection $resourceConnection
      * @param Config $config
      * @param State $state
      * @param Logger $logger
@@ -53,6 +56,7 @@ class CleanupProductsCommand extends Command
     public function __construct(
         ProductCollectionFactory $productCollectionFactory,
         ProductRepositoryInterface $productRepository,
+        ResourceConnection $resourceConnection,
         Config $config,
         State $state,
         Logger $logger,
@@ -61,6 +65,7 @@ class CleanupProductsCommand extends Command
         parent::__construct($name);
         $this->productCollectionFactory = $productCollectionFactory;
         $this->productRepository = $productRepository;
+        $this->resourceConnection = $resourceConnection;
         $this->config = $config;
         $this->state = $state;
         $this->logger = $logger;
@@ -363,11 +368,17 @@ class CleanupProductsCommand extends Command
         $progressBar->finish();
         $output->writeln('');
 
+        // Clean up orphaned URL rewrites
+        $io->section('Cleaning up orphaned URL rewrites...');
+        $orphanedCount = $this->cleanOrphanedUrlRewrites();
+        $io->writeln(sprintf('Removed %d orphaned URL rewrites', $orphanedCount));
+
         // Results
         $io->section('Results');
 
         $io->table(['Metric', 'Count'], [
             ['Products Deleted', $deletedCount],
+            ['URL Rewrites Removed', $orphanedCount],
             ['Errors', $errorCount]
         ]);
 
@@ -406,5 +417,31 @@ class CleanupProductsCommand extends Command
 
         $io->success(sprintf('Successfully deleted %d products.', $deletedCount));
         return Command::SUCCESS;
+    }
+
+    /**
+     * Clean up orphaned URL rewrites (rewrites for deleted products)
+     *
+     * @return int Number of orphaned rewrites removed
+     */
+    private function cleanOrphanedUrlRewrites(): int
+    {
+        $connection = $this->resourceConnection->getConnection();
+        $urlRewriteTable = $this->resourceConnection->getTableName('url_rewrite');
+        $productTable = $this->resourceConnection->getTableName('catalog_product_entity');
+
+        // Delete URL rewrites for products that no longer exist
+        $query = $connection->deleteFromSelect(
+            $connection->select()
+                ->from($urlRewriteTable, 'url_rewrite_id')
+                ->where('entity_type = ?', 'product')
+                ->where(
+                    'entity_id NOT IN (?)',
+                    $connection->select()->from($productTable, 'entity_id')
+                ),
+            $urlRewriteTable
+        );
+
+        return $connection->query($query)->rowCount();
     }
 }

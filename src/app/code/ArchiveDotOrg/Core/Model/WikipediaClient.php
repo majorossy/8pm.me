@@ -342,4 +342,289 @@ class WikipediaClient
             return null;
         }
     }
+
+    /**
+     * Get artist summary data from Wikipedia REST API
+     *
+     * @param string $artistName Artist name
+     * @return array|null Artist data or null if not found
+     */
+    public function getArtistSummary(string $artistName): ?array
+    {
+        try {
+            // Try artist name variations to handle disambiguation
+            $pageTitle = $this->findArtistPage($artistName);
+            if ($pageTitle === null) {
+                $this->logger->debug("No Wikipedia page found for artist: $artistName");
+                return null;
+            }
+
+            $url = sprintf(
+                '%s/page/summary/%s',
+                self::WIKIPEDIA_API_BASE,
+                rawurlencode($pageTitle)
+            );
+
+            $response = $this->httpClient->get($url);
+            $data = $this->jsonSerializer->unserialize($response->getBody()->getContents());
+
+            return [
+                'bio' => $data['extract'] ?? null,
+                'thumbnail' => $data['thumbnail']['source'] ?? null,
+                'page_title' => $data['title'] ?? null,
+                'page_url' => $data['content_urls']['desktop']['page'] ?? null,
+            ];
+
+        } catch (GuzzleException $e) {
+            if ($e->getCode() !== 404) {
+                $this->logger->error("Wikipedia REST API error: " . $e->getMessage());
+            }
+            return null;
+        } catch (\Exception $e) {
+            $this->logger->error("Error fetching artist summary: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Get artist infobox data by parsing Wikipedia page HTML
+     *
+     * @param string $artistName Artist name
+     * @return array Associative array of infobox fields
+     */
+    public function getArtistInfobox(string $artistName): array
+    {
+        try {
+            $pageTitle = $this->findArtistPage($artistName);
+            if ($pageTitle === null) {
+                return [];
+            }
+
+            // Get HTML content from Parse API
+            $url = sprintf(
+                '%s?action=parse&page=%s&prop=text&format=json',
+                self::WIKIPEDIA_SEARCH_BASE,
+                rawurlencode($pageTitle)
+            );
+
+            $response = $this->httpClient->get($url);
+            $data = $this->jsonSerializer->unserialize($response->getBody()->getContents());
+
+            if (!isset($data['parse']['text']['*'])) {
+                return [];
+            }
+
+            $html = $data['parse']['text']['*'];
+            return $this->parseInfobox($html);
+
+        } catch (\Exception $e) {
+            $this->logger->error("Error fetching artist infobox: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Find the correct Wikipedia page for an artist (handles disambiguation)
+     *
+     * @param string $artistName Artist name
+     * @return string|null Page title or null
+     */
+    private function findArtistPage(string $artistName): ?string
+    {
+        $variations = [
+            $artistName . ' (band)',
+            $artistName . ' (musician)',
+            $artistName,
+            'The ' . $artistName,
+        ];
+
+        foreach ($variations as $variation) {
+            // Try direct page lookup first (fast)
+            if ($this->pageExists($variation)) {
+                return $variation;
+            }
+        }
+
+        // Fallback to search
+        $searchResult = $this->performSearch($artistName . ' band music');
+        if ($searchResult !== null) {
+            return $searchResult;
+        }
+
+        return null;
+    }
+
+    /**
+     * Check if a Wikipedia page exists
+     *
+     * @param string $pageTitle Page title
+     * @return bool True if page exists
+     */
+    private function pageExists(string $pageTitle): bool
+    {
+        try {
+            $url = sprintf(
+                '%s/page/summary/%s',
+                self::WIKIPEDIA_API_BASE,
+                rawurlencode($pageTitle)
+            );
+
+            $response = $this->httpClient->get($url);
+            return $response->getStatusCode() === 200;
+
+        } catch (GuzzleException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Parse infobox HTML to extract structured data
+     *
+     * @param string $html Wikipedia page HTML
+     * @return array Associative array of infobox fields
+     */
+    private function parseInfobox(string $html): array
+    {
+        $infobox = [];
+
+        // Use DOMDocument to parse HTML
+        $dom = new \DOMDocument();
+        @$dom->loadHTML('<?xml encoding="UTF-8">' . $html);
+        $xpath = new \DOMXPath($dom);
+
+        // Find infobox table
+        $infoboxNode = $xpath->query("//table[contains(@class, 'infobox')]")->item(0);
+        if (!$infoboxNode) {
+            return [];
+        }
+
+        // Extract rows from infobox
+        $rows = $xpath->query(".//tr", $infoboxNode);
+        foreach ($rows as $row) {
+            $header = $xpath->query(".//th", $row)->item(0);
+            $data = $xpath->query(".//td", $row)->item(0);
+
+            if ($header && $data) {
+                $key = strtolower(trim($header->textContent));
+                $value = trim($data->textContent);
+
+                // Map Wikipedia infobox fields to our attributes
+                switch ($key) {
+                    case 'origin':
+                        $infobox['origin'] = $this->cleanInfoboxValue($value);
+                        break;
+                    case 'years active':
+                        $infobox['years_active'] = $this->cleanInfoboxValue($value);
+                        break;
+                    case 'genres':
+                    case 'genre':
+                        $infobox['genres'] = $this->extractGenresFromCell($data);
+                        break;
+                    case 'website':
+                        $infobox['website'] = $this->extractWebsiteUrl($data);
+                        break;
+                }
+            }
+        }
+
+        return $infobox;
+    }
+
+    /**
+     * Clean infobox value by removing citations, line breaks, etc.
+     *
+     * @param string $value Raw infobox value
+     * @return string Cleaned value
+     */
+    private function cleanInfoboxValue(string $value): string
+    {
+        // Strip all HTML tags
+        $value = strip_tags($value);
+
+        // Remove citation references [1], [2], etc.
+        $value = preg_replace('/\[\d+\]/', '', $value);
+
+        // Replace line breaks with commas for multi-value fields
+        $value = preg_replace('/\s*\n\s*/', ', ', $value);
+
+        // Remove extra whitespace
+        $value = preg_replace('/\s+/', ' ', $value);
+
+        // Decode HTML entities
+        $value = html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        return trim($value);
+    }
+
+    /**
+     * Extract website URL from infobox data cell
+     *
+     * @param \DOMElement $dataCell Data cell element
+     * @return string|null Website URL or null
+     */
+    private function extractWebsiteUrl(\DOMElement $dataCell): ?string
+    {
+        $xpath = new \DOMXPath($dataCell->ownerDocument);
+        $links = $xpath->query(".//a[@href]", $dataCell);
+
+        foreach ($links as $link) {
+            $href = $link->getAttribute('href');
+            // Filter out Wikipedia internal links
+            if (strpos($href, 'http') === 0 && strpos($href, 'wikipedia.org') === false) {
+                return $href;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Extract clean genre text from infobox data cell
+     *
+     * @param \DOMElement $dataCell Data cell element
+     * @return string Comma-separated genres
+     */
+    private function extractGenresFromCell(\DOMElement $dataCell): string
+    {
+        $xpath = new \DOMXPath($dataCell->ownerDocument);
+        $genres = [];
+
+        // Try to find genre links (most common pattern)
+        $links = $xpath->query(".//a", $dataCell);
+        if ($links->length > 0) {
+            foreach ($links as $link) {
+                $genre = trim($link->textContent);
+                // Remove citation marks [1], [2], etc.
+                $genre = preg_replace('/\[\d+\]/', '', $genre);
+                $genre = trim($genre);
+                if (!empty($genre) && strlen($genre) > 1) {
+                    $genres[] = $genre;
+                }
+            }
+        }
+
+        // Fallback: extract from list items
+        if (empty($genres)) {
+            $listItems = $xpath->query(".//li", $dataCell);
+            foreach ($listItems as $item) {
+                $genre = trim(strip_tags($item->textContent));
+                $genre = preg_replace('/\[\d+\]/', '', $genre);
+                $genre = trim($genre);
+                if (!empty($genre)) {
+                    $genres[] = $genre;
+                }
+            }
+        }
+
+        // Final fallback: clean the full text content
+        if (empty($genres)) {
+            $text = $this->cleanInfoboxValue($dataCell->textContent);
+            $genres = array_map('trim', explode(',', $text));
+        }
+
+        // Filter out empty and duplicate genres
+        $genres = array_unique(array_filter($genres));
+
+        return implode(', ', $genres);
+    }
 }

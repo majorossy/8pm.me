@@ -16,22 +16,26 @@ class HistoryDataProvider extends DataProvider
     {
         $data = parent::getData();
 
-        // Add custom processing if needed
-        // For example, calculate duration from started_at and completed_at
+        // Format duration_seconds for display
         if (isset($data['items'])) {
             foreach ($data['items'] as &$item) {
-                if (isset($item['started_at']) && isset($item['completed_at'])) {
+                // Use duration_seconds if available (from database)
+                if (isset($item['duration_seconds']) && $item['duration_seconds'] > 0) {
+                    $item['duration_display'] = $this->formatDuration((int)$item['duration_seconds']);
+                } elseif (isset($item['started_at']) && isset($item['completed_at'])) {
+                    // Fallback: calculate from timestamps
                     $start = strtotime($item['started_at']);
                     $end = strtotime($item['completed_at']);
                     if ($start && $end) {
                         $duration = $end - $start;
-                        $item['duration'] = $this->formatDuration($duration);
+                        $item['duration_display'] = $this->formatDuration($duration);
                     }
                 } elseif (isset($item['started_at']) && $item['status'] === 'running') {
+                    // Running: calculate elapsed time
                     $start = strtotime($item['started_at']);
                     $now = time();
                     $duration = $now - $start;
-                    $item['duration'] = $this->formatDuration($duration) . ' (running)';
+                    $item['duration_display'] = $this->formatDuration($duration) . ' (running)';
                 }
             }
         }

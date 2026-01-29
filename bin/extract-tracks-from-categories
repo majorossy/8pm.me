@@ -1,0 +1,160 @@
+#!/bin/bash
+################################################################################
+# Extract track data from Magento categories and add to YAML files
+#
+# For artists with 0 tracks in YAML, this script extracts track names and
+# URL keys from the is_song=1 categories in the database.
+################################################################################
+
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+YAML_DIR="$PROJECT_ROOT/src/app/code/ArchiveDotOrg/Core/config/artists"
+
+cd "$PROJECT_ROOT"
+
+echo "Extracting tracks from Magento categories..."
+echo "=============================================="
+echo ""
+
+# Artists with 0 tracks
+ARTISTS=(
+    "Furthur"
+    "Grace Potter and the Nocturnals"
+    "Mac Creek"
+    "Of a Revolution"
+    "Phil Lesh and Friends"
+    "Railroad Earth"
+    "Ratdog"
+    "STS9"
+    "Tea Leaf Green"
+    "The Disco Biscuits"
+    "The String Cheese Incident"
+)
+
+for artist in "${ARTISTS[@]}"; do
+    echo "Processing: $artist"
+
+    # Get YAML filename
+    url_key=$(grep -l "name: \"$artist\"" "$YAML_DIR"/*.yaml | xargs basename -s .yaml)
+    yaml_file="$YAML_DIR/$url_key.yaml"
+
+    if [ ! -f "$yaml_file" ]; then
+        echo "  ⚠️  YAML file not found: $url_key.yaml"
+        continue
+    fi
+
+    # Find artist category ID
+    artist_id=$(bin/mysql -N -e "
+        SELECT DISTINCT cce.entity_id
+        FROM catalog_category_entity cce
+        JOIN catalog_category_entity_varchar ccv ON cce.entity_id = ccv.entity_id AND ccv.store_id = 0
+        JOIN eav_attribute ea ON ccv.attribute_id = ea.attribute_id
+        WHERE ea.attribute_code = 'name'
+          AND ccv.value = '$artist'
+        LIMIT 1;
+    ")
+
+    if [ -z "$artist_id" ]; then
+        echo "  ⚠️  Artist category not found in database"
+        continue
+    fi
+
+    # Get artist path
+    artist_path=$(bin/mysql -N -e "SELECT path FROM catalog_category_entity WHERE entity_id = $artist_id;")
+
+    # Extract all song tracks under this artist
+    tracks_data=$(bin/mysql -e "
+        SELECT
+            ccv.value as track_name,
+            cvu.value as url_key
+        FROM catalog_category_entity cce
+        JOIN catalog_category_entity_varchar ccv ON cce.entity_id = ccv.entity_id AND ccv.store_id = 0
+        JOIN catalog_category_entity_varchar cvu ON cce.entity_id = cvu.entity_id AND cvu.store_id = 0
+        JOIN catalog_category_entity_int cci ON cce.entity_id = cci.entity_id
+        JOIN eav_attribute ea_name ON ccv.attribute_id = ea_name.attribute_id
+        JOIN eav_attribute ea_url ON cvu.attribute_id = ea_url.attribute_id
+        JOIN eav_attribute ea_song ON cci.attribute_id = ea_song.attribute_id
+        WHERE ea_name.attribute_code = 'name'
+          AND ea_url.attribute_code = 'url_key'
+          AND ea_song.attribute_code = 'is_song'
+          AND cci.value = 1
+          AND cce.path LIKE '$artist_path/%'
+        ORDER BY ccv.value;
+    " | tail -n +2)
+
+    track_count=$(echo "$tracks_data" | wc -l)
+
+    if [ -z "$tracks_data" ] || [ "$track_count" -eq 0 ]; then
+        echo "  ℹ️  No tracks found in categories"
+        continue
+    fi
+
+    echo "  ✓ Found $track_count tracks in categories"
+    echo "  💾 Updating $url_key.yaml..."
+
+    # Generate YAML tracks section
+    temp_tracks="/tmp/${url_key}_tracks.yaml"
+    echo "tracks:" > "$temp_tracks"
+
+    while IFS=$'\t' read -r track_name track_url_key; do
+        # Strip backslashes from PHP-escaped strings (e.g., "It\'s Ice" → "It's Ice")
+        track_name=$(echo "$track_name" | sed "s/\\\\\'/'/g")
+
+        # Generate track key (kebab-case from name)
+        # Rules: lowercase, alphanumeric + hyphens, no consecutive hyphens, no leading/trailing hyphens, no leading numbers
+        track_key=$(echo "$track_name" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/-\+/-/g' | sed 's/^-\|[,-]$//g' | sed 's/^[0-9-]*//')
+
+        # If key is empty or starts with number after cleaning, prefix with 'track-'
+        if [ -z "$track_key" ] || [[ "$track_key" =~ ^[0-9] ]]; then
+            track_key="track-${track_url_key}"
+        fi
+
+        cat >> "$temp_tracks" <<EOF
+  - key: "$track_key"
+    name: "$track_name"
+    url_key: "$track_url_key"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+EOF
+    done <<< "$tracks_data"
+
+    # Replace tracks: [] with actual tracks
+    if grep -q "^tracks: \[\]$" "$yaml_file"; then
+        # Use awk to replace the tracks: [] line with the tracks from temp file
+        awk '
+            /^tracks: \[\]$/ {
+                while ((getline line < "'"$temp_tracks"'") > 0) {
+                    print line
+                }
+                next
+            }
+            { print }
+        ' "$yaml_file" > "${yaml_file}.tmp"
+
+        mv "${yaml_file}.tmp" "$yaml_file"
+
+        # Update track count in header
+        sed -i.bak "s/# Tracks Populated: 0/# Tracks Populated: $track_count/" "$yaml_file"
+        rm -f "${yaml_file}.bak"
+
+        echo "  ✅ Updated with $track_count tracks"
+    else
+        echo "  ⚠️  YAML already has tracks (skipping)"
+    fi
+
+    rm -f "$temp_tracks"
+    echo ""
+done
+
+echo "=============================================="
+echo "✅ Track extraction complete!"
+echo ""
+echo "Next steps:"
+echo "  1. Review generated YAML files"
+echo "  2. Add album associations to tracks"
+echo "  3. Add year fields to albums"
+echo "  4. Run: bin/magento archive:validate --all"

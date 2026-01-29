@@ -354,44 +354,60 @@ class BulkProductImporter implements BulkProductImporterInterface
     ): void {
         $connection = $this->resourceConnection->getConnection();
 
-        // Insert into catalog_product_entity
-        $connection->insert(
-            $this->resourceConnection->getTableName('catalog_product_entity'),
-            [
+        // Begin transaction to ensure atomicity
+        $connection->beginTransaction();
+
+        try {
+            // Insert into catalog_product_entity
+            $connection->insert(
+                $this->resourceConnection->getTableName('catalog_product_entity'),
+                [
+                    'sku' => $sku,
+                    'type_id' => Type::TYPE_VIRTUAL,
+                    'attribute_set_id' => $this->config->getAttributeSetId(),
+                    'has_options' => 0,
+                    'required_options' => 0
+                ]
+            );
+
+            $entityId = (int) $connection->lastInsertId();
+
+            // Set attributes
+            $this->setProductAttributes($entityId, $track, $show, $artistName);
+
+            // Set website assignment
+            $connection->insert(
+                $this->resourceConnection->getTableName('catalog_product_website'),
+                [
+                    'product_id' => $entityId,
+                    'website_id' => $this->config->getDefaultWebsiteId()
+                ]
+            );
+
+            // Set stock (virtual products)
+            $connection->insert(
+                $this->resourceConnection->getTableName('cataloginventory_stock_item'),
+                [
+                    'product_id' => $entityId,
+                    'stock_id' => 1,
+                    'qty' => 0,
+                    'is_in_stock' => 1,
+                    'manage_stock' => 0,
+                    'use_config_manage_stock' => 0
+                ]
+            );
+
+            // Commit transaction
+            $connection->commit();
+        } catch (\Exception $e) {
+            // Rollback on any error
+            $connection->rollBack();
+            $this->logger->error('Failed to create product - transaction rolled back', [
                 'sku' => $sku,
-                'type_id' => Type::TYPE_VIRTUAL,
-                'attribute_set_id' => $this->config->getAttributeSetId(),
-                'has_options' => 0,
-                'required_options' => 0
-            ]
-        );
-
-        $entityId = (int) $connection->lastInsertId();
-
-        // Set attributes
-        $this->setProductAttributes($entityId, $track, $show, $artistName);
-
-        // Set website assignment
-        $connection->insert(
-            $this->resourceConnection->getTableName('catalog_product_website'),
-            [
-                'product_id' => $entityId,
-                'website_id' => $this->config->getDefaultWebsiteId()
-            ]
-        );
-
-        // Set stock (virtual products)
-        $connection->insert(
-            $this->resourceConnection->getTableName('cataloginventory_stock_item'),
-            [
-                'product_id' => $entityId,
-                'stock_id' => 1,
-                'qty' => 0,
-                'is_in_stock' => 1,
-                'manage_stock' => 0,
-                'use_config_manage_stock' => 0
-            ]
-        );
+                'error' => $e->getMessage()
+            ]);
+            throw $e;
+        }
     }
 
     /**

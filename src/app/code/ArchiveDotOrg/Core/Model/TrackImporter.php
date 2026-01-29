@@ -26,6 +26,24 @@ use Magento\Framework\Exception\NoSuchEntityException;
  *
  * Creates and updates Magento products from Archive.org track data.
  * Uses proper dependency injection instead of ObjectManager.
+ *
+ * SKU Format (Fix #6):
+ * ---------------------
+ * Archive.org products use SHA1 hash of file path as SKU for uniqueness.
+ * Format: archive-{sha1_hash}
+ *
+ * Example: archive-a1b2c3d4e5f6...
+ *
+ * The SHA1 hash is generated from the full Archive.org file path including:
+ * - Show identifier (e.g., "gd1977-05-08.sbd.miller.32601")
+ * - File name (e.g., "gd1977-05-08d1t01.flac")
+ *
+ * This ensures:
+ * - Uniqueness: Each track has a unique SKU regardless of title collisions
+ * - Stability: SKU doesn't change if metadata updates
+ * - Traceability: Can map back to original Archive.org file
+ *
+ * See: TrackInterface::generateSku() for implementation details
  */
 class TrackImporter implements TrackImporterInterface
 {
@@ -94,7 +112,12 @@ class TrackImporter implements TrackImporterInterface
             // Save the product
             $savedProduct = $this->productRepository->save($product);
 
-            $this->logger->logTrackCreated($sku, $track->getTitle());
+            // Log appropriately based on whether this was create or update
+            if ($isUpdate) {
+                $this->logger->debug("Updated product: {$sku} - {$track->getTitle()}");
+            } else {
+                $this->logger->logTrackCreated($sku, $track->getTitle());
+            }
 
             return (int) $savedProduct->getId();
         } catch (\Exception $e) {

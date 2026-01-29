@@ -251,7 +251,8 @@ class StatusCommand extends Command
     private function getDownloadedShowsCount(string $artistName): int
     {
         try {
-            $varPath = $this->directoryList->getPath(DirectoryList::VAR_DIR);
+            // Get var directory path (BP is Magento root)
+            $varPath = BP . '/var';
             $metadataPath = $varPath . '/archivedotorg/metadata/' . $artistName;
 
             if (!is_dir($metadataPath)) {
@@ -355,7 +356,8 @@ class StatusCommand extends Command
     private function getLastDownloadDate(string $artistName): ?string
     {
         try {
-            $varPath = $this->directoryList->getPath(DirectoryList::VAR_DIR);
+            // Get var directory path (BP is Magento root)
+            $varPath = BP . '/var';
             $metadataPath = $varPath . '/archivedotorg/metadata/' . $artistName;
 
             if (!is_dir($metadataPath)) {

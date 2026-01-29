@@ -87,8 +87,8 @@ export default function Queue() {
     <>
       {/* Backdrop */}
       <div
-        className={`fixed z-40 bg-black/60 ${
-          isMobile ? 'inset-0' : 'top-0 right-0 bottom-[90px] left-[240px]'
+        className={`fixed z-[60] bg-black/60 ${
+          isMobile ? 'inset-0' : 'inset-0 bottom-[90px]'
         }`}
         onClick={toggleQueue}
         aria-hidden="true"
@@ -96,10 +96,10 @@ export default function Queue() {
 
       {/* Drawer - Full screen on mobile */}
       <aside
-        className={`fixed z-50 flex flex-col ${
+        className={`fixed z-[70] flex flex-col ${
           isMobile
             ? 'inset-0 bg-gradient-to-b from-[#3a3632] to-[#1c1a17] safe-top safe-bottom'
-            : 'right-0 top-0 bottom-[90px] w-96 bg-[#1c1a17] border-l border-[#2d2a26]'
+            : 'left-0 top-0 bottom-[90px] w-96 bg-[#1c1a17] border-r border-[#2d2a26]'
         }`}
         role="dialog"
         aria-modal="true"

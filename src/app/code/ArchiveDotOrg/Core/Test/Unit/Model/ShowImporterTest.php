@@ -16,6 +16,7 @@ use ArchiveDotOrg\Core\Api\Data\ShowInterface;
 use ArchiveDotOrg\Core\Api\Data\TrackInterface;
 use ArchiveDotOrg\Core\Api\TrackImporterInterface;
 use ArchiveDotOrg\Core\Logger\Logger;
+use ArchiveDotOrg\Core\Model\ConcurrentApiClient;
 use ArchiveDotOrg\Core\Model\Config;
 use ArchiveDotOrg\Core\Model\ShowImporter;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -30,6 +31,7 @@ class ShowImporterTest extends TestCase
 {
     private ShowImporter $showImporter;
     private ArchiveApiClientInterface|MockObject $apiClientMock;
+    private ConcurrentApiClient|MockObject $concurrentApiClientMock;
     private TrackImporterInterface|MockObject $trackImporterMock;
     private AttributeOptionManagerInterface|MockObject $attributeOptionManagerMock;
     private CategoryAssignmentServiceInterface|MockObject $categoryAssignmentServiceMock;
@@ -41,6 +43,7 @@ class ShowImporterTest extends TestCase
     protected function setUp(): void
     {
         $this->apiClientMock = $this->createMock(ArchiveApiClientInterface::class);
+        $this->concurrentApiClientMock = $this->createMock(ConcurrentApiClient::class);
         $this->trackImporterMock = $this->createMock(TrackImporterInterface::class);
         $this->attributeOptionManagerMock = $this->createMock(AttributeOptionManagerInterface::class);
         $this->categoryAssignmentServiceMock = $this->createMock(CategoryAssignmentServiceInterface::class);
@@ -55,6 +58,7 @@ class ShowImporterTest extends TestCase
 
         $this->showImporter = new ShowImporter(
             $this->apiClientMock,
+            $this->concurrentApiClientMock,
             $this->trackImporterMock,
             $this->attributeOptionManagerMock,
             $this->categoryAssignmentServiceMock,
@@ -352,6 +356,149 @@ class ShowImporterTest extends TestCase
             ->method('getOrCreateShowCategory')
             ->with('show1', 'Show Title', $artistCategoryId)
             ->willReturn($showCategoryId);
+
+        $this->showImporter->importByCollection($artistName, $collectionId);
+    }
+
+    /**
+     * @test
+     */
+    public function testPartialFailureRecovery(): void
+    {
+        $artistName = 'Test Artist';
+        $collectionId = 'TestCollection';
+        $identifiers = ['show1', 'show2', 'show3', 'show4', 'show5',
+                        'show6', 'show7', 'show8', 'show9', 'show10'];
+
+        $this->apiClientMock->method('fetchCollectionIdentifiers')
+            ->willReturn($identifiers);
+
+        $this->categoryAssignmentServiceMock->method('getOrCreateArtistCategory')
+            ->willReturn(100);
+
+        // Mock shows - show6 will fail
+        $callCount = 0;
+        $this->apiClientMock->method('fetchShowMetadata')
+            ->willReturnCallback(function ($identifier) use (&$callCount) {
+                $callCount++;
+                if ($identifier === 'show6') {
+                    throw new \Exception('API error for show6');
+                }
+
+                $showMock = $this->createMock(ShowInterface::class);
+                $showMock->method('getTracks')->willReturn([]);
+                $showMock->method('getIdentifier')->willReturn($identifier);
+                $showMock->method('getTitle')->willReturn("Show $identifier");
+                return $showMock;
+            });
+
+        $this->trackImporterMock->method('importShowTracks')
+            ->willReturn(['created' => 5, 'updated' => 0, 'skipped' => 0, 'product_ids' => [1, 2, 3, 4, 5]]);
+
+        // Should process 9 successful shows
+        $this->resultMock->expects($this->exactly(9))
+            ->method('incrementShowsProcessed');
+
+        // Should log 1 error for show6
+        $this->loggerMock->expects($this->once())
+            ->method('logImportError')
+            ->with($this->stringContains('show6'));
+
+        $this->resultMock->expects($this->once())
+            ->method('addError')
+            ->with($this->stringContains('show6'));
+
+        $this->showImporter->importByCollection($artistName, $collectionId);
+    }
+
+    /**
+     * @test
+     */
+    public function testCorruptDataHandling(): void
+    {
+        $artistName = 'Test Artist';
+        $collectionId = 'TestCollection';
+
+        $this->apiClientMock->method('fetchCollectionIdentifiers')
+            ->willReturn(['show1', 'show2']);
+
+        $this->categoryAssignmentServiceMock->method('getOrCreateArtistCategory')
+            ->willReturn(100);
+
+        // First show returns malformed data
+        $this->apiClientMock->method('fetchShowMetadata')
+            ->willReturnCallback(function ($identifier) {
+                if ($identifier === 'show1') {
+                    throw new \InvalidArgumentException('Failed to parse API response: Invalid JSON');
+                }
+
+                $showMock = $this->createMock(ShowInterface::class);
+                $showMock->method('getTracks')->willReturn([]);
+                $showMock->method('getIdentifier')->willReturn($identifier);
+                $showMock->method('getTitle')->willReturn('Show 2');
+                return $showMock;
+            });
+
+        $this->trackImporterMock->method('importShowTracks')
+            ->willReturn(['created' => 3, 'updated' => 0, 'skipped' => 0, 'product_ids' => [1, 2, 3]]);
+
+        // Should log error with identifier
+        $this->loggerMock->expects($this->once())
+            ->method('logImportError')
+            ->with(
+                $this->stringContains('show1'),
+                $this->callback(function ($context) {
+                    return isset($context['exception']) &&
+                           strpos($context['exception'], 'Invalid JSON') !== false;
+                })
+            );
+
+        // Should process the second show successfully
+        $this->resultMock->expects($this->once())
+            ->method('incrementShowsProcessed');
+
+        $this->showImporter->importByCollection($artistName, $collectionId);
+    }
+
+    /**
+     * @test
+     */
+    public function testDiskSpaceExhaustion(): void
+    {
+        $artistName = 'Test Artist';
+        $collectionId = 'TestCollection';
+
+        $this->apiClientMock->method('fetchCollectionIdentifiers')
+            ->willReturn(['show1']);
+
+        $this->categoryAssignmentServiceMock->method('getOrCreateArtistCategory')
+            ->willReturn(100);
+
+        $showMock = $this->createMock(ShowInterface::class);
+        $showMock->method('getTracks')->willReturn([]);
+        $showMock->method('getIdentifier')->willReturn('show1');
+        $showMock->method('getTitle')->willReturn('Show 1');
+
+        $this->apiClientMock->method('fetchShowMetadata')->willReturn($showMock);
+
+        // Simulate disk full during track import
+        $this->trackImporterMock->method('importShowTracks')
+            ->willThrowException(new \RuntimeException('Failed to write file: disk full'));
+
+        // Should log error with clear message
+        $this->loggerMock->expects($this->once())
+            ->method('logImportError')
+            ->with(
+                $this->stringContains('show1'),
+                $this->callback(function ($context) {
+                    return isset($context['exception']) &&
+                           strpos($context['exception'], 'disk full') !== false;
+                })
+            );
+
+        $this->resultMock->expects($this->once())
+            ->method('addError')
+            ->with($this->stringContains('disk full'));
 
         $this->showImporter->importByCollection($artistName, $collectionId);
     }

@@ -9,6 +9,13 @@
 <form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
 
+    <!-- Hide Schedule Design Update -->
+    <fieldset name="schedule_design_update">
+        <settings>
+            <visible>false</visible>
+        </settings>
+    </fieldset>
+
     <!-- Archive.org Settings Fieldset -->
     <fieldset name="archivedotorg_settings" sortOrder="100">
         <settings>
@@ -147,6 +154,227 @@
                     </settings>
                 </select>
             </formElements>
+        </field>
+    </fieldset>
+
+    <!-- Band/Artist Data Fieldset -->
+    <fieldset name="band_data" sortOrder="101">
+        <settings>
+            <collapsible>true</collapsible>
+            <label translate="true">Artist/Band Information</label>
+        </settings>
+
+        <!-- Extended Biography -->
+        <field name="band_extended_bio" formElement="textarea">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">category</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Biography</label>
+                <notice translate="true">Extended biography text from Wikipedia or manually entered</notice>
+            </settings>
+            <formElements>
+                <textarea>
+                    <settings>
+                        <rows>8</rows>
+                    </settings>
+                </textarea>
+            </formElements>
+        </field>
+
+        <!-- Band Image URL -->
+        <field name="band_image_url" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">category</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Band Image URL</label>
+                <notice translate="true">Wikipedia/Wikimedia image URL (hotlinked - legally safe). Example: https://upload.wikimedia.org/...</notice>
+                <validation>
+                    <rule name="max_text_length" xsi:type="number">500</rule>
+                    <rule name="validate-url" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+
+        <!-- Formation Date -->
+        <field name="band_formation_date" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">category</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Formation Date</label>
+                <notice translate="true">Year the band formed (e.g., 1983)</notice>
+                <validation>
+                    <rule name="max_text_length" xsi:type="number">50</rule>
+                </validation>
+            </settings>
+        </field>
+
+        <!-- Origin Location -->
+        <field name="band_origin_location" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">category</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Origin Location</label>
+                <notice translate="true">City/country where band originated (e.g., Burlington, Vermont, U.S.)</notice>
+                <validation>
+                    <rule name="max_text_length" xsi:type="number">255</rule>
+                </validation>
+            </settings>
+        </field>
+
+        <!-- Years Active -->
+        <field name="band_years_active" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">category</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Years Active</label>
+                <notice translate="true">Years band was/has been active (e.g., 1983–2000, 2002–2004, 2008–present)</notice>
+                <validation>
+                    <rule name="max_text_length" xsi:type="number">255</rule>
+                </validation>
+            </settings>
+        </field>
+
+        <!-- Genres -->
+        <field name="band_genres" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">category</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Genres</label>
+                <notice translate="true">Comma-separated genre list (e.g., Rock, psychedelic rock, jam band)</notice>
+                <validation>
+                    <rule name="max_text_length" xsi:type="number">500</rule>
+                </validation>
+            </settings>
+        </field>
+
+        <!-- Official Website -->
+        <field name="band_official_website" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">category</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Official Website</label>
+                <notice translate="true">Official band website URL</notice>
+                <validation>
+                    <rule name="max_text_length" xsi:type="number">255</rule>
+                    <rule name="validate-url" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+
+        <!-- Facebook -->
+        <field name="band_facebook" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">category</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Facebook</label>
+                <notice translate="true">Facebook page URL</notice>
+                <validation>
+                    <rule name="max_text_length" xsi:type="number">255</rule>
+                    <rule name="validate-url" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+
+        <!-- Instagram -->
+        <field name="band_instagram" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">category</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Instagram</label>
+                <notice translate="true">Instagram profile URL</notice>
+                <validation>
+                    <rule name="max_text_length" xsi:type="number">255</rule>
+                    <rule name="validate-url" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+
+        <!-- Twitter -->
+        <field name="band_twitter" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">category</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Twitter/X</label>
+                <notice translate="true">Twitter/X profile URL</notice>
+                <validation>
+                    <rule name="max_text_length" xsi:type="number">255</rule>
+                    <rule name="validate-url" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+
+        <!-- Total Shows -->
+        <field name="band_total_shows" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">category</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>number</dataType>
+                <label translate="true">Total Shows</label>
+                <notice translate="true">Total number of recorded shows</notice>
+                <validation>
+                    <rule name="validate-number" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+
+        <!-- Most Played Track -->
+        <field name="band_most_played_track" formElement="input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">category</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Most Played Track</label>
+                <notice translate="true">Most frequently played track name</notice>
+                <validation>
+                    <rule name="max_text_length" xsi:type="number">255</rule>
+                </validation>
+            </settings>
         </field>
     </fieldset>
 </form>

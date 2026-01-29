@@ -1,0 +1,538 @@
+# ========================================
+# Twiddle Configuration
+# ========================================
+#
+# Generated: 2026-01-29 14:55:14
+# Albums Populated: 5
+# Tracks Populated: 58
+# Status: Ready for use
+#
+# TODO:
+#   1. Add year to each album
+#   2. Add track aliases for better matching
+#   3. Add medley patterns (if applicable)
+#   4. Run validation: bin/magento archive:validate twiddle
+#
+# See template.yaml for structure reference.
+# ========================================
+
+# ========================================
+# ARTIST SECTION
+# ========================================
+artist:
+  name: "Twiddle"
+  collection_id: "Twiddle"
+  url_key: "twiddle"
+
+# ========================================
+# ALBUMS SECTION
+# ========================================
+albums:
+  - key: "the-natural-evolution-of-consciousness"
+    name: "The Natural Evolution of Consciousness"
+    url_key: "naturalevolution"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "somewhere-on-the-mountain"
+    name: "Somewhere on the Mountain"
+    url_key: "somewhereonthemountain"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "plump-chapter-one"
+    name: "PLUMP Chapter One"
+    url_key: "plumpchapterone"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "plump-chapters-1-and-2"
+    name: "Plump, Chapters 1 & 2"
+    url_key: "plumpchapters12"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "every-last-leaf"
+    name: "Every Last Leaf"
+    url_key: "everylastleaf"
+    type: "studio"
+    # TODO: Add year field
+
+# ========================================
+# TRACKS SECTION
+# ========================================
+tracks:
+  - key: "daydream-farmer"
+    name: "Daydream Farmer"
+    url_key: "daydreamfarmer"
+    albums: ["somewhere-on-the-mountain"]
+    canonical_album: "somewhere-on-the-mountain"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "doinkinbonk"
+    name: "Doinkinbonk!!!"
+    url_key: "doinkinbonk"
+    albums: ["somewhere-on-the-mountain"]
+    canonical_album: "somewhere-on-the-mountain"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "apples"
+    name: "Apples"
+    url_key: "apples"
+    albums: ["somewhere-on-the-mountain"]
+    canonical_album: "somewhere-on-the-mountain"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "beehop"
+    name: "Beehop"
+    url_key: "beehop"
+    albums: ["somewhere-on-the-mountain"]
+    canonical_album: "somewhere-on-the-mountain"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "when-it-rains-it-poors"
+    name: "When It Rains It Poors"
+    url_key: "whenіitrainsitpoors"
+    albums: ["somewhere-on-the-mountain", "plump-chapters-1-and-2"]
+    canonical_album: "somewhere-on-the-mountain"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "wescotton-candy"
+    name: "Wescotton Candy"
+    url_key: "wescottoncandy"
+    albums: ["somewhere-on-the-mountain"]
+    canonical_album: "somewhere-on-the-mountain"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "second-wind"
+    name: "Second Wind"
+    url_key: "secondwind"
+    albums: ["somewhere-on-the-mountain"]
+    canonical_album: "somewhere-on-the-mountain"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-box"
+    name: "The Box"
+    url_key: "thebox"
+    albums: ["somewhere-on-the-mountain"]
+    canonical_album: "somewhere-on-the-mountain"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "hattibagen-mcrat"
+    name: "Hattibagen McRat"
+    url_key: "hattibagenmcrat"
+    albums: ["somewhere-on-the-mountain"]
+    canonical_album: "somewhere-on-the-mountain"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "wasabi-eruption"
+    name: "Wasabi Eruption"
+    url_key: "wasabieruption"
+    albums: ["somewhere-on-the-mountain"]
+    canonical_album: "somewhere-on-the-mountain"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "honeyburste"
+    name: "Honeyburste"
+    url_key: "honeyburste"
+    albums: ["somewhere-on-the-mountain"]
+    canonical_album: "somewhere-on-the-mountain"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "beethoven-and-greene"
+    name: "Beethoven and Greene"
+    url_key: "beethovenandgreene"
+    albums: ["somewhere-on-the-mountain"]
+    canonical_album: "somewhere-on-the-mountain"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "complacent-race"
+    name: "Complacent Race"
+    url_key: "complacentrace"
+    albums: ["plump-chapter-one", "plump-chapters-1-and-2"]
+    canonical_album: "plump-chapter-one"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "amydst-the-myst"
+    name: "Amydst The Myst"
+    url_key: "amydstthemyst"
+    albums: ["plump-chapter-one", "plump-chapters-1-and-2"]
+    canonical_album: "plump-chapter-one"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "lost-in-the-cold"
+    name: "Lost In The Cold"
+    url_key: "lostinthecold"
+    albums: ["plump-chapter-one", "plump-chapters-1-and-2"]
+    canonical_album: "plump-chapter-one"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "every-soul-ft-todd-stoops"
+    name: "Every Soul (ft. Todd Stoops)"
+    url_key: "everysoul"
+    albums: ["plump-chapter-one"]
+    canonical_album: "plump-chapter-one"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "five"
+    name: "Five"
+    url_key: "five"
+    albums: ["plump-chapter-one"]
+    canonical_album: "plump-chapter-one"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "syncopated-healing"
+    name: "Syncopated Healing"
+    url_key: "syncopatedhealing"
+    albums: ["plump-chapter-one", "plump-chapters-1-and-2"]
+    canonical_album: "plump-chapter-one"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dusk-till-dawn"
+    name: "Dusk Till Dawn"
+    url_key: "dusktilldawn"
+    albums: ["plump-chapter-one"]
+    canonical_album: "plump-chapter-one"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "polluted-beauty"
+    name: "Polluted Beauty"
+    url_key: "pollutedbeauty"
+    albums: ["plump-chapter-one", "plump-chapters-1-and-2"]
+    canonical_album: "plump-chapter-one"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "be-there-ft-kenny-brooks"
+    name: "Be There (ft. Kenny Brooks)"
+    url_key: "bethere"
+    albums: ["plump-chapter-one"]
+    canonical_album: "plump-chapter-one"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "indigo-trigger"
+    name: "Indigo Trigger"
+    url_key: "indigotrigger"
+    albums: ["plump-chapter-one", "plump-chapters-1-and-2"]
+    canonical_album: "plump-chapter-one"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "white-light"
+    name: "White Light"
+    url_key: "whitelight"
+    albums: ["plump-chapter-one", "plump-chapters-1-and-2"]
+    canonical_album: "plump-chapter-one"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "five-radio"
+    name: "Five (Radio)"
+    url_key: "fiveradio"
+    albums: ["plump-chapters-1-and-2"]
+    canonical_album: "plump-chapters-1-and-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "every-soul"
+    name: "Every Soul"
+    url_key: "everysoul"
+    albums: ["plump-chapters-1-and-2"]
+    canonical_album: "plump-chapters-1-and-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dusk-til-dawn"
+    name: "Dusk 'til Dawn"
+    url_key: "dusktilldawn"
+    albums: ["plump-chapters-1-and-2"]
+    canonical_album: "plump-chapters-1-and-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "be-there"
+    name: "Be There"
+    url_key: "bethere"
+    albums: ["plump-chapters-1-and-2"]
+    canonical_album: "plump-chapters-1-and-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "five-album-version"
+    name: "Five (Album Version)"
+    url_key: "fivealbum"
+    albums: ["plump-chapters-1-and-2"]
+    canonical_album: "plump-chapters-1-and-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "enter"
+    name: "Enter"
+    url_key: "enter"
+    albums: ["plump-chapters-1-and-2"]
+    canonical_album: "plump-chapters-1-and-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "orlandos"
+    name: "Orlando's"
+    url_key: "orlandos"
+    albums: ["plump-chapters-1-and-2"]
+    canonical_album: "plump-chapters-1-and-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "juggernaut"
+    name: "Juggernaut"
+    url_key: "juggernaut"
+    albums: ["plump-chapters-1-and-2"]
+    canonical_album: "plump-chapters-1-and-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "moments"
+    name: "Moments"
+    url_key: "moments"
+    albums: ["plump-chapters-1-and-2"]
+    canonical_album: "plump-chapters-1-and-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "milk"
+    name: "Milk"
+    url_key: "milk"
+    albums: ["plump-chapters-1-and-2"]
+    canonical_album: "plump-chapters-1-and-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "nicodemus-portulay"
+    name: "Nicodemus Portulay"
+    url_key: "nicodemusportulay"
+    albums: ["plump-chapters-1-and-2"]
+    canonical_album: "plump-chapters-1-and-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "new-sun"
+    name: "New Sun"
+    url_key: "newsun"
+    albums: ["plump-chapters-1-and-2"]
+    canonical_album: "plump-chapters-1-and-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "forevers"
+    name: "Forevers"
+    url_key: "forevers"
+    albums: ["plump-chapters-1-and-2"]
+    canonical_album: "plump-chapters-1-and-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-fantastic-tale-of-ricky-snickle"
+    name: "The Fantastic Tale of Ricky Snickle"
+    url_key: "thefantastictaleofrickysnickle"
+    albums: ["plump-chapters-1-and-2"]
+    canonical_album: "plump-chapters-1-and-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "peas-and-carrots"
+    name: "Peas and Carrots"
+    url_key: "peasandcarrots"
+    albums: ["plump-chapters-1-and-2"]
+    canonical_album: "plump-chapters-1-and-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "drifter"
+    name: "Drifter"
+    url_key: "drifter"
+    albums: ["plump-chapters-1-and-2"]
+    canonical_album: "plump-chapters-1-and-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "blunderbuss"
+    name: "Blunderbuss"
+    url_key: "blunderbuss"
+    albums: ["plump-chapters-1-and-2"]
+    canonical_album: "plump-chapters-1-and-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "fat-country-baby"
+    name: "Fat Country Baby"
+    url_key: "fatcountrybaby"
+    albums: ["plump-chapters-1-and-2"]
+    canonical_album: "plump-chapters-1-and-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dinner-fork"
+    name: "Dinner Fork"
+    url_key: "dinnerfork"
+    albums: ["plump-chapters-1-and-2"]
+    canonical_album: "plump-chapters-1-and-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "purple-forest"
+    name: "Purple Forest"
+    url_key: "purpleforest"
+    albums: ["plump-chapters-1-and-2"]
+    canonical_album: "plump-chapters-1-and-2"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "every-last-leaf-i"
+    name: "Every Last Leaf I"
+    url_key: "everylastleaf1"
+    albums: ["every-last-leaf"]
+    canonical_album: "every-last-leaf"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "beautiful"
+    name: "Beautiful"
+    url_key: "beautiful"
+    albums: ["every-last-leaf"]
+    canonical_album: "every-last-leaf"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "distance-makes-the-heart-feat-anders-beck"
+    name: "Distance Makes The Heart (feat. Anders Beck)"
+    url_key: "distancemakestheheart"
+    albums: ["every-last-leaf"]
+    canonical_album: "every-last-leaf"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "river-drift"
+    name: "River Drift"
+    url_key: "riverdrift"
+    albums: ["every-last-leaf"]
+    canonical_album: "every-last-leaf"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-mission"
+    name: "The Mission"
+    url_key: "themission"
+    albums: ["every-last-leaf"]
+    canonical_album: "every-last-leaf"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "meant-to-be"
+    name: "Meant To Be"
+    url_key: "meanttobe"
+    albums: ["every-last-leaf"]
+    canonical_album: "every-last-leaf"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "do-it-now"
+    name: "Do It Now"
+    url_key: "doitnow"
+    albums: ["every-last-leaf"]
+    canonical_album: "every-last-leaf"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "fighting-for"
+    name: "Fighting For"
+    url_key: "fightingfor"
+    albums: ["every-last-leaf"]
+    canonical_album: "every-last-leaf"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-devil-feat-john-popper"
+    name: "The Devil (feat. John Popper)"
+    url_key: "thedevil"
+    albums: ["every-last-leaf"]
+    canonical_album: "every-last-leaf"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "life-back-now"
+    name: "Life Back Now"
+    url_key: "lifebacknow"
+    albums: ["every-last-leaf"]
+    canonical_album: "every-last-leaf"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "collective-pulse"
+    name: "Collective Pulse"
+    url_key: "collectivepulse"
+    albums: ["every-last-leaf"]
+    canonical_album: "every-last-leaf"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "inside"
+    name: "Inside"
+    url_key: "inside"
+    albums: ["every-last-leaf"]
+    canonical_album: "every-last-leaf"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "slippin-in-the-kitchen"
+    name: "Slippin' In The Kitchen"
+    url_key: "slippinthekitchen"
+    albums: ["every-last-leaf"]
+    canonical_album: "every-last-leaf"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "mushrooms-of-the-sea"
+    name: "Mushrooms Of The Sea"
+    url_key: "mushroomsofthesea"
+    albums: ["every-last-leaf"]
+    canonical_album: "every-last-leaf"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "every-last-leaf-ii"
+    name: "Every Last Leaf II"
+    url_key: "everylastleaf2"
+    albums: ["every-last-leaf"]
+    canonical_album: "every-last-leaf"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+# ========================================
+# MEDLEYS SECTION (Optional)
+# ========================================
+# TODO: Add common medley patterns if applicable
+# Example:
+# medleys:
+#   - pattern: "Track A > Track B"
+#     tracks: ["track-a-key", "track-b-key"]
+#     separator: ">"
+# medleys: []

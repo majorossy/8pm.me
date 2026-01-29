@@ -384,7 +384,7 @@ See `docs/SPOTIFY_FEATURE_PARITY_ROADMAP.md` for full details.
 ### ArchiveDotOrg_Core
 Imports live concert recordings from Archive.org into Magento products.
 
-**CLI Commands (12 total):**
+**CLI Commands (13 total):**
 ```bash
 # Import & Sync
 bin/magento archivedotorg:import-shows "Grateful Dead" --limit=50
@@ -396,11 +396,14 @@ bin/magento archivedotorg:cleanup-products --collection=GratefulDead
 bin/magento archivedotorg:download-metadata "Phish"
 bin/magento archivedotorg:populate-tracks
 
+# Artist Enrichment
+bin/magento archive:artist:enrich "Phish" --fields=bio,origin,stats --force
+
 # Album Artwork
-bin/magento archivedotorg:download-album-art "Phish" --limit=20
-bin/magento archivedotorg:update-category-artwork
-bin/magento archivedotorg:set-artwork-url <category_id> <url>
-bin/magento archivedotorg:retry-missing-artwork
+bin/magento archive:artwork:download "Phish" --limit=20
+bin/magento archive:artwork:update
+bin/magento archive:artwork:set-url <category_id> <url>
+bin/magento archive:artwork:retry
 
 # Utilities
 bin/magento archivedotorg:status --test-collection=GratefulDead
@@ -427,9 +430,33 @@ DELETE /V1/archive/products/:sku       - Delete imported product
 
 **GraphQL Extensions:** 20+ fields on ProductInterface (song_title, show_venue, archive_downloads, etc.)
 
+**Import History Tracking:** (NEW - 2026-01-29)
+All CLI imports automatically log to `archivedotorg_import_run` table with:
+- ✅ WHO ran it (`started_by`: cli:username or admin:username)
+- ✅ WHAT command ran (`command_name`)
+- ✅ WHEN it started/completed (timestamps)
+- ✅ HOW LONG it took (`duration_seconds`)
+- ✅ HOW MUCH memory used (`memory_peak_mb`)
+- ✅ HOW MANY items processed/successful
+- ✅ Auto-updates `archivedotorg_artist_status` after successful imports
+
+View in Admin: **Catalog > Archive.org > Import History** (21 records currently)
+
 **Database Tables:**
 - `archivedotorg_activity_log` - Import operation tracking
+- `archivedotorg_import_run` - Import history with full metrics (NEW)
+- `archivedotorg_artist_status` - Per-artist statistics (auto-updated)
 - `archivedotorg_studio_albums` - Album artwork cache
+
+**Admin Interface:** Catalog > Archive.org
+- **Control Center** - AJAX dashboard with real-time operations
+- **Dashboard** - Database statistics and historical metrics
+- **Artists** - Per-artist status and match rates
+- **Imported Products** - Grid of all imported products
+- **Import History** - Full audit trail of imports
+- **Import Jobs** - CLI instructions (async jobs coming soon)
+- **Unmatched Tracks** - Failed matches with YAML export
+- **Configuration** - Module settings
 
 ### Album Artwork Integration
 **Status:** 🚨 BLOCKED - MusicBrainz/CoverArtArchive blocking connections
@@ -438,6 +465,47 @@ DELETE /V1/archive/products/:sku       - Delete imported product
 
 **When unblocked:**
 1. Start proxy: `bin/proxy` (runs on port 3333)
-2. Run: `bin/magento archivedotorg:download-album-art "Artist" --limit=10`
+2. Run: `bin/magento archive:artwork:download "Artist" --limit=10`
 
 See `docs/album-artwork/` for full documentation.
+
+### Artist Enrichment
+**Status:** ✅ COMPLETE - Multi-tier enrichment system
+
+**Populates Category Attributes:**
+- `band_extended_bio` - Biography from Wikipedia
+- `band_origin_location` - City/country of origin
+- `band_years_active` - Active years
+- `band_formation_date` - Year band formed
+- `band_genres` - Musical genres
+- `band_official_website` - Official website URL
+- `band_facebook`, `band_instagram`, `band_twitter` - Social media links
+- `band_total_shows` - Total recorded shows (from local database)
+- `band_most_played_track` - Most frequently played track (from local database)
+
+**Data Sources:**
+1. Wikipedia REST API (bio, thumbnail)
+2. Wikipedia Infobox parsing (origin, genres, years_active, website)
+3. Brave Search API (social media links - requires API key)
+4. Archive.org Stats (total shows, most played track - from imported products)
+
+**Usage:**
+```bash
+# Enrich single artist with all fields
+bin/magento archive:artist:enrich "Phish" --force
+
+# Enrich with specific fields
+bin/magento archive:artist:enrich "Phish" --fields=bio,origin,stats
+
+# Enrich all 35 configured artists
+bin/magento archive:artist:enrich --all --fields=bio,origin,stats
+
+# Archive.org stats only (requires imported products)
+bin/magento archive:artist:enrich "Widespread Panic" --fields=stats --force
+```
+
+**Performance:**
+- Wikipedia/Brave Search: ~1.5 seconds per artist
+- Archive.org Stats: ~0.07 seconds (pure SQL, no API calls)
+
+See `docs/ARTIST_ENRICHMENT_IMPLEMENTATION.md` for full documentation.

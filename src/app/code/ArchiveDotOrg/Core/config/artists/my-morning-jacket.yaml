@@ -1,0 +1,736 @@
+# ========================================
+# My Morning Jacket Configuration
+# ========================================
+#
+# Generated: 2026-01-29 14:55:14
+# Albums Populated: 10
+# Tracks Populated: 79
+# Status: Ready for use
+#
+# TODO:
+#   1. Add year to each album
+#   2. Add track aliases for better matching
+#   3. Add medley patterns (if applicable)
+#   4. Run validation: bin/magento archive:validate my-morning-jacket
+#
+# See template.yaml for structure reference.
+# ========================================
+
+# ========================================
+# ARTIST SECTION
+# ========================================
+artist:
+  name: "My Morning Jacket"
+  collection_id: "MyMorningJacket"
+  url_key: "my-morning-jacket"
+
+# ========================================
+# ALBUMS SECTION
+# ========================================
+albums:
+  - key: "the-tennessee-fire"
+    name: "The Tennessee Fire"
+    url_key: "thetennesseefire"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "at-dawn"
+    name: "At Dawn"
+    url_key: "atdawn"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "it-still-moves"
+    name: "It Still Moves"
+    url_key: "itstillmoves"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "z"
+    name: "Z"
+    url_key: "zalbum"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "evil-urges"
+    name: "Evil Urges"
+    url_key: "evilurges"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "circuital"
+    name: "Circuital"
+    url_key: "circuital"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "the-waterfall"
+    name: "The Waterfall"
+    url_key: "thewaterfall"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "the-waterfall-ii"
+    name: "The Waterfall II"
+    url_key: "thewaterfallii"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "my-morning-jacket"
+    name: "My Morning Jacket"
+    url_key: "mymorningjacketalbum"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "is"
+    name: "Is"
+    url_key: "isalbum"
+    type: "studio"
+    # TODO: Add year field
+
+# ========================================
+# TRACKS SECTION
+# ========================================
+tracks:
+  - key: "at-dawn"
+    name: "At Dawn"
+    url_key: "atdawn"
+    albums: ["at-dawn"]
+    canonical_album: "at-dawn"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "lowdown"
+    name: "Lowdown"
+    url_key: "lowdown"
+    albums: ["at-dawn"]
+    canonical_album: "at-dawn"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-way-that-he-sings"
+    name: "The Way That He Sings"
+    url_key: "thewaythathesingѕ"
+    albums: ["at-dawn"]
+    canonical_album: "at-dawn"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "death-is-the-easy-way"
+    name: "Death Is The Easy Way"
+    url_key: "deathistheeasyway"
+    albums: ["at-dawn"]
+    canonical_album: "at-dawn"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "hopefully"
+    name: "Hopefully"
+    url_key: "hopefully"
+    albums: ["at-dawn"]
+    canonical_album: "at-dawn"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "bermuda-highway"
+    name: "Bermuda Highway"
+    url_key: "bermudahighway"
+    albums: ["at-dawn"]
+    canonical_album: "at-dawn"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "honest-man"
+    name: "Honest Man"
+    url_key: "honestman"
+    albums: ["at-dawn"]
+    canonical_album: "at-dawn"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "xmas-curtain"
+    name: "Xmas Curtain"
+    url_key: "xmascurtain"
+    albums: ["at-dawn"]
+    canonical_album: "at-dawn"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "just-because-i-do"
+    name: "Just Because I Do"
+    url_key: "justbecauseido"
+    albums: ["at-dawn"]
+    canonical_album: "at-dawn"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "if-it-smashes-down"
+    name: "If It Smashes Down"
+    url_key: "ifitsmashesdown"
+    albums: ["at-dawn"]
+    canonical_album: "at-dawn"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "i-needed-it-most"
+    name: "I Needed It Most"
+    url_key: "ineededitmost"
+    albums: ["at-dawn"]
+    canonical_album: "at-dawn"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "phone-went-west"
+    name: "Phone Went West"
+    url_key: "phonewentwest"
+    albums: ["at-dawn"]
+    canonical_album: "at-dawn"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "strangulation"
+    name: "Strangulation"
+    url_key: "strangulation"
+    albums: ["at-dawn"]
+    canonical_album: "at-dawn"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "untitled-bonus-track"
+    name: "Untitled Bonus Track"
+    url_key: "untitledbonustrack"
+    albums: ["at-dawn"]
+    canonical_album: "at-dawn"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "evil-urges"
+    name: "Evil Urges"
+    url_key: "evilurges"
+    albums: ["evil-urges"]
+    canonical_album: "evil-urges"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "touch-me-im-going-to-scream-pt1"
+    name: "Touch Me I'm Going To Scream Pt.1"
+    url_key: "touchmeimgoingtoscreampt1"
+    albums: ["evil-urges"]
+    canonical_album: "evil-urges"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "highly-suspicious"
+    name: "Highly Suspicious"
+    url_key: "highlysuspicious"
+    albums: ["evil-urges"]
+    canonical_album: "evil-urges"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "im-amazed"
+    name: "I'm Amazed"
+    url_key: "imamazedmmj"
+    albums: ["evil-urges"]
+    canonical_album: "evil-urges"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "thank-you-too"
+    name: "Thank You Too!"
+    url_key: "thankyoutoo"
+    albums: ["evil-urges"]
+    canonical_album: "evil-urges"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "sec-walkin"
+    name: "Sec Walkin'"
+    url_key: "secwalkin"
+    albums: ["evil-urges"]
+    canonical_album: "evil-urges"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "two-halves"
+    name: "Two Halves"
+    url_key: "twohalves"
+    albums: ["evil-urges"]
+    canonical_album: "evil-urges"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "librarian"
+    name: "Librarian"
+    url_key: "librarian"
+    albums: ["evil-urges"]
+    canonical_album: "evil-urges"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "look-at-you"
+    name: "Look At You"
+    url_key: "lookatyou"
+    albums: ["evil-urges"]
+    canonical_album: "evil-urges"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "aluminum-park"
+    name: "Aluminum Park"
+    url_key: "aluminumpark"
+    albums: ["evil-urges"]
+    canonical_album: "evil-urges"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "remnants"
+    name: "Remnants"
+    url_key: "remnants"
+    albums: ["evil-urges"]
+    canonical_album: "evil-urges"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "smokin-from-shootin"
+    name: "Smokin' From Shootin'"
+    url_key: "smokinfromshootin"
+    albums: ["evil-urges"]
+    canonical_album: "evil-urges"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "touch-me-im-going-to-scream-pt-2"
+    name: "Touch Me I'm Going To Scream Pt. 2"
+    url_key: "touchmeimgoingtoscreampt2"
+    albums: ["evil-urges"]
+    canonical_album: "evil-urges"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "good-intentions"
+    name: "Good Intentions"
+    url_key: "goodintentions"
+    albums: ["evil-urges"]
+    canonical_album: "evil-urges"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "victory-dance"
+    name: "Victory Dance"
+    url_key: "victorydance"
+    albums: ["circuital"]
+    canonical_album: "circuital"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "circuital"
+    name: "Circuital"
+    url_key: "circuital"
+    albums: ["circuital"]
+    canonical_album: "circuital"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-day-is-coming"
+    name: "The Day Is Coming"
+    url_key: "thedayiscoming"
+    albums: ["circuital"]
+    canonical_album: "circuital"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "wonderful-the-way-i-feel"
+    name: "Wonderful (The Way I Feel)"
+    url_key: "wonderfulthewayifeel"
+    albums: ["circuital"]
+    canonical_album: "circuital"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "outta-my-system"
+    name: "Outta My System"
+    url_key: "outtamysystem"
+    albums: ["circuital"]
+    canonical_album: "circuital"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "holdin-on-to-black-metal"
+    name: "Holdin' On To Black Metal"
+    url_key: "holdіnontoЬlackmetal"
+    albums: ["circuital"]
+    canonical_album: "circuital"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "first-light"
+    name: "First Light"
+    url_key: "firstlight"
+    albums: ["circuital"]
+    canonical_album: "circuital"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "you-wanna-freak-out"
+    name: "You Wanna Freak Out"
+    url_key: "youwannafreakout"
+    albums: ["circuital"]
+    canonical_album: "circuital"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "slow-slow-tune"
+    name: "Slow Slow Tune"
+    url_key: "slowslowtune"
+    albums: ["circuital"]
+    canonical_album: "circuital"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "movin-away"
+    name: "Movin' Away"
+    url_key: "movinaway"
+    albums: ["circuital"]
+    canonical_album: "circuital"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "believe-nobody-knows"
+    name: "Believe (Nobody Knows)"
+    url_key: "believenobodyknows"
+    albums: ["the-waterfall"]
+    canonical_album: "the-waterfall"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "compound-fracture"
+    name: "Compound Fracture"
+    url_key: "compoundfracture"
+    albums: ["the-waterfall"]
+    canonical_album: "the-waterfall"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "like-a-river"
+    name: "Like A River"
+    url_key: "likeariver"
+    albums: ["the-waterfall"]
+    canonical_album: "the-waterfall"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "in-its-infancy-the-waterfall"
+    name: "In Its Infancy (The Waterfall)"
+    url_key: "initsinfancythewaterfall"
+    albums: ["the-waterfall"]
+    canonical_album: "the-waterfall"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "get-the-point"
+    name: "Get The Point"
+    url_key: "getthepoint"
+    albums: ["the-waterfall"]
+    canonical_album: "the-waterfall"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "spring-among-the-living"
+    name: "Spring (Among The Living)"
+    url_key: "springamongtheliving"
+    albums: ["the-waterfall"]
+    canonical_album: "the-waterfall"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "thin-line"
+    name: "Thin Line"
+    url_key: "thinline"
+    albums: ["the-waterfall"]
+    canonical_album: "the-waterfall"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "big-decisions"
+    name: "Big Decisions"
+    url_key: "bigdecisions"
+    albums: ["the-waterfall"]
+    canonical_album: "the-waterfall"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "tropics-erase-traces"
+    name: "Tropics (Erase Traces)"
+    url_key: "tropicserasetraces"
+    albums: ["the-waterfall"]
+    canonical_album: "the-waterfall"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "only-memories-remain"
+    name: "Only Memories Remain"
+    url_key: "οnlymemoriesremain"
+    albums: ["the-waterfall"]
+    canonical_album: "the-waterfall"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "spinning-my-wheels"
+    name: "Spinning My Wheels"
+    url_key: "spinningmywheels"
+    albums: ["the-waterfall-ii"]
+    canonical_album: "the-waterfall-ii"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "still-thinkin"
+    name: "Still Thinkin"
+    url_key: "stillthinkin"
+    albums: ["the-waterfall-ii"]
+    canonical_album: "the-waterfall-ii"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "climbing-the-ladder"
+    name: "Climbing The Ladder"
+    url_key: "climbingtheladder"
+    albums: ["the-waterfall-ii"]
+    canonical_album: "the-waterfall-ii"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "feel-you"
+    name: "Feel You"
+    url_key: "feelyou"
+    albums: ["the-waterfall-ii"]
+    canonical_album: "the-waterfall-ii"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "beautiful-love-wasnt-enough"
+    name: "Beautiful Love (Wasn't Enough)"
+    url_key: "beautifullοvewasntеnough"
+    albums: ["the-waterfall-ii"]
+    canonical_album: "the-waterfall-ii"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "magic-bullet"
+    name: "Magic Bullet"
+    url_key: "magicbullet"
+    albums: ["the-waterfall-ii"]
+    canonical_album: "the-waterfall-ii"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "run-it"
+    name: "Run It"
+    url_key: "runit"
+    albums: ["the-waterfall-ii"]
+    canonical_album: "the-waterfall-ii"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "wasted"
+    name: "Wasted"
+    url_key: "wasted"
+    albums: ["the-waterfall-ii"]
+    canonical_album: "the-waterfall-ii"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "welcome-home"
+    name: "Welcome Home"
+    url_key: "welcomehome"
+    albums: ["the-waterfall-ii"]
+    canonical_album: "the-waterfall-ii"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-first-time"
+    name: "The First Time"
+    url_key: "thefirsttime"
+    albums: ["the-waterfall-ii"]
+    canonical_album: "the-waterfall-ii"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "regularly-scheduled-programming"
+    name: "Regularly Scheduled Programming"
+    url_key: "regularlyscheduledprogramming"
+    albums: ["my-morning-jacket"]
+    canonical_album: "my-morning-jacket"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "love-love-love"
+    name: "Love Love Love"
+    url_key: "lοvelοvelove"
+    albums: ["my-morning-jacket"]
+    canonical_album: "my-morning-jacket"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "in-color"
+    name: "In Color"
+    url_key: "incolor"
+    albums: ["my-morning-jacket"]
+    canonical_album: "my-morning-jacket"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "least-expected"
+    name: "Least Expected"
+    url_key: "leastexpected"
+    albums: ["my-morning-jacket"]
+    canonical_album: "my-morning-jacket"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "never-in-the-real-world"
+    name: "Never In The Real World"
+    url_key: "neverintherealworld"
+    albums: ["my-morning-jacket"]
+    canonical_album: "my-morning-jacket"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-devils-in-the-details"
+    name: "The Devil's In The Details"
+    url_key: "thedevilsinthedetails"
+    albums: ["my-morning-jacket"]
+    canonical_album: "my-morning-jacket"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "lucky-to-be-alive"
+    name: "Lucky To Be Alive"
+    url_key: "luckytobealive"
+    albums: ["my-morning-jacket"]
+    canonical_album: "my-morning-jacket"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "complex"
+    name: "Complex"
+    url_key: "complex"
+    albums: ["my-morning-jacket"]
+    canonical_album: "my-morning-jacket"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "out-of-range-pt-2"
+    name: "Out of Range, Pt. 2"
+    url_key: "outofrangept2"
+    albums: ["my-morning-jacket"]
+    canonical_album: "my-morning-jacket"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "penny-for-your-thoughts"
+    name: "Penny For Your Thoughts"
+    url_key: "pennyfοryourthoughts"
+    albums: ["my-morning-jacket"]
+    canonical_album: "my-morning-jacket"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "i-never-could-get-enough"
+    name: "I Never Could Get Enough"
+    url_key: "inevercouldgetenough"
+    albums: ["my-morning-jacket"]
+    canonical_album: "my-morning-jacket"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "out-in-the-open"
+    name: "Out in The Open"
+    url_key: "outintheopen"
+    albums: ["is"]
+    canonical_album: "is"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "half-a-lifetime"
+    name: "Half a Lifetime"
+    url_key: "halfalifetime"
+    albums: ["is"]
+    canonical_album: "is"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "everyday-magic"
+    name: "Everyday Magic"
+    url_key: "everydaymagic"
+    albums: ["is"]
+    canonical_album: "is"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "i-can-hear-your-love"
+    name: "I Can Hear Your Love"
+    url_key: "іcanhearyourlove"
+    albums: ["is"]
+    canonical_album: "is"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "time-waited"
+    name: "Time Waited"
+    url_key: "timewaited"
+    albums: ["is"]
+    canonical_album: "is"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "beginning-from-the-ending"
+    name: "Beginning From The Ending"
+    url_key: "beginningfromtheending"
+    albums: ["is"]
+    canonical_album: "is"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "lemme-know"
+    name: "Lemme Know"
+    url_key: "lemmeknow"
+    albums: ["is"]
+    canonical_album: "is"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "squid-ink"
+    name: "Squid Ink"
+    url_key: "squidink"
+    albums: ["is"]
+    canonical_album: "is"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "die-for-it"
+    name: "Die For It"
+    url_key: "dieforit"
+    albums: ["is"]
+    canonical_album: "is"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "river-road"
+    name: "River Road"
+    url_key: "riverroad"
+    albums: ["is"]
+    canonical_album: "is"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+# ========================================
+# MEDLEYS SECTION (Optional)
+# ========================================
+# TODO: Add common medley patterns if applicable
+# Example:
+# medleys:
+#   - pattern: "Track A > Track B"
+#     tracks: ["track-a-key", "track-b-key"]
+#     separator: ">"
+# medleys: []

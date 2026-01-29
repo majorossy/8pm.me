@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace ArchiveDotOrg\Core\Controller\Adminhtml\Dashboard;
 
 use ArchiveDotOrg\Core\Api\ImportPublisherInterface;
+use ArchiveDotOrg\Core\Api\LockServiceInterface;
 use ArchiveDotOrg\Core\Model\ActivityLogFactory;
 use ArchiveDotOrg\Core\Model\Config;
 use Magento\Backend\App\Action;
@@ -30,6 +31,7 @@ class StartImport extends Action
 
     private JsonFactory $resultJsonFactory;
     private ImportPublisherInterface $importPublisher;
+    private LockServiceInterface $lockService;
     private Config $config;
     private ActivityLogFactory $activityLogFactory;
     private AuthSession $authSession;
@@ -38,6 +40,7 @@ class StartImport extends Action
      * @param Context $context
      * @param JsonFactory $resultJsonFactory
      * @param ImportPublisherInterface $importPublisher
+     * @param LockServiceInterface $lockService
      * @param Config $config
      * @param ActivityLogFactory $activityLogFactory
      * @param AuthSession $authSession
@@ -46,6 +49,7 @@ class StartImport extends Action
         Context $context,
         JsonFactory $resultJsonFactory,
         ImportPublisherInterface $importPublisher,
+        LockServiceInterface $lockService,
         Config $config,
         ActivityLogFactory $activityLogFactory,
         AuthSession $authSession
@@ -53,6 +57,7 @@ class StartImport extends Action
         parent::__construct($context);
         $this->resultJsonFactory = $resultJsonFactory;
         $this->importPublisher = $importPublisher;
+        $this->lockService = $lockService;
         $this->config = $config;
         $this->activityLogFactory = $activityLogFactory;
         $this->authSession = $authSession;
@@ -110,6 +115,20 @@ class StartImport extends Action
 
             if ($offset < 0) {
                 $offset = 0;
+            }
+
+            // Check if import is already running for this artist
+            if ($this->lockService->isLocked('import', $collectionId)) {
+                $lockInfo = $this->lockService->getLockInfo('import', $collectionId);
+                return $result->setData([
+                    'success' => false,
+                    'error' => sprintf(
+                        'Import already in progress for %s (started by PID %d at %s)',
+                        $artistName,
+                        $lockInfo['pid'] ?? 0,
+                        $lockInfo['acquired_at'] ?? 'unknown time'
+                    )
+                ]);
             }
 
             // Publish to queue

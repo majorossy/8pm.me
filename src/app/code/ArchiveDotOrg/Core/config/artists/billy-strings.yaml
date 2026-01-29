@@ -1,0 +1,586 @@
+# ========================================
+# Billy Strings Configuration
+# ========================================
+#
+# Generated: 2026-01-29 14:55:14
+# Albums Populated: 5
+# Tracks Populated: 64
+# Status: Ready for use
+#
+# TODO:
+#   1. Add year to each album
+#   2. Add track aliases for better matching
+#   3. Add medley patterns (if applicable)
+#   4. Run validation: bin/magento archive:validate billy-strings
+#
+# See template.yaml for structure reference.
+# ========================================
+
+# ========================================
+# ARTIST SECTION
+# ========================================
+artist:
+  name: "Billy Strings"
+  collection_id: "BillyStrings"
+  url_key: "billy-strings"
+
+# ========================================
+# ALBUMS SECTION
+# ========================================
+albums:
+  - key: "turmoil-and-tinfoil"
+    name: "Turmoil & Tinfoil"
+    url_key: "turmoiltinfoil"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "home"
+    name: "Home"
+    url_key: "home"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "renewal"
+    name: "Renewal"
+    url_key: "renewal"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "meanddad"
+    name: "Me/And/Dad"
+    url_key: "meanddad"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "highway-prayers"
+    name: "Highway Prayers"
+    url_key: "highwayprayers"
+    type: "studio"
+    # TODO: Add year field
+
+# ========================================
+# TRACKS SECTION
+# ========================================
+tracks:
+  - key: "taking-water"
+    name: "Taking Water"
+    url_key: "takingwater"
+    albums: ["home"]
+    canonical_album: "home"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "must-be-seven"
+    name: "Must Be Seven"
+    url_key: "mustbeseven"
+    albums: ["home"]
+    canonical_album: "home"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "running"
+    name: "Running"
+    url_key: "running"
+    albums: ["home"]
+    canonical_album: "home"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "away-from-the-mire"
+    name: "Away from the Mire"
+    url_key: "awayfromthemire"
+    albums: ["home"]
+    canonical_album: "home"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "home"
+    name: "Home"
+    url_key: "home"
+    albums: ["home"]
+    canonical_album: "home"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "watch-it-fall"
+    name: "Watch it Fall"
+    url_key: "watchitfall"
+    albums: ["home"]
+    canonical_album: "home"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "long-forgotten-dream"
+    name: "Long Forgotten Dream"
+    url_key: "longforgottendream"
+    albums: ["home"]
+    canonical_album: "home"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "highway-hypnosis"
+    name: "Highway Hypnosis"
+    url_key: "highwayhypnosis"
+    albums: ["home"]
+    canonical_album: "home"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "enough-to-leave"
+    name: "Enough to Leave"
+    url_key: "enoughtoleave"
+    albums: ["home"]
+    canonical_album: "home"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "hollow-heart"
+    name: "Hollow Heart"
+    url_key: "hollowheart"
+    albums: ["home"]
+    canonical_album: "home"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "love-like-me"
+    name: "Love Like Me"
+    url_key: "lovelikeme"
+    albums: ["home"]
+    canonical_album: "home"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "everythings-the-same"
+    name: "Everything's the Same"
+    url_key: "everythingsthesame"
+    albums: ["home"]
+    canonical_album: "home"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "guitar-peace"
+    name: "Guitar Peace"
+    url_key: "guitarpeace"
+    albums: ["home"]
+    canonical_album: "home"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "freedom"
+    name: "Freedom"
+    url_key: "freedom"
+    albums: ["home"]
+    canonical_album: "home"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "know-it-all"
+    name: "Know It All"
+    url_key: "knowitall"
+    albums: ["renewal"]
+    canonical_album: "renewal"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "secrets"
+    name: "Secrets"
+    url_key: "secrets"
+    albums: ["renewal"]
+    canonical_album: "renewal"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "love-and-regret"
+    name: "Love And Regret"
+    url_key: "loveandregret"
+    albums: ["renewal"]
+    canonical_album: "renewal"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "heartbeat-of-america"
+    name: "Heartbeat Of America"
+    url_key: "heartbeatofamerica"
+    albums: ["renewal"]
+    canonical_album: "renewal"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "in-the-morning-light"
+    name: "In The Morning Light"
+    url_key: "inthemorninglight"
+    albums: ["renewal"]
+    canonical_album: "renewal"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "this-old-world"
+    name: "This Old World"
+    url_key: "thisoldworld"
+    albums: ["renewal"]
+    canonical_album: "renewal"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "show-me-the-door"
+    name: "Show Me The Door"
+    url_key: "showmethedoor"
+    albums: ["renewal"]
+    canonical_album: "renewal"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "hellbender"
+    name: "Hellbender"
+    url_key: "hellbender"
+    albums: ["renewal"]
+    canonical_album: "renewal"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "red-daisy"
+    name: "Red Daisy"
+    url_key: "reddaisy"
+    albums: ["renewal"]
+    canonical_album: "renewal"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-fire-on-my-tongue"
+    name: "The Fire On My Tongue"
+    url_key: "thefireonmytongue"
+    albums: ["renewal"]
+    canonical_album: "renewal"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "nothings-working"
+    name: "Nothing's Working"
+    url_key: "nothingsworking"
+    albums: ["renewal"]
+    canonical_album: "renewal"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "hide-and-seek"
+    name: "Hide And Seek"
+    url_key: "hideandseek"
+    albums: ["renewal"]
+    canonical_album: "renewal"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "ice-bridges"
+    name: "Ice Bridges"
+    url_key: "icebridges"
+    albums: ["renewal"]
+    canonical_album: "renewal"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "fire-line"
+    name: "Fire Line"
+    url_key: "fireline"
+    albums: ["renewal"]
+    canonical_album: "renewal"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "running-the-route"
+    name: "Running The Route"
+    url_key: "runningtheroute"
+    albums: ["renewal"]
+    canonical_album: "renewal"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "leaders"
+    name: "Leaders"
+    url_key: "leaders"
+    albums: ["renewal"]
+    canonical_album: "renewal"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "long-journey-home"
+    name: "Long Journey Home"
+    url_key: "longjourneyhome"
+    albums: ["meanddad"]
+    canonical_album: "meanddad"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "life-to-go"
+    name: "Life to Go"
+    url_key: "lifetogo"
+    albums: ["meanddad"]
+    canonical_album: "meanddad"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "way-downtown"
+    name: "Way Downtown"
+    url_key: "waydowntown"
+    albums: ["meanddad"]
+    canonical_album: "meanddad"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "little-blossom"
+    name: "Little Blossom"
+    url_key: "littleblossom"
+    albums: ["meanddad"]
+    canonical_album: "meanddad"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "peartree"
+    name: "Peartree"
+    url_key: "peartree"
+    albums: ["meanddad"]
+    canonical_album: "meanddad"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "stone-walls-and-steel-bars"
+    name: "Stone Walls and Steel Bars"
+    url_key: "stonewallsandsteelbars"
+    albums: ["meanddad"]
+    canonical_album: "meanddad"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "little-white-church"
+    name: "Little White Church"
+    url_key: "littlewhitechurch"
+    albums: ["meanddad"]
+    canonical_album: "meanddad"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dig-a-little-deeper-in-the-well"
+    name: "Dig a Little Deeper (In the Well)"
+    url_key: "digalittledeeperinthewell"
+    albums: ["meanddad"]
+    canonical_album: "meanddad"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "wandering-boy"
+    name: "Wandering Boy"
+    url_key: "wanderingboy"
+    albums: ["meanddad"]
+    canonical_album: "meanddad"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "i-havent-seen-mary-in-years"
+    name: "I Haven't Seen Mary in Years"
+    url_key: "ihaven\'tseenmaryinyears"
+    albums: ["meanddad"]
+    canonical_album: "meanddad"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "frosty-morn"
+    name: "Frosty Morn"
+    url_key: "frostymorn"
+    albums: ["meanddad"]
+    canonical_album: "meanddad"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "catfish-john"
+    name: "Catfish John"
+    url_key: "catfishjohn"
+    albums: ["meanddad"]
+    canonical_album: "meanddad"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "blue-ridge-cabin-home"
+    name: "Blue Ridge Cabin Home"
+    url_key: "blueridgecabinhome"
+    albums: ["meanddad"]
+    canonical_album: "meanddad"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "i-heard-my-mother-weeping"
+    name: "I Heard My Mother Weeping"
+    url_key: "iheardmymotherweeping"
+    albums: ["meanddad"]
+    canonical_album: "meanddad"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "leaning-on-a-travelin-song"
+    name: "Leaning on a Travelin' Song"
+    url_key: "leaningonatravelinsong"
+    albums: ["highway-prayers"]
+    canonical_album: "highway-prayers"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "in-the-clear"
+    name: "In the Clear"
+    url_key: "intheclear"
+    albums: ["highway-prayers"]
+    canonical_album: "highway-prayers"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "escanaba"
+    name: "Escanaba"
+    url_key: "escanaba"
+    albums: ["highway-prayers"]
+    canonical_album: "highway-prayers"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "gild-the-lily"
+    name: "Gild the Lily"
+    url_key: "gildthelily"
+    albums: ["highway-prayers"]
+    canonical_album: "highway-prayers"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "seven-weeks-in-county"
+    name: "Seven Weeks In County"
+    url_key: "sevenweeksincounty"
+    albums: ["highway-prayers"]
+    canonical_album: "highway-prayers"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "stratosphere-blues-i-believe-in-you"
+    name: "Stratosphere Blues / I Believe in You"
+    url_key: "stratospherebluesiibelieveinyou"
+    albums: ["highway-prayers"]
+    canonical_album: "highway-prayers"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "cabin-song"
+    name: "Cabin Song"
+    url_key: "cabinsong"
+    albums: ["highway-prayers"]
+    canonical_album: "highway-prayers"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dont-be-calling-me-at-4am"
+    name: "Don't Be Calling Me (at 4AM)"
+    url_key: "dontbecallingmeat4am"
+    albums: ["highway-prayers"]
+    canonical_album: "highway-prayers"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "malfunction-junction"
+    name: "Malfunction Junction"
+    url_key: "malfunctionjunction"
+    albums: ["highway-prayers"]
+    canonical_album: "highway-prayers"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "catch-and-release"
+    name: "Catch and Release"
+    url_key: "catchandrelease"
+    albums: ["highway-prayers"]
+    canonical_album: "highway-prayers"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "be-your-man"
+    name: "Be Your Man"
+    url_key: "beyourman"
+    albums: ["highway-prayers"]
+    canonical_album: "highway-prayers"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "gone-a-long-time"
+    name: "Gone a Long Time"
+    url_key: "gonealongtime"
+    albums: ["highway-prayers"]
+    canonical_album: "highway-prayers"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "it-aint-before"
+    name: "It Ain't Before"
+    url_key: "itaintbefore"
+    albums: ["highway-prayers"]
+    canonical_album: "highway-prayers"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "my-alice"
+    name: "My Alice"
+    url_key: "myalice"
+    albums: ["highway-prayers"]
+    canonical_album: "highway-prayers"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "seney-stretch"
+    name: "Seney Stretch"
+    url_key: "seneystretch"
+    albums: ["highway-prayers"]
+    canonical_album: "highway-prayers"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "morbud4me"
+    name: "MORBUD4ME"
+    url_key: "morbud4me"
+    albums: ["highway-prayers"]
+    canonical_album: "highway-prayers"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "leadfoot"
+    name: "Leadfoot"
+    url_key: "leadfoot"
+    albums: ["highway-prayers"]
+    canonical_album: "highway-prayers"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "happy-hollow"
+    name: "Happy Hollow"
+    url_key: "happyhollow"
+    albums: ["highway-prayers"]
+    canonical_album: "highway-prayers"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-beginning-of-the-end"
+    name: "The Beginning of the End"
+    url_key: "thebeginningoftheend"
+    albums: ["highway-prayers"]
+    canonical_album: "highway-prayers"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "richard-petty"
+    name: "Richard Petty"
+    url_key: "richardpetty"
+    albums: ["highway-prayers"]
+    canonical_album: "highway-prayers"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+# ========================================
+# MEDLEYS SECTION (Optional)
+# ========================================
+# TODO: Add common medley patterns if applicable
+# Example:
+# medleys:
+#   - pattern: "Track A > Track B"
+#     tracks: ["track-a-key", "track-b-key"]
+#     separator: ">"
+# medleys: []

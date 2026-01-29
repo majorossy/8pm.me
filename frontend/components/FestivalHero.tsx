@@ -7,6 +7,7 @@ interface LineupArtist {
   name: string;
   slug: string;
   songCount: number;
+  albumCount: number;
 }
 
 interface FestivalHeroProps {
@@ -15,24 +16,37 @@ interface FestivalHeroProps {
 }
 
 export default function FestivalHero({ artists, onStartListening }: FestivalHeroProps) {
-  // Sort by song count (most songs first)
-  const lineupArtists = [...artists].sort((a, b) => b.songCount - a.songCount);
+  // Calculate min/max for both songs and albums
+  const maxSongs = Math.max(...artists.map(a => a.songCount || 0));
+  const minSongs = Math.min(...artists.map(a => a.songCount || 0));
+  const maxAlbums = Math.max(...artists.map(a => a.albumCount || 0));
+  const minAlbums = Math.min(...artists.map(a => a.albumCount || 0));
+  const songRange = maxSongs - minSongs || 1;
+  const albumRange = maxAlbums - minAlbums || 1;
+
+  // Sort by combined score (75% products, 25% albums)
+  const lineupArtists = [...artists].sort((a, b) => {
+    const scoreA = ((a.songCount || 0) * 0.75) + ((a.albumCount || 0) * 0.25);
+    const scoreB = ((b.songCount || 0) * 0.75) + ((b.albumCount || 0) * 0.25);
+    return scoreB - scoreA;
+  });
 
   // Detect line starts to hide star separators via direct DOM manipulation (no flicker)
   const { containerRef, setItemRef, setStarRef } = useLineStartDetection(lineupArtists.length);
 
-  // Calculate font size based on relative song count
-  const maxSongs = Math.max(...lineupArtists.map(a => a.songCount));
-  const minSongs = Math.min(...lineupArtists.map(a => a.songCount));
-  const range = maxSongs - minSongs || 1;
+  const getFontSize = (songCount: number, albumCount: number) => {
+    // Normalize both metrics to 0-1 range
+    const songRatio = (songCount - minSongs) / songRange;
+    const albumRatio = (albumCount - minAlbums) / albumRange;
 
-  const getFontSize = (songCount: number) => {
-    // Scale from 0.75rem (smallest) to 1.5rem (largest) on mobile
-    // Scale from 1rem (smallest) to 2.25rem (largest) on desktop
-    const ratio = (songCount - minSongs) / range;
+    // Weighted combination: 75% products, 25% albums
+    const combinedScore = (songRatio * 0.75) + (albumRatio * 0.25);
+
+    // Scale from 0.6rem (smallest) to 1.8rem (largest) on mobile
+    // Scale from 0.8rem (smallest) to 2.4rem (largest) on desktop
     return {
-      mobile: 0.75 + ratio * 0.75, // 0.75rem to 1.5rem
-      desktop: 1 + ratio * 1.25,   // 1rem to 2.25rem
+      mobile: 0.6 + combinedScore * 1.2,    // 0.6rem to 1.8rem (3x difference)
+      desktop: 0.8 + combinedScore * 1.6,   // 0.8rem to 2.4rem (3x difference)
     };
   };
 
@@ -97,7 +111,7 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
             className="flex flex-wrap items-baseline justify-center gap-x-2 md:gap-x-4 gap-y-2 text-[#e8dcc4] font-bold uppercase tracking-[1px] md:tracking-[2px]"
           >
             {lineupArtists.map((artist, index) => {
-              const fontSize = getFontSize(artist.songCount);
+              const fontSize = getFontSize(artist.songCount || 0, artist.albumCount || 0);
               return (
                 <span
                   key={artist.slug}

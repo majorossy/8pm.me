@@ -36,7 +36,7 @@ class UpdateCategoryArtworkCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName('archivedotorg:update-category-artwork')
+        $this->setName('archive:artwork:update')
             ->setDescription('Update album category images with Wikipedia artwork URLs')
             ->addOption(
                 self::OPTION_DRY_RUN,

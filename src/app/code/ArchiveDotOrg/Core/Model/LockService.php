@@ -65,9 +65,9 @@ class LockService implements LockServiceInterface
         $varDir = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
         $this->lockDir = $varDir->getAbsolutePath('archivedotorg/locks');
 
-        // Create locks directory if it doesn't exist
-        if (!is_dir($this->lockDir)) {
-            mkdir($this->lockDir, 0755, true);
+        // Create locks directory if it doesn't exist using Magento Filesystem
+        if (!$varDir->isExist('archivedotorg/locks')) {
+            $varDir->create('archivedotorg/locks');
         }
     }
 
@@ -95,7 +95,7 @@ class LockService implements LockServiceInterface
         // Open lock file
         $fp = fopen($lockFile, 'c');
         if ($fp === false) {
-            throw new LockException("Failed to open lock file: $lockFile");
+            throw new LockException(__("Failed to open lock file: %1", $lockFile));
         }
 
         // Determine lock mode
@@ -115,8 +115,8 @@ class LockService implements LockServiceInterface
             if ($timeout === 0 || (time() - $start) >= $timeout) {
                 fclose($fp);
                 throw new LockException(
-                    sprintf(
-                        "Another '%s' operation is already running for artist '%s'. " .
+                    __(
+                        "Another '%1' operation is already running for artist '%2'. " .
                         "Wait for it to complete or use --force to override (dangerous).",
                         $operation,
                         $artistName
@@ -163,7 +163,7 @@ class LockService implements LockServiceInterface
     public function release(string $lockToken): void
     {
         if (!isset($this->locks[$lockToken])) {
-            throw new LockException("Invalid lock token: $lockToken");
+            throw new LockException(__("Invalid lock token: %1", $lockToken));
         }
 
         $fp = $this->locks[$lockToken];
@@ -189,12 +189,14 @@ class LockService implements LockServiceInterface
     public function isLocked(string $operation, string $artistName): bool
     {
         $lockFile = $this->getLockFilePath($operation, $artistName);
+        $varDir = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
+        $relativePath = 'archivedotorg/locks/' . basename($lockFile);
 
-        if (!file_exists($lockFile)) {
+        if (!$varDir->isExist($relativePath)) {
             return false;
         }
 
-        // Try non-blocking lock
+        // Try non-blocking lock (must use fopen for flock - no Magento equivalent)
         $fp = fopen($lockFile, 'r');
         if ($fp === false) {
             return false;
@@ -222,14 +224,17 @@ class LockService implements LockServiceInterface
     public function getLockInfo(string $operation, string $artistName): ?array
     {
         $lockFile = $this->getLockFilePath($operation, $artistName);
+        $varDir = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
+        $relativePath = 'archivedotorg/locks/' . basename($lockFile);
 
-        if (!file_exists($lockFile)) {
+        if (!$varDir->isExist($relativePath)) {
             return null;
         }
 
-        // Read lock file content
-        $content = file_get_contents($lockFile);
-        if ($content === false) {
+        // Read lock file content using Magento Filesystem
+        try {
+            $content = $varDir->readFile($relativePath);
+        } catch (FileSystemException $e) {
             return null;
         }
 
@@ -253,8 +258,10 @@ class LockService implements LockServiceInterface
     public function forceRelease(string $operation, string $artistName): bool
     {
         $lockFile = $this->getLockFilePath($operation, $artistName);
+        $varDir = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
+        $relativePath = 'archivedotorg/locks/' . basename($lockFile);
 
-        if (!file_exists($lockFile)) {
+        if (!$varDir->isExist($relativePath)) {
             return false;
         }
 
@@ -264,7 +271,12 @@ class LockService implements LockServiceInterface
             'lock_file' => $lockFile
         ]);
 
-        return unlink($lockFile);
+        try {
+            $varDir->delete($relativePath);
+            return true;
+        } catch (FileSystemException $e) {
+            return false;
+        }
     }
 
     /**
@@ -277,44 +289,73 @@ class LockService implements LockServiceInterface
     {
         $count = 0;
         $cutoff = time() - ($maxAgeHours * 3600);
+        $varDir = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
+        $locksPath = 'archivedotorg/locks';
 
-        $files = glob($this->lockDir . '/*.lock');
-        if ($files === false) {
+        if (!$varDir->isExist($locksPath)) {
             return 0;
         }
 
-        foreach ($files as $lockFile) {
-            // Check file age
-            $mtime = filemtime($lockFile);
-            if ($mtime === false || $mtime > $cutoff) {
-                continue;
+        // Read all .lock files from directory
+        $files = [];
+        foreach ($varDir->read($locksPath) as $file) {
+            if (substr($file, -5) === '.lock') {
+                $files[] = $file;
             }
+        }
 
-            // Check if PID is still alive
-            $info = json_decode(file_get_contents($lockFile), true);
-            if ($info === null || !isset($info['pid'])) {
-                continue;
-            }
+        foreach ($files as $relativePath) {
+            try {
+                // Check file age
+                $stat = $varDir->stat($relativePath);
+                $mtime = $stat['mtime'] ?? 0;
 
-            $pid = (int)$info['pid'];
-
-            // Check if process exists (POSIX only)
-            if (function_exists('posix_kill')) {
-                if (posix_kill($pid, 0)) {
-                    // Process still alive, don't remove
+                if ($mtime > $cutoff) {
                     continue;
                 }
+
+                // Check if PID is still alive
+                $content = $varDir->readFile($relativePath);
+                $info = json_decode($content, true);
+
+                if ($info === null || !isset($info['pid'])) {
+                    continue;
+                }
+
+                $pid = (int)$info['pid'];
+                $hostname = $info['hostname'] ?? '';
+                $currentHostname = gethostname();
+
+                // Check if process exists - only if on same host
+                if (function_exists('posix_kill') && $hostname === $currentHostname) {
+                    // Same hostname - can check PID directly
+                    if (posix_kill($pid, 0)) {
+                        // Process still alive, don't remove
+                        continue;
+                    }
+                } elseif ($hostname !== $currentHostname) {
+                    // Different host/container - only clean if very old (8+ hours)
+                    $ageHours = (time() - $mtime) / 3600;
+                    if ($ageHours < 8) {
+                        // Lock might be from another container, keep it
+                        continue;
+                    }
+                    // If 8+ hours old, assume stale
+                }
+
+                // Remove stale lock
+                $this->logger->info("Removing stale lock", [
+                    'lock_file' => $relativePath,
+                    'pid' => $pid,
+                    'age_hours' => round((time() - $mtime) / 3600, 1)
+                ]);
+
+                $varDir->delete($relativePath);
+                $count++;
+            } catch (FileSystemException $e) {
+                // Skip files we can't read
+                continue;
             }
-
-            // Remove stale lock
-            $this->logger->info("Removing stale lock", [
-                'lock_file' => $lockFile,
-                'pid' => $pid,
-                'age_hours' => round((time() - $mtime) / 3600, 1)
-            ]);
-
-            unlink($lockFile);
-            $count++;
         }
 
         return $count;

@@ -3,21 +3,21 @@ declare(strict_types=1);
 
 namespace ArchiveDotOrg\Admin\Model\Redis;
 
-use Magento\Framework\App\CacheInterface;
+use Magento\Framework\App\Cache\Type\Config as ConfigCache;
 use Psr\Log\LoggerInterface;
 
 /**
  * Redis-based progress tracking for long-running imports
- * 
+ *
  * Stores progress data in Redis with 1-hour TTL for real-time dashboard updates.
  */
 class ProgressTracker
 {
     private const KEY_PREFIX = 'archivedotorg:progress:';
     private const TTL = 3600; // 1 hour
-    
+
     public function __construct(
-        private readonly CacheInterface $cache,
+        private readonly ConfigCache $cache,
         private readonly LoggerInterface $logger
     ) {}
     

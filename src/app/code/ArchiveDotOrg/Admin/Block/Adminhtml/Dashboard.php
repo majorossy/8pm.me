@@ -50,11 +50,11 @@ class Dashboard extends Template
     {
         $connection = $this->resourceConnection->getConnection();
         $tableName = $this->resourceConnection->getTableName('archivedotorg_artist_status');
-        
+
         try {
             return (int)$connection->fetchOne(
                 $connection->select()
-                    ->from($tableName, ['SUM(shows_downloaded)'])
+                    ->from($tableName, ['SUM(downloaded_shows)'])
             );
         } catch (\Exception $e) {
             return 0;

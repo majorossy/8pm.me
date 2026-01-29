@@ -336,14 +336,15 @@ function LibraryPageInner() {
 
   return (
     <div className="min-h-screen bg-[#1c1a17] pb-[140px] md:pb-[90px] safe-top">
-      {/* Header */}
-      <div className="p-6 md:p-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Your Library</h1>
-        <p className="text-[#8a8478]">{wishlist.itemCount} liked songs</p>
-      </div>
+      <div className="max-w-[1000px] mx-auto">
+        {/* Header */}
+        <div className="p-6 md:p-8">
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Your Library</h1>
+          <p className="text-[#8a8478]">{wishlist.itemCount} liked songs</p>
+        </div>
 
-      {/* Tabs */}
-      <div className="flex gap-2 px-4 mb-4 border-b border-white/10">
+        {/* Tabs */}
+        <div className="flex gap-2 px-4 mb-4 border-b border-white/10">
         <button
           onClick={() => changeTab('songs')}
           className={`px-4 py-2 font-medium transition-colors ${
@@ -386,12 +387,13 @@ function LibraryPageInner() {
         </button>
       </div>
 
-      {/* Tab content */}
-      <div>
-        {activeTab === 'songs' && renderSongs()}
-        {activeTab === 'artists' && renderArtists()}
-        {activeTab === 'albums' && renderAlbums()}
-        {activeTab === 'recent' && renderRecentlyPlayed()}
+        {/* Tab content */}
+        <div>
+          {activeTab === 'songs' && renderSongs()}
+          {activeTab === 'artists' && renderArtists()}
+          {activeTab === 'albums' && renderAlbums()}
+          {activeTab === 'recent' && renderRecentlyPlayed()}
+        </div>
       </div>
     </div>
   );

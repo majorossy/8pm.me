@@ -183,14 +183,14 @@ class SetupArtistCommand extends Command
             $artistConfig = $config['artist'];
             $albums = $config['albums'] ?? [];
 
-            // Get root category ID
-            $rootCategoryId = $this->storeManager->getStore()->getRootCategoryId();
+            // Get Artists container category ID
+            $artistsContainerId = $this->getArtistsContainerId();
 
             // 1. Create/find artist category
             $artistCategory = $this->findOrCreateCategory(
                 $artistConfig['name'],
                 $artistConfig['url_key'] ?? $artistKey,
-                $rootCategoryId,
+                $artistsContainerId,
                 $output,
                 $dryRun
             );
@@ -200,7 +200,7 @@ class SetupArtistCommand extends Command
                 return Command::FAILURE;
             }
 
-            $artistCategoryId = $artistCategory->getId();
+            $artistCategoryId = (int)$artistCategory->getId();
 
             // 2. Create album categories (if any)
             if (!empty($albums)) {
@@ -285,5 +285,46 @@ class SetupArtistCommand extends Command
         $output->writeln($indent . '<info>✓ Created: ' . $name . '</info>');
 
         return $category;
+    }
+
+    /**
+     * Get or create the Artists container category.
+     *
+     * Finds the "Artists" category under the root category (Level 2).
+     * Creates it if it doesn't exist.
+     *
+     * @return int Category ID of the Artists container
+     * @throws LocalizedException
+     */
+    private function getArtistsContainerId(): int
+    {
+        $rootCategoryId = (int)$this->storeManager->getStore()->getRootCategoryId();
+
+        // Try to find existing "Artists" category
+        $collection = $this->categoryCollectionFactory->create();
+        $collection->addAttributeToFilter('url_key', 'artists')
+                   ->addAttributeToFilter('parent_id', $rootCategoryId)
+                   ->setPageSize(1);
+
+        $artistsCategory = $collection->getFirstItem();
+
+        if ($artistsCategory->getId()) {
+            return (int)$artistsCategory->getId();
+        }
+
+        // Create "Artists" container if it doesn't exist
+        /** @var Category $artistsCategory */
+        $artistsCategory = $this->categoryFactory->create();
+        $artistsCategory->setName('Artists')
+                        ->setUrlKey('artists')
+                        ->setParentId($rootCategoryId)
+                        ->setIsActive(true)
+                        ->setIncludeInMenu(true)
+                        ->setIsAnchor(true)
+                        ->setAttributeSetId($artistsCategory->getDefaultAttributeSetId());
+
+        $artistsCategory = $this->categoryRepository->save($artistsCategory);
+
+        return (int)$artistsCategory->getId();
     }
 }

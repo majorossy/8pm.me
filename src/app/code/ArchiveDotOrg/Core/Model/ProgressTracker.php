@@ -48,6 +48,7 @@ class ProgressTracker implements ProgressTrackerInterface
         int $totalItems
     ): void {
         $data = [
+            'version' => 2,  // Schema version for future migrations
             'job_id' => $jobId,
             'artist_name' => $artistName,
             'collection_id' => $collectionId,
@@ -208,27 +209,27 @@ class ProgressTracker implements ProgressTrackerInterface
      */
     public function clearOldJobs(int $olderThanDays = 7): int
     {
-        $directory = $this->getProgressDirectory();
+        $varDir = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
 
-        if (!is_dir($directory)) {
+        if (!$varDir->isExist(self::PROGRESS_DIR)) {
             return 0;
         }
 
         $cutoff = time() - ($olderThanDays * 86400);
         $cleared = 0;
-        $files = scandir($directory);
 
-        foreach ($files as $file) {
-            if ($file === '.' || $file === '..') {
-                continue;
-            }
+        foreach ($varDir->read(self::PROGRESS_DIR) as $file) {
+            try {
+                $stat = $varDir->stat($file);
+                $mtime = $stat['mtime'] ?? time();
 
-            $filePath = $directory . '/' . $file;
-
-            if (filemtime($filePath) < $cutoff) {
-                if (unlink($filePath)) {
+                if ($mtime < $cutoff) {
+                    $varDir->delete($file);
                     $cleared++;
                 }
+            } catch (\Exception $e) {
+                // Skip files we can't process
+                continue;
             }
         }
 
@@ -254,16 +255,6 @@ class ProgressTracker implements ProgressTrackerInterface
         return $this->varPath;
     }
 
-    /**
-     * Get the file path for a job
-     *
-     * @param string $jobId
-     * @return string
-     */
-    private function getJobFilePath(string $jobId): string
-    {
-        return $this->getProgressDirectory() . '/' . $jobId . '.json';
-    }
 
     /**
      * Load job data from file
@@ -273,23 +264,71 @@ class ProgressTracker implements ProgressTrackerInterface
      */
     private function loadJobData(string $jobId): ?array
     {
-        $filePath = $this->getJobFilePath($jobId);
+        $varDir = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
+        $relativePath = self::PROGRESS_DIR . '/' . $jobId . '.json';
 
-        if (!file_exists($filePath)) {
-            return null;
-        }
-
-        $content = file_get_contents($filePath);
-
-        if ($content === false) {
+        if (!$varDir->isExist($relativePath)) {
             return null;
         }
 
         try {
-            return $this->jsonSerializer->unserialize($content);
+            $content = $varDir->readFile($relativePath);
         } catch (\Exception $e) {
             return null;
         }
+
+        try {
+            $data = $this->jsonSerializer->unserialize($content);
+
+            // Migrate old progress files to new format
+            if (is_array($data)) {
+                $data = $this->migrateProgressData($data);
+            }
+
+            return $data;
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Migrate progress data from older versions
+     *
+     * @param array $data Progress data
+     * @return array Migrated data
+     */
+    private function migrateProgressData(array $data): array
+    {
+        $version = $data['version'] ?? 1;
+
+        // Version 1 -> Version 2
+        if ($version < 2) {
+            // Add version field
+            $data['version'] = 2;
+
+            // Ensure all required fields exist
+            $data['errors'] = $data['errors'] ?? [];
+            $data['processed'] = $data['processed'] ?? [];
+
+            // Migrate cache_path if needed (from folder migration)
+            if (!isset($data['cache_path']) && isset($data['collection_id'])) {
+                $data['cache_path'] = $this->getArtistPath($data['collection_id']);
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Get artist-based path for organized metadata structure
+     *
+     * @param string $collectionId Collection ID
+     * @return string Path to artist metadata directory
+     */
+    private function getArtistPath(string $collectionId): string
+    {
+        $varPath = $this->getVarPath();
+        return $varPath . '/archivedotorg/metadata/' . strtolower($collectionId);
     }
 
     /**
@@ -301,42 +340,11 @@ class ProgressTracker implements ProgressTrackerInterface
      */
     private function saveJobData(string $jobId, array $data): void
     {
-        $filePath = $this->getJobFilePath($jobId);
+        $varDir = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
+        $relativePath = self::PROGRESS_DIR . '/' . $jobId . '.json';
         $content = $this->jsonSerializer->serialize($data);
-        $this->atomicWrite($filePath, $content);
-    }
 
-    /**
-     * Atomically write content to file
-     *
-     * Uses temp file + fsync + rename pattern to ensure crash safety.
-     * POSIX guarantees rename is atomic - file is either old or new, never partial.
-     *
-     * @param string $filePath Target file path
-     * @param string $content Content to write
-     * @throws \RuntimeException If write fails
-     */
-    private function atomicWrite(string $filePath, string $content): void
-    {
-        $tmpFile = $filePath . '.tmp.' . getmypid();
-
-        if (file_put_contents($tmpFile, $content) === false) {
-            throw new \RuntimeException("Failed to write temp file: $tmpFile");
-        }
-
-        // Sync to disk before rename (important on VirtioFS/Docker)
-        $fp = fopen($tmpFile, 'r');
-        if ($fp) {
-            if (function_exists('fsync')) {
-                fsync($fp);
-            }
-            fclose($fp);
-        }
-
-        // Atomic rename (POSIX guarantee)
-        if (!rename($tmpFile, $filePath)) {
-            @unlink($tmpFile);
-            throw new \RuntimeException("Failed to rename: $tmpFile -> $filePath");
-        }
+        // Use Magento Filesystem writeFile (handles atomic writes internally)
+        $varDir->writeFile($relativePath, $content);
     }
 }

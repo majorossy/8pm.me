@@ -1,0 +1,796 @@
+# ========================================
+# Matisyahu Configuration
+# ========================================
+#
+# Generated: 2026-01-29 14:55:14
+# Albums Populated: 8
+# Tracks Populated: 88
+# Status: Ready for use
+#
+# TODO:
+#   1. Add year to each album
+#   2. Add track aliases for better matching
+#   3. Add medley patterns (if applicable)
+#   4. Run validation: bin/magento archive:validate matisyahu
+#
+# See template.yaml for structure reference.
+# ========================================
+
+# ========================================
+# ARTIST SECTION
+# ========================================
+artist:
+  name: "Matisyahu"
+  collection_id: "Matisyahu"
+  url_key: "matisyahu"
+
+# ========================================
+# ALBUMS SECTION
+# ========================================
+albums:
+  - key: "shake-off-the-dust-arise"
+    name: "Shake Off the Dust... Arise"
+    url_key: "shakeoffthedust"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "youth"
+    name: "Youth"
+    url_key: "youth"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "light"
+    name: "Light"
+    url_key: "light"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "spark-seeker"
+    name: "Spark Seeker"
+    url_key: "sparkseeker"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "akeda"
+    name: "Akeda"
+    url_key: "akeda"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "undercurrent"
+    name: "Undercurrent"
+    url_key: "undercurrent"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "matisyahu"
+    name: "Matisyahu"
+    url_key: "matisyahualbum"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "ancient-child"
+    name: "Ancient Child"
+    url_key: "ancientchild"
+    type: "studio"
+    # TODO: Add year field
+
+# ========================================
+# TRACKS SECTION
+# ========================================
+tracks:
+  - key: "fire-of-heavenaltar-of-earth"
+    name: "Fire Of Heaven/Altar Of Earth"
+    url_key: "fireofheavenaltarofearth"
+    albums: ["youth"]
+    canonical_album: "youth"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "youth"
+    name: "Youth"
+    url_key: "youth"
+    albums: ["youth"]
+    canonical_album: "youth"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "time-of-your-song"
+    name: "Time Of Your Song"
+    url_key: "timeofyoursong"
+    albums: ["youth"]
+    canonical_album: "youth"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dispatch-the-troops"
+    name: "Dispatch the Troops"
+    url_key: "dispatchthetroops"
+    albums: ["youth"]
+    canonical_album: "youth"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "indestructible"
+    name: "Indestructible"
+    url_key: "indestructible"
+    albums: ["youth"]
+    canonical_album: "youth"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "what-im-fighting-for"
+    name: "What I'm Fighting For"
+    url_key: "whatimfightingfor"
+    albums: ["youth"]
+    canonical_album: "youth"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "jerusalem"
+    name: "Jerusalem"
+    url_key: "jerusalem"
+    albums: ["youth"]
+    canonical_album: "youth"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "wp"
+    name: "WP"
+    url_key: "wp"
+    albums: ["youth"]
+    canonical_album: "youth"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "shalomsalaam"
+    name: "Shalom/Salaam"
+    url_key: "shalomsalaam"
+    albums: ["youth"]
+    canonical_album: "youth"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "late-night-in-zion"
+    name: "Late Night In Zion"
+    url_key: "latenightinzion"
+    albums: ["youth"]
+    canonical_album: "youth"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "unique-is-my-dove"
+    name: "Unique Is My Dove"
+    url_key: "uniqueismydove"
+    albums: ["youth"]
+    canonical_album: "youth"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "ancient-lullaby"
+    name: "Ancient Lullaby"
+    url_key: "ancientlullaby"
+    albums: ["youth"]
+    canonical_album: "youth"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "king-without-a-crown"
+    name: "King Without A Crown"
+    url_key: "kingwithoutacrown"
+    albums: ["youth"]
+    canonical_album: "youth"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "king-without-a-crown-mike-d-remix"
+    name: "King Without A Crown (Mike D remix)"
+    url_key: "kingwithoutacrownremix"
+    albums: ["youth"]
+    canonical_album: "youth"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "smash-lies"
+    name: "Smash Lies"
+    url_key: "smashlies"
+    albums: ["light"]
+    canonical_album: "light"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "we-will-walk"
+    name: "We Will Walk"
+    url_key: "wewillwalk"
+    albums: ["light"]
+    canonical_album: "light"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "one-day"
+    name: "One Day"
+    url_key: "oneday"
+    albums: ["light"]
+    canonical_album: "light"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "escape"
+    name: "Escape"
+    url_key: "escape"
+    albums: ["light"]
+    canonical_album: "light"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "so-hi-so-lo"
+    name: "So Hi So Lo"
+    url_key: "sohisolo"
+    albums: ["light"]
+    canonical_album: "light"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "i-will-be-light"
+    name: "I Will Be Light"
+    url_key: "iwillbelight"
+    albums: ["light"]
+    canonical_album: "light"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "for-you"
+    name: "For You"
+    url_key: "foryou"
+    albums: ["light"]
+    canonical_album: "light"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "on-nature"
+    name: "On Nature"
+    url_key: "onnature"
+    albums: ["light"]
+    canonical_album: "light"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "motivate"
+    name: "Motivate"
+    url_key: "motivate"
+    albums: ["light"]
+    canonical_album: "light"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "struggla"
+    name: "Struggla"
+    url_key: "struggla"
+    albums: ["light"]
+    canonical_album: "light"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "darkness-into-light"
+    name: "Darkness Into Light"
+    url_key: "darknessintolight"
+    albums: ["light"]
+    canonical_album: "light"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "thunder"
+    name: "Thunder"
+    url_key: "thunder"
+    albums: ["light"]
+    canonical_album: "light"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "silence"
+    name: "Silence"
+    url_key: "silence"
+    albums: ["light"]
+    canonical_album: "light"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "crossroads-feat-j-ralph"
+    name: "Crossroads (feat. J. Ralph)"
+    url_key: "crossroads"
+    albums: ["spark-seeker"]
+    canonical_album: "spark-seeker"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "sunshine"
+    name: "Sunshine"
+    url_key: "sunshine"
+    albums: ["spark-seeker"]
+    canonical_album: "spark-seeker"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "searchin"
+    name: "Searchin"
+    url_key: "searchin"
+    albums: ["spark-seeker"]
+    canonical_album: "spark-seeker"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "buffalo-soldier-feat-shyne"
+    name: "Buffalo Soldier (feat. Shyne)"
+    url_key: "buffalosoldier"
+    albums: ["spark-seeker"]
+    canonical_album: "spark-seeker"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "fire-of-freedom"
+    name: "Fire of Freedom"
+    url_key: "fireoffreedom"
+    albums: ["spark-seeker"]
+    canonical_album: "spark-seeker"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "bal-shem-tov"
+    name: "Bal Shem Tov"
+    url_key: "balshemtov"
+    albums: ["spark-seeker"]
+    canonical_album: "spark-seeker"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "i-believe-in-love"
+    name: "I Believe In Love"
+    url_key: "ibelieveinlove"
+    albums: ["spark-seeker"]
+    canonical_album: "spark-seeker"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "breathe-easy"
+    name: "Breathe Easy"
+    url_key: "breatheeasy"
+    albums: ["spark-seeker"]
+    canonical_album: "spark-seeker"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "summer-wind"
+    name: "Summer Wind"
+    url_key: "summerwind"
+    albums: ["spark-seeker"]
+    canonical_album: "spark-seeker"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "live-like-a-warrior"
+    name: "Live Like a Warrior"
+    url_key: "livelikeawarrior"
+    albums: ["spark-seeker"]
+    canonical_album: "spark-seeker"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "tel-avivn"
+    name: "Tel Aviv'n"
+    url_key: "telavivin"
+    albums: ["spark-seeker"]
+    canonical_album: "spark-seeker"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "king-crown-of-judah-feat-shyne-and-ravid-kahalani"
+    name: "King Crown of Judah (feat. Shyne and Ravid Kahalani)"
+    url_key: "kingcrownofjudah"
+    albums: ["spark-seeker"]
+    canonical_album: "spark-seeker"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "shine-on-you"
+    name: "Shine on You"
+    url_key: "shineonyou"
+    albums: ["spark-seeker"]
+    canonical_album: "spark-seeker"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "reservoir"
+    name: "Reservoir"
+    url_key: "reservoir"
+    albums: ["akeda"]
+    canonical_album: "akeda"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "broken-car"
+    name: "Broken Car"
+    url_key: "brokencar"
+    albums: ["akeda"]
+    canonical_album: "akeda"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "watch-the-walls-melt-down"
+    name: "Watch The Walls Melt Down"
+    url_key: "watchthewallsmeltdown"
+    albums: ["akeda"]
+    canonical_album: "akeda"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "champion"
+    name: "Champion"
+    url_key: "champion"
+    albums: ["akeda"]
+    canonical_album: "akeda"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "built-to-survive-feat-zion-i"
+    name: "Built To Survive (feat. Zion I)"
+    url_key: "builttosurvive"
+    albums: ["akeda"]
+    canonical_album: "akeda"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "ayeka-teach-me-to-love"
+    name: "Ayeka (Teach Me To Love)"
+    url_key: "ayekateachmetolove"
+    albums: ["akeda"]
+    canonical_album: "akeda"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "black-heart"
+    name: "Black Heart"
+    url_key: "blackheart"
+    albums: ["akeda"]
+    canonical_album: "akeda"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "star-on-the-rise"
+    name: "Star On The Rise"
+    url_key: "starontherise"
+    albums: ["akeda"]
+    canonical_album: "akeda"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "surrender"
+    name: "Surrender"
+    url_key: "surrender"
+    albums: ["akeda"]
+    canonical_album: "akeda"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "confidence-feat-collie-buddz"
+    name: "Confidence (feat. Collie Buddz)"
+    url_key: "confidence"
+    albums: ["akeda"]
+    canonical_album: "akeda"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "vow-of-silence"
+    name: "Vow of Silence"
+    url_key: "vowofsilence"
+    albums: ["akeda"]
+    canonical_album: "akeda"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "obstacles"
+    name: "Obstacles"
+    url_key: "obstacles"
+    albums: ["akeda"]
+    canonical_album: "akeda"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "hard-way"
+    name: "Hard Way"
+    url_key: "hardway"
+    albums: ["akeda"]
+    canonical_album: "akeda"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "sick-for-so-long"
+    name: "Sick For So Long"
+    url_key: "sickforsolong"
+    albums: ["akeda"]
+    canonical_album: "akeda"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "akeda"
+    name: "Akeda"
+    url_key: "akeda"
+    albums: ["akeda"]
+    canonical_album: "akeda"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "step-out-into-the-light"
+    name: "Step Out Into the Light"
+    url_key: "stepoutintothelight"
+    albums: ["undercurrent"]
+    canonical_album: "undercurrent"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "back-to-the-old"
+    name: "Back to the Old"
+    url_key: "backtotheold"
+    albums: ["undercurrent"]
+    canonical_album: "undercurrent"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "coming-up-empty"
+    name: "Coming Up Empty"
+    url_key: "comingupempty"
+    albums: ["undercurrent"]
+    canonical_album: "undercurrent"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "bsp-blue-sky-playground"
+    name: "Bsp: Blue Sky Playground"
+    url_key: "bspblueskyplayground"
+    albums: ["undercurrent"]
+    canonical_album: "undercurrent"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "tell-me"
+    name: "Tell Me"
+    url_key: "tellme"
+    albums: ["undercurrent"]
+    canonical_album: "undercurrent"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "forest-of-faith"
+    name: "Forest of Faith"
+    url_key: "forestoffaith"
+    albums: ["undercurrent"]
+    canonical_album: "undercurrent"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "head-right"
+    name: "Head Right"
+    url_key: "headright"
+    albums: ["undercurrent"]
+    canonical_album: "undercurrent"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "driftin"
+    name: "Driftin'"
+    url_key: "driftin"
+    albums: ["undercurrent"]
+    canonical_album: "undercurrent"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "not-regular"
+    name: "Not Regular"
+    url_key: "notregular"
+    albums: ["matisyahu"]
+    canonical_album: "matisyahu"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "amrica"
+    name: "AM_RICA"
+    url_key: "america"
+    albums: ["matisyahu"]
+    canonical_album: "matisyahu"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "chameleon-feat-salt-cathedral"
+    name: "Chameleon (feat. Salt Cathedral)"
+    url_key: "chameleon"
+    albums: ["matisyahu"]
+    canonical_album: "matisyahu"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "keep-coming-back-for-more-feat-salt-cathedral"
+    name: "Keep Coming Back for More (feat. Salt Cathedral)"
+    url_key: "keepcomingbackformore"
+    albums: ["matisyahu"]
+    canonical_album: "matisyahu"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "mama-please-dont-worry"
+    name: "Mama Please Don't Worry"
+    url_key: "mamapleasedontworry"
+    albums: ["matisyahu"]
+    canonical_album: "matisyahu"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "in-my-mind"
+    name: "In My Mind"
+    url_key: "inmymind"
+    albums: ["matisyahu"]
+    canonical_album: "matisyahu"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "music-is-the-anthem"
+    name: "Music is the Anthem"
+    url_key: "musicistheanthem"
+    albums: ["matisyahu"]
+    canonical_album: "matisyahu"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "got-to-see-it-all"
+    name: "Got to See It All"
+    url_key: "gottoηseeitall"
+    albums: ["matisyahu"]
+    canonical_album: "matisyahu"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "lonely-day"
+    name: "Lonely Day"
+    url_key: "lonelyday"
+    albums: ["matisyahu"]
+    canonical_album: "matisyahu"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "tugboat"
+    name: "Tugboat"
+    url_key: "tugboat"
+    albums: ["matisyahu"]
+    canonical_album: "matisyahu"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "flip-it-fantastic"
+    name: "Flip It Fantastic"
+    url_key: "flipitfantastic"
+    albums: ["matisyahu"]
+    canonical_album: "matisyahu"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "when-the-smoke-clears"
+    name: "When the Smoke Clears"
+    url_key: "whenthesmokeclears"
+    albums: ["matisyahu"]
+    canonical_album: "matisyahu"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "raindance"
+    name: "Raindance"
+    url_key: "raindance"
+    albums: ["matisyahu"]
+    canonical_album: "matisyahu"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "pro-cess"
+    name: "Pro-cess"
+    url_key: "process"
+    albums: ["ancient-child"]
+    canonical_album: "ancient-child"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "anxiety-feat-blp-kosher"
+    name: "Anxiety (feat. BLP Kosher)"
+    url_key: "anxiety"
+    albums: ["ancient-child"]
+    canonical_album: "ancient-child"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "sound-foundation"
+    name: "Sound Foundation"
+    url_key: "soundfoundation"
+    albums: ["ancient-child"]
+    canonical_album: "ancient-child"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "crosswinds"
+    name: "Crosswinds"
+    url_key: "crosswinds"
+    albums: ["ancient-child"]
+    canonical_album: "ancient-child"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "son-come-up-feat-laivy"
+    name: "Son Come Up (feat. LAIVY)"
+    url_key: "soncomeup"
+    albums: ["ancient-child"]
+    canonical_album: "ancient-child"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "rockets-feat-duvbear"
+    name: "Rockets (feat. Duvbear)"
+    url_key: "rockets"
+    albums: ["ancient-child"]
+    canonical_album: "ancient-child"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "find-a-way"
+    name: "Find A Way"
+    url_key: "findaway"
+    albums: ["ancient-child"]
+    canonical_album: "ancient-child"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "smoke-and-mirrors"
+    name: "Smoke And Mirrors"
+    url_key: "smokeandmirrors"
+    albums: ["ancient-child"]
+    canonical_album: "ancient-child"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "wake-up"
+    name: "Wake Up"
+    url_key: "wakeup"
+    albums: ["ancient-child"]
+    canonical_album: "ancient-child"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "balance"
+    name: "Balance"
+    url_key: "balance"
+    albums: ["ancient-child"]
+    canonical_album: "ancient-child"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "ritual"
+    name: "Ritual"
+    url_key: "ritual"
+    albums: ["ancient-child"]
+    canonical_album: "ancient-child"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "rockin-tempos-feat-duvbear"
+    name: "Rockin Tempos (feat. Duvbear)"
+    url_key: "rockintempos"
+    albums: ["ancient-child"]
+    canonical_album: "ancient-child"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+# ========================================
+# MEDLEYS SECTION (Optional)
+# ========================================
+# TODO: Add common medley patterns if applicable
+# Example:
+# medleys:
+#   - pattern: "Track A > Track B"
+#     tracks: ["track-a-key", "track-b-key"]
+#     separator: ">"
+# medleys: []

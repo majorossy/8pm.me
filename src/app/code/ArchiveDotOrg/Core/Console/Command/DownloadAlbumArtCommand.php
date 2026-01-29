@@ -41,7 +41,7 @@ class DownloadAlbumArtCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName('archivedotorg:download-album-art')
+        $this->setName('archive:artwork:download')
             ->setDescription('Download studio album artwork from MusicBrainz')
             ->addArgument(
                 self::ARTIST_ARGUMENT,

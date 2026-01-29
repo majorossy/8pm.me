@@ -7,7 +7,9 @@ declare(strict_types=1);
 
 namespace ArchiveDotOrg\Core\Cron;
 
+use ArchiveDotOrg\Core\Api\LockServiceInterface;
 use ArchiveDotOrg\Core\Api\ShowImporterInterface;
+use ArchiveDotOrg\Core\Exception\LockException;
 use ArchiveDotOrg\Core\Logger\Logger;
 use ArchiveDotOrg\Core\Model\Config;
 
@@ -19,20 +21,24 @@ use ArchiveDotOrg\Core\Model\Config;
 class ImportShows
 {
     private ShowImporterInterface $showImporter;
+    private LockServiceInterface $lockService;
     private Config $config;
     private Logger $logger;
 
     /**
      * @param ShowImporterInterface $showImporter
+     * @param LockServiceInterface $lockService
      * @param Config $config
      * @param Logger $logger
      */
     public function __construct(
         ShowImporterInterface $showImporter,
+        LockServiceInterface $lockService,
         Config $config,
         Logger $logger
     ) {
         $this->showImporter = $showImporter;
+        $this->lockService = $lockService;
         $this->config = $config;
         $this->logger = $logger;
     }
@@ -73,6 +79,17 @@ class ImportShows
                 continue;
             }
 
+            // Try to acquire lock with zero timeout (non-blocking)
+            try {
+                $lockToken = $this->lockService->acquire('import', $collectionId, 0);
+            } catch (LockException $e) {
+                $this->logger->info('ImportShows cron: Skipping - lock unavailable', [
+                    'artist' => $artistName,
+                    'error' => $e->getMessage()
+                ]);
+                continue;
+            }
+
             try {
                 $this->logger->info('ImportShows cron: Processing artist', [
                     'artist' => $artistName,
@@ -98,6 +115,16 @@ class ImportShows
                     'artist' => $artistName,
                     'error' => $e->getMessage()
                 ]);
+            } finally {
+                // Always release lock
+                try {
+                    $this->lockService->release($lockToken);
+                } catch (\Exception $e) {
+                    $this->logger->error('ImportShows cron: Failed to release lock', [
+                        'artist' => $artistName,
+                        'error' => $e->getMessage()
+                    ]);
+                }
             }
         }
 

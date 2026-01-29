@@ -1,0 +1,1722 @@
+# ========================================
+# Smashing Pumpkins Configuration
+# ========================================
+#
+# Generated: 2026-01-29 14:55:14
+# Albums Populated: 13
+# Tracks Populated: 200
+# Status: Ready for use
+#
+# TODO:
+#   1. Add year to each album
+#   2. Add track aliases for better matching
+#   3. Add medley patterns (if applicable)
+#   4. Run validation: bin/magento archive:validate smashing-pumpkins
+#
+# See template.yaml for structure reference.
+# ========================================
+
+# ========================================
+# ARTIST SECTION
+# ========================================
+artist:
+  name: "Smashing Pumpkins"
+  collection_id: "SmashingPumpkins"
+  url_key: "smashing-pumpkins"
+
+# ========================================
+# ALBUMS SECTION
+# ========================================
+albums:
+  - key: "gish"
+    name: "Gish"
+    url_key: "gish"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "siamese-dream"
+    name: "Siamese Dream"
+    url_key: "siamesedream"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "mellon-collie-and-the-infinite-sadness"
+    name: "Mellon Collie and the Infinite Sadness"
+    url_key: "melloncollie"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "adore"
+    name: "Adore"
+    url_key: "adore"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "machinathe-machines-of-god"
+    name: "Machina/The Machines of God"
+    url_key: "machinamachinesofgod"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "machina-iithe-friends-and-enemies-of-modern-music"
+    name: "Machina II/The Friends & Enemies of Modern Music"
+    url_key: "machinaii"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "zeitgeist"
+    name: "Zeitgeist"
+    url_key: "zeitgeist"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "oceania"
+    name: "Oceania"
+    url_key: "oceania"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "monuments-to-an-elegy"
+    name: "Monuments to an Elegy"
+    url_key: "monumentstoanelegy"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "shiny-and-oh-so-bright-vol-1"
+    name: "Shiny and Oh So Bright, Vol. 1"
+    url_key: "shinyandohsobright"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "cyr"
+    name: "Cyr"
+    url_key: "cyr"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "atum-a-rock-opera-in-three-acts"
+    name: "Atum: A Rock Opera in Three Acts"
+    url_key: "atum"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "aghori-mhori-mei"
+    name: "Aghori Mhori Mei"
+    url_key: "aghorimhorimei"
+    type: "studio"
+    # TODO: Add year field
+
+# ========================================
+# TRACKS SECTION
+# ========================================
+tracks:
+  - key: "cherub-rock"
+    name: "Cherub Rock"
+    url_key: "cherubrock"
+    albums: ["siamese-dream"]
+    canonical_album: "siamese-dream"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "quiet"
+    name: "Quiet"
+    url_key: "quiet"
+    albums: ["siamese-dream"]
+    canonical_album: "siamese-dream"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "today"
+    name: "Today"
+    url_key: "today"
+    albums: ["siamese-dream"]
+    canonical_album: "siamese-dream"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "hummer"
+    name: "Hummer"
+    url_key: "hummer"
+    albums: ["siamese-dream"]
+    canonical_album: "siamese-dream"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "rocket"
+    name: "Rocket"
+    url_key: "rocket"
+    albums: ["siamese-dream"]
+    canonical_album: "siamese-dream"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "disarm"
+    name: "Disarm"
+    url_key: "disarm"
+    albums: ["siamese-dream"]
+    canonical_album: "siamese-dream"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "soma"
+    name: "Soma"
+    url_key: "soma"
+    albums: ["siamese-dream"]
+    canonical_album: "siamese-dream"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "geek-usa"
+    name: "Geek U.S.A."
+    url_key: "geekusa"
+    albums: ["siamese-dream"]
+    canonical_album: "siamese-dream"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "mayonaise"
+    name: "Mayonaise"
+    url_key: "mayonaise"
+    albums: ["siamese-dream"]
+    canonical_album: "siamese-dream"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "spaceboy"
+    name: "Spaceboy"
+    url_key: "spaceboy"
+    albums: ["siamese-dream"]
+    canonical_album: "siamese-dream"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "silverfuck"
+    name: "Silverfuck"
+    url_key: "silverfuck"
+    albums: ["siamese-dream"]
+    canonical_album: "siamese-dream"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "sweet-sweet"
+    name: "Sweet Sweet"
+    url_key: "sweetsweet"
+    albums: ["siamese-dream"]
+    canonical_album: "siamese-dream"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "luna"
+    name: "Luna"
+    url_key: "luna"
+    albums: ["siamese-dream"]
+    canonical_album: "siamese-dream"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "mellon-collie-and-the-infinite-sadness"
+    name: "Mellon Collie And The Infinite Sadness"
+    url_key: "melloncollieandtheinfinitesadness"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "tonight-tonight"
+    name: "Tonight, Tonight"
+    url_key: "tonighttonight"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "jellybelly"
+    name: "Jellybelly"
+    url_key: "jellybelly"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "zero"
+    name: "Zero"
+    url_key: "zero"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "here-is-no-why"
+    name: "Here Is No Why"
+    url_key: "hereisnowhy"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "bullet-with-butterfly-wings"
+    name: "Bullet With Butterfly Wings"
+    url_key: "bulletwithbutterflywings"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "to-forgive"
+    name: "To Forgive"
+    url_key: "toforgive"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "an-ode-to-no-one"
+    name: "An Ode To No One"
+    url_key: "anodetonoone"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "love"
+    name: "Love"
+    url_key: "love"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "cupid-de-locke"
+    name: "Cupid De Locke"
+    url_key: "cupiddelocke"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "galapogos"
+    name: "Galapogos"
+    url_key: "galapogos"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "muzzle"
+    name: "Muzzle"
+    url_key: "muzzle"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "porcelina-of-the-vast-oceans"
+    name: "Porcelina Of The Vast Oceans"
+    url_key: "porcelinaofthevastoceans"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "take-me-down"
+    name: "Take Me Down"
+    url_key: "takemedown"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "where-boys-fear-to-tread"
+    name: "Where Boys Fear To Tread"
+    url_key: "whereboysfeartotread"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "bodies"
+    name: "Bodies"
+    url_key: "bodies"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "thirty-three"
+    name: "Thirty-Three"
+    url_key: "thirtythree"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "in-the-arms-of-sleep"
+    name: "In The Arms Of Sleep"
+    url_key: "inthearmsοfsleep"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "1979"
+    name: "1979"
+    url_key: "track1979"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "tales-of-a-scorched-earth"
+    name: "Tales Of A Scorched Earth"
+    url_key: "talesofascorchedearth"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "thru-the-eyes-of-ruby"
+    name: "Thru The Eyes Of Ruby"
+    url_key: "thrutheeyesofruby"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "stumbleine"
+    name: "Stumbleine"
+    url_key: "stumbleine"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "xyu"
+    name: "X.Y.U."
+    url_key: "xyu"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "we-only-come-out-at-night"
+    name: "We Only Come Out At Night"
+    url_key: "weonlycomeoutatnight"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "beautiful"
+    name: "Beautiful"
+    url_key: "beautiful"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "lily-my-one-and-only"
+    name: "Lily (My One And Only)"
+    url_key: "lilymyoneandonly"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "by-starlight"
+    name: "By Starlight"
+    url_key: "bystarlight"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "farewell-and-goodnight"
+    name: "Farewell And Goodnight"
+    url_key: "farewellandgoodnight"
+    albums: ["mellon-collie-and-the-infinite-sadness"]
+    canonical_album: "mellon-collie-and-the-infinite-sadness"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "to-sheila"
+    name: "To Sheila"
+    url_key: "tosheila"
+    albums: ["adore"]
+    canonical_album: "adore"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "ava-adore"
+    name: "Ava Adore"
+    url_key: "avaadore"
+    albums: ["adore"]
+    canonical_album: "adore"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "perfect"
+    name: "Perfect"
+    url_key: "perfect"
+    albums: ["adore"]
+    canonical_album: "adore"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "daphne-descends"
+    name: "Daphne Descends"
+    url_key: "daphnedescends"
+    albums: ["adore"]
+    canonical_album: "adore"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "once-upon-a-time"
+    name: "Once Upon a Time"
+    url_key: "onceuponatime"
+    albums: ["adore"]
+    canonical_album: "adore"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "tear"
+    name: "Tear"
+    url_key: "tear"
+    albums: ["adore"]
+    canonical_album: "adore"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "crestfallen"
+    name: "Crestfallen"
+    url_key: "crestfallen"
+    albums: ["adore"]
+    canonical_album: "adore"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "appels-oranjes"
+    name: "Appels + Oranjes"
+    url_key: "appelsoranjes"
+    albums: ["adore"]
+    canonical_album: "adore"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "pug"
+    name: "Pug"
+    url_key: "pug"
+    albums: ["adore"]
+    canonical_album: "adore"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-tale-of-dusty-and-pistol-pete"
+    name: "The Tale of Dusty and Pistol Pete"
+    url_key: "thetaleofdustyandpistolpete"
+    albums: ["adore"]
+    canonical_album: "adore"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "annie-dog"
+    name: "Annie-Dog"
+    url_key: "anniedog"
+    albums: ["adore"]
+    canonical_album: "adore"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "shame"
+    name: "Shame"
+    url_key: "shame"
+    albums: ["adore"]
+    canonical_album: "adore"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "behold-the-night-mare"
+    name: "Behold! The Night Mare"
+    url_key: "beholdthenightmare"
+    albums: ["adore"]
+    canonical_album: "adore"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "for-martha"
+    name: "For Martha"
+    url_key: "formartha"
+    albums: ["adore"]
+    canonical_album: "adore"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "blank-page"
+    name: "Blank Page"
+    url_key: "blankpage"
+    albums: ["adore"]
+    canonical_album: "adore"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-everlasting-gaze"
+    name: "The Everlasting Gaze"
+    url_key: "theeverlastinggaze"
+    albums: ["machinathe-machines-of-god"]
+    canonical_album: "machinathe-machines-of-god"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "raindrops-sunshowers"
+    name: "Raindrops + Sunshowers"
+    url_key: "raindropssunshowers"
+    albums: ["machinathe-machines-of-god"]
+    canonical_album: "machinathe-machines-of-god"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "stand-inside-your-love"
+    name: "Stand Inside Your Love"
+    url_key: "standinsideyourlove"
+    albums: ["machinathe-machines-of-god"]
+    canonical_album: "machinathe-machines-of-god"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "i-of-the-mourning"
+    name: "I of the Mourning"
+    url_key: "iofthemourning"
+    albums: ["machinathe-machines-of-god"]
+    canonical_album: "machinathe-machines-of-god"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-sacred-and-profane"
+    name: "The Sacred and Profane"
+    url_key: "thesacredandprofane"
+    albums: ["machinathe-machines-of-god"]
+    canonical_album: "machinathe-machines-of-god"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "try-try-try"
+    name: "Try, Try, Try"
+    url_key: "trytrytry"
+    albums: ["machinathe-machines-of-god"]
+    canonical_album: "machinathe-machines-of-god"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "heavy-metal-machine"
+    name: "Heavy Metal Machine"
+    url_key: "heavymetalmachine"
+    albums: ["machinathe-machines-of-god"]
+    canonical_album: "machinathe-machines-of-god"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "this-time"
+    name: "This Time"
+    url_key: "thistime"
+    albums: ["machinathe-machines-of-god"]
+    canonical_album: "machinathe-machines-of-god"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-imploding-voice"
+    name: "The Imploding Voice"
+    url_key: "theimplodingvoice"
+    albums: ["machinathe-machines-of-god"]
+    canonical_album: "machinathe-machines-of-god"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "glass-and-the-ghost-children"
+    name: "Glass and the Ghost Children"
+    url_key: "glassandtheghostchildren"
+    albums: ["machinathe-machines-of-god"]
+    canonical_album: "machinathe-machines-of-god"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "wound"
+    name: "Wound"
+    url_key: "wound"
+    albums: ["machinathe-machines-of-god"]
+    canonical_album: "machinathe-machines-of-god"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-crying-tree-of-mercury"
+    name: "The Crying Tree of Mercury"
+    url_key: "thecryingtreeofmercury"
+    albums: ["machinathe-machines-of-god"]
+    canonical_album: "machinathe-machines-of-god"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "with-every-light"
+    name: "With Every Light"
+    url_key: "witheverylight"
+    albums: ["machinathe-machines-of-god"]
+    canonical_album: "machinathe-machines-of-god"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "blue-skies-bring-tears"
+    name: "Blue Skies Bring Tears"
+    url_key: "blueskiesbringtears"
+    albums: ["machinathe-machines-of-god"]
+    canonical_album: "machinathe-machines-of-god"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "age-of-innocence"
+    name: "Age of Innocence"
+    url_key: "ageofinnocence"
+    albums: ["machinathe-machines-of-god"]
+    canonical_album: "machinathe-machines-of-god"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "slow-dawn"
+    name: "Slow Dawn"
+    url_key: "slowdawn"
+    albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
+    canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "vanity"
+    name: "Vanity"
+    url_key: "vanity"
+    albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
+    canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "saturnine"
+    name: "Saturnine"
+    url_key: "saturnine"
+    albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
+    canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "glass-theme-spacey-version"
+    name: "Glass' Theme (spacey version)"
+    url_key: "glassthemespaceyversion"
+    albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
+    canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "soul-power-james-brown-cover"
+    name: "Soul Power (James Brown cover)"
+    url_key: "soulpowerjamesbrowncover"
+    albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
+    canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "cash-car-star-version-1"
+    name: "Cash Car Star "Version 1""
+    url_key: "cashcarstarversion1"
+    albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
+    canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "lucky-13"
+    name: "Lucky 13"
+    url_key: "lucky13"
+    albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
+    canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "speed-kills"
+    name: "Speed Kills"
+    url_key: "speedkills"
+    albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
+    canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "if-there-is-a-god-pianovox"
+    name: "If There Is a God (piano/vox)"
+    url_key: "ifthereisagodpianovox"
+    albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
+    canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "try-try-try-alt-musiclyrics"
+    name: "Try, Try, Try (alt. music/lyrics)"
+    url_key: "trytrytryaltmusiclyrics"
+    albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
+    canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "heavy-metal-machine-version-i-alt-mix"
+    name: "Heavy Metal Machine (version I alt. mix)"
+    url_key: "heavymetalmachineversion1altmix"
+    albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
+    canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "glass-theme"
+    name: "Glass' Theme"
+    url_key: "glasstheme"
+    albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
+    canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "cash-car-star"
+    name: "Cash Car Star"
+    url_key: "cashcarstar"
+    albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
+    canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dross"
+    name: "Dross"
+    url_key: "dross"
+    albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
+    canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "real-love"
+    name: "Real Love"
+    url_key: "reallove"
+    albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
+    canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "go"
+    name: "Go"
+    url_key: "go"
+    albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
+    canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "let-me-give-the-world-to-you"
+    name: "Let Me Give the World to You"
+    url_key: "letmegivetheworldtoyou"
+    albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
+    canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "innosense"
+    name: "Innosense"
+    url_key: "innosense"
+    albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
+    canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "home"
+    name: "Home"
+    url_key: "homepumpkins"
+    albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
+    canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "blue-skies-bring-tears-heavy"
+    name: "Blue Skies Bring Tears (heavy)"
+    url_key: "blueskiesbringτearsheavy"
+    albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
+    canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "white-spyder"
+    name: "White Spyder"
+    url_key: "whitespyder"
+    albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
+    canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "in-my-body"
+    name: "In My Body"
+    url_key: "inmybody"
+    albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
+    canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "if-there-is-a-god-full-band"
+    name: "If There Is a God (full band)"
+    url_key: "ifthereisagodfullband"
+    albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
+    canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "le-deux-machina-synergy"
+    name: "Le Deux Machina (Synergy)"
+    url_key: "ledeuxmachinasynergy"
+    albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
+    canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "atoms-to-adams"
+    name: "Atoms to Adam's"
+    url_key: "atomstoadams"
+    albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
+    canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "doomsday-clock"
+    name: "Doomsday Clock"
+    url_key: "doomsdayclock"
+    albums: ["zeitgeist"]
+    canonical_album: "zeitgeist"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "7-shades-of-black"
+    name: "7 Shades of Black"
+    url_key: "seνenshadesofblack"
+    albums: ["zeitgeist"]
+    canonical_album: "zeitgeist"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "bleeding-the-orchid"
+    name: "Bleeding the Orchid"
+    url_key: "bleedingtheorchid"
+    albums: ["zeitgeist"]
+    canonical_album: "zeitgeist"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "thats-the-way-my-love-is"
+    name: "That's the Way (My Love Is)"
+    url_key: "thatsthewaymyloveis"
+    albums: ["zeitgeist"]
+    canonical_album: "zeitgeist"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "tarantula"
+    name: "Tarantula"
+    url_key: "tarantula"
+    albums: ["zeitgeist"]
+    canonical_album: "zeitgeist"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "starz"
+    name: "Starz"
+    url_key: "starz"
+    albums: ["zeitgeist"]
+    canonical_album: "zeitgeist"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "united-states"
+    name: "United States"
+    url_key: "unitedstates"
+    albums: ["zeitgeist"]
+    canonical_album: "zeitgeist"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "neverlost"
+    name: "Neverlost"
+    url_key: "neverlost"
+    albums: ["zeitgeist"]
+    canonical_album: "zeitgeist"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "bring-the-light"
+    name: "Bring the Light"
+    url_key: "bringthelight"
+    albums: ["zeitgeist"]
+    canonical_album: "zeitgeist"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "come-on-lets-go"
+    name: "(Come On) Let's Go!"
+    url_key: "comeonletsgo"
+    albums: ["zeitgeist"]
+    canonical_album: "zeitgeist"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "for-god-and-country"
+    name: "For God and Country"
+    url_key: "forgodandcountry"
+    albums: ["zeitgeist"]
+    canonical_album: "zeitgeist"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "pomp-and-circumstances"
+    name: "Pomp and Circumstances"
+    url_key: "pompandcircumstances"
+    albums: ["zeitgeist"]
+    canonical_album: "zeitgeist"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "quasar"
+    name: "Quasar"
+    url_key: "quasar"
+    albums: ["oceania"]
+    canonical_album: "oceania"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "panopticon"
+    name: "Panopticon"
+    url_key: "panopticon"
+    albums: ["oceania"]
+    canonical_album: "oceania"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-celestials"
+    name: "The Celestials"
+    url_key: "thecelestials"
+    albums: ["oceania"]
+    canonical_album: "oceania"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "violet-rays"
+    name: "Violet Rays"
+    url_key: "violetrays"
+    albums: ["oceania"]
+    canonical_album: "oceania"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "my-love-is-winter"
+    name: "My Love Is Winter"
+    url_key: "myloveiswinter"
+    albums: ["oceania"]
+    canonical_album: "oceania"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "one-diamond-one-heart"
+    name: "One Diamond, One Heart"
+    url_key: "onediamοndoneheart"
+    albums: ["oceania"]
+    canonical_album: "oceania"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "pinwheels"
+    name: "Pinwheels"
+    url_key: "pinwheels"
+    albums: ["oceania"]
+    canonical_album: "oceania"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "oceania"
+    name: "Oceania"
+    url_key: "oceania"
+    albums: ["oceania"]
+    canonical_album: "oceania"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "pale-horse"
+    name: "Pale Horse"
+    url_key: "palehorse"
+    albums: ["oceania"]
+    canonical_album: "oceania"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-chimera"
+    name: "The Chimera"
+    url_key: "thechimera"
+    albums: ["oceania"]
+    canonical_album: "oceania"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "glissandra"
+    name: "Glissandra"
+    url_key: "glissandra"
+    albums: ["oceania"]
+    canonical_album: "oceania"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "inkless"
+    name: "Inkless"
+    url_key: "inkless"
+    albums: ["oceania"]
+    canonical_album: "oceania"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "wildflower"
+    name: "Wildflower"
+    url_key: "wildflower"
+    albums: ["oceania"]
+    canonical_album: "oceania"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "tiberius"
+    name: "Tiberius"
+    url_key: "tiberiuspumpkins"
+    albums: ["monuments-to-an-elegy"]
+    canonical_album: "monuments-to-an-elegy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "being-beige"
+    name: "Being Beige"
+    url_key: "beingbeige"
+    albums: ["monuments-to-an-elegy"]
+    canonical_album: "monuments-to-an-elegy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "anaise"
+    name: "Anaise!"
+    url_key: "anaise"
+    albums: ["monuments-to-an-elegy"]
+    canonical_album: "monuments-to-an-elegy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "one-and-all"
+    name: "One and All"
+    url_key: "oneandall"
+    albums: ["monuments-to-an-elegy"]
+    canonical_album: "monuments-to-an-elegy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "run2me"
+    name: "Run2me"
+    url_key: "run2me"
+    albums: ["monuments-to-an-elegy"]
+    canonical_album: "monuments-to-an-elegy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "drum-fife"
+    name: "Drum + Fife"
+    url_key: "drumfife"
+    albums: ["monuments-to-an-elegy"]
+    canonical_album: "monuments-to-an-elegy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "monuments"
+    name: "Monuments"
+    url_key: "monuments"
+    albums: ["monuments-to-an-elegy"]
+    canonical_album: "monuments-to-an-elegy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dorian"
+    name: "Dorian"
+    url_key: "dorian"
+    albums: ["monuments-to-an-elegy"]
+    canonical_album: "monuments-to-an-elegy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "anti-hero"
+    name: "Anti-Hero"
+    url_key: "antihero"
+    albums: ["monuments-to-an-elegy"]
+    canonical_album: "monuments-to-an-elegy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "knights-of-malta"
+    name: "Knights of Malta"
+    url_key: "knightsofmalta"
+    albums: ["shiny-and-oh-so-bright-vol-1"]
+    canonical_album: "shiny-and-oh-so-bright-vol-1"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "silvery-sometimes-ghosts"
+    name: "Silvery Sometimes (Ghosts)"
+    url_key: "silverysometimesghosts"
+    albums: ["shiny-and-oh-so-bright-vol-1"]
+    canonical_album: "shiny-and-oh-so-bright-vol-1"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "travels"
+    name: "Travels"
+    url_key: "travels"
+    albums: ["shiny-and-oh-so-bright-vol-1"]
+    canonical_album: "shiny-and-oh-so-bright-vol-1"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "solara"
+    name: "Solara"
+    url_key: "solara"
+    albums: ["shiny-and-oh-so-bright-vol-1"]
+    canonical_album: "shiny-and-oh-so-bright-vol-1"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "alienation"
+    name: "Alienation"
+    url_key: "alienation"
+    albums: ["shiny-and-oh-so-bright-vol-1"]
+    canonical_album: "shiny-and-oh-so-bright-vol-1"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "marchin-on"
+    name: "Marchin' On"
+    url_key: "marchinon"
+    albums: ["shiny-and-oh-so-bright-vol-1"]
+    canonical_album: "shiny-and-oh-so-bright-vol-1"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "with-sympathy"
+    name: "With Sympathy"
+    url_key: "withsympathy"
+    albums: ["shiny-and-oh-so-bright-vol-1"]
+    canonical_album: "shiny-and-oh-so-bright-vol-1"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "seek-and-you-shall-destroy"
+    name: "Seek and You Shall Destroy"
+    url_key: "seekandyoushalldestroy"
+    albums: ["shiny-and-oh-so-bright-vol-1"]
+    canonical_album: "shiny-and-oh-so-bright-vol-1"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-colour-of-love"
+    name: "The Colour of Love"
+    url_key: "thecolouroflove"
+    albums: ["cyr"]
+    canonical_album: "cyr"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "confessions-of-a-dopamine-addict"
+    name: "Confessions of a Dopamine Addict"
+    url_key: "confessionsofadopamineaddict"
+    albums: ["cyr"]
+    canonical_album: "cyr"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "cyr"
+    name: "Cyr"
+    url_key: "cyr"
+    albums: ["cyr"]
+    canonical_album: "cyr"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dulcet-in-e"
+    name: "Dulcet in E"
+    url_key: "dulcetine"
+    albums: ["cyr"]
+    canonical_album: "cyr"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "wrath"
+    name: "Wrath"
+    url_key: "wrath"
+    albums: ["cyr"]
+    canonical_album: "cyr"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "ramona"
+    name: "Ramona"
+    url_key: "ramona"
+    albums: ["cyr"]
+    canonical_album: "cyr"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "anno-satana"
+    name: "Anno Satana"
+    url_key: "annosatana"
+    albums: ["cyr"]
+    canonical_album: "cyr"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "birch-grove"
+    name: "Birch Grove"
+    url_key: "birchgrove"
+    albums: ["cyr"]
+    canonical_album: "cyr"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "wyttch"
+    name: "Wyttch"
+    url_key: "wyttch"
+    albums: ["cyr"]
+    canonical_album: "cyr"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "starrcraft"
+    name: "Starrcraft"
+    url_key: "starrcraft"
+    albums: ["cyr"]
+    canonical_album: "cyr"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "purple-blood"
+    name: "Purple Blood"
+    url_key: "purpleblood"
+    albums: ["cyr"]
+    canonical_album: "cyr"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "save-your-tears"
+    name: "Save Your Tears"
+    url_key: "saveyourtears"
+    albums: ["cyr"]
+    canonical_album: "cyr"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "telegenix"
+    name: "Telegenix"
+    url_key: "telegenix"
+    albums: ["cyr"]
+    canonical_album: "cyr"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "black-forest-black-hills"
+    name: "Black Forest, Black Hills"
+    url_key: "blackforestblackhills"
+    albums: ["cyr"]
+    canonical_album: "cyr"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "adrennalynne"
+    name: "Adrennalynne"
+    url_key: "adrennalynne"
+    albums: ["cyr"]
+    canonical_album: "cyr"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "haunted"
+    name: "Haunted"
+    url_key: "haunted"
+    albums: ["cyr"]
+    canonical_album: "cyr"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-hidden-sun"
+    name: "The Hidden Sun"
+    url_key: "thehiddensun"
+    albums: ["cyr"]
+    canonical_album: "cyr"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "schaudenfreud"
+    name: "Schaudenfreud"
+    url_key: "schaudenfreud"
+    albums: ["cyr"]
+    canonical_album: "cyr"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "tyger-tyger"
+    name: "Tyger, Tyger"
+    url_key: "tygertyger"
+    albums: ["cyr"]
+    canonical_album: "cyr"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "minerva"
+    name: "Minerva"
+    url_key: "minerva"
+    albums: ["cyr"]
+    canonical_album: "cyr"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "atum"
+    name: "Atum"
+    url_key: "atum"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "butterfly-suite"
+    name: "Butterfly Suite"
+    url_key: "butterflysuite"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-good-in-goodbye"
+    name: "The Good in Goodbye"
+    url_key: "thegoodingoodbye"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "embracer"
+    name: "Embracer"
+    url_key: "embracer"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "with-ado-i-do"
+    name: "With Ado I Do"
+    url_key: "withadoido"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "hooligan"
+    name: "Hooligan"
+    url_key: "hooligan"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "steps-in-time"
+    name: "Steps in Time"
+    url_key: "stepsintime"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "where-rain-must-fall"
+    name: "Where Rain Must Fall"
+    url_key: "whererainmustfall"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "beyond-the-vale"
+    name: "Beyond the Vale"
+    url_key: "beyondthevale"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "hooray"
+    name: "Hooray!"
+    url_key: "hooray"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-gold-mask"
+    name: "The Gold Mask"
+    url_key: "thegoldmask"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "avalanche"
+    name: "Avalanche"
+    url_key: "avalanche"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "empires"
+    name: "Empires"
+    url_key: "empires"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "neophyte"
+    name: "Neophyte"
+    url_key: "neophyte"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "moss"
+    name: "Moss"
+    url_key: "moss"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "night-waves"
+    name: "Night Waves"
+    url_key: "nightwaves"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "space-age"
+    name: "Space Age"
+    url_key: "spaceage"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "every-morning"
+    name: "Every Morning"
+    url_key: "everymorning"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "to-the-grays"
+    name: "To the Grays"
+    url_key: "tothegrays"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "beguiled"
+    name: "Beguiled"
+    url_key: "beguiled"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-culling"
+    name: "The Culling"
+    url_key: "theculling"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "springtimes"
+    name: "Springtimes"
+    url_key: "springtimes"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "sojourner"
+    name: "Sojourner"
+    url_key: "sojourner"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "that-which-animates-the-spirit"
+    name: "That Which Animates the Spirit"
+    url_key: "thatwhichanimatesthespirit"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-canary-trainer"
+    name: "The Canary Trainer"
+    url_key: "thecanarytrainer"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "pacer"
+    name: "Pacer"
+    url_key: "pacer"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "in-lieu-of-failure"
+    name: "In Lieu of Failure"
+    url_key: "inlieuoffailure"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "fireflies"
+    name: "Fireflies"
+    url_key: "fireflies"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "spellbinding"
+    name: "Spellbinding"
+    url_key: "spellbinding"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "of-wings"
+    name: "Of Wings"
+    url_key: "ofwings"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "cenotaph"
+    name: "Cenotaph"
+    url_key: "cenotaph"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "harmageddon"
+    name: "Harmageddon"
+    url_key: "harmageddon"
+    albums: ["atum-a-rock-opera-in-three-acts"]
+    canonical_album: "atum-a-rock-opera-in-three-acts"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "edin"
+    name: "Edin"
+    url_key: "edin"
+    albums: ["aghori-mhori-mei"]
+    canonical_album: "aghori-mhori-mei"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "pentagrams"
+    name: "Pentagrams"
+    url_key: "pentagrams"
+    albums: ["aghori-mhori-mei"]
+    canonical_album: "aghori-mhori-mei"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "sighommi"
+    name: "Sighommi"
+    url_key: "sighommi"
+    albums: ["aghori-mhori-mei"]
+    canonical_album: "aghori-mhori-mei"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "pentecost"
+    name: "Pentecost"
+    url_key: "pentecost"
+    albums: ["aghori-mhori-mei"]
+    canonical_album: "aghori-mhori-mei"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "war-dreams-of-itself"
+    name: "War Dreams of Itself"
+    url_key: "wardreamsofitself"
+    albums: ["aghori-mhori-mei"]
+    canonical_album: "aghori-mhori-mei"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "who-goes-there"
+    name: "Who Goes There"
+    url_key: "whogoesthere"
+    albums: ["aghori-mhori-mei"]
+    canonical_album: "aghori-mhori-mei"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "999"
+    name: "999"
+    url_key: "track999"
+    albums: ["aghori-mhori-mei"]
+    canonical_album: "aghori-mhori-mei"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "goeth-the-fall"
+    name: "Goeth the Fall"
+    url_key: "goeththefall"
+    albums: ["aghori-mhori-mei"]
+    canonical_album: "aghori-mhori-mei"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "sicarus"
+    name: "Sicarus"
+    url_key: "sicarus"
+    albums: ["aghori-mhori-mei"]
+    canonical_album: "aghori-mhori-mei"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "murnau"
+    name: "Murnau"
+    url_key: "murnau"
+    albums: ["aghori-mhori-mei"]
+    canonical_album: "aghori-mhori-mei"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+# ========================================
+# MEDLEYS SECTION (Optional)
+# ========================================
+# TODO: Add common medley patterns if applicable
+# Example:
+# medleys:
+#   - pattern: "Track A > Track B"
+#     tracks: ["track-a-key", "track-b-key"]
+#     separator: ">"
+# medleys: []

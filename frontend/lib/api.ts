@@ -244,6 +244,7 @@ const GET_ARTISTS_QUERY = `
         description
         image
         product_count
+        children_count
       }
     }
   }
@@ -262,6 +263,7 @@ const GET_ARTIST_BY_SLUG_QUERY = `
       band_origin_location
       band_years_active
       band_extended_bio
+      band_image_url
       band_genres
       band_official_website
       band_youtube_channel
@@ -450,10 +452,12 @@ interface MagentoCategory {
   description?: string;
   image?: string;
   product_count?: number;
+  children_count?: number;
   band_formation_date?: string;
   band_origin_location?: string;
   band_years_active?: string;
   band_extended_bio?: string;
+  band_image_url?: string;
   band_genres?: string;
   band_official_website?: string;
   band_youtube_channel?: string;
@@ -496,10 +500,12 @@ function categoryToArtist(category: MagentoCategory): Artist {
     image: getCategoryImageUrl(category.url_key),
     bio: category.description || '',
     songCount: category.product_count || 0,
+    albumCount: category.children_count || 0,
     formationDate: category.band_formation_date || undefined,
     originLocation: category.band_origin_location || undefined,
     yearsActive: category.band_years_active || undefined,
     extendedBio: category.band_extended_bio || undefined,
+    bandImageUrl: category.band_image_url || undefined,
     genres: category.band_genres ? category.band_genres.split(',').map(g => g.trim()) : undefined,
     officialWebsite: category.band_official_website || undefined,
     youtubeChannel: category.band_youtube_channel || undefined,

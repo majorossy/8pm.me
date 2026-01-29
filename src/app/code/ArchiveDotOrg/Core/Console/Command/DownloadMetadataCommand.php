@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace ArchiveDotOrg\Core\Console\Command;
 
+use ArchiveDotOrg\Core\Api\LockServiceInterface;
 use ArchiveDotOrg\Core\Api\MetadataDownloaderInterface;
+use ArchiveDotOrg\Core\Exception\LockException;
 use Magento\Framework\App\State;
 use Magento\Framework\App\Area;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,15 +27,21 @@ class DownloadMetadataCommand extends Command
 {
     private MetadataDownloaderInterface $metadataDownloader;
     private State $state;
+    private LockServiceInterface $lockService;
+    private LoggerInterface $logger;
 
     public function __construct(
         MetadataDownloaderInterface $metadataDownloader,
         State $state,
+        LockServiceInterface $lockService,
+        LoggerInterface $logger,
         ?string $name = null
     ) {
         parent::__construct($name);
         $this->metadataDownloader = $metadataDownloader;
         $this->state = $state;
+        $this->lockService = $lockService;
+        $this->logger = $logger;
     }
 
     protected function configure(): void
@@ -179,40 +188,61 @@ class DownloadMetadataCommand extends Command
             $artistInfo = $allCollections[$collectionId];
             $io->title("Downloading: {$artistInfo['artist_name']} ($collectionId)");
 
-            $progressCallback = function (string $message) use ($io) {
-                $io->writeln($message);
-            };
+            // Acquire lock
+            try {
+                $lockToken = $this->lockService->acquire('download', $collectionId, 300);
+            } catch (LockException $e) {
+                $io->error($e->getMessage());
+                continue;
+            }
 
             try {
-                $result = $this->metadataDownloader->download(
-                    $collectionId,
-                    $limit,
-                    $force,
-                    $incremental,
-                    $since,
-                    $progressCallback
-                );
+                $progressCallback = function (string $message) use ($io) {
+                    $io->writeln($message);
+                };
 
-                // Aggregate stats
-                foreach ($totalStats as $key => $value) {
-                    if (isset($result[$key])) {
-                        $totalStats[$key] += $result[$key];
+                try {
+                    $result = $this->metadataDownloader->download(
+                        $collectionId,
+                        $limit,
+                        $force,
+                        $incremental,
+                        $since,
+                        $progressCallback
+                    );
+
+                    // Aggregate stats
+                    foreach ($totalStats as $key => $value) {
+                        if (isset($result[$key])) {
+                            $totalStats[$key] += $result[$key];
+                        }
                     }
+
+                    $failedCount = $result['failed'] ?? 0;
+                    $downloadedCount = $result['downloaded'] ?? 0;
+                    $cachedCount = $result['cached'] ?? 0;
+
+                    if ($failedCount > 0) {
+                        $io->warning("Completed with $failedCount failures");
+                    } else {
+                        $io->success("Completed: $downloadedCount downloaded, $cachedCount already cached");
+                    }
+
+                } catch (\Exception $e) {
+                    $io->error("Failed to download $collectionId: " . $e->getMessage());
+                    $totalStats['failed']++;
                 }
 
-                $failedCount = $result['failed'] ?? 0;
-                $downloadedCount = $result['downloaded'] ?? 0;
-                $cachedCount = $result['cached'] ?? 0;
-
-                if ($failedCount > 0) {
-                    $io->warning("Completed with $failedCount failures");
-                } else {
-                    $io->success("Completed: $downloadedCount downloaded, $cachedCount already cached");
+            } finally {
+                // Always release lock
+                try {
+                    $this->lockService->release($lockToken);
+                } catch (\Exception $e) {
+                    $this->logger->error('Failed to release lock', [
+                        'collection_id' => $collectionId,
+                        'error' => $e->getMessage()
+                    ]);
                 }
-
-            } catch (\Exception $e) {
-                $io->error("Failed to download $collectionId: " . $e->getMessage());
-                $totalStats['failed']++;
             }
         }
 

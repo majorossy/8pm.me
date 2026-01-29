@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace ArchiveDotOrg\Core\Console\Command;
 
+use ArchiveDotOrg\Core\Api\LockServiceInterface;
 use ArchiveDotOrg\Core\Api\MetadataDownloaderInterface;
 use ArchiveDotOrg\Core\Api\TrackPopulatorServiceInterface;
+use ArchiveDotOrg\Core\Exception\LockException;
 use Magento\Framework\App\State;
 use Magento\Framework\App\Area;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,17 +29,23 @@ class PopulateTracksCommand extends Command
     private TrackPopulatorServiceInterface $trackPopulatorService;
     private MetadataDownloaderInterface $metadataDownloader;
     private State $state;
+    private LockServiceInterface $lockService;
+    private LoggerInterface $logger;
 
     public function __construct(
         TrackPopulatorServiceInterface $trackPopulatorService,
         MetadataDownloaderInterface $metadataDownloader,
         State $state,
+        LockServiceInterface $lockService,
+        LoggerInterface $logger,
         ?string $name = null
     ) {
         parent::__construct($name);
         $this->trackPopulatorService = $trackPopulatorService;
         $this->metadataDownloader = $metadataDownloader;
         $this->state = $state;
+        $this->lockService = $lockService;
+        $this->logger = $logger;
     }
 
     protected function configure(): void
@@ -188,51 +197,72 @@ class PopulateTracksCommand extends Command
 
             $io->title("Populating tracks for: $artistName ($collectionId)");
 
-            $progressCallback = function (string $message) use ($io) {
-                $io->writeln($message);
-            };
+            // Acquire lock
+            try {
+                $lockToken = $this->lockService->acquire('populate', $collectionId, 300);
+            } catch (LockException $e) {
+                $io->error($e->getMessage());
+                continue;
+            }
 
             try {
-                $result = $this->trackPopulatorService->populate(
-                    $artistName,
-                    $collectionId,
-                    $limit,
-                    $dryRun,
-                    $progressCallback
-                );
+                $progressCallback = function (string $message) use ($io) {
+                    $io->writeln($message);
+                };
 
-                // Aggregate stats
-                $totalStats['shows_processed'] += $result['shows_processed'];
-                $totalStats['products_created'] += $result['products_created'];
-                $totalStats['products_skipped'] += $result['products_skipped'];
-                $totalStats['tracks_matched'] += $result['tracks_matched'];
-                $totalStats['tracks_unmatched'] += $result['tracks_unmatched'];
-                $totalStats['categories_populated'] += $result['categories_populated'];
-                $totalStats['errors'] = array_merge($totalStats['errors'], $result['errors']);
+                try {
+                    $result = $this->trackPopulatorService->populate(
+                        $artistName,
+                        $collectionId,
+                        $limit,
+                        $dryRun,
+                        $progressCallback
+                    );
 
-                // Show results for this collection
-                $io->newLine();
-                $io->table(
-                    ['Metric', 'Count'],
-                    [
-                        ['Shows Processed', number_format($result['shows_processed'])],
-                        ['Tracks Matched', number_format($result['tracks_matched'])],
-                        ['Tracks Unmatched', number_format($result['tracks_unmatched'])],
-                        ['Products Created', number_format($result['products_created'])],
-                        ['Products Skipped (existing)', number_format($result['products_skipped'])],
-                        ['Categories Populated', number_format($result['categories_populated'])],
-                    ]
-                );
+                    // Aggregate stats
+                    $totalStats['shows_processed'] += $result['shows_processed'];
+                    $totalStats['products_created'] += $result['products_created'];
+                    $totalStats['products_skipped'] += $result['products_skipped'];
+                    $totalStats['tracks_matched'] += $result['tracks_matched'];
+                    $totalStats['tracks_unmatched'] += $result['tracks_unmatched'];
+                    $totalStats['categories_populated'] += $result['categories_populated'];
+                    $totalStats['errors'] = array_merge($totalStats['errors'], $result['errors']);
 
-                if (!empty($result['errors'])) {
-                    $io->warning(count($result['errors']) . ' errors occurred');
-                } else {
-                    $io->success("Completed: {$result['products_created']} products created");
+                    // Show results for this collection
+                    $io->newLine();
+                    $io->table(
+                        ['Metric', 'Count'],
+                        [
+                            ['Shows Processed', number_format($result['shows_processed'])],
+                            ['Tracks Matched', number_format($result['tracks_matched'])],
+                            ['Tracks Unmatched', number_format($result['tracks_unmatched'])],
+                            ['Products Created', number_format($result['products_created'])],
+                            ['Products Skipped (existing)', number_format($result['products_skipped'])],
+                            ['Categories Populated', number_format($result['categories_populated'])],
+                        ]
+                    );
+
+                    if (!empty($result['errors'])) {
+                        $io->warning(count($result['errors']) . ' errors occurred');
+                    } else {
+                        $io->success("Completed: {$result['products_created']} products created");
+                    }
+
+                } catch (\Exception $e) {
+                    $io->error("Failed: " . $e->getMessage());
+                    $totalStats['errors'][] = "$collectionId: " . $e->getMessage();
                 }
 
-            } catch (\Exception $e) {
-                $io->error("Failed: " . $e->getMessage());
-                $totalStats['errors'][] = "$collectionId: " . $e->getMessage();
+            } finally {
+                // Always release lock
+                try {
+                    $this->lockService->release($lockToken);
+                } catch (\Exception $e) {
+                    $this->logger->error('Failed to release lock', [
+                        'collection_id' => $collectionId,
+                        'error' => $e->getMessage()
+                    ]);
+                }
             }
         }
 

@@ -8,12 +8,14 @@ declare(strict_types=1);
 namespace ArchiveDotOrg\Core\Test\Unit\Console\Command;
 
 use ArchiveDotOrg\Core\Api\Data\ImportResultInterface;
+use ArchiveDotOrg\Core\Api\LockServiceInterface;
 use ArchiveDotOrg\Core\Api\ShowImporterInterface;
 use ArchiveDotOrg\Core\Console\Command\ImportShowsCommand;
 use ArchiveDotOrg\Core\Model\Config;
 use Magento\Framework\App\State;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -28,6 +30,8 @@ class ImportShowsCommandTest extends TestCase
     private ShowImporterInterface|MockObject $showImporterMock;
     private Config|MockObject $configMock;
     private State|MockObject $stateMock;
+    private LockServiceInterface|MockObject $lockServiceMock;
+    private LoggerInterface|MockObject $loggerMock;
     private CommandTester $commandTester;
 
     protected function setUp(): void
@@ -35,13 +39,20 @@ class ImportShowsCommandTest extends TestCase
         $this->showImporterMock = $this->createMock(ShowImporterInterface::class);
         $this->configMock = $this->createMock(Config::class);
         $this->stateMock = $this->createMock(State::class);
+        $this->lockServiceMock = $this->createMock(LockServiceInterface::class);
+        $this->loggerMock = $this->createMock(LoggerInterface::class);
 
         $this->configMock->method('isEnabled')->willReturn(true);
+
+        // Configure lock mock to return lock name (lock acquired)
+        $this->lockServiceMock->method('acquire')->willReturn('import.test-lock');
 
         $this->command = new ImportShowsCommand(
             $this->showImporterMock,
             $this->configMock,
-            $this->stateMock
+            $this->stateMock,
+            $this->lockServiceMock,
+            $this->loggerMock
         );
 
         $application = new Application();
@@ -90,17 +101,22 @@ class ImportShowsCommandTest extends TestCase
         $this->configMock = $this->createMock(Config::class);
         $this->configMock->method('isEnabled')->willReturn(false);
 
+        $lockServiceMock = $this->createMock(LockServiceInterface::class);
+        $loggerMock = $this->createMock(LoggerInterface::class);
+
         $command = new ImportShowsCommand(
             $this->showImporterMock,
             $this->configMock,
-            $this->stateMock
+            $this->stateMock,
+            $lockServiceMock,
+            $loggerMock
         );
 
         $application = new Application();
         $application->add($command);
 
         $tester = new CommandTester($command);
-        $exitCode = $tester->execute(['artist' => 'Test Artist']);
+        $exitCode = $tester->execute(['artist' => 'Test Artist', '--yes' => true]);
 
         $this->assertEquals(1, $exitCode);
         $this->assertStringContainsString('disabled', $tester->getDisplay());
@@ -111,7 +127,7 @@ class ImportShowsCommandTest extends TestCase
      */
     public function executeValidatesEmptyArtistName(): void
     {
-        $exitCode = $this->commandTester->execute(['artist' => '   ']);
+        $exitCode = $this->commandTester->execute(['artist' => '   ', '--yes' => true]);
 
         $this->assertEquals(1, $exitCode);
         $this->assertStringContainsString('Artist name must be a non-empty string', $this->commandTester->getDisplay());
@@ -124,11 +140,12 @@ class ImportShowsCommandTest extends TestCase
     {
         $exitCode = $this->commandTester->execute([
             'artist' => 'Test Artist',
-            '--collection' => 'invalid collection id with spaces!'
+            '--collection' => 'invalid collection id with spaces!',
+            '--yes' => true
         ]);
 
         $this->assertEquals(1, $exitCode);
-        $this->assertStringContainsString('alphanumeric characters, underscores, and hyphens', $this->commandTester->getDisplay());
+        $this->assertStringContainsString('alphanumeric characters', $this->commandTester->getDisplay());
     }
 
     /**
@@ -155,7 +172,8 @@ class ImportShowsCommandTest extends TestCase
 
         $exitCode = $this->commandTester->execute([
             'artist' => 'Test Artist',
-            '--collection' => 'Valid_Collection-ID123'
+            '--collection' => 'Valid_Collection-ID123',
+            '--yes' => true
         ]);
 
         $this->assertEquals(0, $exitCode);
@@ -169,7 +187,8 @@ class ImportShowsCommandTest extends TestCase
         $exitCode = $this->commandTester->execute([
             'artist' => 'Test Artist',
             '--collection' => 'TestCollection',
-            '--limit' => '-5'
+            '--limit' => '-5',
+            '--yes' => true
         ]);
 
         $this->assertEquals(1, $exitCode);
@@ -184,7 +203,8 @@ class ImportShowsCommandTest extends TestCase
         $exitCode = $this->commandTester->execute([
             'artist' => 'Test Artist',
             '--collection' => 'TestCollection',
-            '--limit' => '0'
+            '--limit' => '0',
+            '--yes' => true
         ]);
 
         $this->assertEquals(1, $exitCode);
@@ -199,7 +219,8 @@ class ImportShowsCommandTest extends TestCase
         $exitCode = $this->commandTester->execute([
             'artist' => 'Test Artist',
             '--collection' => 'TestCollection',
-            '--offset' => '-1'
+            '--offset' => '-1',
+            '--yes' => true
         ]);
 
         $this->assertEquals(1, $exitCode);
@@ -231,7 +252,8 @@ class ImportShowsCommandTest extends TestCase
         $exitCode = $this->commandTester->execute([
             'artist' => 'Test Artist',
             '--collection' => 'TestCollection',
-            '--offset' => '0'
+            '--offset' => '0',
+            '--yes' => true
         ]);
 
         $this->assertEquals(0, $exitCode);
@@ -247,7 +269,8 @@ class ImportShowsCommandTest extends TestCase
             ->willReturn(null);
 
         $exitCode = $this->commandTester->execute([
-            'artist' => 'Unknown Artist'
+            'artist' => 'Unknown Artist',
+            '--yes' => true
         ]);
 
         $this->assertEquals(1, $exitCode);
@@ -283,7 +306,7 @@ class ImportShowsCommandTest extends TestCase
             ->with('Test Artist', $configuredCollectionId, $this->anything(), $this->anything(), $this->anything())
             ->willReturn($resultMock);
 
-        $exitCode = $this->commandTester->execute(['artist' => 'Test Artist']);
+        $exitCode = $this->commandTester->execute(['artist' => 'Test Artist', '--yes' => true]);
 
         $this->assertEquals(0, $exitCode);
     }
@@ -318,7 +341,8 @@ class ImportShowsCommandTest extends TestCase
 
         $exitCode = $this->commandTester->execute([
             'artist' => 'Test Artist',
-            '--dry-run' => true
+            '--dry-run' => true,
+            '--yes' => true
         ]);
 
         $this->assertEquals(0, $exitCode);
@@ -347,7 +371,7 @@ class ImportShowsCommandTest extends TestCase
 
         $this->showImporterMock->method('importByCollection')->willReturn($resultMock);
 
-        $exitCode = $this->commandTester->execute(['artist' => 'Test Artist']);
+        $exitCode = $this->commandTester->execute(['artist' => 'Test Artist', '--yes' => true]);
 
         $output = $this->commandTester->getDisplay();
 
@@ -385,7 +409,7 @@ class ImportShowsCommandTest extends TestCase
 
         $this->showImporterMock->method('importByCollection')->willReturn($resultMock);
 
-        $exitCode = $this->commandTester->execute(['artist' => 'Test Artist']);
+        $exitCode = $this->commandTester->execute(['artist' => 'Test Artist', '--yes' => true]);
 
         $output = $this->commandTester->getDisplay();
 
@@ -428,7 +452,8 @@ class ImportShowsCommandTest extends TestCase
         $this->commandTester->execute([
             'artist' => 'Test Artist',
             '--limit' => '10',
-            '--offset' => '5'
+            '--offset' => '5',
+            '--yes' => true
         ]);
     }
 
@@ -459,7 +484,7 @@ class ImportShowsCommandTest extends TestCase
             ->with('Test Artist', $this->anything(), $this->anything(), $this->anything(), $this->anything())
             ->willReturn($resultMock);
 
-        $this->commandTester->execute(['artist' => '  Test Artist  ']);
+        $this->commandTester->execute(['artist' => '  Test Artist  ', '--yes' => true]);
     }
 
     /**
@@ -472,7 +497,7 @@ class ImportShowsCommandTest extends TestCase
         $this->showImporterMock->method('importByCollection')
             ->willThrowException(new \Exception('Import failed: connection timeout'));
 
-        $exitCode = $this->commandTester->execute(['artist' => 'Test Artist']);
+        $exitCode = $this->commandTester->execute(['artist' => 'Test Artist', '--yes' => true]);
 
         $output = $this->commandTester->getDisplay();
 

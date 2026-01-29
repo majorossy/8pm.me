@@ -1,0 +1,445 @@
+# ========================================
+# Tea Leaf Green Configuration
+# ========================================
+#
+# Generated: 2026-01-29 14:55:14
+# Albums Populated: 27
+# Tracks Populated:       34
+# Status: Ready for use
+#
+# TODO:
+#   1. Add year to each album
+#   2. Add track aliases for better matching
+#   3. Add medley patterns (if applicable)
+#   4. Run validation: bin/magento archive:validate tea-leaf-green
+#
+# See template.yaml for structure reference.
+# ========================================
+
+# ========================================
+# ARTIST SECTION
+# ========================================
+artist:
+  name: "Tea Leaf Green"
+  collection_id: "TeaLeafGreen"
+  url_key: "tea-leaf-green"
+
+# ========================================
+# ALBUMS SECTION
+# ========================================
+albums:
+  - key: "steal-your-imagination"
+    name: "Steal Your Imagination"
+    url_key: "stealyourimagination"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "cherry-red-guitar"
+    name: "Cherry Red Guitar"
+    url_key: "cherryredguitar"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "apocalyptic-cowboy"
+    name: "Apocalyptic Cowboy"
+    url_key: "apocalypticcowboy"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "california"
+    name: "California"
+    url_key: "california"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "crackers-and-cheese"
+    name: "Crackers and Cheese"
+    url_key: "crackersandcheese"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "ocean-view"
+    name: "Ocean View"
+    url_key: "oceanview"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "boomtown"
+    name: "Boomtown"
+    url_key: "boomtown"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "passion"
+    name: "Passion"
+    url_key: "passion"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "asphalt-funk"
+    name: "Asphalt Funk"
+    url_key: "asphaltfunk"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "turn-the-page"
+    name: "Turn the Page"
+    url_key: "turnthepage"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "the-garden"
+    name: "The Garden"
+    url_key: "thegarden"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "taught-to-be-proud"
+    name: "Taught to Be Proud"
+    url_key: "taughttobeproud84760"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "rapture"
+    name: "Rapture"
+    url_key: "rapture"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "john-brown"
+    name: "John Brown"
+    url_key: "johnbrown"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "pretty-jane"
+    name: "Pretty Jane"
+    url_key: "prettyjane"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "5000-acres"
+    name: "5000 Acres"
+    url_key: "5000acres"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "morning-sun"
+    name: "Morning Sun"
+    url_key: "morningsun"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "ride-together"
+    name: "Ride Together"
+    url_key: "ridetogether"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "let-us-go"
+    name: "Let Us Go"
+    url_key: "letusgo"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "red-ribbons"
+    name: "Red Ribbons"
+    url_key: "redribbons"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "innocence"
+    name: "Innocence"
+    url_key: "innocence"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "not-fit"
+    name: "Not Fit"
+    url_key: "notfit"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "borrowed-time"
+    name: "Borrowed Time"
+    url_key: "borrowedtime"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "slept-through-sunday"
+    name: "Slept Through Sunday"
+    url_key: "sleptthroughsunday"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "standing-still"
+    name: "Standing Still"
+    url_key: "standingstill"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "stick-to-the-shallows"
+    name: "Stick to the Shallows"
+    url_key: "sticktotheshallows"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "keeping-the-faith"
+    name: "Keeping the Faith"
+    url_key: "keepingthefaith"
+    type: "studio"
+    # TODO: Add year field
+
+# ========================================
+# TRACKS SECTION
+# ========================================
+tracks:
+  - key: "acres"
+    name: "5000 Acres"
+    url_key: "5000acres"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "apocalyptic-cowboy"
+    name: "Apocalyptic Cowboy"
+    url_key: "apocalypticcowboy"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "asphalt-funk"
+    name: "Asphalt Funk"
+    url_key: "asphaltfunk"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "boomtown"
+    name: "Boomtown"
+    url_key: "boomtown"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "borrowed-time"
+    name: "Borrowed Time"
+    url_key: "borrowedtime"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "california"
+    name: "California"
+    url_key: "california"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "cherry-red-guitar"
+    name: "Cherry Red Guitar"
+    url_key: "cherryredguitar"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "crackers-and-cheese"
+    name: "Crackers and Cheese"
+    url_key: "crackersandcheese"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "don-t-curse-at-the-night"
+    name: "Don't Curse at the Night"
+    url_key: "dontcurseatthenight"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "flippin--the-bird"
+    name: "Flippin' the Bird"
+    url_key: "flippinthebird"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "i-ve-been-seeking"
+    name: "I've Been Seeking"
+    url_key: "ivebeenseeking"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "i-ve-got-a-truck"
+    name: "I've Got a Truck"
+    url_key: "ivegotatruck"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "if-it-wasn-t-for-the-money"
+    name: "If It Wasn't for the Money"
+    url_key: "ifitwasntforthemoney"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "innocence"
+    name: "Innocence"
+    url_key: "innocence"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "john-brown"
+    name: "John Brown"
+    url_key: "johnbrown"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "keeping-the-faith"
+    name: "Keeping the Faith"
+    url_key: "keepingthefaith"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "let-us-go"
+    name: "Let Us Go"
+    url_key: "letusgo"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "morning-sun"
+    name: "Morning Sun"
+    url_key: "morningsun"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "new-year-s-eve"
+    name: "New Year's Eve"
+    url_key: "newyearseve"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "not-fit"
+    name: "Not Fit"
+    url_key: "notfit"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "ocean-view"
+    name: "Ocean View"
+    url_key: "oceanview"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "passion"
+    name: "Passion"
+    url_key: "passion"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "pretty-jane"
+    name: "Pretty Jane"
+    url_key: "prettyjane"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "professor-s-blues"
+    name: "Professor's Blues"
+    url_key: "professorsblues"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "rapture"
+    name: "Rapture"
+    url_key: "rapture"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "red-ribbons"
+    name: "Red Ribbons"
+    url_key: "redribbons"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "ride-together"
+    name: "Ride Together"
+    url_key: "ridetogether"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "slept-through-sunday"
+    name: "Slept Through Sunday"
+    url_key: "sleptthroughsunday"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "standing-still"
+    name: "Standing Still"
+    url_key: "standingstill"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "steal-your-imagination"
+    name: "Steal Your Imagination"
+    url_key: "stealyourimagination"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "stick-to-the-shallows"
+    name: "Stick to the Shallows"
+    url_key: "sticktotheshallows"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "taught-to-be-proud"
+    name: "Taught to Be Proud"
+    url_key: "taughttobeproud84760"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "the-garden"
+    name: "The Garden"
+    url_key: "thegarden"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "turn-the-page"
+    name: "Turn the Page"
+    url_key: "turnthepage"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+
+# ========================================
+# MEDLEYS SECTION (Optional)
+# ========================================
+# TODO: Add common medley patterns if applicable
+# Example:
+# medleys:
+#   - pattern: "Track A > Track B"
+#     tracks: ["track-a-key", "track-b-key"]
+#     separator: ">"
+# medleys: []

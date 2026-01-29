@@ -1,0 +1,121 @@
+# ========================================
+# Ratdog Configuration
+# ========================================
+#
+# Generated: 2026-01-29 14:55:14
+# Albums Populated: 1
+# Tracks Populated:       10
+# Status: Ready for use
+#
+# TODO:
+#   1. Add year to each album
+#   2. Add track aliases for better matching
+#   3. Add medley patterns (if applicable)
+#   4. Run validation: bin/magento archive:validate ratdog
+#
+# See template.yaml for structure reference.
+# ========================================
+
+# ========================================
+# ARTIST SECTION
+# ========================================
+artist:
+  name: "Ratdog"
+  collection_id: "Ratdog"
+  url_key: "ratdog"
+
+# ========================================
+# ALBUMS SECTION
+# ========================================
+albums:
+  - key: "evening-moods"
+    name: "Evening Moods"
+    url_key: "eveningmoods"
+    type: "studio"
+    # TODO: Add year field
+
+# ========================================
+# TRACKS SECTION
+# ========================================
+tracks:
+  - key: "ashes-and-glass"
+    name: "Ashes and Glass"
+    url_key: "ashesandglass"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "bury-me-standing"
+    name: "Bury Me Standing"
+    url_key: "burymestanding"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "corrina"
+    name: "Corrina"
+    url_key: "corrina"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "even-so"
+    name: "Even So"
+    url_key: "evenso"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "lucky-enough"
+    name: "Lucky Enough"
+    url_key: "luckyenough"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "october-queen"
+    name: "October Queen"
+    url_key: "octoberqueen"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "odessa"
+    name: "Odessa"
+    url_key: "odessa"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "the-deep-end"
+    name: "The Deep End"
+    url_key: "thedeepend"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "two-djinn"
+    name: "Two Djinn"
+    url_key: "twodjinn"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "welcome-to-the-world"
+    name: "Welcome to the World"
+    url_key: "welcometotheworld"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+
+# ========================================
+# MEDLEYS SECTION (Optional)
+# ========================================
+# TODO: Add common medley patterns if applicable
+# Example:
+# medleys:
+#   - pattern: "Track A > Track B"
+#     tracks: ["track-a-key", "track-b-key"]
+#     separator: ">"
+# medleys: []

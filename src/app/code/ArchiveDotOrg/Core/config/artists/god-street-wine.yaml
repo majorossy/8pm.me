@@ -1,0 +1,402 @@
+# ========================================
+# God Street Wine Configuration
+# ========================================
+#
+# Generated: 2026-01-29 14:55:14
+# Albums Populated: 5
+# Tracks Populated: 41
+# Status: Ready for use
+#
+# TODO:
+#   1. Add year to each album
+#   2. Add track aliases for better matching
+#   3. Add medley patterns (if applicable)
+#   4. Run validation: bin/magento archive:validate god-street-wine
+#
+# See template.yaml for structure reference.
+# ========================================
+
+# ========================================
+# ARTIST SECTION
+# ========================================
+artist:
+  name: "God Street Wine"
+  collection_id: "GodStreetWine"
+  url_key: "god-street-wine"
+
+# ========================================
+# ALBUMS SECTION
+# ========================================
+albums:
+  - key: "bag"
+    name: "Bag"
+    url_key: "bag"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "199-romances"
+    name: "$1.99 Romances"
+    url_key: "199romances"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "red"
+    name: "Red"
+    url_key: "red"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "kristi-shot-a-puppy"
+    name: "Kristi Shot a Puppy"
+    url_key: "kristishotapuppy"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "hot-sweet-and-juicy"
+    name: "Hot! Sweet! and Juicy!"
+    url_key: "hotsweetandjuicy"
+    type: "studio"
+    # TODO: Add year field
+
+# ========================================
+# TRACKS SECTION
+# ========================================
+tracks:
+  - key: "princess-henrietta"
+    name: "Princess Henrietta"
+    url_key: "princesshenrietta"
+    albums: ["199-romances"]
+    canonical_album: "199-romances"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "mile-by-mile"
+    name: "Mile By Mile"
+    url_key: "milebymile"
+    albums: ["199-romances"]
+    canonical_album: "199-romances"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "nightingale"
+    name: "Nightingale"
+    url_key: "nightingale"
+    albums: ["199-romances"]
+    canonical_album: "199-romances"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "thirsty"
+    name: "Thirsty"
+    url_key: "thirsty"
+    albums: ["199-romances"]
+    canonical_album: "199-romances"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "stone-house"
+    name: "Stone House"
+    url_key: "stonehouse"
+    albums: ["199-romances"]
+    canonical_album: "199-romances"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "molly"
+    name: "Molly"
+    url_key: "molly"
+    albums: ["199-romances"]
+    canonical_album: "199-romances"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-ballroom"
+    name: "The Ballroom"
+    url_key: "theballroom"
+    albums: ["199-romances"]
+    canonical_album: "199-romances"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "run-to-you"
+    name: "Run To You"
+    url_key: "runtoyou"
+    albums: ["199-romances"]
+    canonical_album: "199-romances"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "crazy-head"
+    name: "Crazy Head"
+    url_key: "crazyhead"
+    albums: ["199-romances"]
+    canonical_album: "199-romances"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "hammer-and-a-spike"
+    name: "Hammer and a Spike"
+    url_key: "hammerandaspike"
+    albums: ["199-romances"]
+    canonical_album: "199-romances"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "wendy"
+    name: "Wendy"
+    url_key: "wendy"
+    albums: ["199-romances"]
+    canonical_album: "199-romances"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "imogene"
+    name: "Imogene"
+    url_key: "imogene"
+    albums: ["199-romances"]
+    canonical_album: "199-romances"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "tinas-town"
+    name: "Tina's Town"
+    url_key: "tinastown"
+    albums: ["199-romances"]
+    canonical_album: "199-romances"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "into-the-sea"
+    name: "Into the Sea"
+    url_key: "intothesea"
+    albums: ["199-romances"]
+    canonical_album: "199-romances"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "get-on-the-train"
+    name: "Get on the Train"
+    url_key: "getonthetrain"
+    albums: ["red"]
+    canonical_album: "red"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "red-and-milky-white"
+    name: "Red & Milky White"
+    url_key: "redmilkywhite"
+    albums: ["red"]
+    canonical_album: "red"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "ru4-real"
+    name: "Ru4 Real?"
+    url_key: "ru4real"
+    albums: ["red"]
+    canonical_album: "red"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "which-way-will-she-go"
+    name: "Which Way Will She Go?"
+    url_key: "whichwaywillshego"
+    albums: ["red"]
+    canonical_album: "red"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "chop"
+    name: "Chop!"
+    url_key: "chop"
+    albums: ["red"]
+    canonical_album: "red"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dont-tell-god"
+    name: "Don't Tell God"
+    url_key: "donttellgod"
+    albums: ["red"]
+    canonical_album: "red"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "girl-on-fire"
+    name: "Girl on Fire"
+    url_key: "girlonfire"
+    albums: ["red"]
+    canonical_album: "red"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "maybe"
+    name: "Maybe"
+    url_key: "maybe"
+    albums: ["red"]
+    canonical_album: "red"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "made-of-blood"
+    name: "Made of Blood"
+    url_key: "madeofblood"
+    albums: ["red"]
+    canonical_album: "red"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "when-the-white-sun-turns-to-red"
+    name: "When the White Sun Turns to Red"
+    url_key: "whenthewhitesunturηnstored"
+    albums: ["red"]
+    canonical_album: "red"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "untitled-take-two"
+    name: "Untitled Take Two"
+    url_key: "untitledtaketwo"
+    albums: ["red"]
+    canonical_album: "red"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "burger-special"
+    name: "Burger Special"
+    url_key: "burgerspecial"
+    albums: ["hot-sweet-and-juicy"]
+    canonical_album: "hot-sweet-and-juicy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "beautiful-lies"
+    name: "Beautiful Lies"
+    url_key: "beautifullies"
+    albums: ["hot-sweet-and-juicy"]
+    canonical_album: "hot-sweet-and-juicy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "nadine"
+    name: "Nadine"
+    url_key: "nadine"
+    albums: ["hot-sweet-and-juicy"]
+    canonical_album: "hot-sweet-and-juicy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "souvenir"
+    name: "Souvenir"
+    url_key: "souvenir"
+    albums: ["hot-sweet-and-juicy"]
+    canonical_album: "hot-sweet-and-juicy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "slinky"
+    name: "Slinky"
+    url_key: "slinky"
+    albums: ["hot-sweet-and-juicy"]
+    canonical_album: "hot-sweet-and-juicy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "8-ball"
+    name: "8 Ball"
+    url_key: "eightball"
+    albums: ["hot-sweet-and-juicy"]
+    canonical_album: "hot-sweet-and-juicy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "when-the-melody-plays"
+    name: "When the Melody Plays"
+    url_key: "whenthemelodyplays"
+    albums: ["hot-sweet-and-juicy"]
+    canonical_album: "hot-sweet-and-juicy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "spoonful-of-sugar"
+    name: "Spoonful Of Sugar"
+    url_key: "spoonfulofsugar"
+    albums: ["hot-sweet-and-juicy"]
+    canonical_album: "hot-sweet-and-juicy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "my-good-side"
+    name: "My Good Side"
+    url_key: "mygoodside"
+    albums: ["hot-sweet-and-juicy"]
+    canonical_album: "hot-sweet-and-juicy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "all-systems-clear"
+    name: "All Systems Clear"
+    url_key: "allsystemsclear"
+    albums: ["hot-sweet-and-juicy"]
+    canonical_album: "hot-sweet-and-juicy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "straight-line"
+    name: "Straight Line"
+    url_key: "straightline"
+    albums: ["hot-sweet-and-juicy"]
+    canonical_album: "hot-sweet-and-juicy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "you-know-me-best"
+    name: "You Know Me Best"
+    url_key: "youknowmebest"
+    albums: ["hot-sweet-and-juicy"]
+    canonical_album: "hot-sweet-and-juicy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "epiphany"
+    name: "Epiphany"
+    url_key: "epiphany"
+    albums: ["hot-sweet-and-juicy"]
+    canonical_album: "hot-sweet-and-juicy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "when-she-go"
+    name: "When She Go"
+    url_key: "whenshego"
+    albums: ["hot-sweet-and-juicy"]
+    canonical_album: "hot-sweet-and-juicy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "maybe-im-amazed"
+    name: "Maybe I'm Amazed"
+    url_key: "maybeiamamazed"
+    albums: ["hot-sweet-and-juicy"]
+    canonical_album: "hot-sweet-and-juicy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "faith-on-parade"
+    name: "Faith On Parade"
+    url_key: "faithonparade"
+    albums: ["hot-sweet-and-juicy"]
+    canonical_album: "hot-sweet-and-juicy"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+# ========================================
+# MEDLEYS SECTION (Optional)
+# ========================================
+# TODO: Add common medley patterns if applicable
+# Example:
+# medleys:
+#   - pattern: "Track A > Track B"
+#     tracks: ["track-a-key", "track-b-key"]
+#     separator: ">"
+# medleys: []

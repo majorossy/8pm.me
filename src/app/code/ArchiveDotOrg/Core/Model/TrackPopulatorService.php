@@ -80,6 +80,7 @@ class TrackPopulatorService implements TrackPopulatorServiceInterface
         $result = [
             'shows_processed' => 0,
             'products_created' => 0,
+            'products_updated' => 0,
             'products_skipped' => 0,
             'tracks_matched' => 0,
             'tracks_unmatched' => 0,
@@ -168,12 +169,22 @@ class TrackPopulatorService implements TrackPopulatorServiceInterface
                     }
 
                     try {
-                        // Create product
+                        // Check if product already exists (to distinguish create vs update)
+                        $sku = $track->generateSku();
+                        $existingProductId = $this->trackImporter->getProductIdBySku($sku);
+                        $isUpdate = $existingProductId !== null;
+
+                        // Create or update product
                         $productId = $this->trackImporter->importTrack($track, $show, $artistName);
 
                         if ($productId > 0) {
-                            $result['products_created']++;
-                            $this->log($progressCallback, "  Created product ID $productId for: " . $track->getTitle());
+                            if ($isUpdate) {
+                                $result['products_updated']++;
+                            } else {
+                                $result['products_created']++;
+                            }
+                            $action = $isUpdate ? 'Updated' : 'Created';
+                            $this->log($progressCallback, "  $action product ID $productId for: " . $track->getTitle());
 
                             // Assign to all matching categories
                             foreach ($matchedCategoryIds as $categoryId) {

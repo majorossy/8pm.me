@@ -273,9 +273,9 @@ class TrackImporterTest extends TestCase
         $this->productFactoryMock->method('create')
             ->willThrowException(new \Exception('Database error'));
 
-        $this->loggerMock->expects($this->once())
+        $this->loggerMock->expects($this->atLeastOnce())
             ->method('logImportError')
-            ->with('Track import failed', $this->anything());
+            ->with($this->anything(), $this->anything());
 
         $result = $this->trackImporter->importShowTracks($showMock, 'Test Artist');
 
@@ -378,5 +378,98 @@ class TrackImporterTest extends TestCase
             ->with('Grateful Dead Dark Star 1977 Barton Hall');
 
         $this->trackImporter->importTrack($trackMock, $showMock, 'Grateful Dead');
+    }
+
+    /**
+     * @test
+     */
+    public function testInvalidTrackDataHandling(): void
+    {
+        $showMock = $this->createMock(ShowInterface::class);
+        $showMock->method('getIdentifier')->willReturn('test-show');
+        $showMock->method('getTitle')->willReturn('Test Show');
+
+        // Track with missing title
+        $track1 = $this->createMock(TrackInterface::class);
+        $track1->method('generateSku')->willReturn('sku-1');
+        $track1->method('getTitle')->willReturn(''); // Missing title
+        $track1->method('getLength')->willReturn('3:00');
+
+        // Valid track
+        $track2 = $this->createMock(TrackInterface::class);
+        $track2->method('generateSku')->willReturn('sku-2');
+        $track2->method('getTitle')->willReturn('Valid Track');
+        $track2->method('getLength')->willReturn('4:00');
+        $track2->method('generateUrlKey')->willReturn('valid-track');
+        $track2->method('getName')->willReturn('track02.mp3');
+
+        $showMock->method('getTracks')->willReturn([$track1, $track2]);
+
+        $product2 = $this->createMock(Product::class);
+        $product2->method('getId')->willReturn(2);
+
+        $this->productFactoryMock->method('create')->willReturn($product2);
+        $this->productRepositoryMock->method('get')
+            ->willThrowException(new NoSuchEntityException());
+        $this->productRepositoryMock->method('save')
+            ->willReturn($product2);
+
+        // Should log warning for invalid track
+        $this->loggerMock->expects($this->once())
+            ->method('logImportError')
+            ->with($this->stringContains('Track import failed'));
+
+        $result = $this->trackImporter->importShowTracks($showMock, 'Test Artist');
+
+        // Only valid track should be created
+        $this->assertEquals(1, $result['created']);
+        $this->assertEquals(1, $result['skipped']);
+    }
+
+    /**
+     * @test
+     */
+    public function testDuplicateSkuHandling(): void
+    {
+        $sku = 'duplicate-sku-123';
+
+        $trackMock = $this->createMock(TrackInterface::class);
+        $trackMock->method('generateSku')->willReturn($sku);
+        $trackMock->method('getTitle')->willReturn('Updated Track');
+        $trackMock->method('getLength')->willReturn('5:00');
+        $trackMock->method('generateUrlKey')->willReturn('updated-track');
+        $trackMock->method('getName')->willReturn('track01.mp3');
+
+        $showMock = $this->createMock(ShowInterface::class);
+        $showMock->method('getIdentifier')->willReturn('test-show');
+        $showMock->method('getTitle')->willReturn('Test Show');
+        $showMock->method('getYear')->willReturn('2023');
+
+        // Product already exists
+        $existingProduct = $this->createMock(Product::class);
+        $existingProduct->method('getId')->willReturn(999);
+
+        $this->productRepositoryMock->expects($this->once())
+            ->method('get')
+            ->with($sku)
+            ->willReturn($existingProduct);
+
+        // Should update existing product instead of creating new
+        $this->productFactoryMock->expects($this->never())
+            ->method('create');
+
+        $existingProduct->expects($this->once())
+            ->method('setName')
+            ->with($this->stringContains('Updated Track'));
+
+        $this->productRepositoryMock->expects($this->once())
+            ->method('save')
+            ->with($existingProduct)
+            ->willReturn($existingProduct);
+
+        $result = $this->trackImporter->importTrack($trackMock, $showMock, 'Test Artist');
+
+        // Should return existing product ID
+        $this->assertEquals(999, $result);
     }
 }

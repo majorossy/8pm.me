@@ -114,6 +114,7 @@ export default function ArtistsPageContent({ artists }: ArtistsPageContentProps)
           name: a.name,
           slug: a.slug,
           songCount: a.songCount ?? a.albums.reduce((sum, album) => sum + album.totalSongs, 0),
+          albumCount: a.albumCount ?? a.albums.length,
         }))}
         onStartListening={scrollToArtists}
       />

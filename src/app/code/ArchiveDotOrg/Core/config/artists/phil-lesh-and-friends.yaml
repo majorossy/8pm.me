@@ -1,0 +1,135 @@
+# ========================================
+# Phil Lesh and Friends Configuration
+# ========================================
+#
+# Generated: 2026-01-29 14:55:14
+# Albums Populated: 1
+# Tracks Populated:       12
+# Status: Ready for use
+#
+# TODO:
+#   1. Add year to each album
+#   2. Add track aliases for better matching
+#   3. Add medley patterns (if applicable)
+#   4. Run validation: bin/magento archive:validate phil-lesh-and-friends
+#
+# See template.yaml for structure reference.
+# ========================================
+
+# ========================================
+# ARTIST SECTION
+# ========================================
+artist:
+  name: "Phil Lesh and Friends"
+  collection_id: "PhilLeshandFriends"
+  url_key: "phil-lesh-and-friends"
+
+# ========================================
+# ALBUMS SECTION
+# ========================================
+albums:
+  - key: "there-and-back-again"
+    name: "There and Back Again"
+    url_key: "thereandbackagain"
+    type: "studio"
+    # TODO: Add year field
+
+# ========================================
+# TRACKS SECTION
+# ========================================
+tracks:
+  - key: "celebration"
+    name: "Celebration"
+    url_key: "celebration"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "dark-star--12-31-01--oakland--california--with-derek-trucks-"
+    name: "Dark Star (12/31/01, Oakland, California, with Derek Trucks)"
+    url_key: "darkstar"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "leave-me-out-of-this"
+    name: "Leave Me Out of This"
+    url_key: "leavemeoutofthis"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "liberty"
+    name: "Liberty"
+    url_key: "liberty"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "midnight-train"
+    name: "Midnight Train"
+    url_key: "midnighttrain"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "night-of-a-thousand-stars"
+    name: "Night of a Thousand Stars"
+    url_key: "nightofathousandstars"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "no-more-do-i"
+    name: "No More Do I"
+    url_key: "nomoredoi"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "patchwork-quilt"
+    name: "Patchwork Quilt"
+    url_key: "patchworkquilt"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "rock-n-roll-blues"
+    name: "Rock-n-Roll Blues"
+    url_key: "rocknrollblues"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "the-eleven--3-30-02--san-francisco--california-"
+    name: "The Eleven (3/30/02, San Francisco, California)"
+    url_key: "theeleven"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "the-real-thing"
+    name: "The Real Thing"
+    url_key: "therealthing"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+  - key: "welcome-to-the-underground"
+    name: "Welcome to the Underground"
+    url_key: "welcometotheunderground"
+    type: "original"
+    # TODO: Add album associations
+    # TODO: Add aliases for better matching
+
+
+# ========================================
+# MEDLEYS SECTION (Optional)
+# ========================================
+# TODO: Add common medley patterns if applicable
+# Example:
+# medleys:
+#   - pattern: "Track A > Track B"
+#     tracks: ["track-a-key", "track-b-key"]
+#     separator: ">"
+# medleys: []

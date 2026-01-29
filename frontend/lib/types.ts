@@ -83,6 +83,7 @@ export interface Artist {
   originLocation?: string;       // City/state/country of origin
   yearsActive?: string;          // e.g., "1965-1995, 2002-present"
   extendedBio?: string;          // Longer biography from external sources
+  bandImageUrl?: string;         // Wikipedia/Wikimedia band photo (hotlinked)
   genres?: string[];             // Musical genres
   officialWebsite?: string;      // Official website URL
   youtubeChannel?: string;       // YouTube channel URL

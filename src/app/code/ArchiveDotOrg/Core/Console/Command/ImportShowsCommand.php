@@ -7,11 +7,15 @@ declare(strict_types=1);
 
 namespace ArchiveDotOrg\Core\Console\Command;
 
+use ArchiveDotOrg\Core\Api\LockServiceInterface;
 use ArchiveDotOrg\Core\Api\ShowImporterInterface;
+use ArchiveDotOrg\Core\Exception\LockException;
 use ArchiveDotOrg\Core\Model\ArchiveApiClient;
 use ArchiveDotOrg\Core\Model\Config;
 use Magento\Framework\App\Area;
+use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\App\State;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -25,8 +29,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *
  * CLI command to import shows from Archive.org
  * Usage: bin/magento archive:import:shows "Artist Name" --collection=collection_id --limit=10
+ *
+ * Note: DEPRECATED in favor of archive:download + archive:populate workflow
+ * Now logs to archivedotorg_import_run table for Import History tracking
  */
-class ImportShowsCommand extends Command
+class ImportShowsCommand extends BaseLoggedCommand
 {
     private const ARGUMENT_ARTIST = 'artist';
     private const OPTION_COLLECTION = 'collection';
@@ -38,23 +45,33 @@ class ImportShowsCommand extends Command
     private ShowImporterInterface $showImporter;
     private Config $config;
     private State $state;
+    private LockServiceInterface $lockService;
 
     /**
      * @param ShowImporterInterface $showImporter
      * @param Config $config
      * @param State $state
+     * @param LockServiceInterface $lockService
+     * @param LoggerInterface $logger
+     * @param ResourceConnection $resourceConnection
      * @param string|null $name
      */
     public function __construct(
         ShowImporterInterface $showImporter,
         Config $config,
         State $state,
+        LockServiceInterface $lockService,
+        LoggerInterface $logger,
+        ResourceConnection $resourceConnection,
         ?string $name = null
     ) {
-        parent::__construct($name);
         $this->showImporter = $showImporter;
         $this->config = $config;
         $this->state = $state;
+        $this->lockService = $lockService;
+        $this->logger = $logger;
+        $this->resourceConnection = $resourceConnection;
+        parent::__construct($name);
     }
 
     /**
@@ -104,7 +121,11 @@ class ImportShowsCommand extends Command
     /**
      * @inheritDoc
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function doExecute(
+        InputInterface $input,
+        OutputInterface $output,
+        string $correlationId
+    ): int
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -207,11 +228,35 @@ class ImportShowsCommand extends Command
             ['Mode', $dryRun ? 'Dry Run' : 'Live Import']
         ]);
 
-        if ($dryRun) {
-            return $this->executeDryRun($io, $artistName, $collectionId, $limit, $offset);
+        // Set artist for progress tracking
+        $this->setCurrentArtist($artistName);
+
+        // Acquire lock
+        try {
+            $lockToken = $this->lockService->acquire('import', $collectionId, 300);
+        } catch (LockException $e) {
+            $io->error($e->getMessage());
+            return Command::FAILURE;
         }
 
-        return $this->executeImport($io, $output, $artistName, $collectionId, $limit, $offset);
+        try {
+            if ($dryRun) {
+                return $this->executeDryRun($io, $artistName, $collectionId, $limit, $offset, $correlationId);
+            }
+
+            return $this->executeImport($io, $output, $artistName, $collectionId, $limit, $offset, $correlationId);
+
+        } finally {
+            // Always release lock
+            try {
+                $this->lockService->release($lockToken);
+            } catch (\Exception $e) {
+                $this->logger->error('Failed to release lock', [
+                    'collection_id' => $collectionId,
+                    'error' => $e->getMessage()
+                ]);
+            }
+        }
     }
 
     /**
@@ -222,6 +267,7 @@ class ImportShowsCommand extends Command
      * @param string $collectionId
      * @param int|null $limit
      * @param int|null $offset
+     * @param string $correlationId
      * @return int
      */
     private function executeDryRun(
@@ -229,7 +275,8 @@ class ImportShowsCommand extends Command
         string $artistName,
         string $collectionId,
         ?int $limit,
-        ?int $offset
+        ?int $offset,
+        string $correlationId
     ): int {
         $io->section('Performing Dry Run...');
 
@@ -260,6 +307,7 @@ class ImportShowsCommand extends Command
      * @param string $collectionId
      * @param int|null $limit
      * @param int|null $offset
+     * @param string $correlationId
      * @return int
      */
     private function executeImport(
@@ -268,7 +316,8 @@ class ImportShowsCommand extends Command
         string $artistName,
         string $collectionId,
         ?int $limit,
-        ?int $offset
+        ?int $offset,
+        string $correlationId
     ): int {
         $io->section('Starting Import...');
 
@@ -293,13 +342,21 @@ class ImportShowsCommand extends Command
             $progressBar->finish();
             $output->writeln('');
 
+            // Update progress tracking in database
+            $resultArray = $result->toArray();
+            $this->updateProgress(
+                $correlationId,
+                $resultArray['shows_processed'] ?? 0,
+                $resultArray['tracks_created'] ?? 0
+            );
+
             if ($result->hasErrors()) {
                 $io->warning('Import completed with errors.');
             } else {
                 $io->success('Import completed successfully.');
             }
 
-            $this->displayResults($io, $result->toArray());
+            $this->displayResults($io, $resultArray);
 
             return $result->hasErrors() ? Command::FAILURE : Command::SUCCESS;
         } catch (\Exception $e) {

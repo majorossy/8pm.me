@@ -255,19 +255,48 @@ class TrackMatcherService implements TrackMatcherServiceInterface
         }
 
         // Find best match among candidates using similar_text
-        $bestMatch = null;
-        $bestScore = 0;
+        $matches = [];
 
         foreach ($candidates as $trackKey => $normalized) {
             similar_text($input, $normalized, $percent);
             $score = (int) $percent;
-            if ($score > $bestScore) {
-                $bestScore = $score;
-                $bestMatch = ['track' => $trackKey, 'score' => $score];
-            }
+            $matches[] = ['track' => $trackKey, 'score' => $score, 'normalized' => $normalized];
         }
 
-        return $bestMatch;
+        // Sort by score descending
+        usort($matches, fn($a, $b) => $b['score'] - $a['score']);
+
+        // Check for ambiguous matches (multiple tracks with same top score)
+        if (count($matches) > 1 && $matches[0]['score'] === $matches[1]['score']) {
+            $this->logAmbiguousMatch($input, $artistKey, $matches);
+            return null;  // Require manual resolution
+        }
+
+        return ['track' => $matches[0]['track'], 'score' => $matches[0]['score']];
+    }
+
+    /**
+     * Log ambiguous track match for manual resolution
+     *
+     * @param string $trackTitle Track title being matched
+     * @param string $artistKey Artist key
+     * @param array $matches Array of potential matches with same score
+     * @return void
+     */
+    private function logAmbiguousMatch(string $trackTitle, string $artistKey, array $matches): void
+    {
+        $potentialMatches = array_map(
+            fn($m) => sprintf('%s (score: %d)', $m['track'], $m['score']),
+            array_slice($matches, 0, 5)  // Limit to top 5
+        );
+
+        $this->logger->warning('Ambiguous track match - requires manual resolution', [
+            'track_title' => $trackTitle,
+            'artist_key' => $artistKey,
+            'potential_matches' => $potentialMatches,
+            'match_count' => count($matches),
+            'top_score' => $matches[0]['score'] ?? 0
+        ]);
     }
 
     /**

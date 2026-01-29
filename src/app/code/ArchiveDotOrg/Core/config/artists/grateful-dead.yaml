@@ -1,0 +1,828 @@
+# ========================================
+# Grateful Dead Configuration
+# ========================================
+#
+# Generated: 2026-01-29 14:55:14
+# Albums Populated: 12
+# Tracks Populated: 89
+# Status: Ready for use
+#
+# TODO:
+#   1. Add year to each album
+#   2. Add track aliases for better matching
+#   3. Add medley patterns (if applicable)
+#   4. Run validation: bin/magento archive:validate grateful-dead
+#
+# See template.yaml for structure reference.
+# ========================================
+
+# ========================================
+# ARTIST SECTION
+# ========================================
+artist:
+  name: "Grateful Dead"
+  collection_id: "GratefulDead"
+  url_key: "grateful-dead"
+
+# ========================================
+# ALBUMS SECTION
+# ========================================
+albums:
+  - key: "the-grateful-dead"
+    name: "The Grateful Dead"
+    url_key: "thegratefuldead"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "anthem-of-the-sun"
+    name: "Anthem of the Sun"
+    url_key: "anthemofthesun"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "aoxomoxoa"
+    name: "Aoxomoxoa"
+    url_key: "aoxomoxoa"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "american-beauty"
+    name: "American Beauty"
+    url_key: "americanbeauty"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "wake-of-the-flood"
+    name: "Wake of the Flood"
+    url_key: "wakeoftheflood"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "from-the-mars-hotel"
+    name: "From the Mars Hotel"
+    url_key: "fromthemarshotel"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "blues-for-allah"
+    name: "Blues for Allah"
+    url_key: "bluesforallah"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "terrapin-station"
+    name: "Terrapin Station"
+    url_key: "terrapinstation"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "shakedown-street"
+    name: "Shakedown Street"
+    url_key: "shakedownstreet"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "go-to-heaven"
+    name: "Go to Heaven"
+    url_key: "gotoheaven"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "in-the-dark"
+    name: "In the Dark"
+    url_key: "inthedark"
+    type: "studio"
+    # TODO: Add year field
+
+  - key: "built-to-last"
+    name: "Built to Last"
+    url_key: "builttolast"
+    type: "studio"
+    # TODO: Add year field
+
+# ========================================
+# TRACKS SECTION
+# ========================================
+tracks:
+  - key: "thats-it-for-the-other-one"
+    name: "That's It for the Other One"
+    url_key: "thatsitfortheοtherone"
+    albums: ["anthem-of-the-sun"]
+    canonical_album: "anthem-of-the-sun"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "new-potato-caboose"
+    name: "New Potato Caboose"
+    url_key: "newpotatocaboose"
+    albums: ["anthem-of-the-sun"]
+    canonical_album: "anthem-of-the-sun"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "born-cross-eyed"
+    name: "Born Cross-Eyed"
+    url_key: "borncrosseyed"
+    albums: ["anthem-of-the-sun"]
+    canonical_album: "anthem-of-the-sun"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "alligator"
+    name: "Alligator"
+    url_key: "alligator"
+    albums: ["anthem-of-the-sun"]
+    canonical_album: "anthem-of-the-sun"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "caution-do-not-stop-on-tracks"
+    name: "Caution (Do Not Stop on Tracks)"
+    url_key: "cautiondonοtstopontracks"
+    albums: ["anthem-of-the-sun"]
+    canonical_album: "anthem-of-the-sun"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "st-stephen"
+    name: "St. Stephen"
+    url_key: "ststephen"
+    albums: ["aoxomoxoa"]
+    canonical_album: "aoxomoxoa"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "duprees-diamond-blues"
+    name: "Dupree's Diamond Blues"
+    url_key: "dupreesdiamondblues"
+    albums: ["aoxomoxoa"]
+    canonical_album: "aoxomoxoa"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "rosemary"
+    name: "Rosemary"
+    url_key: "rosemary"
+    albums: ["aoxomoxoa"]
+    canonical_album: "aoxomoxoa"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "doin-that-rag"
+    name: "Doin' That Rag"
+    url_key: "dοinthatrag"
+    albums: ["aoxomoxoa"]
+    canonical_album: "aoxomoxoa"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "mountains-of-the-moon"
+    name: "Mountains of the Moon"
+    url_key: "mountainsofthemoon"
+    albums: ["aoxomoxoa"]
+    canonical_album: "aoxomoxoa"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "china-cat-sunflower"
+    name: "China Cat Sunflower"
+    url_key: "chinacatsunflower"
+    albums: ["aoxomoxoa"]
+    canonical_album: "aoxomoxoa"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "whats-become-of-the-baby"
+    name: "What's Become of the Baby"
+    url_key: "whatsbecomeofthebaby"
+    albums: ["aoxomoxoa"]
+    canonical_album: "aoxomoxoa"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "cosmic-charlie"
+    name: "Cosmic Charlie"
+    url_key: "cosmiccharlie"
+    albums: ["aoxomoxoa"]
+    canonical_album: "aoxomoxoa"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "box-of-rain"
+    name: "Box of Rain"
+    url_key: "boxofrain"
+    albums: ["american-beauty"]
+    canonical_album: "american-beauty"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "friend-of-the-devil"
+    name: "Friend of the Devil"
+    url_key: "friendofthedevil"
+    albums: ["american-beauty"]
+    canonical_album: "american-beauty"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "sugar-magnolia"
+    name: "Sugar Magnolia"
+    url_key: "sugarmagnolia"
+    albums: ["american-beauty"]
+    canonical_album: "american-beauty"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "operator"
+    name: "Operator"
+    url_key: "operator"
+    albums: ["american-beauty"]
+    canonical_album: "american-beauty"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "candyman"
+    name: "Candyman"
+    url_key: "candyman"
+    albums: ["american-beauty"]
+    canonical_album: "american-beauty"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "ripple"
+    name: "Ripple"
+    url_key: "ripple"
+    albums: ["american-beauty"]
+    canonical_album: "american-beauty"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "brokedown-palace"
+    name: "Brokedown Palace"
+    url_key: "brokedownpalace"
+    albums: ["american-beauty"]
+    canonical_album: "american-beauty"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "till-the-morning-comes"
+    name: "Till the Morning Comes"
+    url_key: "tillthemorningcomes"
+    albums: ["american-beauty"]
+    canonical_album: "american-beauty"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "attics-of-my-life"
+    name: "Attics of My Life"
+    url_key: "atticsofmylife"
+    albums: ["american-beauty"]
+    canonical_album: "american-beauty"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "truckin"
+    name: "Truckin'"
+    url_key: "truckin"
+    albums: ["american-beauty"]
+    canonical_album: "american-beauty"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "mississippi-half-step-uptown-toodeloo"
+    name: "Mississippi Half-Step Uptown Toodeloo"
+    url_key: "mississippihalfstepuptowntoodeloo"
+    albums: ["wake-of-the-flood"]
+    canonical_album: "wake-of-the-flood"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "let-me-sing-your-blues-away"
+    name: "Let Me Sing Your Blues Away"
+    url_key: "letmesingyourbluesaway"
+    albums: ["wake-of-the-flood"]
+    canonical_album: "wake-of-the-flood"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "row-jimmy"
+    name: "Row Jimmy"
+    url_key: "rowjimmy"
+    albums: ["wake-of-the-flood"]
+    canonical_album: "wake-of-the-flood"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "stella-blue"
+    name: "Stella Blue"
+    url_key: "stellablue"
+    albums: ["wake-of-the-flood"]
+    canonical_album: "wake-of-the-flood"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "here-comes-sunshine"
+    name: "Here Comes Sunshine"
+    url_key: "herecomessunshine"
+    albums: ["wake-of-the-flood"]
+    canonical_album: "wake-of-the-flood"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "eyes-of-the-world"
+    name: "Eyes of the World"
+    url_key: "eyesoftheworld"
+    albums: ["wake-of-the-flood"]
+    canonical_album: "wake-of-the-flood"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "weather-report-suite"
+    name: "Weather Report Suite"
+    url_key: "weatherreportsuite"
+    albums: ["wake-of-the-flood"]
+    canonical_album: "wake-of-the-flood"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "us-blues"
+    name: "U.S. Blues"
+    url_key: "usblues"
+    albums: ["from-the-mars-hotel"]
+    canonical_album: "from-the-mars-hotel"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "china-doll"
+    name: "China Doll"
+    url_key: "chinadoll"
+    albums: ["from-the-mars-hotel"]
+    canonical_album: "from-the-mars-hotel"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "unbroken-chain"
+    name: "Unbroken Chain"
+    url_key: "unbrokenchain"
+    albums: ["from-the-mars-hotel"]
+    canonical_album: "from-the-mars-hotel"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "loose-lucy"
+    name: "Loose Lucy"
+    url_key: "looselucy"
+    albums: ["from-the-mars-hotel"]
+    canonical_album: "from-the-mars-hotel"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "scarlet-begonias"
+    name: "Scarlet Begonias"
+    url_key: "scarletbegonias"
+    albums: ["from-the-mars-hotel"]
+    canonical_album: "from-the-mars-hotel"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "pride-of-cucamonga"
+    name: "Pride of Cucamonga"
+    url_key: "prideofcucamonga"
+    albums: ["from-the-mars-hotel"]
+    canonical_album: "from-the-mars-hotel"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "money-money"
+    name: "Money Money"
+    url_key: "moneymoney"
+    albums: ["from-the-mars-hotel"]
+    canonical_album: "from-the-mars-hotel"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "ship-of-fools"
+    name: "Ship of Fools"
+    url_key: "shipoffools"
+    albums: ["from-the-mars-hotel"]
+    canonical_album: "from-the-mars-hotel"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "help-on-the-way"
+    name: "Help on the Way"
+    url_key: "helpontheway"
+    albums: ["blues-for-allah"]
+    canonical_album: "blues-for-allah"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "slipknot"
+    name: "Slipknot!"
+    url_key: "slipknot"
+    albums: ["blues-for-allah"]
+    canonical_album: "blues-for-allah"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "franklins-tower"
+    name: "Franklin's Tower"
+    url_key: "franklinstower"
+    albums: ["blues-for-allah"]
+    canonical_album: "blues-for-allah"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "king-solomons-marbles"
+    name: "King Solomon's Marbles"
+    url_key: "kingsolomonsmarbles"
+    albums: ["blues-for-allah"]
+    canonical_album: "blues-for-allah"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "the-music-never-stopped"
+    name: "The Music Never Stopped"
+    url_key: "themusicneverstopped"
+    albums: ["blues-for-allah"]
+    canonical_album: "blues-for-allah"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "crazy-fingers"
+    name: "Crazy Fingers"
+    url_key: "crazyfingers"
+    albums: ["blues-for-allah"]
+    canonical_album: "blues-for-allah"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "sage-and-spirit"
+    name: "Sage & Spirit"
+    url_key: "sagespirit"
+    albums: ["blues-for-allah"]
+    canonical_album: "blues-for-allah"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "blues-for-allah"
+    name: "Blues for Allah"
+    url_key: "bluesforallah"
+    albums: ["blues-for-allah"]
+    canonical_album: "blues-for-allah"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "sand-castles-and-glass-camels"
+    name: "Sand Castles & Glass Camels"
+    url_key: "sandcastlesglasscamels"
+    albums: ["blues-for-allah"]
+    canonical_album: "blues-for-allah"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "unusual-occurrences-in-the-desert"
+    name: "Unusual Occurrences in the Desert"
+    url_key: "unusualoccurrencesinthedesert"
+    albums: ["blues-for-allah"]
+    canonical_album: "blues-for-allah"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "estimated-prophet"
+    name: "Estimated Prophet"
+    url_key: "estimatedprophet"
+    albums: ["terrapin-station"]
+    canonical_album: "terrapin-station"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dancin-in-the-streets"
+    name: "Dancin' in the Streets"
+    url_key: "dancininnthestreets"
+    albums: ["terrapin-station"]
+    canonical_album: "terrapin-station"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "passenger"
+    name: "Passenger"
+    url_key: "passenger"
+    albums: ["terrapin-station"]
+    canonical_album: "terrapin-station"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "sunrise"
+    name: "Sunrise"
+    url_key: "sunrise"
+    albums: ["terrapin-station"]
+    canonical_album: "terrapin-station"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "samson-and-delilah"
+    name: "Samson and Delilah"
+    url_key: "samsonanddelilah"
+    albums: ["terrapin-station"]
+    canonical_album: "terrapin-station"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "terrapin-station"
+    name: "Terrapin Station"
+    url_key: "terrapinstation"
+    albums: ["terrapin-station"]
+    canonical_album: "terrapin-station"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "good-lovin"
+    name: "Good Lovin'"
+    url_key: "goodlovin"
+    albums: ["shakedown-street"]
+    canonical_album: "shakedown-street"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "france"
+    name: "France"
+    url_key: "france"
+    albums: ["shakedown-street"]
+    canonical_album: "shakedown-street"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "shakedown-street"
+    name: "Shakedown Street"
+    url_key: "shakedownstreet"
+    albums: ["shakedown-street"]
+    canonical_album: "shakedown-street"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "serengetti"
+    name: "Serengetti"
+    url_key: "serengetti"
+    albums: ["shakedown-street"]
+    canonical_album: "shakedown-street"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "fire-on-the-mountain"
+    name: "Fire on the Mountain"
+    url_key: "fireonthemountain"
+    albums: ["shakedown-street"]
+    canonical_album: "shakedown-street"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "i-need-a-miracle"
+    name: "I Need a Miracle"
+    url_key: "ineedamiracle"
+    albums: ["shakedown-street"]
+    canonical_album: "shakedown-street"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "from-the-heart-of-me"
+    name: "From the Heart of Me"
+    url_key: "fromtheheartofme"
+    albums: ["shakedown-street"]
+    canonical_album: "shakedown-street"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "stagger-lee"
+    name: "Stagger Lee"
+    url_key: "staggerlee"
+    albums: ["shakedown-street"]
+    canonical_album: "shakedown-street"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "all-new-minglewood-blues"
+    name: "All New Minglewood Blues"
+    url_key: "allnewminglewoodblues"
+    albums: ["shakedown-street"]
+    canonical_album: "shakedown-street"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "if-i-had-the-world-to-give"
+    name: "If I Had the World to Give"
+    url_key: "ifihadtheworldtogive"
+    albums: ["shakedown-street"]
+    canonical_album: "shakedown-street"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "alabama-getaway"
+    name: "Alabama Getaway"
+    url_key: "alabamagetaway"
+    albums: ["go-to-heaven"]
+    canonical_album: "go-to-heaven"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "far-from-me"
+    name: "Far from Me"
+    url_key: "farfromme"
+    albums: ["go-to-heaven"]
+    canonical_album: "go-to-heaven"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "althea"
+    name: "Althea"
+    url_key: "althea"
+    albums: ["go-to-heaven"]
+    canonical_album: "go-to-heaven"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "feel-like-a-stranger"
+    name: "Feel Like a Stranger"
+    url_key: "feellikeastranger"
+    albums: ["go-to-heaven"]
+    canonical_album: "go-to-heaven"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "lost-sailor"
+    name: "Lost Sailor"
+    url_key: "lostsailor"
+    albums: ["go-to-heaven"]
+    canonical_album: "go-to-heaven"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "saint-of-circumstance"
+    name: "Saint of Circumstance"
+    url_key: "saintofcircumstance"
+    albums: ["go-to-heaven"]
+    canonical_album: "go-to-heaven"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "antwerps-placebo-the-plumber"
+    name: "Antwerp's Placebo (The Plumber)"
+    url_key: "antwerpsplacebotheηlumber"
+    albums: ["go-to-heaven"]
+    canonical_album: "go-to-heaven"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "easy-to-love-you"
+    name: "Easy to Love You"
+    url_key: "easytoloveyou"
+    albums: ["go-to-heaven"]
+    canonical_album: "go-to-heaven"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "dont-ease-me-in"
+    name: "Don't Ease Me In"
+    url_key: "donteasemein"
+    albums: ["go-to-heaven"]
+    canonical_album: "go-to-heaven"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "touch-of-grey"
+    name: "Touch of Grey"
+    url_key: "touchofgrey"
+    albums: ["in-the-dark"]
+    canonical_album: "in-the-dark"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "hell-in-a-bucket"
+    name: "Hell in a Bucket"
+    url_key: "hellinabucket"
+    albums: ["in-the-dark"]
+    canonical_album: "in-the-dark"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "when-push-comes-to-shove"
+    name: "When Push Comes to Shove"
+    url_key: "whenpushcomestoshove"
+    albums: ["in-the-dark"]
+    canonical_album: "in-the-dark"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "west-la-fadeaway"
+    name: "West L.A. Fadeaway"
+    url_key: "westlafadeaway"
+    albums: ["in-the-dark"]
+    canonical_album: "in-the-dark"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "tons-of-steel"
+    name: "Tons of Steel"
+    url_key: "tonsofsteel"
+    albums: ["in-the-dark"]
+    canonical_album: "in-the-dark"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "throwing-stones"
+    name: "Throwing Stones"
+    url_key: "throwingstones"
+    albums: ["in-the-dark"]
+    canonical_album: "in-the-dark"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "black-muddy-river"
+    name: "Black Muddy River"
+    url_key: "blackmuddyriver"
+    albums: ["in-the-dark"]
+    canonical_album: "in-the-dark"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "foolish-heart"
+    name: "Foolish Heart"
+    url_key: "foolishheart"
+    albums: ["built-to-last"]
+    canonical_album: "built-to-last"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "just-a-little-light"
+    name: "Just a Little Light"
+    url_key: "justalittlelight"
+    albums: ["built-to-last"]
+    canonical_album: "built-to-last"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "built-to-last"
+    name: "Built to Last"
+    url_key: "builttolast"
+    albums: ["built-to-last"]
+    canonical_album: "built-to-last"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "blow-away"
+    name: "Blow Away"
+    url_key: "blowaway"
+    albums: ["built-to-last"]
+    canonical_album: "built-to-last"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "standing-on-the-moon"
+    name: "Standing on the Moon"
+    url_key: "standingonthemoon"
+    albums: ["built-to-last"]
+    canonical_album: "built-to-last"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "victim-or-the-crime"
+    name: "Victim or the Crime"
+    url_key: "victimorthecrime"
+    albums: ["built-to-last"]
+    canonical_album: "built-to-last"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "we-can-run"
+    name: "We Can Run"
+    url_key: "wecanrun"
+    albums: ["built-to-last"]
+    canonical_album: "built-to-last"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "picasso-moon"
+    name: "Picasso Moon"
+    url_key: "picassomoon"
+    albums: ["built-to-last"]
+    canonical_album: "built-to-last"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+  - key: "i-will-take-you-home"
+    name: "I Will Take You Home"
+    url_key: "iwilltakeyouhome"
+    albums: ["built-to-last"]
+    canonical_album: "built-to-last"
+    type: "original"
+    # TODO: Add aliases for better matching
+
+# ========================================
+# MEDLEYS SECTION (Optional)
+# ========================================
+# TODO: Add common medley patterns if applicable
+# Example:
+# medleys:
+#   - pattern: "Track A > Track B"
+#     tracks: ["track-a-key", "track-b-key"]
+#     separator: ">"
+# medleys: []
