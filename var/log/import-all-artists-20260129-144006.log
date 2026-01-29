@@ -1,0 +1,45 @@
+
+ [ERROR] Unknown artist or collection: uilly strings                            
+
+ Available collections:
+ ----------------------------- ---------------------------------- ------------------------------ 
+  Collection ID                 Artist Name                        Identifier Pattern            
+ ----------------------------- ---------------------------------- ------------------------------ 
+  BillyStrings                  Billy Strings                      billystrings*                 
+  Cabinet                       Cabinet                            cabinet*                      
+  DogsInAPile                   Dogs in a Pile                     dogsinapile*                  
+  Furthur                       Furthur                            furthur*                      
+  GodStreetWine                 God Street Wine                    godstreetwine*                
+  GooseBand                     Goose                              gooseband*                    
+  GracePotterandtheNocturnals   Grace Potter and the Nocturnals    gracepotterandthenocturnals*  
+  GratefulDead                  Grateful Dead                      gratefuldead*                 
+  Guster                        Guster                             guster*                       
+  JoeRussosAlmostDead           Joe Russo's Almost Dead            joerussosalmostdead*          
+  JohnMayer                     John Mayer                         johnmayer*                    
+  KellerWilliams                Keller Williams                    kellerwilliams*               
+  KGLW                          King Gizzard & The Lizard Wizard   kglw*                         
+  LeftoverSalmon                Leftover Salmon                    leftoversalmon*               
+  Lettuce                       Lettuce                            lettuce*                      
+  MacCreek                      Mac Creek                          maccreek*                     
+  Matisyahu                     Matisyahu                          matisyahu*                    
+  moe                           moe.                               moe*                          
+  MyMorningJacket               My Morning Jacket                  mymorningjacket*              
+  OfARevolution                 Of a Revolution                    ofarevolution*                
+  PhilLeshandFriends            Phil Lesh and Friends              philleshandfriends*           
+  RailroadEarth                 Railroad Earth                     railroadearth*                
+  Ratdog                        Ratdog                             ratdog*                       
+  RustedRoot                    Rusted Root                        rustedroot*                   
+  SmashingPumpkins              Smashing Pumpkins                  smashingpumpkins*             
+  SoundTribeSector9             STS9                               soundtribesector9*            
+  TeaLeafGreen                  Tea Leaf Green                     tealeafgreen*                 
+  TedeschiTrucksBand            Tedeschi Trucks Band               tedeschitrucksband*           
+  DiscoBiscuits                 The Disco Biscuits                 discobiscuits*                
+  StringCheeseIncident          The String Cheese Incident         stringcheeseincident*         
+  Twiddle                       Twiddle                            twiddle*                      
+  UmphreysMcGee                 Umphrey's McGee                    umphreysmcgee*                
+  WarrenZevon                   Warren Zevon                       warrenzevon*                  
+  Ween                          Ween                               ween*                         
+  WidespreadPanic               Widespread Panic                   widespreadpanic*              
+  YonderMountainStringBand      Yonder Mountain String Band        yondermountainstringband*     
+ ----------------------------- ---------------------------------- ------------------------------ 
+

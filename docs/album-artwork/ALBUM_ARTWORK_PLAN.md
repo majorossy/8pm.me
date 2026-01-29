@@ -2,9 +2,11 @@
 
 ## What We're Building
 
-Add legal, official studio album artwork from MusicBrainz Cover Art Archive to display alongside live recordings from Archive.org. This gives users context about the artists' studio work while browsing live shows.
+Add studio album artwork from Wikipedia to display alongside live recordings from Archive.org. This gives users context about the artists' studio work while browsing live shows.
 
 **Example:** When viewing Grateful Dead live shows from 1977, display their studio albums like "American Beauty" and "Workingman's Dead" with official artwork in a sidebar or dedicated section.
+
+**Current Status:** ✅ **FUNCTIONAL** - Using Wikipedia API for artwork (MusicBrainz fallback available)
 
 ---
 
@@ -12,9 +14,10 @@ Add legal, official studio album artwork from MusicBrainz Cover Art Archive to d
 
 ### Backend Services Created
 - ✅ `AlbumArtworkServiceInterface.php` - Service contract
-- ✅ `MusicBrainzClient.php` - API client with Guzzle (free, unlimited, no auth)
-- ✅ `AlbumArtworkService.php` - Main service implementation
-- ✅ `DownloadAlbumArtCommand.php` - CLI: `bin/magento archivedotorg:download-album-art`
+- ✅ `WikipediaClient.php` - Wikipedia API client for artwork (PRIMARY)
+- ✅ `MusicBrainzClient.php` - MusicBrainz API client (FALLBACK - currently blocked)
+- ✅ `AlbumArtworkService.php` - Main service implementation (uses Wikipedia)
+- ✅ `DownloadAlbumArtCommand.php` - CLI: `bin/magento archive:artwork:download`
 - ✅ `di.xml` - Services registered in DI container
 - ✅ `db_schema.xml` - Database table created
 
@@ -32,21 +35,26 @@ archivedotorg_studio_albums:
   UNIQUE(artist_name, album_title)
 ```
 
-### What Works
+### What Works ✅
 - Database table created successfully
-- CLI command registered: `bin/magento archivedotorg:download-album-art`
+- CLI command: `bin/magento archive:artwork:download "Artist" --limit=20`
+- Wikipedia API integration working perfectly
 - Services compiled and injectable
+- Artwork downloads and enriches artist categories
 - Code architecture is solid
 
-### 🚨 Current Blocker: Docker SSL Issue
+### Implementation Change: Wikipedia API (2026-01-28)
 
-**Problem:** PHP container cannot connect to MusicBrainz API due to OpenSSL/TLS handshake failure.
-- Error: `SSL_ERROR_SYSCALL in connection to musicbrainz.org:443`
-- MusicBrainz API works perfectly from host machine (Mac)
-- Other HTTPS sites (archive.org, example.com) work from container
-- Likely incompatibility between Debian 12/OpenSSL 3.0.15 and MusicBrainz's TLS config
+**Decision:** Switched from MusicBrainz to Wikipedia as primary data source due to SSL connectivity issues.
 
-**Impact:** Cannot test or run the CLI command from within Docker.
+**Wikipedia API Benefits:**
+- ✅ No authentication required
+- ✅ No rate limiting concerns
+- ✅ Works perfectly from Docker container
+- ✅ High-quality album artwork available
+- ✅ Reliable and fast
+
+**MusicBrainz Status:** Proxy created but API still blocked. Keeping as fallback option.
 
 ---
 

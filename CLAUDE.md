@@ -384,17 +384,19 @@ See `docs/SPOTIFY_FEATURE_PARITY_ROADMAP.md` for full details.
 ### ArchiveDotOrg_Core
 Imports live concert recordings from Archive.org into Magento products.
 
-**CLI Commands (13 total):**
+**CLI Commands (23 total):**
 ```bash
 # Import & Sync
-bin/magento archivedotorg:import-shows "Grateful Dead" --limit=50
-bin/magento archivedotorg:sync-albums
-bin/magento archivedotorg:refresh-products "STS9" --fields=rating,downloads
-bin/magento archivedotorg:cleanup-products --collection=GratefulDead
+bin/magento archive:import:shows "Grateful Dead" --limit=50
+bin/magento archive:sync:albums
+bin/magento archive:refresh:products "STS9" --fields=rating,downloads
+bin/magento archive:cleanup:products --collection=GratefulDead
 
 # Metadata & Tracks
-bin/magento archivedotorg:download-metadata "Phish"
-bin/magento archivedotorg:populate-tracks
+bin/magento archive:download "Phish"              # Download with logging
+bin/magento archive:download:metadata "Phish"     # Direct download
+bin/magento archive:populate                      # Hybrid track matching
+bin/magento archive:populate:tracks               # Legacy track matching
 
 # Artist Enrichment
 bin/magento archive:artist:enrich "Phish" --fields=bio,origin,stats --force
@@ -405,9 +407,23 @@ bin/magento archive:artwork:update
 bin/magento archive:artwork:set-url <category_id> <url>
 bin/magento archive:artwork:retry
 
+# Setup & Validation
+bin/magento archive:setup                         # Setup artists from YAML
+bin/magento archive:validate                      # Validate YAML config
+bin/magento archive:show-unmatched                # Show unmatched tracks
+
+# Migration Tools
+bin/magento archive:migrate:export                # Export to YAML
+bin/magento archive:migrate:organize-folders      # Reorganize folders
+
+# Performance Benchmarks
+bin/magento archive:benchmark:import              # Benchmark import strategies
+bin/magento archive:benchmark:matching            # Benchmark matching algorithms
+bin/magento archive:benchmark:dashboard           # Benchmark dashboard queries
+
 # Utilities
-bin/magento archivedotorg:status --test-collection=GratefulDead
-bin/magento archivedotorg:cache-clear
+bin/magento archive:status --test-collection=GratefulDead
+bin/magento archive:cleanup:cache                 # Cleanup old cache files
 ```
 
 **REST API Endpoints:** (require admin token)
@@ -423,10 +439,10 @@ DELETE /V1/archive/products/:sku       - Delete imported product
 **Cron Jobs:**
 | Job | Schedule | Purpose |
 |-----|----------|---------|
-| `archivedotorg_import_shows` | 2 AM daily | Auto-import from collections |
-| `archivedotorg_sync_albums` | 4 AM daily | Sync categories with products |
-| `archivedotorg_cleanup_progress` | Sunday midnight | Clean stale progress files |
-| `archivedotorg_process_import_queue` | Every minute | Process async import queue |
+| `archive_import_shows` | 2 AM daily | Auto-import from collections |
+| `archive_sync_albums` | 4 AM daily | Sync categories with products |
+| `archive_cleanup_progress` | Sunday midnight | Clean stale progress files |
+| `archive_process_import_queue` | Every minute | Process async import queue |
 
 **GraphQL Extensions:** 20+ fields on ProductInterface (song_title, show_venue, archive_downloads, etc.)
 

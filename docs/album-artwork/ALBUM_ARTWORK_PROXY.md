@@ -1,11 +1,14 @@
 # Album Artwork Proxy Setup
 
 **Date:** 2026-01-28
-**Status:** ⚠️ Blocked - MusicBrainz/CoverArtArchive SSL connection issues
+**Status:** ✅ **NOT NEEDED** - Using Wikipedia API instead
+**Proxy Status:** Created but optional (MusicBrainz still blocked)
 
 ## Overview
 
 This document describes the Node.js proxy setup created to bypass Docker container SSL issues when fetching album artwork from MusicBrainz and Cover Art Archive APIs.
+
+**UPDATE:** The artwork system now uses Wikipedia API as primary source, which works without a proxy. The MusicBrainz proxy remains available as a fallback option if needed in the future.
 
 ## Problem Statement
 
@@ -69,14 +72,29 @@ https://musicbrainz.org/...
    npm install express axios
    ```
 
-## Current Status: BLOCKED
+## Current Status: Wikipedia API Implemented
 
 ### What Happened
 
-After initial successful requests, both `musicbrainz.org` and `coverartarchive.org` (same IP: 142.132.240.1) started closing SSL connections during handshake:
+After initial successful proxy requests, both `musicbrainz.org` and `coverartarchive.org` (same IP: 142.132.240.1) started closing SSL connections during handshake:
 
 ```
 Client network socket disconnected before secure TLS connection was established
+```
+
+### Solution: Wikipedia API
+
+**Decision Made:** Switch to Wikipedia API for album artwork instead of fighting MusicBrainz SSL issues.
+
+**Benefits:**
+- ✅ No SSL issues - works perfectly from Docker
+- ✅ No authentication required
+- ✅ Reliable, fast, and free
+- ✅ High-quality artwork available
+
+**Command to use:**
+```bash
+bin/magento archive:artwork:download "Artist Name" --limit=20
 ```
 
 ### Evidence

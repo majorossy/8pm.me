@@ -10,10 +10,11 @@
 
 1. [Authentication](#authentication)
 2. [API Endpoints](#api-endpoints)
-3. [Data Models](#data-models)
-4. [Error Handling](#error-handling)
-5. [Rate Limiting](#rate-limiting)
-6. [Examples](#examples)
+3. [GraphQL API](#graphql-api)
+4. [Data Models](#data-models)
+5. [Error Handling](#error-handling)
+6. [Rate Limiting](#rate-limiting)
+7. [Examples](#examples)
 
 ---
 
@@ -225,10 +226,12 @@ curl -X DELETE "https://yourstore.com/rest/V1/archive/import/import_20260128_abc
 ```json
 {
   "job_id": "import_20260128_abc123",
-  "status": "cancelled",
+  "status": "failed",
   "message": "Import job cancelled successfully"
 }
 ```
+
+**Note:** Cancelled jobs are marked with status "failed" in the implementation.
 
 **Error Response (400 Bad Request):**
 ```json
@@ -422,7 +425,8 @@ Represents an import job with its current state.
 ```typescript
 interface ImportJob {
   job_id: string;           // Unique identifier (e.g., "import_20260128_abc123")
-  status: string;           // "queued" | "running" | "completed" | "failed" | "cancelled"
+  status: string;           // "pending" | "running" | "completed" | "failed"
+                            // Note: Cancelled jobs are marked as "failed"
   artist_name: string;      // Full artist name
   collection_id: string;    // Archive.org collection ID
   total_shows: number;      // Total shows to import
@@ -451,9 +455,12 @@ interface CollectionInfo {
 
   // Only included with include_stats=true
   total_shows?: number;     // Total shows available on Archive.org
-  imported_shows?: number;  // Shows imported to Magento
-  imported_tracks?: number; // Tracks imported to Magento
+  imported_shows?: number;  // Shows imported to Magento (from getTotalItems() method)
+  imported_tracks?: number; // Tracks imported (from getImportedCount() method)
   last_import?: string;     // ISO 8601 timestamp of last import
+
+  // Note: Field names in JSON response may differ from CollectionInfoInterface method names
+  // The API serializer maps getTotalItems() → total_shows and getImportedCount() → imported_shows
 
   // Configuration details
   configuration?: {
@@ -463,6 +470,215 @@ interface CollectionInfo {
   };
 }
 ```
+
+---
+
+## GraphQL API
+
+The ArchiveDotOrg module extends Magento's GraphQL API with custom fields and queries for Archive.org data.
+
+**GraphQL Endpoint:** `https://yourstore.com/graphql`
+
+### Product Extensions
+
+All Archive.org imported products have 20+ custom fields available on `ProductInterface`:
+
+```graphql
+{
+  products(filter: {sku: {eq: "archive-gd1977-05-08-track01"}}) {
+    items {
+      # Standard Magento fields
+      sku
+      name
+
+      # Archive.org custom fields
+      song_title          # Track title
+      song_duration       # Duration in seconds (e.g., 342)
+      song_url            # Direct .mp3/.flac URL
+      show_name           # Full show identifier
+      identifier          # Archive.org identifier
+      show_venue          # Venue name
+      show_location       # City, State, Country
+      show_taper          # Recording engineer
+      show_source         # Recording equipment
+      lineage             # Signal chain details
+      notes               # Performance notes
+
+      # Archive.org statistics
+      archive_avg_rating      # 0-5 star rating
+      archive_num_reviews     # Number of reviews
+      archive_downloads       # Total downloads
+      archive_downloads_week  # Downloads this week
+      archive_downloads_month # Downloads this month
+    }
+  }
+}
+```
+
+### Category Extensions (Artist Pages)
+
+Artist categories have enriched data from Wikipedia and local statistics:
+
+```graphql
+{
+  categoryList(filters: {name: {eq: "Phish"}}) {
+    id
+    name
+
+    # Artist enrichment (Wikipedia data)
+    band_extended_bio       # Full biography
+    band_origin_location    # "Burlington, Vermont, USA"
+    band_formation_date     # Year formed
+    band_years_active       # "1983–present"
+    band_genres             # "Rock, Jazz fusion, Funk"
+    band_image_url          # Artist photo URL
+    wikipedia_artwork_url   # Wikipedia thumbnail
+
+    # Social media & web
+    band_official_website   # Official site URL
+    band_facebook           # Facebook page URL
+    band_instagram          # Instagram handle
+    band_twitter            # Twitter handle
+
+    # Local statistics (from imported shows)
+    band_total_shows        # Total recorded shows
+    band_most_played_track  # Most frequently performed song
+  }
+}
+```
+
+### Studio Albums Query
+
+Fetch studio album artwork for an artist:
+
+```graphql
+{
+  studioAlbums(artistName: "Grateful Dead") {
+    entity_id
+    artist_name
+    album_title
+    release_year
+    release_date
+    musicbrainz_id
+    artwork_url        # Direct image URL
+    category_id        # Linked category
+    created_at
+    updated_at
+  }
+}
+```
+
+### Example Queries
+
+**Get all Phish shows from 1997:**
+
+```graphql
+query GetPhish1997Shows {
+  products(
+    filter: {
+      category_id: {eq: "123"}  # Phish category ID
+      show_name: {match: "1997"}
+    }
+    pageSize: 100
+    currentPage: 1
+  ) {
+    items {
+      sku
+      song_title
+      song_duration
+      song_url
+      show_venue
+      show_location
+      archive_avg_rating
+      archive_downloads
+    }
+    total_count
+    page_info {
+      current_page
+      total_pages
+    }
+  }
+}
+```
+
+**Get artist info with enrichment data:**
+
+```graphql
+query GetArtistInfo {
+  categoryList(filters: {ids: {eq: "123"}}) {
+    id
+    name
+    band_extended_bio
+    band_origin_location
+    band_genres
+    band_total_shows
+    band_official_website
+    band_facebook
+    band_instagram
+    wikipedia_artwork_url
+  }
+}
+```
+
+**Search songs across all artists:**
+
+```graphql
+query SearchSongs($searchTerm: String!) {
+  products(
+    search: $searchTerm
+    filter: {song_title: {match: $searchTerm}}
+    pageSize: 20
+  ) {
+    items {
+      sku
+      song_title
+      show_name
+      show_venue
+      show_location
+      archive_avg_rating
+    }
+    total_count
+  }
+}
+```
+
+**Get artist with studio albums:**
+
+```graphql
+query GetArtistWithAlbums {
+  categoryList(filters: {name: {eq: "Grateful Dead"}}) {
+    id
+    name
+    band_extended_bio
+  }
+
+  studioAlbums(artistName: "Grateful Dead") {
+    album_title
+    release_year
+    artwork_url
+  }
+}
+```
+
+### GraphQL Headers
+
+GraphQL doesn't require authentication for public queries (reading product data). For mutations or admin-only queries, include the admin token:
+
+```bash
+curl -X POST "https://yourstore.com/graphql" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
+  -d '{"query": "{ products { items { sku } } }"}'
+```
+
+### Field Availability
+
+| Field Group | Always Available | Requires Data |
+|-------------|------------------|---------------|
+| Standard product fields | ✅ Yes | N/A |
+| Archive.org custom fields | ✅ Yes (may be null) | Import required |
+| Artist enrichment | ⚠️ Optional | `archive:artist:enrich` required |
+| Studio albums | ⚠️ Optional | `archive:artwork:download` required |
 
 ---
 
