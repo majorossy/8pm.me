@@ -25,6 +25,9 @@
         <testsuite name="ArchiveDotOrg_Core Unit Tests">
             <directory suffix="Test.php">Unit</directory>
         </testsuite>
+        <testsuite name="ArchiveDotOrg_Core Integration Tests">
+            <directory suffix="Test.php">Integration</directory>
+        </testsuite>
     </testsuites>
 
     <coverage processUncoveredFiles="true">

@@ -119,6 +119,9 @@
                 <item name="archivedotorg_validate_artist" xsi:type="object">ArchiveDotOrg\Core\Console\Command\ValidateArtistCommand</item>
                 <item name="archivedotorg_migrate_export" xsi:type="object">ArchiveDotOrg\Core\Console\Command\MigrateExportCommand</item>
                 <item name="archivedotorg_setup_artist" xsi:type="object">ArchiveDotOrg\Core\Console\Command\SetupArtistCommand</item>
+                <item name="archivedotorg_benchmark_matching" xsi:type="object">ArchiveDotOrg\Core\Console\Command\BenchmarkMatchingCommand</item>
+                <item name="archivedotorg_benchmark_import" xsi:type="object">ArchiveDotOrg\Core\Console\Command\BenchmarkImportCommand</item>
+                <item name="archivedotorg_benchmark_dashboard" xsi:type="object">ArchiveDotOrg\Core\Console\Command\BenchmarkDashboardCommand</item>
             </argument>
         </arguments>
     </type>
