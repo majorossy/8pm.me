@@ -1,0 +1,963 @@
+#!/usr/bin/env bash
+
+# 8PM Project Control Center
+# Comprehensive service management and development tools
+
+set -e
+
+# Get the script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+
+# Color codes for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+MAGENTA='\033[0;35m'
+BOLD='\033[1m'
+DIM='\033[2m'
+REVERSE='\033[7m'
+NC='\033[0m' # No Color
+
+# Service groups (bash 3.2 compatible)
+get_service_group() {
+  local group=$1
+  case "$group" in
+    backend)
+      echo "app phpfpm db redis opensearch rabbitmq mailcatcher phpmyadmin"
+      ;;
+    web)
+      echo "app phpfpm"
+      ;;
+    data)
+      echo "db redis opensearch rabbitmq"
+      ;;
+    cache)
+      echo "redis"
+      ;;
+    *)
+      echo ""
+      ;;
+  esac
+}
+
+# Helper functions
+check_docker_running() {
+  if ! docker info > /dev/null 2>&1; then
+    echo -e "${RED}✗ Error: Docker is not running${NC}"
+    echo "Please start Docker Desktop and try again."
+    exit 1
+  fi
+}
+
+# ============================================================================
+# RESTART OPERATIONS
+# ============================================================================
+
+# Restart Docker service
+restart_docker_service() {
+  local service=$1
+  echo -e "${CYAN}🔄 Restarting Docker service: $service...${NC}"
+  check_docker_running
+  "$SCRIPT_DIR/docker-compose" restart "$service"
+  echo -e "${GREEN}✅ $service restarted${NC}"
+}
+
+# Restart service group
+restart_service_group() {
+  local group=$1
+  local services=$(get_service_group "$group")
+
+  if [ -z "$services" ]; then
+    echo -e "${RED}✗ Error: Unknown service group: $group${NC}"
+    exit 1
+  fi
+
+  echo -e "${CYAN}🔄 Restarting service group: $group...${NC}"
+  check_docker_running
+
+  for service in $services; do
+    echo -e "${BLUE}  → Restarting $service...${NC}"
+    "$SCRIPT_DIR/docker-compose" restart "$service"
+  done
+
+  echo -e "${GREEN}✅ Service group '$group' restarted${NC}"
+}
+
+# Restart frontend (Next.js on host port 3001)
+restart_frontend() {
+  echo -e "${CYAN}🔄 Restarting frontend...${NC}"
+
+  # Kill process on port 3001
+  echo -e "${BLUE}  → Stopping dev server on port 3001...${NC}"
+  lsof -ti:3001 | xargs kill -9 2>/dev/null || echo "    (no process found)"
+
+  # Clean caches
+  echo -e "${BLUE}  → Cleaning caches...${NC}"
+  cd "$PROJECT_DIR/frontend"
+  rm -rf .next tsconfig.tsbuildinfo node_modules/.cache 2>/dev/null || true
+
+  # Start dev server in background
+  echo -e "${BLUE}  → Starting dev server...${NC}"
+  nohup npm run dev > /dev/null 2>&1 &
+
+  sleep 2
+
+  echo -e "${GREEN}✅ Frontend restarted on port 3001${NC}"
+  echo -e "${YELLOW}   View at: http://localhost:3001${NC}"
+}
+
+# Restart all backend services
+restart_backend() {
+  restart_service_group "backend"
+}
+
+# Restart everything
+restart_all() {
+  echo -e "${CYAN}🔄 Restarting all services...${NC}"
+  restart_backend
+  restart_frontend
+  echo -e "${GREEN}✅ All services restarted${NC}"
+}
+
+# ============================================================================
+# MAGENTO CACHE & INDEX
+# ============================================================================
+
+magento_cache_flush() {
+  echo -e "${CYAN}🔄 Flushing Magento cache...${NC}"
+  check_docker_running
+  "$SCRIPT_DIR/magento" cache:flush
+  "$SCRIPT_DIR/magento" cache:clean
+  echo -e "${GREEN}✅ Cache flushed${NC}"
+}
+
+magento_cache_clean() {
+  echo -e "${CYAN}🔄 Cleaning Magento cache (no flush)...${NC}"
+  check_docker_running
+  "$SCRIPT_DIR/magento" cache:clean
+  echo -e "${GREEN}✅ Cache cleaned${NC}"
+}
+
+magento_index() {
+  echo -e "${CYAN}🔄 Reindexing Magento...${NC}"
+  check_docker_running
+  "$SCRIPT_DIR/magento" indexer:reindex
+  echo -e "${GREEN}✅ Reindex complete${NC}"
+}
+
+magento_index_status() {
+  echo -e "${CYAN}📊 Indexer status:${NC}"
+  check_docker_running
+  "$SCRIPT_DIR/magento" indexer:status
+}
+
+magento_index_reset() {
+  echo -e "${CYAN}🔄 Resetting indexers...${NC}"
+  check_docker_running
+  "$SCRIPT_DIR/magento" indexer:reset
+  echo -e "${GREEN}✅ Indexers reset${NC}"
+}
+
+# ============================================================================
+# MAGENTO SETUP & DEPLOY
+# ============================================================================
+
+magento_compile() {
+  echo -e "${CYAN}🔄 Compiling Magento DI...${NC}"
+  check_docker_running
+  "$SCRIPT_DIR/magento" setup:di:compile
+  echo -e "${GREEN}✅ Compile complete${NC}"
+}
+
+magento_upgrade() {
+  echo -e "${CYAN}🔄 Running Magento setup:upgrade...${NC}"
+  check_docker_running
+  "$SCRIPT_DIR/magento" setup:upgrade
+  echo -e "${GREEN}✅ Upgrade complete${NC}"
+}
+
+magento_static_deploy() {
+  echo -e "${CYAN}🔄 Deploying static content...${NC}"
+  check_docker_running
+  "$SCRIPT_DIR/magento" setup:static-content:deploy -f
+  echo -e "${GREEN}✅ Static content deployed${NC}"
+}
+
+magento_mode_dev() {
+  echo -e "${CYAN}🔄 Switching to developer mode...${NC}"
+  check_docker_running
+  "$SCRIPT_DIR/magento" deploy:mode:set developer
+  echo -e "${GREEN}✅ Now in developer mode${NC}"
+}
+
+magento_mode_prod() {
+  echo -e "${CYAN}🔄 Switching to production mode...${NC}"
+  check_docker_running
+  "$SCRIPT_DIR/magento" deploy:mode:set production
+  echo -e "${GREEN}✅ Now in production mode${NC}"
+}
+
+magento_mode_show() {
+  echo -e "${CYAN}📊 Current deploy mode:${NC}"
+  check_docker_running
+  "$SCRIPT_DIR/magento" deploy:mode:show
+}
+
+magento_full_deploy() {
+  echo -e "${CYAN}🔄 Running FULL Magento deployment...${NC}"
+  magento_upgrade
+  magento_compile
+  magento_static_deploy
+  magento_cache_flush
+  magento_index
+  echo -e "${GREEN}✅ Full deployment complete${NC}"
+}
+
+# ============================================================================
+# MAGENTO MODULES & CONFIG
+# ============================================================================
+
+magento_module_status() {
+  echo -e "${CYAN}📊 Module status:${NC}"
+  check_docker_running
+  "$SCRIPT_DIR/magento" module:status
+}
+
+magento_config_import() {
+  echo -e "${CYAN}🔄 Importing configuration...${NC}"
+  check_docker_running
+  "$SCRIPT_DIR/magento" app:config:import
+  echo -e "${GREEN}✅ Configuration imported${NC}"
+}
+
+magento_config_export() {
+  echo -e "${CYAN}🔄 Exporting configuration...${NC}"
+  check_docker_running
+  "$SCRIPT_DIR/magento" app:config:dump
+  echo -e "${GREEN}✅ Configuration exported${NC}"
+}
+
+# ============================================================================
+# DOCKER OPERATIONS
+# ============================================================================
+
+docker_rebuild() {
+  echo -e "${CYAN}🔄 Rebuilding Docker containers...${NC}"
+  check_docker_running
+  "$SCRIPT_DIR/docker-compose" down
+  "$SCRIPT_DIR/docker-compose" build --no-cache
+  "$SCRIPT_DIR/docker-compose" up -d
+  echo -e "${GREEN}✅ Containers rebuilt${NC}"
+}
+
+docker_logs() {
+  local service=$1
+  if [ -z "$service" ]; then
+    echo -e "${CYAN}📋 Tailing all service logs (Ctrl+C to exit)...${NC}"
+    check_docker_running
+    "$SCRIPT_DIR/docker-compose" logs -f
+  else
+    echo -e "${CYAN}📋 Tailing logs for $service (Ctrl+C to exit)...${NC}"
+    check_docker_running
+    "$SCRIPT_DIR/docker-compose" logs -f "$service"
+  fi
+}
+
+docker_clean() {
+  echo -e "${CYAN}🔄 Cleaning Docker volumes and orphans...${NC}"
+  check_docker_running
+  "$SCRIPT_DIR/docker-compose" down -v --remove-orphans
+  docker system prune -f
+  echo -e "${GREEN}✅ Docker cleanup complete${NC}"
+}
+
+docker_reset_db() {
+  echo -e "${RED}⚠️  WARNING: This will delete all database data!${NC}"
+  read -p "Are you sure? (yes/no): " confirm
+  if [ "$confirm" = "yes" ]; then
+    echo -e "${CYAN}🔄 Resetting database...${NC}"
+    check_docker_running
+    "$SCRIPT_DIR/docker-compose" stop db
+    "$SCRIPT_DIR/docker-compose" rm -f db
+    docker volume rm 8pm_dbdata 2>/dev/null || true
+    "$SCRIPT_DIR/docker-compose" up -d db
+    echo -e "${GREEN}✅ Database reset (will need to reinstall Magento)${NC}"
+  else
+    echo -e "${YELLOW}Database reset cancelled${NC}"
+  fi
+}
+
+docker_ps() {
+  echo -e "${CYAN}📊 Container status:${NC}"
+  check_docker_running
+  "$SCRIPT_DIR/docker-compose" ps
+}
+
+# ============================================================================
+# DEVELOPMENT TOOLS
+# ============================================================================
+
+dev_fixperms() {
+  echo -e "${CYAN}🔄 Fixing file permissions...${NC}"
+  check_docker_running
+  "$SCRIPT_DIR/fixperms"
+  echo -e "${GREEN}✅ Permissions fixed${NC}"
+}
+
+dev_fixowns() {
+  echo -e "${CYAN}🔄 Fixing file ownership...${NC}"
+  check_docker_running
+  "$SCRIPT_DIR/fixowns"
+  echo -e "${GREEN}✅ Ownership fixed${NC}"
+}
+
+dev_xdebug_on() {
+  echo -e "${CYAN}🔄 Enabling Xdebug...${NC}"
+  check_docker_running
+  "$SCRIPT_DIR/xdebug" enable
+  echo -e "${GREEN}✅ Xdebug enabled${NC}"
+}
+
+dev_xdebug_off() {
+  echo -e "${CYAN}🔄 Disabling Xdebug...${NC}"
+  check_docker_running
+  "$SCRIPT_DIR/xdebug" disable
+  echo -e "${GREEN}✅ Xdebug disabled${NC}"
+}
+
+dev_xdebug_status() {
+  echo -e "${CYAN}📊 Xdebug status:${NC}"
+  check_docker_running
+  "$SCRIPT_DIR/xdebug" status
+}
+
+# ============================================================================
+# MONITORING & LOGS
+# ============================================================================
+
+logs_app() {
+  docker_logs "app"
+}
+
+logs_phpfpm() {
+  docker_logs "phpfpm"
+}
+
+logs_db() {
+  docker_logs "db"
+}
+
+logs_all() {
+  docker_logs ""
+}
+
+status_check() {
+  echo -e "${CYAN}📊 Service Health Check${NC}"
+  echo -e "${CYAN}════════════════════════════════════════${NC}"
+  echo ""
+
+  check_docker_running
+
+  # Docker containers
+  echo -e "${YELLOW}Docker Containers:${NC}"
+  "$SCRIPT_DIR/docker-compose" ps
+  echo ""
+
+  # Frontend
+  echo -e "${YELLOW}Frontend (port 3001):${NC}"
+  if lsof -ti:3001 > /dev/null 2>&1; then
+    echo -e "${GREEN}✅ Running${NC}"
+  else
+    echo -e "${RED}✗ Not running${NC}"
+  fi
+  echo ""
+
+  # Magento mode
+  echo -e "${YELLOW}Magento Deploy Mode:${NC}"
+  "$SCRIPT_DIR/magento" deploy:mode:show 2>/dev/null || echo "Unknown"
+  echo ""
+}
+
+ports_check() {
+  echo -e "${CYAN}📊 Port Usage Check${NC}"
+  echo -e "${CYAN}════════════════════════════════════════${NC}"
+  echo ""
+
+  local ports=(80 443 3001 3307 6380 9201 15673 8080 1080)
+  local port_names=("Nginx HTTP" "Nginx HTTPS" "Frontend" "MariaDB" "Redis" "OpenSearch" "RabbitMQ" "phpMyAdmin" "Mailcatcher")
+
+  for i in "${!ports[@]}"; do
+    local port=${ports[$i]}
+    local name=${port_names[$i]}
+    printf "%-20s Port %-5s " "$name" "$port"
+    if lsof -ti:$port > /dev/null 2>&1; then
+      echo -e "${GREEN}✅ In use${NC}"
+    else
+      echo -e "${YELLOW}○ Available${NC}"
+    fi
+  done
+}
+
+# ============================================================================
+# COMBINED WORKFLOWS
+# ============================================================================
+
+workflow_quick_fix() {
+  echo -e "${CYAN}🔄 Quick Fix (cache + compile)...${NC}"
+  magento_cache_flush
+  magento_compile
+  echo -e "${GREEN}✅ Quick fix complete${NC}"
+}
+
+workflow_after_pull() {
+  echo -e "${CYAN}🔄 Post-Pull Workflow${NC}"
+  echo -e "${CYAN}════════════════════════════════════════${NC}"
+  echo ""
+  echo -e "${YELLOW}Running after git pull operations...${NC}"
+  echo ""
+
+  # Composer install
+  echo -e "${BLUE}→ Running composer install...${NC}"
+  "$SCRIPT_DIR/composer" install
+
+  # Magento operations
+  magento_upgrade
+  magento_compile
+  magento_cache_flush
+  magento_index
+
+  # Frontend
+  echo -e "${BLUE}→ Installing frontend dependencies...${NC}"
+  cd "$PROJECT_DIR/frontend"
+  npm install
+
+  restart_frontend
+
+  echo -e "${GREEN}✅ Post-pull workflow complete${NC}"
+}
+
+workflow_reset_dev() {
+  echo -e "${RED}⚠️  WARNING: This will reset your entire development environment!${NC}"
+  echo "This will:"
+  echo "  - Stop all containers"
+  echo "  - Clean all caches (Magento, Docker, Frontend)"
+  echo "  - Restart all services"
+  echo ""
+  read -p "Are you sure? (yes/no): " confirm
+
+  if [ "$confirm" = "yes" ]; then
+    echo -e "${CYAN}🔄 Resetting development environment...${NC}"
+
+    # Stop everything
+    echo -e "${BLUE}→ Stopping all services...${NC}"
+    "$SCRIPT_DIR/stop"
+
+    # Clean frontend
+    echo -e "${BLUE}→ Cleaning frontend caches...${NC}"
+    cd "$PROJECT_DIR/frontend"
+    rm -rf .next tsconfig.tsbuildinfo node_modules/.cache 2>/dev/null || true
+
+    # Start backend
+    echo -e "${BLUE}→ Starting backend services...${NC}"
+    "$SCRIPT_DIR/start"
+
+    # Wait for services
+    echo -e "${BLUE}→ Waiting for services to be ready...${NC}"
+    sleep 10
+
+    # Clear Magento caches
+    magento_cache_flush
+
+    # Start frontend
+    restart_frontend
+
+    echo -e "${GREEN}✅ Development environment reset complete${NC}"
+  else
+    echo -e "${YELLOW}Reset cancelled${NC}"
+  fi
+}
+
+workflow_full_reset() {
+  echo -e "${RED}⚠️  DANGER: This will completely reset everything including the database!${NC}"
+  echo "This will:"
+  echo "  - Delete ALL database data"
+  echo "  - Remove Docker volumes"
+  echo "  - Clean all caches"
+  echo "  - You will need to reinstall Magento"
+  echo ""
+  read -p "Type 'DELETE EVERYTHING' to confirm: " confirm
+
+  if [ "$confirm" = "DELETE EVERYTHING" ]; then
+    echo -e "${CYAN}🔄 Full reset in progress...${NC}"
+    docker_clean
+    workflow_reset_dev
+    echo -e "${GREEN}✅ Full reset complete - run bin/setup to reinstall${NC}"
+  else
+    echo -e "${YELLOW}Full reset cancelled${NC}"
+  fi
+}
+
+# ============================================================================
+# COMMAND EXECUTION
+# ============================================================================
+
+execute_command() {
+  local cmd=$1
+
+  case "$cmd" in
+    # Individual Docker services
+    app|phpfpm|db|redis|opensearch|rabbitmq|mailcatcher|phpmyadmin)
+      restart_docker_service "$cmd"
+      ;;
+
+    # Frontend
+    frontend)
+      restart_frontend
+      ;;
+
+    # Service groups
+    backend)
+      restart_backend
+      ;;
+    web|data|cache)
+      restart_service_group "$cmd"
+      ;;
+    all)
+      restart_all
+      ;;
+
+    # Magento Cache & Index
+    magento-cache|cache-flush)
+      magento_cache_flush
+      ;;
+    cache-clean)
+      magento_cache_clean
+      ;;
+    magento-index|reindex)
+      magento_index
+      ;;
+    index-status)
+      magento_index_status
+      ;;
+    index-reset)
+      magento_index_reset
+      ;;
+
+    # Magento Setup & Deploy
+    magento-compile|compile)
+      magento_compile
+      ;;
+    magento-upgrade|upgrade)
+      magento_upgrade
+      ;;
+    static-deploy)
+      magento_static_deploy
+      ;;
+    mode-dev)
+      magento_mode_dev
+      ;;
+    mode-prod)
+      magento_mode_prod
+      ;;
+    mode-show)
+      magento_mode_show
+      ;;
+    full-deploy)
+      magento_full_deploy
+      ;;
+
+    # Magento Modules & Config
+    module-status)
+      magento_module_status
+      ;;
+    config-import)
+      magento_config_import
+      ;;
+    config-export)
+      magento_config_export
+      ;;
+
+    # Docker Operations
+    docker-rebuild)
+      docker_rebuild
+      ;;
+    docker-logs)
+      docker_logs ""
+      ;;
+    docker-clean)
+      docker_clean
+      ;;
+    docker-reset-db)
+      docker_reset_db
+      ;;
+    docker-ps|ps)
+      docker_ps
+      ;;
+
+    # Development Tools
+    fixperms)
+      dev_fixperms
+      ;;
+    fixowns)
+      dev_fixowns
+      ;;
+    xdebug-on)
+      dev_xdebug_on
+      ;;
+    xdebug-off)
+      dev_xdebug_off
+      ;;
+    xdebug-status)
+      dev_xdebug_status
+      ;;
+
+    # Monitoring & Logs
+    logs-app)
+      logs_app
+      ;;
+    logs-phpfpm)
+      logs_phpfpm
+      ;;
+    logs-db)
+      logs_db
+      ;;
+    logs-all)
+      logs_all
+      ;;
+    status)
+      status_check
+      ;;
+    ports)
+      ports_check
+      ;;
+
+    # Combined Workflows
+    quick-fix)
+      workflow_quick_fix
+      ;;
+    after-pull)
+      workflow_after_pull
+      ;;
+    reset-dev)
+      workflow_reset_dev
+      ;;
+    full-reset)
+      workflow_full_reset
+      ;;
+
+    # Help
+    help|--help|-h)
+      show_help
+      ;;
+
+    # Invalid command
+    *)
+      echo -e "${RED}✗ Error: Unknown command: $cmd${NC}"
+      echo ""
+      echo "Run 'bin/rs help' for available commands."
+      echo "Run 'bin/rs' without arguments for interactive menu."
+      exit 1
+      ;;
+  esac
+}
+
+# ============================================================================
+# HELP
+# ============================================================================
+
+show_help() {
+  echo -e "${CYAN}8PM Project Control Center${NC}"
+  echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
+  echo ""
+  echo -e "${YELLOW}USAGE:${NC}"
+  echo "  bin/rs                 Interactive menu"
+  echo "  bin/rs <command>       Run command directly"
+  echo "  bin/rs help            Show this help"
+  echo ""
+  echo -e "${YELLOW}RESTART SERVICES:${NC}"
+  echo "  app, phpfpm, db, redis, opensearch, rabbitmq, mailcatcher, phpmyadmin"
+  echo "  frontend               Next.js (clears .next cache)"
+  echo "  backend                All Docker services"
+  echo "  web                    app + phpfpm"
+  echo "  data                   db + redis + opensearch + rabbitmq"
+  echo "  all                    Everything"
+  echo ""
+  echo -e "${YELLOW}MAGENTO CACHE & INDEX:${NC}"
+  echo "  cache-flush            Flush and clean cache"
+  echo "  cache-clean            Clean cache only"
+  echo "  reindex                Reindex all"
+  echo "  index-status           Show indexer status"
+  echo "  index-reset            Reset indexers"
+  echo ""
+  echo -e "${YELLOW}MAGENTO SETUP & DEPLOY:${NC}"
+  echo "  compile                DI compile"
+  echo "  upgrade                setup:upgrade"
+  echo "  static-deploy          Deploy static content"
+  echo "  mode-dev               Switch to developer mode"
+  echo "  mode-prod              Switch to production mode"
+  echo "  mode-show              Show current mode"
+  echo "  full-deploy            Upgrade + compile + static + cache + index"
+  echo ""
+  echo -e "${YELLOW}MAGENTO CONFIG & MODULES:${NC}"
+  echo "  module-status          List all modules"
+  echo "  config-import          Import configuration"
+  echo "  config-export          Export configuration"
+  echo ""
+  echo -e "${YELLOW}DOCKER OPERATIONS:${NC}"
+  echo "  docker-rebuild         Rebuild containers"
+  echo "  docker-logs            Tail all logs"
+  echo "  docker-clean           Clean volumes/orphans"
+  echo "  docker-reset-db        Reset database (dangerous!)"
+  echo "  ps                     Container status"
+  echo ""
+  echo -e "${YELLOW}DEVELOPMENT TOOLS:${NC}"
+  echo "  fixperms               Fix file permissions"
+  echo "  fixowns                Fix file ownership"
+  echo "  xdebug-on              Enable Xdebug"
+  echo "  xdebug-off             Disable Xdebug"
+  echo "  xdebug-status          Show Xdebug status"
+  echo ""
+  echo -e "${YELLOW}MONITORING & LOGS:${NC}"
+  echo "  logs-app               Tail Nginx logs"
+  echo "  logs-phpfpm            Tail PHP logs"
+  echo "  logs-db                Tail database logs"
+  echo "  logs-all               Tail all logs"
+  echo "  status                 Health check"
+  echo "  ports                  Check port usage"
+  echo ""
+  echo -e "${YELLOW}WORKFLOWS:${NC}"
+  echo "  quick-fix              Cache + compile"
+  echo "  after-pull             Full post-git-pull workflow"
+  echo "  reset-dev              Reset dev environment"
+  echo "  full-reset             Complete reset (dangerous!)"
+  echo ""
+}
+
+# ============================================================================
+# INTERACTIVE MENU WITH ARROW KEY NAVIGATION
+# ============================================================================
+
+# Menu items array
+declare -a MENU_ITEMS=(
+  # Category headers (will be skipped in navigation)
+  "HEADER:RESTART SERVICES"
+  "app:Nginx"
+  "phpfpm:PHP-FPM"
+  "db:MariaDB"
+  "redis:Valkey"
+  "opensearch:Search engine"
+  "rabbitmq:Message queue"
+  "mailcatcher:Email testing"
+  "phpmyadmin:Database admin"
+  "frontend:Next.js (clears .next cache)"
+  "backend:All Docker services"
+  "web:Nginx + PHP-FPM"
+  "data:Database + Cache + Search + Queue"
+  "all:Everything"
+  ""
+  "HEADER:MAGENTO CACHE & INDEX"
+  "cache-flush:Flush and clean all cache"
+  "cache-clean:Clean cache (no flush)"
+  "reindex:Reindex all indexers"
+  "index-status:Show indexer status"
+  "index-reset:Reset all indexers"
+  ""
+  "HEADER:MAGENTO SETUP & DEPLOY"
+  "compile:DI compile"
+  "upgrade:Run setup:upgrade"
+  "static-deploy:Deploy static content"
+  "mode-dev:Switch to developer mode"
+  "mode-prod:Switch to production mode"
+  "mode-show:Show current deploy mode"
+  "full-deploy:Full deployment workflow"
+  ""
+  "HEADER:MAGENTO CONFIG & MODULES"
+  "module-status:List all modules"
+  "config-import:Import app configuration"
+  "config-export:Export app configuration"
+  ""
+  "HEADER:DOCKER OPERATIONS"
+  "docker-rebuild:Rebuild all containers"
+  "docker-logs:Tail all service logs"
+  "docker-clean:Clean volumes and orphans"
+  "docker-reset-db:Reset database (dangerous!)"
+  "ps:Show container status"
+  ""
+  "HEADER:DEVELOPMENT TOOLS"
+  "fixperms:Fix file permissions"
+  "fixowns:Fix file ownership"
+  "xdebug-on:Enable Xdebug"
+  "xdebug-off:Disable Xdebug"
+  "xdebug-status:Show Xdebug status"
+  ""
+  "HEADER:MONITORING & LOGS"
+  "logs-app:Tail Nginx logs"
+  "logs-phpfpm:Tail PHP-FPM logs"
+  "logs-db:Tail database logs"
+  "logs-all:Tail all service logs"
+  "status:Complete health check"
+  "ports:Check port usage"
+  ""
+  "HEADER:WORKFLOWS"
+  "quick-fix:Cache + compile (fast)"
+  "after-pull:Post-git-pull workflow"
+  "reset-dev:Reset dev environment"
+  "full-reset:Complete reset (dangerous!)"
+  ""
+  "help:Show help"
+  "exit:Exit menu"
+)
+
+# Get total selectable items (skip headers and empty lines)
+get_selectable_count() {
+  local count=0
+  for item in "${MENU_ITEMS[@]}"; do
+    if [[ ! "$item" =~ ^HEADER: ]] && [[ -n "$item" ]]; then
+      ((count++))
+    fi
+  done
+  echo "$count"
+}
+
+# Get command at position
+get_command_at_position() {
+  local target_pos=$1
+  local current_pos=0
+
+  for item in "${MENU_ITEMS[@]}"; do
+    if [[ ! "$item" =~ ^HEADER: ]] && [[ -n "$item" ]]; then
+      if [ $current_pos -eq $target_pos ]; then
+        echo "${item%%:*}"
+        return
+      fi
+      ((current_pos++))
+    fi
+  done
+}
+
+# Display menu with current selection highlighted
+display_menu() {
+  local selected=$1
+  local current_pos=0
+
+  clear
+
+  # Header
+  echo -e "${CYAN}╔════════════════════════════════════════════════════════════╗${NC}"
+  echo -e "${CYAN}║         ${BOLD}8PM Project Control Center${NC}${CYAN}                        ║${NC}"
+  echo -e "${CYAN}╚════════════════════════════════════════════════════════════╝${NC}"
+  echo ""
+  echo -e "${DIM}Use ↑↓ arrows to navigate, Enter to select, q to quit${NC}"
+  echo ""
+
+  # Menu items
+  for item in "${MENU_ITEMS[@]}"; do
+    if [[ "$item" =~ ^HEADER:(.+) ]]; then
+      # Category header
+      echo -e "\n${YELLOW}${BOLD}${BASH_REMATCH[1]}:${NC}"
+    elif [[ -z "$item" ]]; then
+      # Empty line (spacer)
+      continue
+    else
+      # Menu item
+      local cmd="${item%%:*}"
+      local desc="${item#*:}"
+
+      if [ $current_pos -eq $selected ]; then
+        # Highlighted item
+        echo -e " ${REVERSE}${GREEN}▶ ${cmd}${NC}${REVERSE} - ${desc}${NC}"
+      else
+        # Normal item
+        echo -e "   ${CYAN}${cmd}${NC} ${DIM}- ${desc}${NC}"
+      fi
+
+      ((current_pos++))
+    fi
+  done
+
+  echo ""
+}
+
+# Interactive menu with arrow key navigation
+show_menu() {
+  local selected=0
+  local max_items=$(get_selectable_count)
+  ((max_items--)) # Zero-indexed
+
+  # Hide cursor
+  tput civis
+
+  # Trap to restore cursor on exit
+  trap 'tput cnorm' EXIT
+
+  while true; do
+    display_menu $selected
+
+    # Read single character
+    read -rsn1 key
+
+    # Handle escape sequences (arrow keys)
+    if [[ "$key" == $'\x1b' ]]; then
+      read -rsn2 key
+      case "$key" in
+        '[A') # Up arrow
+          ((selected--))
+          if [ $selected -lt 0 ]; then
+            selected=$max_items
+          fi
+          ;;
+        '[B') # Down arrow
+          ((selected++))
+          if [ $selected -gt $max_items ]; then
+            selected=0
+          fi
+          ;;
+      esac
+    elif [[ "$key" == "" ]]; then
+      # Enter key
+      local cmd=$(get_command_at_position $selected)
+
+      # Restore cursor and clear screen
+      tput cnorm
+      clear
+
+      if [ "$cmd" = "exit" ]; then
+        echo "Goodbye!"
+        exit 0
+      elif [ "$cmd" = "help" ]; then
+        show_help
+        echo ""
+        read -p "Press Enter to continue..."
+        tput civis
+      else
+        execute_command "$cmd"
+        echo ""
+        read -p "Press Enter to return to menu..."
+        tput civis
+      fi
+    elif [[ "$key" == "q" ]] || [[ "$key" == "Q" ]]; then
+      # Quit
+      tput cnorm
+      clear
+      echo "Goodbye!"
+      exit 0
+    fi
+  done
+}
+
+# ============================================================================
+# MAIN
+# ============================================================================
+
+main() {
+  if [ $# -eq 0 ]; then
+    show_menu
+  else
+    execute_command "$1"
+  fi
+}
+
+main "$@"

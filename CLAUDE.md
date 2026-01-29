@@ -18,6 +18,87 @@ bin/stop    # Stop Magento containers
 cd frontend && npm run dev
 ```
 
+## Project Control Center (`bin/rs`)
+
+Comprehensive command center with **arrow key navigation** for managing all project services and operations.
+
+**Interactive menu with arrow keys:**
+```bash
+bin/rs              # Interactive TUI menu (use ↑↓ arrows, Enter to select, q to quit)
+bin/rs help         # Show all available commands
+```
+
+**Navigation:**
+- `↑` / `↓` arrows - Navigate through menu options
+- `Enter` - Execute selected command
+- `q` - Quit menu
+- Visual highlighting with `▶` indicator
+
+**Quick examples:**
+```bash
+# Restart services
+bin/rs phpfpm              # Restart PHP-FPM
+bin/rs frontend            # Restart Next.js (clears .next cache)
+bin/rs web                 # Restart Nginx + PHP-FPM
+bin/rs all                 # Restart everything
+
+# Magento operations
+bin/rs cache-flush         # Clear all Magento cache
+bin/rs reindex             # Reindex all
+bin/rs compile             # DI compile
+bin/rs full-deploy         # Full deployment (upgrade + compile + static + cache + index)
+
+# Development tools
+bin/rs fixperms            # Fix file permissions
+bin/rs xdebug-on           # Enable Xdebug
+bin/rs status              # Health check all services
+bin/rs ports               # Check port usage
+
+# Workflows
+bin/rs quick-fix           # Cache + compile (fast)
+bin/rs after-pull          # Full post-git-pull workflow
+bin/rs reset-dev           # Reset development environment
+
+# Docker operations
+bin/rs ps                  # Container status
+bin/rs docker-logs         # Tail all logs
+bin/rs docker-clean        # Clean volumes/orphans
+
+# Monitoring
+bin/rs logs-phpfpm         # Tail PHP-FPM logs
+bin/rs logs-all            # Tail all service logs
+```
+
+### Command Categories
+
+**Restart Services:**
+- Individual: `app`, `phpfpm`, `db`, `redis`, `opensearch`, `rabbitmq`, `mailcatcher`, `phpmyadmin`, `frontend`
+- Groups: `backend`, `web`, `data`, `cache`, `all`
+
+**Magento Cache & Index:**
+- `cache-flush`, `cache-clean`, `reindex`, `index-status`, `index-reset`
+
+**Magento Setup & Deploy:**
+- `compile`, `upgrade`, `static-deploy`, `mode-dev`, `mode-prod`, `mode-show`, `full-deploy`
+
+**Magento Config & Modules:**
+- `module-status`, `config-import`, `config-export`
+
+**Docker Operations:**
+- `docker-rebuild`, `docker-logs`, `docker-clean`, `docker-reset-db`, `ps`
+
+**Development Tools:**
+- `fixperms`, `fixowns`, `xdebug-on`, `xdebug-off`, `xdebug-status`
+
+**Monitoring & Logs:**
+- `logs-app`, `logs-phpfpm`, `logs-db`, `logs-all`, `status`, `ports`
+
+**Workflows:**
+- `quick-fix` - Cache + compile (use after code changes)
+- `after-pull` - Full workflow after git pull (composer + upgrade + compile + cache + index + npm install)
+- `reset-dev` - Reset entire dev environment (stop, clean caches, restart)
+- `full-reset` - Complete reset including database (dangerous!)
+
 ## URLs
 
 | URL | Purpose |
@@ -47,8 +128,9 @@ cd frontend && npm run dev
 | phpMyAdmin | 8pm-phpmyadmin-1 | 8080 | 80 |
 
 **Note:**
-- **Frontend runs on port 3001 (via npm, not Docker)** to avoid conflicts
+- **Frontend runs on port 3001 (via npm, not Docker)** - Docker frontend service is disabled in compose.yaml
 - Non-standard host ports (3307, 6380, etc.) are used to avoid conflicts with other Docker projects
+- **phpMyAdmin** only runs in dev mode (loaded from compose.dev.yaml)
 
 ## Common Commands
 
@@ -100,24 +182,34 @@ bin/mysql
 
 ```
 8pm/
-├── bin/           # Helper scripts
-├── compose.yaml   # Docker Compose config
-├── env/           # Environment files
+├── bin/              # Helper scripts (75+ available)
+├── compose.yaml      # Docker Compose config (frontend disabled - runs on host)
+├── docs/             # Project documentation
+│   ├── album-artwork/    # Album artwork integration docs (blocked)
+│   ├── frontend/         # Accessibility, search fix docs
+│   └── import-rearchitecture/  # ETL rearchitecture plans
+├── env/              # Environment files
 │   ├── db.env
 │   ├── magento.env
 │   ├── opensearch.env
 │   ├── phpfpm.env
 │   └── rabbitmq.env
-├── src/           # Magento source code (after setup)
-└── CLAUDE.md      # This file
+├── frontend/         # Next.js frontend (runs on host, port 3001)
+├── src/              # Magento source code
+│   └── app/code/ArchiveDotOrg/  # Custom modules
+└── CLAUDE.md         # This file
 ```
 
 ## Notes
 
 - **2FA disabled** for development convenience
 - **MariaDB 10.6** used (Mage-OS 1.0.5 doesn't support MariaDB 11.x)
+- **Valkey** used instead of Redis (drop-in replacement)
+- **OpenSearch 2.12** used instead of Elasticsearch
 - Source code is in `src/` directory after installation
 - SSL certificate auto-generated and trusted locally
+- **Docker loads multiple compose files:** compose.yaml + compose.healthcheck.yaml + compose.dev.yaml
+- **75+ bin/ scripts available** - run `ls bin/` to see all options
 
 ## Troubleshooting
 
@@ -184,17 +276,117 @@ npm run refresh        # Shortcut (from frontend/)
 - Startup time of ~1.3s indicates healthy dev environment
 
 ### Theme
-- **Only Jamify theme is available** (Spotify-style dark theme)
-- Theme switcher has been removed
-- All pages use Jamify layout with:
+- **Only Campfire theme is available** (warm analog aesthetic)
+- Theme switcher has been removed - hardcoded to `theme-campfire`
+- Color palette: Dark backgrounds (`#1c1a17`), warm accents (`#d4a060`, `#e8a050`)
+- Layout:
   - Desktop: Left sidebar navigation
-  - Mobile: Bottom tab navigation
-  - Dark theme (#121212 background)
+  - Mobile: Bottom tab navigation with haptic feedback
 
-### Key Files
-- `frontend/context/ThemeContext.tsx` - Theme provider (hardcoded to Jamify)
+### Key Frontend Files
+- `frontend/context/ThemeContext.tsx` - Theme provider (hardcoded to campfire)
 - `frontend/components/ClientLayout.tsx` - Main layout wrapper
 - `frontend/components/JamifyTopBar.tsx` - Desktop top bar
 - `frontend/components/JamifyNavSidebar.tsx` - Desktop left sidebar
 - `frontend/components/JamifyMobileNav.tsx` - Mobile bottom nav
 - `frontend/package.json` - Dev server configured for port 3001
+
+### Environment Variables
+File: `frontend/.env.local`
+```bash
+MAGENTO_GRAPHQL_URL=https://magento.test/graphql
+NEXT_PUBLIC_MAGENTO_MEDIA_URL=https://magento.test/media
+NODE_TLS_REJECT_UNAUTHORIZED=0  # Allow self-signed certs in dev
+# NEXT_PUBLIC_SUPABASE_URL=...  # Optional cross-device sync (disabled)
+```
+
+### Audio Features (New - Jan 2026)
+- **Audio Visualizations** (`frontend/components/AudioVisualizations.tsx`)
+  - VUMeter, SpinningReel, Waveform, EQBars, PulsingDot
+- **Crossfade** (`frontend/hooks/useCrossfade.ts`) - Smooth track transitions
+- **Audio Analyzer** (`frontend/hooks/useAudioAnalyzer.ts`) - Web Audio API integration
+- **Keyboard Shortcuts** - Space (play/pause), N/P (next/prev), S (shuffle), R (repeat)
+- **Sleep Timer** (`frontend/hooks/useSleepTimer.ts`) - Auto-pause with preset durations
+- **Media Session API** (`frontend/hooks/useMediaSession.ts`) - Lock screen controls
+- **Haptic Feedback** (`frontend/hooks/useHaptic.ts`) - Vibration API for mobile
+
+### Artist Page Features
+- **Band Members Timeline** (`frontend/components/BandMembersTimeline.tsx`)
+  - Visual timeline showing member history, instruments, tenure
+  - Distinguishes current vs. former members
+- **Band Statistics** - Metrics visualization for artists
+- **Band Biography, Links, Social Widgets** - Artist info components
+
+### Spotify Feature Parity
+**Current Status: ~70% (Phase 1 Complete)**
+
+| Phase | Status | Features |
+|-------|--------|----------|
+| Phase 1 | ✅ Done | Search, Like button, Library, Playlists, Recently played |
+| Phase 2 | ⏳ Planned | Queue save, Sleep timer UI, Lyrics, Share |
+| Phase 3 | ⏳ Planned | Haptic polish, Crossfade UI, Follow artists, Cast |
+
+See `docs/SPOTIFY_FEATURE_PARITY_ROADMAP.md` for full details.
+
+## Custom Magento Modules
+
+### ArchiveDotOrg_Core
+Imports live concert recordings from Archive.org into Magento products.
+
+**CLI Commands (12 total):**
+```bash
+# Import & Sync
+bin/magento archivedotorg:import-shows "Grateful Dead" --limit=50
+bin/magento archivedotorg:sync-albums
+bin/magento archivedotorg:refresh-products "STS9" --fields=rating,downloads
+bin/magento archivedotorg:cleanup-products --collection=GratefulDead
+
+# Metadata & Tracks
+bin/magento archivedotorg:download-metadata "Phish"
+bin/magento archivedotorg:populate-tracks
+
+# Album Artwork
+bin/magento archivedotorg:download-album-art "Phish" --limit=20
+bin/magento archivedotorg:update-category-artwork
+bin/magento archivedotorg:set-artwork-url <category_id> <url>
+bin/magento archivedotorg:retry-missing-artwork
+
+# Utilities
+bin/magento archivedotorg:status --test-collection=GratefulDead
+bin/magento archivedotorg:cache-clear
+```
+
+**REST API Endpoints:** (require admin token)
+```
+POST   /V1/archive/import              - Start import job
+GET    /V1/archive/import/:jobId       - Get job status
+DELETE /V1/archive/import/:jobId       - Cancel running job
+GET    /V1/archive/collections         - List configured collections
+GET    /V1/archive/collections/:id     - Get collection details
+DELETE /V1/archive/products/:sku       - Delete imported product
+```
+
+**Cron Jobs:**
+| Job | Schedule | Purpose |
+|-----|----------|---------|
+| `archivedotorg_import_shows` | 2 AM daily | Auto-import from collections |
+| `archivedotorg_sync_albums` | 4 AM daily | Sync categories with products |
+| `archivedotorg_cleanup_progress` | Sunday midnight | Clean stale progress files |
+| `archivedotorg_process_import_queue` | Every minute | Process async import queue |
+
+**GraphQL Extensions:** 20+ fields on ProductInterface (song_title, show_venue, archive_downloads, etc.)
+
+**Database Tables:**
+- `archivedotorg_activity_log` - Import operation tracking
+- `archivedotorg_studio_albums` - Album artwork cache
+
+### Album Artwork Integration
+**Status:** 🚨 BLOCKED - MusicBrainz/CoverArtArchive blocking connections
+
+**Workaround:** Wikipedia API is working as fallback for artwork.
+
+**When unblocked:**
+1. Start proxy: `bin/proxy` (runs on port 3333)
+2. Run: `bin/magento archivedotorg:download-album-art "Artist" --limit=10`
+
+See `docs/album-artwork/` for full documentation.
