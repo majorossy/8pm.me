@@ -4,17 +4,18 @@ declare(strict_types=1);
 namespace ArchiveDotOrg\Core\Model;
 
 use ArchiveDotOrg\Core\Api\ArtistConfigLoaderInterface;
+use ArchiveDotOrg\Core\Api\ArtistConfigValidatorInterface;
 use ArchiveDotOrg\Core\Exception\ConfigurationException;
 use Magento\Framework\Filesystem\DirectoryList;
 use Psr\Log\LoggerInterface;
 
 /**
- * Stub implementation for artist configuration loading.
+ * Artist Configuration Loader
  *
- * This is a placeholder until Phase 2 implements full YAML loading.
- * Currently returns empty configurations.
+ * Loads and validates artist YAML configuration files.
+ * Supports both yaml_parse_file() and Symfony YAML parser fallback.
  *
- * @see docs/import-rearchitecture/03-PHASE-2-YAML.md for full implementation
+ * @see docs/import-rearchitecture/03-PHASE-2-YAML.md
  */
 class ArtistConfigLoader implements ArtistConfigLoaderInterface
 {
@@ -28,10 +29,12 @@ class ArtistConfigLoader implements ArtistConfigLoaderInterface
 
     /**
      * @param DirectoryList $directoryList
+     * @param ArtistConfigValidatorInterface $validator
      * @param LoggerInterface $logger
      */
     public function __construct(
         private readonly DirectoryList $directoryList,
+        private readonly ArtistConfigValidatorInterface $validator,
         private readonly LoggerInterface $logger
     ) {
     }
@@ -76,6 +79,24 @@ class ArtistConfigLoader implements ArtistConfigLoaderInterface
                     'yaml',
                     sprintf('Failed to parse YAML file: %s', $yamlPath)
                 );
+            }
+        }
+
+        // Validate configuration before caching
+        $validationResult = $this->validator->validate($config);
+        if (!$validationResult['valid']) {
+            $errorMessage = sprintf(
+                "Invalid YAML configuration for '%s':\n%s",
+                $artistKey,
+                implode("\n", $validationResult['errors'])
+            );
+            throw ConfigurationException::invalidValue('yaml', $errorMessage);
+        }
+
+        // Log warnings if present
+        if (!empty($validationResult['warnings'])) {
+            foreach ($validationResult['warnings'] as $warning) {
+                $this->logger->warning(sprintf('[%s] %s', $artistKey, $warning));
             }
         }
 

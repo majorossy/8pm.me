@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+set -e
+
+# Watch for file changes and auto-sync to Docker container
+# Usage: bin/watch [path]
+# Default: watches src/app/code/ArchiveDotOrg
+
+WATCH_PATH="${1:-src/app/code/ArchiveDotOrg}"
+DEBOUNCE_SEC=2
+
+echo "🔍 Watching $WATCH_PATH for changes..."
+echo "📦 Auto-syncing to Docker container on save"
+echo "⏱️  Debounce: ${DEBOUNCE_SEC}s (batches rapid saves)"
+echo ""
+echo "Press Ctrl+C to stop"
+echo ""
+
+# Check if fswatch is installed (native on macOS)
+if ! command -v fswatch &> /dev/null; then
+    echo "❌ fswatch not found. Installing via Homebrew..."
+    brew install fswatch
+fi
+
+# Track last sync time for debouncing
+LAST_SYNC=0
+
+# Watch for changes and sync
+fswatch -0 -r -l "$DEBOUNCE_SEC" "$WATCH_PATH" | while read -d "" event; do
+    CURRENT_TIME=$(date +%s)
+
+    # Skip if we just synced (debounce)
+    if [ $((CURRENT_TIME - LAST_SYNC)) -lt $DEBOUNCE_SEC ]; then
+        continue
+    fi
+
+    LAST_SYNC=$CURRENT_TIME
+    TIMESTAMP=$(date '+%H:%M:%S')
+
+    # Extract relative path from src/
+    RELATIVE_PATH=$(echo "$event" | sed "s|.*/src/||")
+    PARENT_DIR=$(dirname "$RELATIVE_PATH")
+
+    echo "[$TIMESTAMP] 📝 Change detected: $RELATIVE_PATH"
+
+    # Sync the entire directory to avoid partial updates
+    if bin/copytocontainer "app/code/ArchiveDotOrg" 2>&1 | grep -v "Completed copying"; then
+        echo "[$TIMESTAMP] ✅ Synced to container"
+    else
+        echo "[$TIMESTAMP] ✅ Synced"
+    fi
+
+    echo ""
+done

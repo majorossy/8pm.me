@@ -104,8 +104,10 @@ class ArtistConfigValidator implements ArtistConfigValidatorInterface
         // CRITICAL: Fuzzy matching is disabled by default
         if (!empty($matching['fuzzy_enabled'])) {
             $errors[] = 'fuzzy_enabled is true - this is disabled by default. ' .
-                       'Fuzzy matching takes ~43 hours for large artists and uses 6.3GB+ memory. ' .
-                       'Use --enable-fuzzy CLI flag if you really need it.';
+                       'Use hybrid matching instead (exact→alias→metaphone→limited fuzzy). ' .
+                       'Full fuzzy matching takes ~2-10 minutes and uses 50-100MB memory, ' .
+                       'but API rate limiting (3.5 hours for 10k shows) is the real bottleneck. ' .
+                       'Use --enable-fuzzy CLI flag only if absolutely needed.';
         }
 
         // Validate fuzzy threshold if present
@@ -198,6 +200,25 @@ class ArtistConfigValidator implements ArtistConfigValidatorInterface
             // Validate type if present
             if (isset($track['type']) && !in_array($track['type'], ['original', 'cover', 'jam'], true)) {
                 $errors[] = sprintf('tracks[%d].type must be one of: original, cover, jam', $index);
+            }
+
+            // Validate albums field (must be array if present)
+            if (isset($track['albums']) && !is_array($track['albums'])) {
+                $errors[] = sprintf('tracks[%d].albums must be an array', $index);
+            }
+
+            // Validate canonical_album (must exist and be in albums array)
+            if (!empty($track['albums']) && is_array($track['albums'])) {
+                if (empty($track['canonical_album'])) {
+                    $errors[] = sprintf('tracks[%d].canonical_album is required when albums are defined', $index);
+                } elseif (!in_array($track['canonical_album'], $track['albums'], true)) {
+                    $errors[] = sprintf(
+                        'tracks[%d].canonical_album "%s" must be one of the albums: %s',
+                        $index,
+                        $track['canonical_album'],
+                        implode(', ', $track['albums'])
+                    );
+                }
             }
         }
 

@@ -144,6 +144,12 @@ bin/status                # Check container status
 bin/xdebug enable         # Enable Xdebug
 bin/xdebug disable        # Disable Xdebug
 bin/cache-clean           # Watch and auto-clean cache
+
+# Auto-sync files from host to Docker container
+bin/watch-start           # Start file watcher (background)
+bin/watch-stop            # Stop file watcher
+bin/watch-status          # Check watcher status
+bin/watch                 # Run watcher in foreground (see logs)
 ```
 
 ## Magento CLI Examples
@@ -210,6 +216,51 @@ bin/mysql
 - SSL certificate auto-generated and trusted locally
 - **Docker loads multiple compose files:** compose.yaml + compose.healthcheck.yaml + compose.dev.yaml
 - **75+ bin/ scripts available** - run `ls bin/` to see all options
+
+## Docker File Sync System
+
+**Why named volumes instead of bind mounts?**
+
+This project uses Docker **named volumes** (`appdata`) instead of **bind mounts** for Magento files because bind mounts are extremely slow on macOS (10-50x slower due to virtualization overhead). The frontend runs directly on the host to avoid this issue entirely.
+
+**How it works:**
+
+1. **Edit files on your host** (in `src/`)
+2. **Auto-sync with file watcher:**
+   ```bash
+   bin/watch-start   # Starts background watcher
+   ```
+   - Watches `src/app/code/ArchiveDotOrg/` for changes
+   - Auto-syncs to container within 2 seconds of save
+   - Runs in background (logs to `/tmp/8pm-watch.log`)
+
+3. **Manual sync (if needed):**
+   ```bash
+   bin/copytocontainer app/code/ArchiveDotOrg    # Sync specific path
+   bin/copytocontainer --all                      # Sync everything (slow)
+   ```
+
+**File watcher commands:**
+
+```bash
+bin/watch-start    # Start auto-sync in background
+bin/watch-stop     # Stop auto-sync
+bin/watch-status   # Check if running + recent activity
+bin/watch          # Run in foreground (see live logs)
+```
+
+**Recommended workflow:**
+
+1. Start watcher once: `bin/watch-start`
+2. Edit files normally in your IDE
+3. Changes auto-sync to container
+4. Watcher stays running until you stop it or reboot
+
+**When to restart watcher:**
+
+- After system reboot (PID file in `/tmp`)
+- If you see "changes not appearing" issues
+- Check status first: `bin/watch-status`
 
 ## Troubleshooting
 

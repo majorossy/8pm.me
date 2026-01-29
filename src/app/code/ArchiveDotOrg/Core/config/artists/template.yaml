@@ -1,0 +1,156 @@
+# ========================================
+# Archive.org Artist Configuration Template
+# ========================================
+#
+# This file defines the structure for artist YAML configuration files.
+# Copy this template to create a new artist configuration.
+#
+# KEY STABILITY REQUIREMENT:
+# All keys (artist, album, track) must be STABLE and UNIQUE.
+# Once set, never change a key - it's used for internal references.
+# If you need to change a display name, update the 'name' field, not the 'key'.
+#
+# YAML File Location: src/app/code/ArchiveDotOrg/Core/config/artists/{artist-key}.yaml
+#
+# ========================================
+
+# ========================================
+# ARTIST SECTION (Required)
+# ========================================
+artist:
+  # Display name for the artist
+  name: "Artist Display Name"
+
+  # Archive.org collection ID (must match exactly)
+  collection_id: "ArchiveOrgCollectionID"
+
+  # URL-friendly key (lowercase, alphanumeric + hyphens only)
+  # Format: ^[a-z0-9]+(?:-[a-z0-9]+)*$
+  url_key: "artist-url-key"
+
+# ========================================
+# ALBUMS SECTION (Optional but Recommended)
+# ========================================
+# Define studio albums, live albums, and virtual containers
+albums:
+  # Studio album example
+  - key: "album-key-1"           # Stable identifier (never change)
+    name: "Album Display Name"
+    url_key: "album-url-key"
+    year: 2002                   # Release year
+    type: "studio"               # Options: studio, live, compilation, virtual
+
+  # Live album example
+  - key: "live-album-key"
+    name: "Live at Venue 2008"
+    url_key: "live-at-venue-2008"
+    year: 2008
+    type: "live"
+
+  # Virtual album for live-only tracks (never on studio albums)
+  - key: "live-only"
+    name: "Live Repertoire"
+    url_key: "live-repertoire"
+    type: "virtual"              # Not a real album, just a container
+
+# ========================================
+# TRACKS SECTION (Optional but Recommended)
+# ========================================
+# Define canonical track list with aliases for matching
+tracks:
+  # Single-album track example
+  - key: "track-key-1"           # Stable identifier (never change)
+    name: "Track Display Name"
+    url_key: "track-url-key"
+    albums: ["album-key-1"]      # Array of album keys (supports multiple)
+    canonical_album: "album-key-1"  # For display purposes
+    aliases:                     # Alternate spellings/misspellings
+      - "Track Alternate Spelling"
+      - "Common Misspelling"
+    type: "original"             # Options: original, cover, jam
+
+  # Multi-album track example
+  - key: "track-key-2"
+    name: "Popular Track"
+    url_key: "popular-track"
+    albums: ["album-key-1", "live-album-key"]  # On multiple albums
+    canonical_album: "album-key-1"  # Original version
+    aliases:
+      - "Popular Trck"           # Common typo
+    type: "original"
+
+  # Live-only track example
+  - key: "jam-track"
+    name: "Extended Jam"
+    url_key: "extended-jam"
+    albums: ["live-only"]        # Never on studio album
+    canonical_album: "live-only"
+    aliases: ["Extended Jams", "Ext Jam"]
+    type: "jam"
+
+  # Cover song example
+  - key: "cover-song-key"
+    name: "Famous Cover Song"
+    url_key: "famous-cover-song"
+    albums: ["live-only"]
+    canonical_album: "live-only"
+    aliases: ["Famous Cvr"]
+    type: "cover"
+
+# ========================================
+# MEDLEYS SECTION (Optional)
+# ========================================
+# Define common medleys and segues
+medleys:
+  # Segue notation (Track A > Track B)
+  - pattern: "Track Display Name > Popular Track"
+    tracks: ["track-key-1", "track-key-2"]
+    separator: ">"
+
+  # Named medley (has its own title)
+  - pattern: "Epic Medley"
+    tracks: ["track-key-1", "track-key-2", "jam-track"]
+    type: "named_medley"
+
+# ========================================
+# VALIDATION RULES
+# ========================================
+#
+# Required Fields:
+#   - artist.name
+#   - artist.collection_id
+#
+# URL Key Format:
+#   - Lowercase letters, numbers, and hyphens only
+#   - Pattern: ^[a-z0-9]+(?:-[a-z0-9]+)*$
+#
+# Uniqueness:
+#   - All album.key values must be unique
+#   - All track.key values must be unique
+#
+# References:
+#   - tracks[].albums must reference valid album.key values
+#   - tracks[].canonical_album must be in tracks[].albums array
+#
+# Aliases:
+#   - Cannot be empty array (remove field if no aliases)
+#   - Used for fuzzy matching
+#
+# Types:
+#   - album.type: studio, live, compilation, virtual
+#   - track.type: original, cover, jam
+#
+# ========================================
+# MIGRATION FROM PHP DATA PATCHES
+# ========================================
+#
+# If migrating from existing PHP data patches:
+# 1. Run: bin/magento archive:migrate:export --dry-run
+# 2. Review exported YAML files in config/artists/
+# 3. Run: bin/magento archive:validate --all
+# 4. Fix any validation errors
+# 5. Run: bin/magento archive:setup --all --dry-run
+# 6. Verify output matches expectations
+# 7. Run: bin/magento archive:setup --all
+#
+# ========================================

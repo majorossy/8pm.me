@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+PID_FILE="/tmp/8pm-watch.pid"
+LOG_FILE="/tmp/8pm-watch.log"
+
+if [ ! -f "$PID_FILE" ]; then
+    echo "❌ File watcher is NOT running"
+    echo ""
+    echo "Start with: bin/watch-start"
+    exit 1
+fi
+
+PID=$(cat "$PID_FILE")
+
+if kill -0 "$PID" 2>/dev/null; then
+    echo "✅ File watcher is running (PID: $PID)"
+    echo "📋 Log file: $LOG_FILE"
+    echo ""
+    echo "Recent activity:"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    tail -n 10 "$LOG_FILE" 2>/dev/null || echo "No logs yet"
+else
+    echo "❌ File watcher process $PID not found (stale PID file)"
+    rm -f "$PID_FILE"
+    exit 1
+fi
