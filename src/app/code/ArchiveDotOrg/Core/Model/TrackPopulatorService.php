@@ -380,6 +380,13 @@ class TrackPopulatorService implements TrackPopulatorServiceInterface
         $show->setServerOne($data['d1'] ?? null);
         $show->setServerTwo($data['d2'] ?? null);
 
+        // Extract extended show metadata
+        $show->setFilesCount(isset($data['files_count']) ? (int) $data['files_count'] : null);
+        $show->setItemSize(isset($data['item_size']) ? (int) $data['item_size'] : null);
+        $show->setUploader($this->extractValue($metadata, 'uploader'));
+        $show->setCreatedTimestamp(isset($data['created']) ? (int) $data['created'] : null);
+        $show->setLastUpdatedTimestamp(isset($data['item_last_updated']) ? (int) $data['item_last_updated'] : null);
+
         // Parse tracks from files
         $audioFormat = $this->config->getAudioFormat();
         $tracks = [];
@@ -408,6 +415,20 @@ class TrackPopulatorService implements TrackPopulatorServiceInterface
                 $track->setFormat($audioFormat);
                 $track->setSource($fileData['source'] ?? null);
                 $track->setFileSize(isset($fileData['size']) ? (int) $fileData['size'] : null);
+
+                // Extract extended track metadata
+                $track->setMd5($fileData['md5'] ?? null);
+                $track->setBitrate(isset($fileData['bitrate']) ? (int) $fileData['bitrate'] : null);
+
+                // Extract AcoustID from external-identifier array
+                if (isset($fileData['external-identifier']) && is_array($fileData['external-identifier'])) {
+                    foreach ($fileData['external-identifier'] as $externalId) {
+                        if (is_string($externalId) && strpos($externalId, 'acoustid:') === 0) {
+                            $track->setAcoustid(substr($externalId, 9)); // Remove "acoustid:" prefix
+                            break;
+                        }
+                    }
+                }
 
                 $tracks[] = $track;
             }

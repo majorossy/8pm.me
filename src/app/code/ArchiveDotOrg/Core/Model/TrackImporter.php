@@ -247,6 +247,11 @@ class TrackImporter implements TrackImporterInterface
         $product->setData('album_track', $track->getTrackNumber());
         $product->setData('show_source', $show->getSource());
 
+        // Extended track attributes
+        $product->setData('track_md5', $track->getMd5());
+        $product->setData('track_acoustid', $track->getAcoustid());
+        $product->setData('track_bitrate', $track->getBitrate());
+
         // Show-specific attributes
         $product->setData('identifier', $show->getIdentifier());
         $product->setData('show_name', $show->getTitle());
@@ -258,6 +263,19 @@ class TrackImporter implements TrackImporterInterface
         $product->setData('show_date', $show->getDate());
         $product->setData('pub_date', $show->getPubDate());
         $product->setData('guid', $show->getGuid());
+
+        // Extended show attributes
+        $product->setData('show_files_count', $show->getFilesCount());
+        $product->setData('show_total_size', $show->getItemSize());
+        $product->setData('show_uploader', $show->getUploader());
+
+        // Convert timestamps to datetime format for Magento
+        if ($show->getCreatedTimestamp()) {
+            $product->setData('show_created_date', date('Y-m-d H:i:s', $show->getCreatedTimestamp()));
+        }
+        if ($show->getLastUpdatedTimestamp()) {
+            $product->setData('show_last_updated', date('Y-m-d H:i:s', $show->getLastUpdatedTimestamp()));
+        }
 
         // Build song URL
         if ($show->getServerOne() && $show->getDir()) {

@@ -453,7 +453,12 @@ class BulkProductImporter implements BulkProductImporterInterface
             'server_two' => $show->getServerTwo() ?? 'not stored',
             'notes' => $show->getNotes() ?? 'not stored',
             'lineage' => $show->getLineage() ?? 'not stored',
-            'guid' => $show->getGuid()
+            'guid' => $show->getGuid(),
+            // Extended track attributes
+            'track_md5' => $track->getMd5(),
+            'track_acoustid' => $track->getAcoustid(),
+            // Extended show attributes
+            'show_uploader' => $show->getUploader()
         ];
 
         // Build song URL
@@ -505,6 +510,35 @@ class BulkProductImporter implements BulkProductImporterInterface
 
         // Decimal attributes (price)
         $this->saveAttribute($entityId, 'price', 0.0, 'decimal');
+
+        // Extended int attributes
+        if ($track->getBitrate() !== null) {
+            $this->saveAttribute($entityId, 'track_bitrate', $track->getBitrate(), 'int');
+        }
+        if ($show->getFilesCount() !== null) {
+            $this->saveAttribute($entityId, 'show_files_count', $show->getFilesCount(), 'int');
+        }
+        if ($show->getItemSize() !== null) {
+            $this->saveAttribute($entityId, 'show_total_size', $show->getItemSize(), 'int');
+        }
+
+        // Extended datetime attributes
+        if ($show->getCreatedTimestamp()) {
+            $this->saveAttribute(
+                $entityId,
+                'show_created_date',
+                date('Y-m-d H:i:s', $show->getCreatedTimestamp()),
+                'datetime'
+            );
+        }
+        if ($show->getLastUpdatedTimestamp()) {
+            $this->saveAttribute(
+                $entityId,
+                'show_last_updated',
+                date('Y-m-d H:i:s', $show->getLastUpdatedTimestamp()),
+                'datetime'
+            );
+        }
 
         // Text attributes (description)
         if ($show->getDescription()) {

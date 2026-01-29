@@ -22,6 +22,9 @@ class Track implements TrackInterface
     private string $format = 'flac';
     private ?string $source = null;
     private ?int $fileSize = null;
+    private ?string $md5 = null;
+    private ?string $acoustid = null;
+    private ?int $bitrate = null;
 
     /**
      * @inheritDoc
@@ -156,6 +159,57 @@ class Track implements TrackInterface
     public function setFileSize(?int $fileSize): TrackInterface
     {
         $this->fileSize = $fileSize;
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getMd5(): ?string
+    {
+        return $this->md5;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setMd5(?string $md5): TrackInterface
+    {
+        $this->md5 = $md5;
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAcoustid(): ?string
+    {
+        return $this->acoustid;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setAcoustid(?string $acoustid): TrackInterface
+    {
+        $this->acoustid = $acoustid;
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getBitrate(): ?int
+    {
+        return $this->bitrate;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setBitrate(?int $bitrate): TrackInterface
+    {
+        $this->bitrate = $bitrate;
         return $this;
     }
 

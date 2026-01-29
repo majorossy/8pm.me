@@ -39,6 +39,11 @@ class Show implements ShowInterface
     private ?int $downloads = null;
     private ?int $downloadsWeek = null;
     private ?int $downloadsMonth = null;
+    private ?int $filesCount = null;
+    private ?int $itemSize = null;
+    private ?string $uploader = null;
+    private ?int $createdTimestamp = null;
+    private ?int $lastUpdatedTimestamp = null;
 
     /** @var TrackInterface[] */
     private array $tracks = [];
@@ -474,6 +479,91 @@ class Show implements ShowInterface
     public function setDownloadsMonth(?int $downloadsMonth): ShowInterface
     {
         $this->downloadsMonth = $downloadsMonth;
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getFilesCount(): ?int
+    {
+        return $this->filesCount;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setFilesCount(?int $filesCount): ShowInterface
+    {
+        $this->filesCount = $filesCount;
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getItemSize(): ?int
+    {
+        return $this->itemSize;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setItemSize(?int $itemSize): ShowInterface
+    {
+        $this->itemSize = $itemSize;
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUploader(): ?string
+    {
+        return $this->uploader;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setUploader(?string $uploader): ShowInterface
+    {
+        $this->uploader = $uploader;
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getCreatedTimestamp(): ?int
+    {
+        return $this->createdTimestamp;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setCreatedTimestamp(?int $createdTimestamp): ShowInterface
+    {
+        $this->createdTimestamp = $createdTimestamp;
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getLastUpdatedTimestamp(): ?int
+    {
+        return $this->lastUpdatedTimestamp;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setLastUpdatedTimestamp(?int $lastUpdatedTimestamp): ShowInterface
+    {
+        $this->lastUpdatedTimestamp = $lastUpdatedTimestamp;
         return $this;
     }
 }

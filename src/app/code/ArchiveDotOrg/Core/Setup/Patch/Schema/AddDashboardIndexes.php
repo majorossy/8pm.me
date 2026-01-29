@@ -40,8 +40,9 @@ class AddDashboardIndexes implements SchemaPatchInterface
         // Add index to catalog_product_entity for recently created products
         $catalogProductTable = $this->schemaSetup->getTable('catalog_product_entity');
         $indexName = $this->schemaSetup->getIdxName($catalogProductTable, ['created_at']);
-        
-        if (!$connection->isIndexExists($catalogProductTable, $indexName)) {
+
+        $indexes = $connection->getIndexList($catalogProductTable);
+        if (!isset($indexes[$indexName])) {
             $connection->addIndex(
                 $catalogProductTable,
                 $indexName,
