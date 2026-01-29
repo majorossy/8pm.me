@@ -16,6 +16,7 @@ import { useHaptic } from '@/hooks/useHaptic';
 import { formatDuration } from '@/lib/api';
 import Link from 'next/link';
 import ShareModal from '@/components/ShareModal';
+import { formatLineage } from '@/lib/lineageUtils';
 
 export default function JamifyFullPlayer() {
   const { isPlayerExpanded, collapsePlayer, isTransitioning } = useMobileUI();
@@ -267,22 +268,32 @@ export default function JamifyFullPlayer() {
             </Link>
             {/* Quality indicator - clickable */}
             <div className="relative inline-block" ref={qualityPopupRef}>
-              <button
-                onClick={() => {
-                  vibrate(BUTTON_PRESS);
-                  setShowQualityPopup(!showQualityPopup);
-                }}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#2a2520] border border-[#4a3a28] rounded-md hover:border-[#d4a060] transition-colors btn-touch"
-                aria-label="Change audio quality"
-              >
-                <div className="w-1.5 h-1.5 bg-[#d4a060] rounded-full animate-pulse" />
-                <span className="text-[11px] font-semibold text-[#d4a060] uppercase tracking-wide">
-                  {qualityInfo.format}
+              <div className="flex flex-col items-start gap-1">
+                <button
+                  onClick={() => {
+                    vibrate(BUTTON_PRESS);
+                    setShowQualityPopup(!showQualityPopup);
+                  }}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#2a2520] border border-[#4a3a28] rounded-md hover:border-[#d4a060] transition-colors btn-touch"
+                  aria-label="Change audio quality"
+                >
+                  <div className="w-1.5 h-1.5 bg-[#d4a060] rounded-full animate-pulse" />
+                  <span className="text-[11px] font-semibold text-[#d4a060] uppercase tracking-wide">
+                    {qualityInfo.format}
+                  </span>
+                  <span className="text-[11px] text-[#8a8478]">
+                    {qualityInfo.bitrate}
+                  </span>
+                </button>
+
+                {/* Source - ALWAYS VISIBLE */}
+                <span
+                  className="text-[9px] text-[#6a6458] italic leading-tight truncate max-w-[200px]"
+                  title={currentSong?.lineage || 'Source not specified'}
+                >
+                  {formatLineage(currentSong?.lineage, 60)}
                 </span>
-                <span className="text-[11px] text-[#8a8478]">
-                  {qualityInfo.bitrate}
-                </span>
-              </button>
+              </div>
 
               {/* Quality popup menu */}
               {showQualityPopup && (

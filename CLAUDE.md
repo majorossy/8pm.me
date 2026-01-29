@@ -37,6 +37,28 @@
 
 ---
 
+## Soundboard Badge & Recording Source Display - COMPLETE (2026-01-29)
+
+**Status:** ✅ Implementation complete | ⏳ Testing pending (needs soundboard recordings)
+**Location:** `docs/SOUNDBOARD_BADGE_TESTING.md`
+
+**Implemented:**
+- Gold "SBD" badge on soundboard recording cards (album page carousel)
+- Recording source (lineage) displayed below quality button in all 3 player locations
+- Detection utilities for soundboard/matrix/audience classification
+- Intelligent text truncation (35/50/60 chars depending on location)
+
+**Testing Challenge:**
+- STS9 has 7,946 tracks but **0 soundboard recordings** (all audience)
+- Use **String Cheese Incident** or **moe.** for testing (confirmed soundboards)
+- See `docs/SOUNDBOARD_BADGE_TESTING.md` for full test plan and verification checklist
+
+**Test URLs:**
+- String Cheese: http://localhost:3001/thestringcheeseincident/roundthewheel52539 (20 SBD tracks)
+- moe.: http://localhost:3001/artists/moe (multiple SBD tracks)
+
+---
+
 ## Overview
 Mage-OS 1.0.5 (Magento Open Source fork) as headless backend with Next.js/React frontend.
 

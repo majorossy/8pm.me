@@ -13,6 +13,7 @@ import { useBatteryOptimization } from '@/hooks/useBatteryOptimization';
 import { useHaptic } from '@/hooks/useHaptic';
 import { formatDuration } from '@/lib/api';
 import { getSelectedSong } from '@/lib/queueTypes';
+import { formatLineage } from '@/lib/lineageUtils';
 
 export default function BottomPlayer() {
   const { isMobile, expandPlayer, isPlayerExpanded, isTransitioning } = useMobileUI();
@@ -196,22 +197,32 @@ export default function BottomPlayer() {
 
               {/* Quality badge - clickable, positioned after song info */}
               <div className="relative flex-shrink-0 z-[100]" ref={qualityPopupRef}>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    vibrate(BUTTON_PRESS);
-                    setShowQualityPopup(!showQualityPopup);
-                  }}
-                  className="flex items-center gap-1 px-2 py-1 bg-[#2a2520]/90 border border-[#4a3a28] rounded-md hover:border-[#d4a060] transition-colors active:scale-95"
-                  aria-label="Change audio quality"
-                  type="button"
-                >
-                  <div className="w-1.5 h-1.5 bg-[#d4a060] rounded-full animate-pulse" />
-                  <span className="text-[10px] font-semibold text-[#d4a060] uppercase tracking-wide">
-                    {qualityInfo.format}
+                <div className="flex flex-col items-end gap-1">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      vibrate(BUTTON_PRESS);
+                      setShowQualityPopup(!showQualityPopup);
+                    }}
+                    className="flex items-center gap-1 px-2 py-1 bg-[#2a2520]/90 border border-[#4a3a28] rounded-md hover:border-[#d4a060] transition-colors active:scale-95"
+                    aria-label="Change audio quality"
+                    type="button"
+                  >
+                    <div className="w-1.5 h-1.5 bg-[#d4a060] rounded-full animate-pulse" />
+                    <span className="text-[10px] font-semibold text-[#d4a060] uppercase tracking-wide">
+                      {qualityInfo.format}
+                    </span>
+                  </button>
+
+                  {/* Source - ALWAYS VISIBLE */}
+                  <span
+                    className="text-[9px] text-[#6a6458] italic leading-tight truncate max-w-[120px]"
+                    title={currentSong?.lineage || 'Source not specified'}
+                  >
+                    {formatLineage(currentSong?.lineage, 35)}
                   </span>
-                </button>
+                </div>
 
                 {/* Quality popup menu */}
                 {showQualityPopup && (
@@ -490,23 +501,33 @@ export default function BottomPlayer() {
         <div className="w-[30%] min-w-[180px] flex items-center justify-end gap-3">
           {/* Quality indicator - clickable */}
           <div className="relative" ref={qualityPopupRef}>
-            <button
-              onClick={() => {
-                vibrate(BUTTON_PRESS);
-                setShowQualityPopup(!showQualityPopup);
-              }}
-              className="flex items-center gap-1.5 px-2 py-1 bg-[#2a2520] border border-[#4a3a28] rounded-md hover:border-[#d4a060] transition-colors cursor-pointer"
-              title="Change audio quality"
-              aria-label="Change audio quality"
-            >
-              <div className="w-1.5 h-1.5 bg-[#d4a060] rounded-full animate-pulse" />
-              <span className="text-[10px] font-semibold text-[#d4a060] uppercase tracking-wide">
-                {qualityInfo.format}
+            <div className="flex flex-col items-end gap-1">
+              <button
+                onClick={() => {
+                  vibrate(BUTTON_PRESS);
+                  setShowQualityPopup(!showQualityPopup);
+                }}
+                className="flex items-center gap-1.5 px-2 py-1 bg-[#2a2520] border border-[#4a3a28] rounded-md hover:border-[#d4a060] transition-colors cursor-pointer"
+                title="Change audio quality"
+                aria-label="Change audio quality"
+              >
+                <div className="w-1.5 h-1.5 bg-[#d4a060] rounded-full animate-pulse" />
+                <span className="text-[10px] font-semibold text-[#d4a060] uppercase tracking-wide">
+                  {qualityInfo.format}
+                </span>
+                <span className="text-[10px] text-[#8a8478]">
+                  {qualityInfo.bitrate}
+                </span>
+              </button>
+
+              {/* Source - ALWAYS VISIBLE */}
+              <span
+                className="text-[9px] text-[#6a6458] italic leading-tight truncate max-w-[180px]"
+                title={currentSong?.lineage || 'Source not specified'}
+              >
+                {formatLineage(currentSong?.lineage, 50)}
               </span>
-              <span className="text-[10px] text-[#8a8478]">
-                {qualityInfo.bitrate}
-              </span>
-            </button>
+            </div>
 
             {/* Quality popup menu */}
             {showQualityPopup && (
