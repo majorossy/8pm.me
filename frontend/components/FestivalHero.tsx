@@ -8,11 +8,40 @@ interface LineupArtist {
   slug: string;
   songCount: number;
   albumCount: number;
+  totalShows?: number;
+  mostPlayedTrack?: string;
 }
 
 interface FestivalHeroProps {
   artists: LineupArtist[];
   onStartListening?: () => void;
+}
+
+function ArtistStatsTooltip({ totalShows, mostPlayedTrack }: { totalShows?: number; mostPlayedTrack?: string }) {
+  // Don't render if no stats available
+  if (!totalShows && !mostPlayedTrack) return null;
+
+  return (
+    <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 ease-out pointer-events-none z-50">
+      <span className="relative bg-[rgba(45,42,38,0.95)] border border-[#3a3632] rounded-lg px-3 py-2 shadow-lg backdrop-blur-sm whitespace-nowrap text-xs">
+        {totalShows && (
+          <div className="flex items-center gap-1.5 text-[#d4a060]">
+            <span>⭐</span>
+            <span>{totalShows.toLocaleString()} Shows Recorded</span>
+          </div>
+        )}
+        {mostPlayedTrack && (
+          <div className="flex items-center gap-1.5 text-[#e8dcc4] max-w-xs truncate">
+            <span>🎵</span>
+            <span>Most Played: {mostPlayedTrack}</span>
+          </div>
+        )}
+        {/* Arrow pointer pointing down */}
+        <span className="absolute top-full left-1/2 -translate-x-1/2 -mt-px border-[6px] border-transparent border-t-[#3a3632]"></span>
+        <span className="absolute top-full left-1/2 -translate-x-1/2 -mt-[2px] border-[5px] border-transparent border-t-[rgba(45,42,38,0.95)]"></span>
+      </span>
+    </span>
+  );
 }
 
 export default function FestivalHero({ artists, onStartListening }: FestivalHeroProps) {
@@ -127,15 +156,20 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
                       &#9733;
                     </span>
                   )}
-                  <Link
-                    href={`/artists/${artist.slug}`}
-                    className="hover:text-[#d4a060] transition-colors duration-200"
-                    style={{
-                      fontSize: `clamp(${fontSize.mobile}rem, ${fontSize.mobile + (fontSize.desktop - fontSize.mobile) * 0.5}rem, ${fontSize.desktop}rem)`,
-                    }}
-                  >
-                    {artist.name}
-                  </Link>
+                  <span className="relative group">
+                    <Link
+                      href={`/artists/${artist.slug}`}
+                      className="hover:text-[#d4a060] transition-colors duration-200"
+                      style={{
+                        fontSize: `clamp(${fontSize.mobile}rem, ${fontSize.mobile + (fontSize.desktop - fontSize.mobile) * 0.5}rem, ${fontSize.desktop}rem)`,
+                      }}
+                    >
+                      {artist.name}
+                    </Link>
+                    <span className="hidden md:inline">
+                      <ArtistStatsTooltip totalShows={artist.totalShows} mostPlayedTrack={artist.mostPlayedTrack} />
+                    </span>
+                  </span>
                 </span>
               );
             })}

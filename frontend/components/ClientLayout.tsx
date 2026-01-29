@@ -104,13 +104,14 @@ function InnerLayout({ children }: { children: ReactNode }) {
       {/* Fire glow effect */}
       <div className="fire-glow" />
 
+      {/* Top bar with breadcrumbs - OUTSIDE main for sticky positioning */}
+      <JamifyTopBar />
+
       {/* Main content area */}
       <main
         id="main-content"
-        className="min-h-screen bg-[#1c1a17] relative z-10 pb-[120px]"
+        className="min-h-screen bg-[#1c1a17] relative z-10 pb-[120px] pt-14"
       >
-        {/* Top bar with breadcrumbs */}
-        <JamifyTopBar />
         {children}
 
         {/* Footer */}

@@ -813,6 +813,8 @@
 
 html {
   background-color: var(--bg);
+  overflow-x: hidden;
+  overflow-y: visible; /* Prevent overflow-y: auto which breaks sticky positioning */
 }
 
 body {
@@ -820,6 +822,7 @@ body {
   color: var(--text);
   min-height: 100vh;
   overflow-x: hidden;
+  overflow-y: visible; /* Prevent overflow-y: auto which breaks sticky positioning */
   position: relative;
 }
 
@@ -1694,4 +1697,22 @@ html, body {
 
 .animate-shimmer {
   animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* ========================================
+   Quality Selector Dropdown Animation
+   ======================================== */
+@keyframes dropdownSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-fadeIn {
+  animation: dropdownSlide 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }

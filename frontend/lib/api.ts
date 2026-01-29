@@ -245,6 +245,8 @@ const GET_ARTISTS_QUERY = `
         image
         product_count
         children_count
+        band_total_shows
+        band_most_played_track
       }
     }
   }

@@ -31,15 +31,15 @@ export default function DetailedCassette({
     >
       {/* Cassette shell */}
       <div
-        className={`relative w-[280px] h-[180px] rounded-lg ${
+        className={`relative w-[280px] h-[180px] rounded-lg border-2 ${
           isTop
-            ? 'bg-gradient-to-b from-[#3a3632] to-[#2a2622]'
-            : 'bg-gradient-to-b from-[#2d2a26] to-[#1f1d1a]'
+            ? 'bg-gradient-to-b from-[#3a3632] to-[#2a2622] border-[#5a5652]'
+            : 'bg-gradient-to-b from-[#2d2a26] to-[#1f1d1a] border-[#4a4642]'
         }`}
         style={{
           boxShadow: isTop
-            ? '0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)'
-            : '0 4px 16px rgba(0,0,0,0.4)',
+            ? '0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1), inset 0 0 0 1px rgba(255,255,255,0.05)'
+            : '0 4px 16px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.03)',
         }}
       >
         {/* Corner screws */}

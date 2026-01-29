@@ -2,11 +2,12 @@
 
 // JamifyFullPlayer - Spotify-style full-screen mobile player
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { usePlayer } from '@/context/PlayerContext';
 import { useQueue } from '@/context/QueueContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useMobileUI } from '@/context/MobileUIContext';
+import { useQuality } from '@/context/QualityContext';
 import { useSwipeGesture } from '@/hooks/useSwipeGesture';
 import { useBatteryOptimization } from '@/hooks/useBatteryOptimization';
 import { useSleepTimer, SleepTimerPreset } from '@/hooks/useSleepTimer';
@@ -20,6 +21,7 @@ export default function JamifyFullPlayer() {
   const { isPlayerExpanded, collapsePlayer, isTransitioning } = useMobileUI();
   const { reducedMotion } = useBatteryOptimization();
   const { vibrate, BUTTON_PRESS, SWIPE_COMPLETE } = useHaptic();
+  const { preferredQuality, setPreferredQuality, getStreamUrl } = useQuality();
   const {
     currentSong,
     isPlaying,
@@ -65,6 +67,10 @@ export default function JamifyFullPlayer() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [showTimerNotification, setShowTimerNotification] = useState(false);
 
+  // Quality selector popup state
+  const [showQualityPopup, setShowQualityPopup] = useState(false);
+  const qualityPopupRef = useRef<HTMLDivElement>(null);
+
   // Sleep timer
   const sleepTimer = useSleepTimer({
     onTimerComplete: () => {
@@ -105,9 +111,44 @@ export default function JamifyFullPlayer() {
     }
   }, [isPlayerExpanded, reducedMotion]);
 
+  // Close quality popup when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (qualityPopupRef.current && !qualityPopupRef.current.contains(event.target as Node)) {
+        setShowQualityPopup(false);
+      }
+    };
+
+    if (showQualityPopup) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showQualityPopup]);
+
   if (!currentSong || !isPlayerExpanded) return null;
 
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+
+  // Quality options data
+  const qualityOptions = [
+    { value: 'high' as const, label: 'High', format: 'FLAC', bitrate: 'Lossless', size: '~45MB' },
+    { value: 'medium' as const, label: 'Medium', format: 'MP3', bitrate: '320kbps', size: '~10MB', recommended: true },
+    { value: 'low' as const, label: 'Low', format: 'MP3', bitrate: '128kbps', size: '~4MB' }
+  ];
+
+  // Get quality badge based on user's SELECTED preference
+  const getQualityBadge = () => {
+    // Show selected quality preference (applies to next track)
+    if (preferredQuality === 'high') {
+      return { format: 'FLAC', bitrate: 'Lossless', label: 'High' };
+    } else if (preferredQuality === 'low') {
+      return { format: 'MP3', bitrate: '128k', label: 'Low' };
+    } else {
+      return { format: 'MP3', bitrate: '320k', label: 'Medium' };
+    }
+  };
+
+  const qualityInfo = getQualityBadge();
 
   return (
     <div
@@ -220,10 +261,75 @@ export default function JamifyFullPlayer() {
                 vibrate(BUTTON_PRESS);
                 collapsePlayer();
               }}
-              className="text-[#8a8478] hover:text-white hover:underline truncate block"
+              className="text-[#8a8478] hover:text-white hover:underline truncate block mb-2"
             >
               {currentSong.artistName}
             </Link>
+            {/* Quality indicator - clickable */}
+            <div className="relative inline-block" ref={qualityPopupRef}>
+              <button
+                onClick={() => {
+                  vibrate(BUTTON_PRESS);
+                  setShowQualityPopup(!showQualityPopup);
+                }}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#2a2520] border border-[#4a3a28] rounded-md hover:border-[#d4a060] transition-colors btn-touch"
+                aria-label="Change audio quality"
+              >
+                <div className="w-1.5 h-1.5 bg-[#d4a060] rounded-full animate-pulse" />
+                <span className="text-[11px] font-semibold text-[#d4a060] uppercase tracking-wide">
+                  {qualityInfo.format}
+                </span>
+                <span className="text-[11px] text-[#8a8478]">
+                  {qualityInfo.bitrate}
+                </span>
+              </button>
+
+              {/* Quality popup menu */}
+              {showQualityPopup && (
+                <div className="absolute bottom-full left-0 mb-2 w-72 bg-[#1c1a17] border border-[#4a3a28] rounded-lg shadow-2xl overflow-hidden z-50 animate-fadeIn">
+                  {qualityOptions.map((option, index) => (
+                    <button
+                      key={option.value}
+                      onClick={() => {
+                        vibrate(BUTTON_PRESS);
+                        setPreferredQuality(option.value);
+                        setShowQualityPopup(false);
+                      }}
+                      className={`w-full px-4 py-3 text-left hover:bg-[#2a2520] transition-colors btn-touch ${
+                        option.value === preferredQuality ? 'bg-[#2a2520]' : ''
+                      } ${index !== qualityOptions.length - 1 ? 'border-b border-[#2a2520]' : ''}`}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-sm font-semibold text-[#d4a060]">{option.label}</span>
+                            {option.recommended && (
+                              <span className="px-2 py-0.5 text-xs font-medium bg-[#d4a060] text-[#1c1a17] rounded-full">
+                                Recommended
+                              </span>
+                            )}
+                            {option.value === preferredQuality && (
+                              <svg className="w-4 h-4 text-[#d4a060]" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </svg>
+                            )}
+                          </div>
+                          <div className="text-xs text-[#a89080]">
+                            {option.format} • {option.bitrate} • {option.size}
+                          </div>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                  {/* Notice about quality change timing */}
+                  <div className="px-4 py-2 bg-[#1c1a17] border-t border-[#2a2520]">
+                    <p className="text-[10px] text-[#6a6458] text-center italic">
+                      Quality changes apply to next track
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
           {/* Like button */}
           <button
