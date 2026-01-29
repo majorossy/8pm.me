@@ -9,6 +9,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use ArchiveDotOrg\Admin\Model\Redis\ProgressTracker;
 
 /**
  * Base command with automatic correlation ID tracking and database logging
@@ -25,6 +26,12 @@ abstract class BaseLoggedCommand extends Command
 {
     protected ResourceConnection $resourceConnection;
     protected LoggerInterface $logger;
+    protected ?ProgressTracker $progressTracker = null;
+
+    /**
+     * Current artist being processed (set by subclass for progress tracking)
+     */
+    protected ?string $currentArtist = null;
 
     /**
      * Generate a UUID v4-like correlation ID
@@ -49,9 +56,11 @@ abstract class BaseLoggedCommand extends Command
             $this->logStart($correlationId, $input);
             $result = $this->doExecute($input, $output, $correlationId);
             $this->logEnd($correlationId, 'completed');
+            $this->completeRedisProgress();
             return $result;
         } catch (\Exception $e) {
             $this->logEnd($correlationId, 'failed', $e->getMessage());
+            $this->failRedisProgress($e->getMessage());
             throw $e;
         }
     }
@@ -185,5 +194,88 @@ abstract class BaseLoggedCommand extends Command
                 'error' => $e->getMessage()
             ]);
         }
+    }
+
+    /**
+     * Set ProgressTracker instance (injected by DI in subclasses)
+     */
+    public function setProgressTracker(ProgressTracker $progressTracker): void
+    {
+        $this->progressTracker = $progressTracker;
+    }
+
+    /**
+     * Set current artist for Redis progress tracking
+     *
+     * Call this from doExecute() at the start of processing
+     */
+    protected function setCurrentArtist(string $artist): void
+    {
+        $this->currentArtist = $artist;
+    }
+
+    /**
+     * Update Redis progress for real-time dashboard updates
+     *
+     * @param int $current Current item number (e.g., show 150)
+     * @param int $total Total items to process (e.g., 523 shows)
+     * @param int $processed Number of items successfully processed (e.g., 145 tracks)
+     * @param string $status Status: running, completed, failed
+     */
+    protected function updateRedisProgress(
+        string $correlationId,
+        int $current = 0,
+        int $total = 0,
+        int $processed = 0,
+        string $status = 'running'
+    ): void {
+        if (!$this->progressTracker || !$this->currentArtist) {
+            return;
+        }
+
+        $this->progressTracker->updateProgress(
+            $this->currentArtist,
+            $correlationId,
+            $current,
+            $total,
+            $processed,
+            $status
+        );
+    }
+
+    /**
+     * Mark import as completed in Redis
+     */
+    protected function completeRedisProgress(): void
+    {
+        if (!$this->progressTracker || !$this->currentArtist) {
+            return;
+        }
+
+        $this->progressTracker->complete($this->currentArtist);
+    }
+
+    /**
+     * Mark import as failed in Redis
+     */
+    protected function failRedisProgress(string $errorMessage): void
+    {
+        if (!$this->progressTracker || !$this->currentArtist) {
+            return;
+        }
+
+        $this->progressTracker->fail($this->currentArtist, $errorMessage);
+    }
+
+    /**
+     * Clear Redis progress keys
+     */
+    protected function clearRedisProgress(): void
+    {
+        if (!$this->progressTracker || !$this->currentArtist) {
+            return;
+        }
+
+        $this->progressTracker->clear($this->currentArtist);
     }
 }

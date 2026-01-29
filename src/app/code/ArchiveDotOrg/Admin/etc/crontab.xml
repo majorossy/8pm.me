@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Cron configuration for ArchiveDotOrg Admin module
+ * Schedules daily metrics aggregation job
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="archivedotorg">
+        <job name="aggregate_daily_metrics" instance="ArchiveDotOrg\Admin\Cron\AggregateDailyMetrics" method="execute">
+            <schedule>0 4 * * *</schedule>
+        </job>
+    </group>
+</config>

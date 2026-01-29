@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Dependency Injection Configuration for ArchiveDotOrg_Admin
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <!-- Repository Preferences -->
+    <preference for="ArchiveDotOrg\Admin\Api\ImportRunRepositoryInterface"
+                type="ArchiveDotOrg\Admin\Model\ImportRunRepository"/>
+
+</config>
