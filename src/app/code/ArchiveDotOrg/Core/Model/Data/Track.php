@@ -160,6 +160,25 @@ class Track implements TrackInterface
     }
 
     /**
+     * Generate unique product SKU for a track.
+     *
+     * CURRENT FORMAT: SHA1 hash (Archive.org file identifier)
+     * Example: d41d8cd98f00b204e9800998ecf8427e
+     *
+     * PLANNED FORMAT (after rearchitecture):
+     * Format: {artist_code}-{show_identifier}-{track_num}
+     * Example: phish-phish2023-07-14-01
+     *
+     * Components:
+     * - artist_code: Lowercase collection ID (e.g., "phish", "lettuce")
+     * - show_identifier: Full Archive.org identifier (e.g., "phish2023-07-14")
+     * - track_num: 2-digit zero-padded track number (e.g., "01", "12")
+     *
+     * Uniqueness is guaranteed by:
+     * - Archive.org identifiers are globally unique
+     * - Track numbers are unique within a show
+     *
+     * @return string Unique SKU
      * @inheritDoc
      */
     public function generateSku(): string

@@ -172,6 +172,53 @@
                     </depends>
                 </field>
             </group>
+
+            <!-- Migration Feature Flags -->
+            <group id="migration" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Migration Feature Flags</label>
+                <comment>Enable new features gradually during migration.</comment>
+
+                <field id="use_organized_folders" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Use Organized Folders</label>
+                    <comment>Store JSON files in artist subfolders</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="use_yaml_config" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Use YAML Configuration</label>
+                    <comment>Load artist config from YAML files instead of data patches</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="use_new_commands" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Use New Commands</label>
+                    <comment>Use archive:download/populate instead of legacy commands</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="dashboard_enabled" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable Admin Dashboard</label>
+                    <comment>Show Archive.org import dashboard in admin</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+
+            <!-- Performance Settings -->
+            <group id="performance" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Performance Settings</label>
+
+                <field id="download_batch_size" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Download Batch Size</label>
+                    <comment>Number of shows to download per batch (default: 100)</comment>
+                    <validate>validate-digits</validate>
+                </field>
+
+                <field id="api_delay_ms" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>API Delay (ms)</label>
+                    <comment>Delay between API calls to avoid rate limiting (default: 750)</comment>
+                    <validate>validate-digits</validate>
+                </field>
+            </group>
         </section>
     </system>
 </config>

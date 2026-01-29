@@ -41,6 +41,26 @@
                 <enabled>0</enabled>
                 <schedule>0 2 * * *</schedule>
             </cron>
+            <migration>
+                <!-- Feature flags for gradual rollout -->
+                <use_organized_folders>0</use_organized_folders>
+                <use_yaml_config>0</use_yaml_config>
+                <use_new_commands>0</use_new_commands>
+                <dashboard_enabled>0</dashboard_enabled>
+            </migration>
+            <matching>
+                <!-- Matching algorithm settings -->
+                <use_hybrid_matching>1</use_hybrid_matching>
+                <fuzzy_candidate_limit>5</fuzzy_candidate_limit>
+                <min_fuzzy_score>80</min_fuzzy_score>
+            </matching>
+            <performance>
+                <!-- Import settings -->
+                <download_batch_size>100</download_batch_size>
+                <populate_batch_size>500</populate_batch_size>
+                <api_delay_ms>750</api_delay_ms>
+                <progress_save_interval>10</progress_save_interval>
+            </performance>
         </archivedotorg>
     </default>
 </config>

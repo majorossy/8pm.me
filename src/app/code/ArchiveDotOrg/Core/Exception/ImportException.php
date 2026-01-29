@@ -7,7 +7,6 @@ declare(strict_types=1);
 
 namespace ArchiveDotOrg\Core\Exception;
 
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Phrase;
 
 /**
@@ -15,7 +14,7 @@ use Magento\Framework\Phrase;
  *
  * Thrown when product/track import operations fail
  */
-class ImportException extends LocalizedException
+class ImportException extends ArchiveDotOrgException
 {
     private ?string $identifier;
     private ?string $sku;
@@ -181,5 +180,48 @@ class ImportException extends LocalizedException
             'operation' => $this->operation,
             'message' => $this->getMessage()
         ];
+    }
+
+    /**
+     * Create exception for API failure.
+     *
+     * @param string $endpoint
+     * @param int $statusCode
+     * @param string $message
+     * @return self
+     */
+    public static function apiError(string $endpoint, int $statusCode, string $message): self
+    {
+        return new self(__(
+            'Archive.org API error for %1: HTTP %2 - %3',
+            $endpoint,
+            $statusCode,
+            $message
+        ));
+    }
+
+    /**
+     * Create exception for rate limiting.
+     *
+     * @param int $retryAfterSeconds
+     * @return self
+     */
+    public static function rateLimited(int $retryAfterSeconds): self
+    {
+        return new self(__(
+            'Archive.org API rate limited. Retry after %1 seconds.',
+            $retryAfterSeconds
+        ));
+    }
+
+    /**
+     * Create exception for corrupted progress file.
+     *
+     * @param string $file
+     * @return self
+     */
+    public static function corruptedProgress(string $file): self
+    {
+        return new self(__('Progress file corrupted or unreadable: %1', $file));
     }
 }

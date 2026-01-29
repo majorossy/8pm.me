@@ -426,4 +426,153 @@ class Config
     {
         return sprintf('https://%s%s/%s', $server, $dir, $filename);
     }
+
+    // ==================== Feature Flags ====================
+
+    /**
+     * Check if organized folders migration is enabled
+     *
+     * @return bool
+     */
+    public function useOrganizedFolders(): bool
+    {
+        return $this->scopeConfig->isSetFlag(
+            'archivedotorg/migration/use_organized_folders',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * Check if YAML config migration is enabled
+     *
+     * @return bool
+     */
+    public function useYamlConfig(): bool
+    {
+        return $this->scopeConfig->isSetFlag(
+            'archivedotorg/migration/use_yaml_config',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * Check if new commands should be used
+     *
+     * @return bool
+     */
+    public function useNewCommands(): bool
+    {
+        return $this->scopeConfig->isSetFlag(
+            'archivedotorg/migration/use_new_commands',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * Check if admin dashboard is enabled
+     *
+     * @return bool
+     */
+    public function isDashboardEnabled(): bool
+    {
+        return $this->scopeConfig->isSetFlag(
+            'archivedotorg/migration/dashboard_enabled',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    // ==================== Performance Settings ====================
+
+    /**
+     * Get download batch size
+     *
+     * @return int
+     */
+    public function getDownloadBatchSize(): int
+    {
+        return (int) $this->scopeConfig->getValue(
+            'archivedotorg/performance/download_batch_size',
+            ScopeInterface::SCOPE_STORE
+        ) ?: 100;
+    }
+
+    /**
+     * Get populate batch size
+     *
+     * @return int
+     */
+    public function getPopulateBatchSize(): int
+    {
+        return (int) $this->scopeConfig->getValue(
+            'archivedotorg/performance/populate_batch_size',
+            ScopeInterface::SCOPE_STORE
+        ) ?: 500;
+    }
+
+    /**
+     * Get API delay in milliseconds
+     *
+     * @return int
+     */
+    public function getApiDelayMs(): int
+    {
+        return (int) $this->scopeConfig->getValue(
+            'archivedotorg/performance/api_delay_ms',
+            ScopeInterface::SCOPE_STORE
+        ) ?: 750;
+    }
+
+    /**
+     * Get progress save interval
+     *
+     * @return int
+     */
+    public function getProgressSaveInterval(): int
+    {
+        return (int) $this->scopeConfig->getValue(
+            'archivedotorg/performance/progress_save_interval',
+            ScopeInterface::SCOPE_STORE
+        ) ?: 10;
+    }
+
+    // ==================== Matching Settings ====================
+
+    /**
+     * Check if hybrid matching is enabled
+     *
+     * @return bool
+     */
+    public function useHybridMatching(): bool
+    {
+        return $this->scopeConfig->isSetFlag(
+            'archivedotorg/matching/use_hybrid_matching',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * Get fuzzy candidate limit
+     *
+     * @return int
+     */
+    public function getFuzzyCandidateLimit(): int
+    {
+        return (int) $this->scopeConfig->getValue(
+            'archivedotorg/matching/fuzzy_candidate_limit',
+            ScopeInterface::SCOPE_STORE
+        ) ?: 5;
+    }
+
+    /**
+     * Get minimum fuzzy score threshold
+     *
+     * @return int
+     */
+    public function getMinFuzzyScore(): int
+    {
+        return (int) $this->scopeConfig->getValue(
+            'archivedotorg/matching/min_fuzzy_score',
+            ScopeInterface::SCOPE_STORE
+        ) ?: 80;
+    }
 }

@@ -7,7 +7,6 @@ declare(strict_types=1);
 
 namespace ArchiveDotOrg\Core\Exception;
 
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Phrase;
 
 /**
@@ -15,7 +14,7 @@ use Magento\Framework\Phrase;
  *
  * Thrown when module configuration is invalid or missing
  */
-class ConfigurationException extends LocalizedException
+class ConfigurationException extends ArchiveDotOrgException
 {
     private ?string $configPath;
 
@@ -107,5 +106,33 @@ class ConfigurationException extends LocalizedException
     public function getConfigPath(): ?string
     {
         return $this->configPath;
+    }
+
+    /**
+     * Create exception for missing required field.
+     *
+     * @param string $field
+     * @param string $context
+     * @return self
+     */
+    public static function missingField(string $field, string $context = ''): self
+    {
+        $message = $context
+            ? __('Missing required field "%1" in %2', $field, $context)
+            : __('Missing required field "%1"', $field);
+
+        return new self($message);
+    }
+
+    /**
+     * Create exception for YAML parse error.
+     *
+     * @param string $file
+     * @param string $error
+     * @return self
+     */
+    public static function yamlParseError(string $file, string $error): self
+    {
+        return new self(__('Failed to parse YAML file %1: %2', $file, $error));
     }
 }
