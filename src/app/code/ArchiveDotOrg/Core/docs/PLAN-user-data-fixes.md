@@ -8,7 +8,7 @@ Fix missing and broken data mappings in the Archive.org import system so users s
 
 ## Project Context
 
-- **Module Location:** `/Users/chris.majorossy/Projects/docker-desktop/8pm/src/app/code/ArchiveDotOrg/Core/`
+- **Module Location:** `/Users/chris.majorossy/Education/8pm/src/app/code/ArchiveDotOrg/Core/`
 - **Purpose:** Import live concert recordings from Archive.org into Magento as virtual products
 - **Current Issue:** Many product attributes are empty or poorly formatted after import
 
@@ -305,7 +305,7 @@ $this->setDropdownAttribute($product, 'show_location', $show->getLocation());
 
 ```bash
 # Run a small test import
-cd /Users/chris.majorossy/Projects/docker-desktop/8pm
+cd /Users/chris.majorossy/Education/8pm
 bin/magento archive:import:shows "STS9" --collection=STS9 --limit=1
 
 # Check the imported product in Magento admin:
