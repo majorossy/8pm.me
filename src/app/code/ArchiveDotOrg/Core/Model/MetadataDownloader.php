@@ -219,8 +219,30 @@ class MetadataDownloader implements MetadataDownloaderInterface
      */
     public function getCachedMetadata(string $identifier): ?array
     {
-        $path = $this->getCacheFilePath($identifier);
+        // Try to find file in any artist folder or root
+        $cacheDir = $this->varDir . '/' . self::CACHE_DIR;
 
+        // First try flat structure (backward compatibility)
+        $path = $this->getCacheFilePath($identifier, null);
+        if (file_exists($path)) {
+            return $this->loadJsonFile($path);
+        }
+
+        // Search in artist subdirectories
+        if (is_dir($cacheDir)) {
+            foreach (glob($cacheDir . '/*/' . $identifier . '.json') as $foundPath) {
+                return $this->loadJsonFile($foundPath);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Load and parse JSON file
+     */
+    private function loadJsonFile(string $path): ?array
+    {
         if (!file_exists($path)) {
             return null;
         }
@@ -233,7 +255,8 @@ class MetadataDownloader implements MetadataDownloaderInterface
         try {
             return $this->jsonSerializer->unserialize($content);
         } catch (\Exception $e) {
-            $this->logger->debug("Failed to parse cached metadata: $identifier", ['error' => $e->getMessage()]);
+            $basename = basename($path, '.json');
+            $this->logger->debug("Failed to parse cached metadata: $basename", ['error' => $e->getMessage()]);
             return null;
         }
     }
@@ -243,7 +266,19 @@ class MetadataDownloader implements MetadataDownloaderInterface
      */
     public function isCached(string $identifier): bool
     {
-        return file_exists($this->getCacheFilePath($identifier));
+        // Check flat structure first (backward compatibility)
+        if (file_exists($this->getCacheFilePath($identifier, null))) {
+            return true;
+        }
+
+        // Check in artist subdirectories
+        $cacheDir = $this->varDir . '/' . self::CACHE_DIR;
+        if (is_dir($cacheDir)) {
+            $found = glob($cacheDir . '/*/' . $identifier . '.json');
+            return !empty($found);
+        }
+
+        return false;
     }
 
     /**
@@ -263,7 +298,24 @@ class MetadataDownloader implements MetadataDownloaderInterface
             return $progress['downloaded_identifiers'];
         }
 
-        // Fall back to scanning directory with Archive.org identifier patterns
+        // Try organized folder structure first
+        $artistDir = $cacheDir . '/' . $collectionId;
+        if (is_dir($artistDir)) {
+            $identifiers = [];
+            $files = glob($artistDir . '/*.json');
+            if ($files !== false) {
+                foreach ($files as $file) {
+                    $basename = basename($file);
+                    // Skip manifest files
+                    if ($basename !== 'manifest.json') {
+                        $identifiers[] = basename($file, '.json');
+                    }
+                }
+            }
+            return array_unique($identifiers);
+        }
+
+        // Fall back to scanning flat directory with Archive.org identifier patterns
         // Archive.org identifiers typically start with shorthand: gd, sts9, phish, etc.
         // Try multiple patterns based on common naming conventions
         $searchPatterns = $this->getSearchPatterns($collectionId);
@@ -372,7 +424,7 @@ class MetadataDownloader implements MetadataDownloaderInterface
 
             try {
                 $metadata = $this->fetchShowMetadata($identifier);
-                $this->saveMetadataToCache($identifier, $metadata);
+                $this->saveMetadataToCache($identifier, $metadata, $collectionId);
                 $downloaded++;
 
                 $this->log($progressCallback, "[$current/$total] Retry succeeded: $identifier");
@@ -602,18 +654,42 @@ class MetadataDownloader implements MetadataDownloaderInterface
 
     /**
      * Get cache file path for an identifier
+     *
+     * New structure: var/archivedotorg/metadata/{collectionId}/{identifier}.json
+     * Old structure: var/archivedotorg/metadata/{identifier}.json
+     *
+     * @param string $identifier Show identifier
+     * @param string|null $collectionId Artist collection ID (null = flat structure for backward compatibility)
+     * @return string Full path to cache file
      */
-    private function getCacheFilePath(string $identifier): string
+    private function getCacheFilePath(string $identifier, ?string $collectionId = null): string
     {
+        if ($collectionId !== null) {
+            // New organized structure
+            return $this->varDir . '/' . self::CACHE_DIR . '/' . $collectionId . '/' . $identifier . '.json';
+        }
+
+        // Fallback to flat structure for backward compatibility
         return $this->varDir . '/' . self::CACHE_DIR . '/' . $identifier . '.json';
     }
 
     /**
      * Save metadata to cache file (atomic write)
+     *
+     * @param string $identifier Show identifier
+     * @param array $metadata Metadata to save
+     * @param string|null $collectionId Artist collection ID for organized folders
      */
-    private function saveMetadataToCache(string $identifier, array $metadata): void
+    private function saveMetadataToCache(string $identifier, array $metadata, ?string $collectionId = null): void
     {
-        $path = $this->getCacheFilePath($identifier);
+        $path = $this->getCacheFilePath($identifier, $collectionId);
+
+        // Ensure directory exists (including artist subfolder)
+        $dir = dirname($path);
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
         $content = $this->jsonSerializer->serialize($metadata);
         $this->atomicWrite($path, $content);
     }

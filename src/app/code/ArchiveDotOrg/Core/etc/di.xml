@@ -111,6 +111,8 @@
                 <item name="archivedotorg_update_category_artwork" xsi:type="object">ArchiveDotOrg\Core\Console\Command\UpdateCategoryArtworkCommand</item>
                 <item name="archivedotorg_set_artwork_url" xsi:type="object">ArchiveDotOrg\Core\Console\Command\SetArtworkUrlCommand</item>
                 <item name="archivedotorg_retry_missing_artwork" xsi:type="object">ArchiveDotOrg\Core\Console\Command\RetryMissingArtworkCommand</item>
+                <item name="archivedotorg_migrate_organize_folders" xsi:type="object">ArchiveDotOrg\Core\Console\Command\MigrateOrganizeFoldersCommand</item>
+                <item name="archivedotorg_cleanup_cache" xsi:type="object">ArchiveDotOrg\Core\Console\Command\CleanupCacheCommand</item>
             </argument>
         </arguments>
     </type>
