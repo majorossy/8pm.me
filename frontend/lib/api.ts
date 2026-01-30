@@ -1170,32 +1170,163 @@ export async function getArtistAlbums(slug: string): Promise<{ artist: Artist; a
   }
 }
 
+// Query to get a specific album category by url_key
+const GET_ALBUM_BY_URL_KEY_QUERY = `
+  query GetAlbumByUrlKey($urlKey: String!) {
+    categoryList(filters: { url_key: { eq: $urlKey } }) {
+      uid
+      name
+      url_key
+      description
+      image
+      wikipedia_artwork_url
+      product_count
+      breadcrumbs {
+        category_uid
+        category_name
+        category_url_key
+      }
+    }
+  }
+`;
+
 // Get a specific album by artist slug and album identifier/slug
+// OPTIMIZED: Only fetches the specific album, not all artist albums
 export async function getAlbum(
   artistSlug: string,
   albumIdentifier: string
 ): Promise<Album | null> {
-  console.log('[getAlbum] Fetching album:', artistSlug, albumIdentifier);
-  const artist = await getArtist(artistSlug);
-  if (!artist) {
-    console.log('[getAlbum] Artist not found:', artistSlug);
+  console.log('[getAlbum] Fetching album directly:', artistSlug, albumIdentifier);
+
+  try {
+    // Fetch the album category directly by url_key
+    const albumData = await graphqlFetch<{ categoryList: MagentoCategory[] }>(
+      GET_ALBUM_BY_URL_KEY_QUERY,
+      { urlKey: albumIdentifier }
+    );
+
+    if (!albumData.categoryList.length) {
+      console.log('[getAlbum] Album not found:', albumIdentifier);
+      return null;
+    }
+
+    const albumCat = albumData.categoryList[0];
+
+    // Verify the album belongs to the correct artist via breadcrumbs
+    const artistBreadcrumb = albumCat.breadcrumbs?.find(
+      b => b.category_url_key === artistSlug
+    );
+    if (!artistBreadcrumb) {
+      console.log('[getAlbum] Album does not belong to artist:', artistSlug);
+      return null;
+    }
+
+    // Get track categories (children of album)
+    const trackCategoriesData = await graphqlFetch<{ categoryList: MagentoCategory[] }>(
+      GET_CHILD_CATEGORIES_QUERY,
+      { parentUid: albumCat.uid }
+    );
+
+    const trackCategories = trackCategoriesData.categoryList || [];
+    console.log('[getAlbum] Album:', albumCat.name, '-> Track categories:', trackCategories.length);
+
+    let tracks: Track[] = [];
+
+    if (trackCategories.length > 0) {
+      // For each track category, get its products (song versions)
+      tracks = await Promise.all(
+        trackCategories.map(async (trackCat) => {
+          const productsData = await graphqlFetch<{ products: { items: MagentoProduct[]; total_count: number } }>(
+            GET_SONGS_BY_CATEGORY_QUERY,
+            { categoryUid: trackCat.uid, pageSize: 250 }
+          );
+
+          const products = productsData.products.items || [];
+          const songs = products.map(p => productToSong(p, albumCat.url_key));
+
+          return {
+            id: trackCat.uid,
+            title: trackCat.name,
+            slug: trackCat.url_key,
+            albumIdentifier: albumCat.url_key,
+            albumName: albumCat.name,
+            artistId: artistBreadcrumb.category_uid,
+            artistName: artistBreadcrumb.category_name,
+            artistSlug: artistBreadcrumb.category_url_key,
+            songs,
+            totalDuration: songs[0]?.duration || 0,
+            songCount: songs.length,
+          };
+        })
+      );
+
+      // Fallback: if track categories exist but have no products, try album directly
+      const totalProducts = tracks.reduce((sum, t) => sum + t.songs.length, 0);
+      if (totalProducts === 0) {
+        console.log('[getAlbum] Track categories have 0 products, falling back to album-level');
+        const productsData = await graphqlFetch<{ products: { items: MagentoProduct[]; total_count: number } }>(
+          GET_SONGS_BY_CATEGORY_QUERY,
+          { categoryUid: albumCat.uid, pageSize: 500 }
+        );
+
+        const products = productsData.products.items || [];
+        if (products.length > 0) {
+          tracks = groupProductsIntoTracks(
+            products,
+            albumCat.url_key,
+            albumCat.name,
+            artistBreadcrumb.category_uid,
+            artistBreadcrumb.category_name,
+            artistBreadcrumb.category_url_key
+          );
+        }
+      }
+    } else {
+      // No track subcategories - products are directly under album
+      console.log('[getAlbum] No track categories, fetching products directly');
+      const productsData = await graphqlFetch<{ products: { items: MagentoProduct[]; total_count: number } }>(
+        GET_SONGS_BY_CATEGORY_QUERY,
+        { categoryUid: albumCat.uid, pageSize: 500 }
+      );
+
+      const products = productsData.products.items || [];
+      tracks = groupProductsIntoTracks(
+        products,
+        albumCat.url_key,
+        albumCat.name,
+        artistBreadcrumb.category_uid,
+        artistBreadcrumb.category_name,
+        artistBreadcrumb.category_url_key
+      );
+    }
+
+    // Calculate totals
+    const totalSongs = tracks.reduce((sum, t) => sum + t.songs.length, 0);
+    const totalDuration = tracks.reduce((sum, t) =>
+      sum + t.songs.reduce((s, song) => s + song.duration, 0), 0
+    );
+
+    console.log('[getAlbum] Found album:', albumCat.name, 'with', tracks.length, 'tracks,', totalSongs, 'songs');
+
+    return {
+      id: albumCat.uid,
+      identifier: albumCat.url_key,
+      name: albumCat.name,
+      slug: albumCat.url_key,
+      artistId: artistBreadcrumb.category_uid,
+      artistName: artistBreadcrumb.category_name,
+      artistSlug: artistBreadcrumb.category_url_key,
+      tracks,
+      totalTracks: tracks.length,
+      totalSongs,
+      totalDuration,
+      coverArt: albumCat.wikipedia_artwork_url || getAlbumCoverArt(albumCat.url_key),
+      wikipediaArtworkUrl: albumCat.wikipedia_artwork_url,
+    };
+  } catch (error) {
+    console.error('[getAlbum] Failed:', error);
     return null;
   }
-
-  console.log('[getAlbum] Artist has', artist.albums.length, 'albums');
-
-  // Match by slug or original identifier
-  const album = artist.albums.find(
-    a => a.slug === albumIdentifier || a.identifier === albumIdentifier
-  );
-
-  if (album) {
-    console.log('[getAlbum] Found album:', album.name, 'with', album.tracks.length, 'tracks');
-  } else {
-    console.log('[getAlbum] Album not found:', albumIdentifier);
-  }
-
-  return album || null;
 }
 
 // Get a specific track by artist slug, album identifier, and track slug
@@ -1395,12 +1526,17 @@ export async function search(query: string): Promise<{
   }
 
   try {
-    // Search artists, albums, and track categories in parallel
-    const [allArtists, allAlbums, matchingAlbums, matchingTracks] = await Promise.all([
+    // Search artists, albums, track categories, and products in parallel
+    const [allArtists, allAlbums, matchingAlbums, matchingTracks, matchingProducts] = await Promise.all([
       getArtists(),
       getAlbumCategories(),
       searchAlbumCategories(query),
-      searchTrackCategories(query)
+      searchTrackCategories(query),
+      // Also search products by name to find tracks not in track categories
+      graphqlFetch<{ products: { items: MagentoProduct[]; total_count: number } }>(
+        GET_SONGS_BY_SEARCH_QUERY,
+        { search: query, pageSize: 50 }
+      ).then(data => data.products.items || []).catch(() => [] as MagentoProduct[])
     ]);
 
     const searchLower = query.toLowerCase();
@@ -1419,6 +1555,22 @@ export async function search(query: string): Promise<{
         trackAlbumKeys.add(track.breadcrumbs[1].category_url_key);
       }
     }
+
+    // Also extract artist slugs from matching products' categories
+    // Products have categories array where first level is typically the artist
+    for (const product of matchingProducts) {
+      if (product.categories?.length) {
+        // Find artist category (matches an artist slug from allArtists)
+        for (const cat of product.categories) {
+          if (allArtists.some(a => a.slug === cat.url_key)) {
+            trackArtistSlugs.add(cat.url_key);
+            break; // Found artist, no need to continue
+          }
+        }
+      }
+    }
+
+    console.log('[search] Product search found:', matchingProducts.length, 'products, extracted artist slugs:', trackArtistSlugs.size);
 
     // Merge artists: query matches first, then track-related artists
     const artistsFromQuery = allArtists.filter(a =>
