@@ -20,5 +20,9 @@
         <job name="archivedotorg_process_import_queue" instance="ArchiveDotOrg\Core\Cron\ProcessImportQueue" method="execute">
             <schedule>* * * * *</schedule>
         </job>
+        <!-- Enrich artist stats monthly -->
+        <job name="archivedotorg_enrich_artist_stats" instance="ArchiveDotOrg\Core\Cron\EnrichArtistStats" method="execute">
+            <schedule>0 3 1 * *</schedule>
+        </job>
     </group>
 </config>

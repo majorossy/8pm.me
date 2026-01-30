@@ -136,33 +136,34 @@ const MAGENTO_MEDIA_URL = process.env.NEXT_PUBLIC_MAGENTO_MEDIA_URL || 'https://
 const ARTISTS_PARENT_CATEGORY_ID = '48';
 
 // Local album art mapping (slug -> filename in /images/albums/)
+// Filenames match url_keys exactly (no hyphens)
 const LOCAL_ALBUM_ART: Record<string, string> = {
   // STS9
   'artifact': '/images/albums/artifact.jpg',
-  'interplanetaryescapevehicle': '/images/albums/interplanetary-escape-vehicle.jpg',
-  'offeredschematicssuggestingpeace': '/images/albums/offered-schematics-suggesting-peace.jpg',
+  'interplanetaryescapevehicle': '/images/albums/interplanetaryescapevehicle.jpg',
+  'offeredschematicssuggestingpeace': '/images/albums/offeredschematicssuggestingpeace.jpg',
   // String Cheese Incident
-  'bornonthewrongplanet': '/images/albums/born-on-the-wrong-planet.jpg',
-  'astringcheeseincident': '/images/albums/a-string-cheese-incident.jpg',
-  'roundthewheel': '/images/albums/round-the-wheel.jpg',
-  'carnival99': '/images/albums/carnival-99.jpg',
-  'outsideinside': '/images/albums/outside-inside.jpg',
-  'untyingthenot': '/images/albums/untying-the-not.jpg',
-  'onestepcloser': '/images/albums/one-step-closer.jpg',
-  'trickortreat': '/images/albums/trick-or-treat.jpg',
-  'songinmyhead': '/images/albums/song-in-my-head.jpg',
+  'bornonthewrongplanet': '/images/albums/bornonthewrongplanet.jpg',
+  'astringcheeseincident': '/images/albums/astringcheeseincident.jpg',
+  'roundthewheel': '/images/albums/roundthewheel.jpg',
+  'carnival99': '/images/albums/carnival99.jpg',
+  'outsideinside': '/images/albums/outsideinside.jpg',
+  'untyingthenot': '/images/albums/untyingthenot.jpg',
+  'onestepcloser': '/images/albums/onestepcloser.jpg',
+  'trickortreat': '/images/albums/trickortreat.jpg',
+  'songinmyhead': '/images/albums/songinmyhead.jpg',
   'believe': '/images/albums/believe.jpg',
   // Tea Leaf Green
-  'tealeafgreenalbum': '/images/albums/tea-leaf-green.jpg',
-  'taughttobeproud': '/images/albums/taught-to-be-proud.jpg',
-  'raiseupthetent': '/images/albums/raise-up-the-tent.jpg',
+  'tealeafgreenalbum': '/images/albums/tealeafgreenalbum.jpg',
+  'taughttobeproud': '/images/albums/taughttobeproud.jpg',
+  'raiseupthetent': '/images/albums/raiseupthetent.jpg',
   // Grace Potter
-  'originalsoul': '/images/albums/original-soul.jpg',
+  'originalsoul': '/images/albums/originalsoul.jpg',
   'midnight': '/images/albums/midnight.jpg',
   // O.A.R.
-  'inbetweennowandthen': '/images/albums/in-between-now-and-then.jpg',
-  'soulsaflame': '/images/albums/souls-aflame.jpg',
-  'thewanderer': '/images/albums/the-wanderer.jpg',
+  'inbetweennowandthen': '/images/albums/inbetweennowandthen.jpg',
+  'soulsaflame': '/images/albums/soulsaflame.jpg',
+  'thewanderer': '/images/albums/thewanderer.jpg',
   'risen': '/images/albums/risen.jpg',
 };
 
@@ -306,6 +307,9 @@ const GET_ARTIST_BY_SLUG_QUERY = `
       band_twitter
       band_total_shows
       band_most_played_track
+      band_total_recordings
+      band_total_hours
+      band_total_venues
     }
   }
 `;

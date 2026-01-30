@@ -221,6 +221,22 @@ class ArtistEnrichmentService
                 $result['fields_updated'][] = 'band_most_played_track';
             }
 
+            // Save extended stats to category attributes
+            if (isset($extendedStats['total_recordings'])) {
+                $category->setData('band_total_recordings', (int)$extendedStats['total_recordings']);
+                $result['fields_updated'][] = 'band_total_recordings';
+            }
+
+            if (isset($extendedStats['total_hours'])) {
+                $category->setData('band_total_hours', (int)$extendedStats['total_hours']);
+                $result['fields_updated'][] = 'band_total_hours';
+            }
+
+            if (isset($extendedStats['total_venues'])) {
+                $category->setData('band_total_venues', (int)$extendedStats['total_venues']);
+                $result['fields_updated'][] = 'band_total_venues';
+            }
+
             // Save to archivedotorg_artist_status table
             $this->updateArtistStatusTable($artistName, [
                 'imported_tracks' => $extendedStats['total_recordings'],

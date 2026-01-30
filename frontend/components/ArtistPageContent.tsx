@@ -43,111 +43,50 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
     }
   };
 
-  // Calculate real statistics from album data
+  // Use pre-calculated statistics from category attributes (monthly cron updates)
   const calculatedStats = useMemo(() => {
-    if (!artist.albums || artist.albums.length === 0) return null;
+    if (!artist) return null;
 
-    // Total recordings and runtime
-    let totalRecordings = 0;
-    let totalDuration = 0;
-    const venueCounts: Record<string, number> = {};
-    const trackCounts: Record<string, number> = {};
-    const years: number[] = [];
-    const uniqueShows = new Set<string>(); // Track unique show identifiers
-    const uniqueVenues = new Set<string>(); // Track unique venues
+    // Collect years from albums for years active calculation
+    const allYears: number[] = [];
+    const uniqueShows = new Set<string>();
 
-    artist.albums.forEach((album: any) => {
-      // Count recordings and duration
-      if (album.tracks) {
-        album.tracks.forEach((track: any) => {
-          // Track song title frequency
-          const title = track.title;
-          if (title) {
-            trackCounts[title] = (trackCounts[title] || 0) + (track.songCount || 1);
-          }
-
-          // Count unique shows and sum durations from individual song versions
-          if (track.songs && Array.isArray(track.songs)) {
-            track.songs.forEach((song: any) => {
-              // Count recordings
-              totalRecordings++;
-
-              // Sum duration from each song version
-              totalDuration += song.duration || 0;
-
-              // Track unique shows by extracting date from identifier
-              // Identifier format: "db2021-10-15.dpa4006.flac16" or "bisco2009-02-06.flac16mk4v"
-              // We want to extract just the date portion to count unique shows
-              if (song.albumIdentifier) {
-                // Extract date from identifier (remove recording source/format)
-                const match = song.albumIdentifier.match(/(\d{4}-\d{2}-\d{2})/);
-                const showDate = match ? match[1] : song.albumIdentifier;
-                uniqueShows.add(showDate);
-              }
-
-              // Track unique venues
-              if (song.showVenue) {
-                uniqueVenues.add(song.showVenue);
-                // Also count for top venues
-                venueCounts[song.showVenue] = (venueCounts[song.showVenue] || 0) + 1;
-              }
-            });
-          }
-        });
-      }
-
-      // Collect years
+    artist.albums?.forEach(album => {
       if (album.showDate) {
+        uniqueShows.add(album.showDate);
         const year = parseInt(album.showDate.split('-')[0], 10);
-        if (!isNaN(year)) years.push(year);
+        if (!isNaN(year)) {
+          allYears.push(year);
+        }
       }
     });
 
-    // Total shows = count of unique show identifiers from all songs
-    const totalShows = uniqueShows.size;
+    // Use totalShows from backend if available, otherwise fallback to unique show dates
+    const totalShows = artist.totalShows || uniqueShows.size || 0;
 
-    // Total venues = count of unique venues from all songs
-    const totalVenues = uniqueVenues.size;
-
-    console.log('[calculatedStats] Stats:', {
-      totalRecordings,
-      totalShows: uniqueShows.size,
-      totalVenues: uniqueVenues.size,
-      totalHours: Math.floor(totalDuration / 3600),
-      albumCategories: artist.albums.length
-    });
-
-    // Get top venues
-    const topVenues = Object.entries(venueCounts)
-      .sort(([, a], [, b]) => b - a)
-      .slice(0, 3)
-      .map(([name, showCount]) => ({ name, showCount }));
-
-    // Get most played track
-    const mostPlayedEntry = Object.entries(trackCounts)
-      .sort(([, a], [, b]) => b - a)[0];
-    const mostPlayedTrack = mostPlayedEntry
-      ? { title: mostPlayedEntry[0], playCount: mostPlayedEntry[1] }
-      : undefined;
-
-    // Get year range
-    const yearsActive = years.length > 0
-      ? { first: Math.min(...years), last: Math.max(...years) }
-      : undefined;
-
-    // Format total runtime
-    const totalHours = Math.floor(totalDuration / 3600);
+    // Years active (can use band_formation_date if present)
+    const firstYear = formationYear || (allYears.length ? Math.min(...allYears) : null);
+    const lastYear = allYears.length ? Math.max(...allYears) : null;
 
     return {
+      totalRecordings: artist.totalRecordings || 0,
+      totalHours: artist.totalHours || 0,
       totalShows,
-      totalRecordings,
-      totalHours,
-      totalVenues,
-      yearsActive,
-      topVenues: topVenues.length > 0 ? topVenues : undefined,
-      mostPlayedTrack,
+      totalVenues: artist.totalVenues || 0,
+      mostPlayedTrack: artist.mostPlayedTrack
+        ? { title: artist.mostPlayedTrack, playCount: 0 }
+        : undefined,
+      yearsActive: firstYear
+        ? {
+            first: firstYear,
+            last: lastYear || new Date().getFullYear(),
+          }
+        : undefined,
+      recordingStats: {
+        total: artist.totalRecordings || 0,
+      },
     };
-  }, [artist.albums]);
+  }, [artist, formationYear]);
 
   // Combine all bio images (artist web images)
   const allImages = [];
