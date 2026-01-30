@@ -43,6 +43,9 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
     }
   };
 
+  // Extract year from bandData or use a default
+  const formationYear = bandData?.recordingStats?.yearsActive?.split('-')[0] || '';
+
   // Use pre-calculated statistics from category attributes (monthly cron updates)
   const calculatedStats = useMemo(() => {
     if (!artist) return null;
@@ -100,9 +103,6 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
   if (bandData?.images) {
     allImages.push(...bandData.images);
   }
-
-  // Extract year from bandData or use a default
-  const formationYear = bandData?.recordingStats?.yearsActive?.split('-')[0] || '';
 
   // Get a short excerpt for the quote callout
   const quoteExcerpt = artist.wikipediaSummary?.extract

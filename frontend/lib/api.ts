@@ -8,6 +8,9 @@ export type { Song, Artist, ArtistDetail, Album, Track } from './types';
 // Track category cache for search
 let trackCategoryCache: TrackCategory[] | null = null;
 
+// Album category cache for search
+let albumCategoryCache: AlbumCategory[] | null = null;
+
 // Cache duration in seconds
 const CACHE_DURATION = 60 * 5; // 5 minutes
 
@@ -201,6 +204,16 @@ export interface TrackCategory {
   name: string;
   url_key: string;
   product_count: number;
+  breadcrumbs?: CategoryBreadcrumb[];
+}
+
+// Album category interface for search
+export interface AlbumCategory {
+  uid: string;
+  name: string;
+  url_key: string;
+  product_count: number;
+  wikipedia_artwork_url?: string;
   breadcrumbs?: CategoryBreadcrumb[];
 }
 
@@ -518,6 +531,31 @@ const GET_TRACK_CATEGORIES_QUERY = `
   }
 `;
 
+// Query to get album categories (categories where is_album = 1)
+const GET_ALBUM_CATEGORIES_QUERY = `
+  query GetAlbumCategories($pageSize: Int!, $currentPage: Int!) {
+    categories(
+      filters: { is_album: { eq: "1" } }
+      pageSize: $pageSize
+      currentPage: $currentPage
+    ) {
+      items {
+        uid
+        name
+        url_key
+        product_count
+        wikipedia_artwork_url
+        breadcrumbs {
+          category_uid
+          category_name
+          category_url_key
+        }
+      }
+      total_count
+    }
+  }
+`;
+
 // Type definitions for GraphQL responses
 interface MagentoCategory {
   uid: string;
@@ -527,6 +565,7 @@ interface MagentoCategory {
   image?: string;
   product_count?: number;
   children_count?: number;
+  wikipedia_artwork_url?: string;
   band_formation_date?: string;
   band_origin_location?: string;
   band_years_active?: string;
@@ -1222,6 +1261,92 @@ export async function searchTrackCategories(query: string): Promise<TrackCategor
   return matches.slice(0, 20);
 }
 
+// Get all album categories (categories where is_album = 1)
+// Used for album search - caches results for performance
+async function getAlbumCategories(): Promise<AlbumCategory[]> {
+  if (albumCategoryCache) {
+    console.log('[getAlbumCategories] Using cache:', albumCategoryCache.length, 'albums');
+    return albumCategoryCache;
+  }
+
+  console.log('[getAlbumCategories] Fetching all album categories...');
+  const PAGE_SIZE = 200;
+  let allAlbums: AlbumCategory[] = [];
+  let currentPage = 1;
+  let totalCount = 0;
+
+  // Fetch first page
+  const firstPage = await graphqlFetch<{
+    categories: { items: AlbumCategory[]; total_count: number };
+  }>(GET_ALBUM_CATEGORIES_QUERY, { pageSize: PAGE_SIZE, currentPage: 1 });
+
+  allAlbums = firstPage.categories.items || [];
+  totalCount = firstPage.categories.total_count || 0;
+
+  // Fetch remaining pages
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+  for (currentPage = 2; currentPage <= totalPages; currentPage++) {
+    const page = await graphqlFetch<{
+      categories: { items: AlbumCategory[]; total_count: number };
+    }>(GET_ALBUM_CATEGORIES_QUERY, { pageSize: PAGE_SIZE, currentPage });
+    allAlbums = allAlbums.concat(page.categories.items || []);
+  }
+
+  console.log('[getAlbumCategories] Fetched', allAlbums.length, 'album categories');
+  albumCategoryCache = allAlbums;
+  return allAlbums;
+}
+
+// Search album categories by name or artist
+export async function searchAlbumCategories(query: string): Promise<AlbumCategory[]> {
+  if (!query.trim()) return [];
+
+  const allAlbums = await getAlbumCategories();
+  const searchLower = query.toLowerCase();
+
+  // Score albums by relevance
+  const scoredAlbums = allAlbums
+    .map(album => {
+      let score = 0;
+      const nameLower = album.name?.toLowerCase() || '';
+
+      // Get artist name from breadcrumbs (first breadcrumb is typically the artist)
+      const artistName = album.breadcrumbs?.[0]?.category_name?.toLowerCase() || '';
+
+      // Match by album name
+      if (nameLower.includes(searchLower)) {
+        score += 10;
+        // Bonus for exact match or starts with
+        if (nameLower === searchLower) score += 20;
+        else if (nameLower.startsWith(searchLower)) score += 10;
+      }
+
+      // Match by artist name (from breadcrumbs)
+      if (artistName.includes(searchLower)) {
+        score += 8;
+        if (artistName === searchLower) score += 15;
+        else if (artistName.startsWith(searchLower)) score += 5;
+      }
+
+      // Bonus for albums with more tracks (more complete recordings)
+      if (score > 0 && album.product_count > 0) {
+        score += Math.min(album.product_count / 10, 5);
+      }
+
+      return { album, score };
+    })
+    .filter(item => item.score > 0)
+    .sort((a, b) => {
+      // Sort by score descending, then by track count descending
+      if (b.score !== a.score) return b.score - a.score;
+      return (b.album.product_count || 0) - (a.album.product_count || 0);
+    })
+    .map(item => item.album);
+
+  console.log('[searchAlbumCategories] Query:', query, '-> Matches:', scoredAlbums.length);
+  return scoredAlbums.slice(0, 15);
+}
+
 // Fetch all versions (products) for a track category
 export async function getVersionsForTrack(trackCategoryUid: string): Promise<Song[]> {
   console.log('[getVersionsForTrack] Fetching versions for track:', trackCategoryUid);
@@ -1256,9 +1381,11 @@ export async function getVersionsForTrack(trackCategoryUid: string): Promise<Son
 }
 
 // Search across artists, albums, and tracks
+// Results are always returned in order: Artists, Albums, Tracks
+// When a track matches, its parent album and artist are automatically included
 export async function search(query: string): Promise<{
   artists: Artist[];
-  albums: Album[];
+  albums: AlbumCategory[];
   tracks: TrackCategory[];
 }> {
   console.log('[search] Starting search for:', query);
@@ -1268,19 +1395,58 @@ export async function search(query: string): Promise<{
   }
 
   try {
-    // Search artists and track categories in parallel
-    const [allArtists, matchingTracks] = await Promise.all([
+    // Search artists, albums, and track categories in parallel
+    const [allArtists, allAlbums, matchingAlbums, matchingTracks] = await Promise.all([
       getArtists(),
+      getAlbumCategories(),
+      searchAlbumCategories(query),
       searchTrackCategories(query)
     ]);
 
     const searchLower = query.toLowerCase();
-    const artists = allArtists.filter(artist =>
-      artist.name.toLowerCase().includes(searchLower)
-    ).slice(0, 10);
 
-    console.log('[search] Results:', { artists: artists.length, tracks: matchingTracks.length });
-    return { artists, albums: [], tracks: matchingTracks };
+    // Extract artist/album slugs from matching tracks' breadcrumbs
+    const trackArtistSlugs = new Set<string>();
+    const trackAlbumKeys = new Set<string>();
+
+    for (const track of matchingTracks) {
+      if (track.breadcrumbs?.length >= 1) {
+        // First breadcrumb = artist
+        trackArtistSlugs.add(track.breadcrumbs[0].category_url_key);
+      }
+      if (track.breadcrumbs?.length >= 2) {
+        // Second breadcrumb = album
+        trackAlbumKeys.add(track.breadcrumbs[1].category_url_key);
+      }
+    }
+
+    // Merge artists: query matches first, then track-related artists
+    const artistsFromQuery = allArtists.filter(a =>
+      a.name.toLowerCase().includes(searchLower)
+    );
+    const artistsFromTracks = allArtists.filter(a =>
+      trackArtistSlugs.has(a.slug) &&
+      !artistsFromQuery.some(x => x.slug === a.slug)
+    );
+    const artists = [...artistsFromQuery, ...artistsFromTracks].slice(0, 10);
+
+    // Merge albums: query matches first, then track-related albums
+    const albumsFromTracks = allAlbums.filter(a =>
+      trackAlbumKeys.has(a.url_key) &&
+      !matchingAlbums.some(x => x.url_key === a.url_key)
+    );
+    const albums = [...matchingAlbums, ...albumsFromTracks].slice(0, 15);
+
+    console.log('[search] Results:', {
+      artists: artists.length,
+      albums: albums.length,
+      tracks: matchingTracks.length,
+      artistsFromTracks: artistsFromTracks.length,
+      albumsFromTracks: albumsFromTracks.length
+    });
+
+    // Return in order: Artists, Albums, Tracks
+    return { artists, albums, tracks: matchingTracks };
   } catch (error) {
     console.error('[search] Search failed:', error);
     return { artists: [], albums: [], tracks: [] };

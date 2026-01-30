@@ -56,19 +56,19 @@ function ArtistStatsTooltip({
   }
 
   return (
-    <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-out pointer-events-none z-50 hidden md:inline">
-      <div className="bg-[#1c1a17] border border-[#d4a060]/60 rounded-md px-3 py-2 shadow-2xl">
+    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-out pointer-events-none z-50 hidden md:block">
+      <div className="bg-[#1c1a17] border border-[#d4a060]/60 rounded-lg px-4 py-3 shadow-2xl w-max">
         {/* Grid layout: 2 columns x 3 rows */}
-        <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs">
           {/* Row 1 */}
           {totalRecordings !== undefined && (
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 whitespace-nowrap">
               <span className="text-[#d4a060]">🎵</span>
               <span className="text-[#e8dcc4]">{totalRecordings.toLocaleString()} Recordings</span>
             </div>
           )}
           {totalHours !== undefined && (
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 whitespace-nowrap">
               <span className="text-[#d4a060]">⏱️</span>
               <span className="text-[#e8dcc4]">{totalHours.toLocaleString()} Hours</span>
             </div>
@@ -76,13 +76,13 @@ function ArtistStatsTooltip({
 
           {/* Row 2 */}
           {totalShows !== undefined && (
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 whitespace-nowrap">
               <span className="text-[#d4a060]">⭐</span>
               <span className="text-[#e8dcc4]">{totalShows.toLocaleString()} Shows</span>
             </div>
           )}
           {totalVenues !== undefined && (
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 whitespace-nowrap">
               <span className="text-[#d4a060]">🏛️</span>
               <span className="text-[#e8dcc4]">{totalVenues.toLocaleString()} Venues</span>
             </div>
@@ -90,13 +90,13 @@ function ArtistStatsTooltip({
 
           {/* Row 3 */}
           {formationYear !== undefined && (
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 whitespace-nowrap">
               <span className="text-[#d4a060]">📅</span>
               <span className="text-[#e8dcc4]">Since &apos;{formationYear.toString().slice(-2)}</span>
             </div>
           )}
           {mostPlayedTrack && (
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 whitespace-nowrap">
               <span className="text-[#d4a060]">🎸</span>
               <span className="text-[#e8dcc4] truncate max-w-[120px]" title={mostPlayedTrack}>
                 {mostPlayedTrack}
@@ -107,7 +107,7 @@ function ArtistStatsTooltip({
       </div>
       {/* Arrow pointer */}
       <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-[#d4a060]/60"></div>
-    </span>
+    </div>
   );
 }
 
@@ -223,7 +223,7 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
                       &#9733;
                     </span>
                   )}
-                  <span className="relative group">
+                  <span className="relative group inline-block">
                     <Link
                       href={`/artists/${artist.slug}`}
                       className="hover:text-[#d4a060] transition-colors duration-200"
@@ -241,16 +241,6 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
                       totalVenues={artist.totalVenues}
                       formationYear={artist.formationYear}
                     />
-                    {artist.name === 'STS9' && (
-                      <span className="text-red-500 text-xs" style={{display: 'none'}}>
-                        DEBUG: {JSON.stringify({
-                          totalShows: artist.totalShows,
-                          totalRecordings: artist.totalRecordings,
-                          totalHours: artist.totalHours,
-                          totalVenues: artist.totalVenues
-                        })}
-                      </span>
-                    )}
                   </span>
                 </span>
               );
