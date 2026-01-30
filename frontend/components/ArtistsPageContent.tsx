@@ -1,9 +1,11 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { Artist, Album } from '@/lib/api';
 import { useBreadcrumbs } from '@/context/BreadcrumbContext';
+import { FestivalSortProvider, useFestivalSort } from '@/context/FestivalSortContext';
 import FestivalHero from '@/components/FestivalHero';
 
 interface ArtistWithAlbums extends Artist {
@@ -79,38 +81,50 @@ const getArtistColor = (slug: string): string => {
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 };
 
-export default function ArtistsPageContent({ artists }: ArtistsPageContentProps) {
-  const { setBreadcrumbs } = useBreadcrumbs();
+// Internal component that uses the sorted artists from context
+function ArtistsContentInner() {
+  const { sortedArtists } = useFestivalSort();
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
+  // Check for reduced motion preference
   useEffect(() => {
-    // Home page - no breadcrumbs needed
-    setBreadcrumbs([]);
-  }, [setBreadcrumbs]);
+    if (typeof window !== 'undefined') {
+      const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      setPrefersReducedMotion(mediaQuery.matches);
+
+      const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
+      mediaQuery.addEventListener('change', handler);
+      return () => mediaQuery.removeEventListener('change', handler);
+    }
+  }, []);
 
   const scrollToArtists = () => {
     document.getElementById('artists-content')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Flatten albums with artist metadata
+  // Flatten albums with artist metadata - uses SORTED artists
   const allAlbums = useMemo(() => {
-    return artists.flatMap((artist) => {
+    return sortedArtists.flatMap((artist) => {
       const color = getArtistColor(artist.slug);
-      return artist.albums.map((album, idx) => ({
+      // Need to get albums from the artist object
+      const artistWithAlbums = artist as any; // Type assertion since sortedArtists has stats, not albums
+      const albums = artistWithAlbums.albums || [];
+      return albums.map((album: Album, idx: number) => ({
         ...album,
         artist: artist.name,
         artistSlug: artist.slug,
-        artistImage: artist.image,
+        artistImage: artistWithAlbums.image,
         color,
         isFirst: idx === 0,
       } as AlbumWithArtist));
     });
-  }, [artists]);
+  }, [sortedArtists]);
 
   return (
     <div className="pb-8 max-w-[1800px]">
       {/* Festival Hero */}
       <FestivalHero
-        artists={artists.map(a => {
+        artists={sortedArtists.map((a: any) => {
           const mapped = {
             name: a.name,
             slug: a.slug,
@@ -134,14 +148,25 @@ export default function ArtistsPageContent({ artists }: ArtistsPageContentProps)
       {/* All albums in continuous flow */}
       <div id="artists-content" className="px-4 md:px-8 pt-4 md:pt-6 mx-auto max-w-[1400px]">
         <div className="flex flex-wrap gap-3 md:gap-4 justify-center">
-          {allAlbums.map((album) => {
+          {allAlbums.map((album, index) => {
             const isComingSoon = album.totalSongs === 0;
             return (
-            <Link
+            <motion.div
               key={`${album.artistSlug}-${album.id}`}
-              href={isComingSoon ? '#' : `/artists/${album.artistSlug}/album/${album.slug}`}
-              className="group"
+              layout
+              transition={{
+                layout: {
+                  duration: prefersReducedMotion ? 0 : 0.4,
+                  ease: 'easeOut',
+                },
+                // Stagger only first 20 items for performance
+                delay: !prefersReducedMotion && index < 20 ? index * 0.02 : 0,
+              }}
             >
+              <Link
+                href={isComingSoon ? '#' : `/artists/${album.artistSlug}/album/${album.slug}`}
+                className="group"
+              >
               <div
                 className={`rounded-lg overflow-hidden relative bg-[#1a1410] transition-transform duration-200 ${
                   isComingSoon ? 'cursor-default' : 'hover:scale-105'
@@ -269,10 +294,42 @@ export default function ArtistsPageContent({ artists }: ArtistsPageContentProps)
                 </div>
               </div>
             </Link>
+            </motion.div>
             );
           })}
         </div>
       </div>
     </div>
+  );
+}
+
+// Main export - wraps content with FestivalSortProvider
+export default function ArtistsPageContent({ artists }: ArtistsPageContentProps) {
+  const { setBreadcrumbs } = useBreadcrumbs();
+
+  useEffect(() => {
+    // Home page - no breadcrumbs needed
+    setBreadcrumbs([]);
+  }, [setBreadcrumbs]);
+
+  // Map artists to include stats for sorting
+  const artistsWithStats = artists.map(a => ({
+    ...a,
+    name: a.name,
+    slug: a.slug,
+    songCount: a.songCount ?? a.albums.reduce((sum, album) => sum + album.totalSongs, 0),
+    albumCount: a.albumCount ?? a.albums.length,
+    totalShows: a.totalShows,
+    mostPlayedTrack: a.mostPlayedTrack,
+    totalRecordings: a.totalRecordings,
+    totalHours: a.totalHours,
+    totalVenues: a.totalVenues,
+    formationYear: a.formationYear,
+  }));
+
+  return (
+    <FestivalSortProvider artists={artistsWithStats}>
+      <ArtistsContentInner />
+    </FestivalSortProvider>
   );
 }

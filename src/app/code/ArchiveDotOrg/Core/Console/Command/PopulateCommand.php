@@ -92,6 +92,12 @@ class PopulateCommand extends BaseLoggedCommand
                 'Export unmatched tracks to file (e.g., unmatched.txt)',
                 null
             )
+            ->addOption(
+                'force',
+                'f',
+                InputOption::VALUE_NONE,
+                'Force re-population even if already completed'
+            )
             ->setHelp(<<<'HELP'
 Populate Magento products from cached Archive.org metadata using hybrid track matching.
 
@@ -108,12 +114,22 @@ Populate Magento products from cached Archive.org metadata using hybrid track ma
   # Process first 100 shows
   bin/magento archive:populate lettuce --limit=100
 
+  # Force re-population even if already completed
+  bin/magento archive:populate lettuce --force
+
   # Export unmatched tracks for review
   bin/magento archive:populate lettuce --export-unmatched=var/unmatched_lettuce.txt
 
 <info>Prerequisites:</info>
   1. Artist configured in etc/config.xml or YAML
   2. Metadata downloaded: bin/magento archive:download {artist}
+
+<info>Completion Tracking:</info>
+  The command tracks completion status per collection. Once a collection is fully
+  populated (without --limit), subsequent runs will skip processing unless:
+  - --force is used to force re-population
+  - --dry-run is used for testing
+  - --limit is specified for partial processing
 
 <info>See also:</info>
   archive:download          - Download metadata from Archive.org
@@ -141,6 +157,7 @@ HELP
         $dryRun = $input->getOption('dry-run');
         $limit = $input->getOption('limit') ? (int) $input->getOption('limit') : null;
         $exportUnmatched = $input->getOption('export-unmatched');
+        $force = $input->getOption('force');
 
         // Validate limit
         if ($limit !== null && $limit <= 0) {
@@ -177,6 +194,28 @@ HELP
                 $io->text("  - $name (collection: $collection)");
             }
             return Command::FAILURE;
+        }
+
+        // Check if already populated (unless force, dry-run, or limit is used)
+        if (!$force && !$dryRun && $limit === null) {
+            $progress = $this->getPopulateProgress($collectionId);
+            if ($progress !== null && isset($progress['status']) && $progress['status'] === 'completed') {
+                $io->success("Collection $collectionId already populated. Use --force to re-populate.");
+
+                // Display previous results
+                $io->table(
+                    ['Metric', 'Count'],
+                    [
+                        ['Shows processed', $progress['shows_processed'] ?? 0],
+                        ['Tracks matched', $progress['tracks_matched'] ?? 0],
+                        ['Products created', $progress['products_created'] ?? 0],
+                        ['Products updated', $progress['products_updated'] ?? 0],
+                        ['Completed at', $progress['completed_at'] ?? 'Unknown'],
+                    ]
+                );
+
+                return Command::SUCCESS;
+            }
         }
 
         $io->title("Archive.org Track Populate: $artistName");
@@ -288,6 +327,10 @@ HELP
                 if ($dryRun) {
                     $io->note('This was a dry run. Use without --dry-run to create products.');
                 } else {
+                    // Save completion progress (only if full population without limit)
+                    if ($limit === null) {
+                        $this->savePopulateProgress($collectionId, $result);
+                    }
                     $io->success("Population complete for: $artistName");
                 }
 
@@ -316,5 +359,73 @@ HELP
                 ]);
             }
         }
+    }
+
+    /**
+     * Get populate progress for a collection
+     */
+    private function getPopulateProgress(string $collectionId): ?array
+    {
+        $progressFile = BP . '/var/archivedotorg/populate_progress.json';
+
+        if (!file_exists($progressFile)) {
+            return null;
+        }
+
+        $content = file_get_contents($progressFile);
+        if ($content === false) {
+            return null;
+        }
+
+        try {
+            $allProgress = json_decode($content, true);
+            return $allProgress[$collectionId] ?? null;
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Save populate progress for a collection
+     */
+    private function savePopulateProgress(string $collectionId, array $result): void
+    {
+        $progressFile = BP . '/var/archivedotorg/populate_progress.json';
+        $progressDir = dirname($progressFile);
+
+        // Ensure directory exists
+        if (!is_dir($progressDir)) {
+            mkdir($progressDir, 0755, true);
+        }
+
+        // Load existing progress
+        $allProgress = [];
+        if (file_exists($progressFile)) {
+            $content = file_get_contents($progressFile);
+            if ($content !== false) {
+                try {
+                    $allProgress = json_decode($content, true) ?? [];
+                } catch (\Exception $e) {
+                    // Ignore parse errors, start fresh
+                }
+            }
+        }
+
+        // Update progress for this collection
+        $allProgress[$collectionId] = [
+            'status' => 'completed',
+            'completed_at' => date('Y-m-d H:i:s'),
+            'shows_processed' => $result['shows_processed'] ?? 0,
+            'tracks_matched' => $result['tracks_matched'] ?? 0,
+            'tracks_unmatched' => $result['tracks_unmatched'] ?? 0,
+            'products_created' => $result['products_created'] ?? 0,
+            'products_updated' => $result['products_updated'] ?? 0,
+            'products_skipped' => $result['products_skipped'] ?? 0,
+            'categories_populated' => $result['categories_populated'] ?? 0,
+            'categories_empty' => $result['categories_empty'] ?? 0,
+        ];
+
+        // Save to file
+        file_put_contents($progressFile, json_encode($allProgress, JSON_PRETTY_PRINT));
     }
 }

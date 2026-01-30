@@ -155,7 +155,7 @@ class DownloadCommand extends BaseLoggedCommand
 
             $progressCallback = function (string $message) use ($io, &$progressBar, &$totalShows, &$currentShow) {
                 // Parse progress messages
-                if (preg_match('/Found (\d+) total recordings/', $message, $matches)) {
+                if (preg_match('/Selected (\d+) unique shows/', $message, $matches)) {
                     $totalShows = (int)$matches[1];
                     if ($progressBar === null && $totalShows > 0) {
                         $progressBar = new ProgressBar($io, $totalShows);
@@ -163,14 +163,24 @@ class DownloadCommand extends BaseLoggedCommand
                         $progressBar->setMessage('Starting...');
                         $progressBar->start();
                     }
-                } elseif (preg_match('/Processing show (\d+)/', $message, $matches)) {
+                } elseif (preg_match('/\[(\d+)\/\d+\] Downloaded: (.+)$/', $message, $matches)) {
+                    $currentShow = (int)$matches[1];
+                    $identifier = $matches[2];
+                    if ($progressBar !== null) {
+                        $progressBar->setProgress($currentShow);
+                        $progressBar->setMessage($identifier);
+                    } else {
+                        $io->writeln($message);
+                    }
+                } elseif (preg_match('/\[(\d+)\/\d+\] FAILED:/', $message, $matches)) {
                     $currentShow = (int)$matches[1];
                     if ($progressBar !== null) {
                         $progressBar->setProgress($currentShow);
-                        $progressBar->setMessage('Downloading metadata...');
+                        $progressBar->setMessage('Failed...');
                     }
+                    $io->writeln($message);
                 } else {
-                    // Show other messages
+                    // Show other messages (cache status, etc)
                     if ($progressBar === null) {
                         $io->writeln($message);
                     }

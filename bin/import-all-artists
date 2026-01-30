@@ -4,6 +4,7 @@
 # Date: 2026-01-29
 
 set -e  # Exit on error (disable with --continue-on-error)
+set -o pipefail  # Capture exit code through pipes
 
 # Colors for output
 RED='\033[0;31m'
@@ -13,7 +14,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-LIMIT=${1:-"all"}  # Default: import all shows (or pass a number)
+LIMIT="all"  # Default: import all shows
 CONTINUE_ON_ERROR=false
 
 # Parse arguments
@@ -22,11 +23,13 @@ for arg in "$@"; do
         --continue-on-error)
             CONTINUE_ON_ERROR=true
             set +e  # Don't exit on error
-            shift
             ;;
         --limit=*)
             LIMIT="${arg#*=}"
-            shift
+            ;;
+        [0-9]*)
+            # Support positional number argument for limit
+            LIMIT="$arg"
             ;;
     esac
 done
@@ -51,6 +54,49 @@ ARTIST_FILES=$(ls src/app/code/ArchiveDotOrg/Core/config/artists/*.yaml 2>/dev/n
 TOTAL_ARTISTS=$(echo "$ARTIST_FILES" | wc -l | tr -d ' ')
 
 echo -e "${GREEN}Found $TOTAL_ARTISTS artists configured${NC}"
+echo -e "${YELLOW}Analyzing collection sizes...${NC}"
+echo ""
+
+# Build temp file with artist data
+TEMP_ARTISTS="/tmp/import-all-artists-$$.txt"
+> "$TEMP_ARTISTS"  # Clear file
+
+for YAML_FILE in $ARTIST_FILES; do
+    # Extract collection ID from YAML filename
+    COLLECTION_ID=$(basename "$YAML_FILE" .yaml)
+
+    # Extract artist name from YAML file
+    ARTIST_NAME=$(grep -A1 '^artist:' "$YAML_FILE" | grep 'name:' | sed 's/.*name: *"\(.*\)"/\1/' | head -1)
+
+    # Fallback to filename if YAML parsing fails
+    if [ -z "$ARTIST_NAME" ]; then
+        ARTIST_NAME="$COLLECTION_ID"
+    fi
+
+    # Check cached metadata to determine size
+    CACHE_DIR="src/var/archivedotorg/metadata/$COLLECTION_ID"
+    if [ -d "$CACHE_DIR" ]; then
+        # Count JSON files in cache
+        SHOW_COUNT=$(find "$CACHE_DIR" -name "*.json" -type f 2>/dev/null | wc -l | tr -d ' ')
+    else
+        # No cache yet, size is 0
+        SHOW_COUNT=0
+    fi
+
+    # Write to temp file: "size:yaml_path:artist_name"
+    printf "%010d:%s:%s\n" "$SHOW_COUNT" "$YAML_FILE" "$ARTIST_NAME" >> "$TEMP_ARTISTS"
+done
+
+# Sort artists by size (smallest first) and read into array
+echo -e "${BLUE}Sorting artists by collection size (smallest first)...${NC}"
+declare -a SORTED_ARTISTS
+while IFS= read -r line; do
+    SORTED_ARTISTS+=("$line")
+done < <(sort -n -t: -k1 "$TEMP_ARTISTS")
+
+# Clean up temp file
+rm -f "$TEMP_ARTISTS"
+
 echo ""
 
 # Create log file
@@ -66,18 +112,26 @@ declare -a SKIPPED=()
 
 CURRENT=0
 
-# Loop through each artist
-for YAML_FILE in $ARTIST_FILES; do
+# Loop through each artist (now sorted by size)
+for ARTIST_DATA in "${SORTED_ARTISTS[@]}"; do
     CURRENT=$((CURRENT + 1))
 
-    # Extract artist name from filename (remove path and .yaml extension)
-    ARTIST_SLUG=$(basename "$YAML_FILE" .yaml)
+    # Parse the data: "size:yaml_path:artist_name"
+    SHOW_COUNT=$(echo "$ARTIST_DATA" | cut -d: -f1)
+    YAML_FILE=$(echo "$ARTIST_DATA" | cut -d: -f2)
+    ARTIST_NAME=$(echo "$ARTIST_DATA" | cut -d: -f3-)
 
-    # Convert slug to artist name (e.g., "grateful-dead" -> "Grateful Dead")
-    ARTIST_NAME=$(echo "$ARTIST_SLUG" | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+    # Skip list (artists that cause problems)
+    if [[ "$ARTIST_NAME" == "Grateful Dead" ]]; then
+        echo -e "${YELLOW}[$CURRENT/$TOTAL_ARTISTS] Skipping: $ARTIST_NAME (problematic collection)${NC}"
+        SKIPPED+=("$ARTIST_NAME (in skip list)")
+        SKIPPED_ARTISTS=$((SKIPPED_ARTISTS + 1))
+        continue
+    fi
 
     echo -e "${BLUE}========================================${NC}"
     echo -e "${BLUE}[$CURRENT/$TOTAL_ARTISTS] Processing: $ARTIST_NAME${NC}"
+    echo -e "${BLUE}(Cached shows: $SHOW_COUNT)${NC}"
     echo -e "${BLUE}========================================${NC}"
 
     # Build limit argument
@@ -88,7 +142,7 @@ for YAML_FILE in $ARTIST_FILES; do
 
     # Download
     echo -e "${YELLOW}Step 1/2: Downloading metadata...${NC}"
-    if bin/magento archive:download "$ARTIST_NAME" $LIMIT_ARG >> "$LOG_FILE" 2>&1; then
+    if bin/magento archive:download "$ARTIST_NAME" $LIMIT_ARG -v 2>&1 | tee -a "$LOG_FILE"; then
         echo -e "${GREEN}✓ Download complete${NC}"
     else
         echo -e "${RED}✗ Download failed${NC}"
@@ -106,7 +160,7 @@ for YAML_FILE in $ARTIST_FILES; do
 
     # Populate
     echo -e "${YELLOW}Step 2/2: Populating products...${NC}"
-    if bin/magento archive:populate "$ARTIST_NAME" $LIMIT_ARG >> "$LOG_FILE" 2>&1; then
+    if bin/magento archive:populate "$ARTIST_NAME" $LIMIT_ARG -v 2>&1 | tee -a "$LOG_FILE"; then
         echo -e "${GREEN}✓ Populate complete${NC}"
         SUCCESSFUL+=("$ARTIST_NAME")
         SUCCESSFUL_ARTISTS=$((SUCCESSFUL_ARTISTS + 1))
@@ -166,10 +220,19 @@ fi
 
 # Reindex at the end
 echo -e "${YELLOW}Running final reindex...${NC}"
-if bin/magento indexer:reindex catalog_category_product catalog_product_category >> "$LOG_FILE" 2>&1; then
+if bin/magento indexer:reindex catalog_category_product catalog_product_category 2>&1 | tee -a "$LOG_FILE"; then
     echo -e "${GREEN}✓ Reindex complete${NC}"
 else
     echo -e "${RED}✗ Reindex failed - you may need to run manually${NC}"
+fi
+
+# Fix broken indexer (see INDEXER_BUG_REPORT.md)
+echo ""
+echo -e "${YELLOW}Fixing catalog index (workaround for Mage-OS bug)...${NC}"
+if bin/fix-index 2>&1 | tee -a "$LOG_FILE"; then
+    echo -e "${GREEN}✓ Index fix complete${NC}"
+else
+    echo -e "${RED}✗ Index fix failed - run bin/fix-index manually${NC}"
 fi
 
 echo ""

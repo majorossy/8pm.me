@@ -1,0 +1,231 @@
+
+Downloading: Billy Strings (BillyStrings)
+=========================================
+
+ Correlation ID: 620a3916-3ef8-4388-a27a-cc7183e14b94
+Collection BillyStrings already completed. Use --force to re-download.
+ ------------------ ------- 
+  Metric             Count  
+ ------------------ ------- 
+  Total Recordings   1,032  
+  Unique Shows       516    
+  Downloaded         304    
+  Already Cached     0      
+  Failed             0      
+ ------------------ ------- 
+
+ [OK] Download complete!                                                        
+
+
+ [OK] Collection BillyStrings already populated. Use --force to re-populate.    
+
+ ------------------ --------------------- 
+  Metric             Count                
+ ------------------ --------------------- 
+  Shows processed    297                  
+  Tracks matched     1664                 
+  Products created   0                    
+  Products updated   1664                 
+  Completed at       2026-01-30 14:57:03  
+ ------------------ --------------------- 
+
+
+Downloading: Cabinet (Cabinet)
+==============================
+
+ Correlation ID: e09b3614-3731-41c9-8ea5-600a9e15ab52
+Collection Cabinet already completed. Use --force to re-download.
+ ------------------ ------- 
+  Metric             Count  
+ ------------------ ------- 
+  Total Recordings   1,133  
+  Unique Shows       599    
+  Downloaded         10     
+  Already Cached     0      
+  Failed             0      
+ ------------------ ------- 
+
+ [OK] Download complete!                                                        
+
+
+ [OK] Collection Cabinet already populated. Use --force to re-populate.         
+
+ ------------------ --------------------- 
+  Metric             Count                
+ ------------------ --------------------- 
+  Shows processed    9                    
+  Tracks matched     42                   
+  Products created   0                    
+  Products updated   42                   
+  Completed at       2026-01-30 14:58:20  
+ ------------------ --------------------- 
+
+
+Downloading: Dogs in a Pile (DogsInAPile)
+=========================================
+
+ Correlation ID: 0a61a775-ab05-4a78-baab-0dae3133edfc
+Collection DogsInAPile already completed. Use --force to re-download.
+ ------------------ ------- 
+  Metric             Count  
+ ------------------ ------- 
+  Total Recordings   178    
+  Unique Shows       135    
+  Downloaded         10     
+  Already Cached     0      
+  Failed             0      
+ ------------------ ------- 
+
+ [OK] Download complete!                                                        
+
+
+ [OK] Collection DogsInAPile already populated. Use --force to re-populate.     
+
+ ------------------ --------------------- 
+  Metric             Count                
+ ------------------ --------------------- 
+  Shows processed    1                    
+  Tracks matched     4                    
+  Products created   0                    
+  Products updated   4                    
+  Completed at       2026-01-30 14:58:21  
+ ------------------ --------------------- 
+
+
+Downloading: Furthur (Furthur)
+==============================
+
+ Correlation ID: 09ff6e06-20de-414e-8a50-11b15536cb14
+Collection Furthur already completed. Use --force to re-download.
+ ------------------ ------- 
+  Metric             Count  
+ ------------------ ------- 
+  Total Recordings   1,215  
+  Unique Shows       241    
+  Downloaded         10     
+  Already Cached     0      
+  Failed             0      
+ ------------------ ------- 
+
+ [OK] Download complete!                                                        
+
+
+ [OK] Collection Furthur already populated. Use --force to re-populate.         
+
+ ------------------ --------------------- 
+  Metric             Count                
+ ------------------ --------------------- 
+  Shows processed    0                    
+  Tracks matched     0                    
+  Products created   0                    
+  Products updated   0                    
+  Completed at       2026-01-30 14:58:22  
+ ------------------ --------------------- 
+
+
+Downloading: God Street Wine (GodStreetWine)
+============================================
+
+ Correlation ID: c9b9cee8-8aa9-45b8-9ee5-ffdfd676047b
+Collection GodStreetWine already completed. Use --force to re-download.
+ ------------------ ------- 
+  Metric             Count  
+ ------------------ ------- 
+  Total Recordings   519    
+  Unique Shows       371    
+  Downloaded         10     
+  Already Cached     0      
+  Failed             0      
+ ------------------ ------- 
+
+ [OK] Download complete!                                                        
+
+
+ [OK] Collection GodStreetWine already populated. Use --force to re-populate.   
+
+ ------------------ --------------------- 
+  Metric             Count                
+ ------------------ --------------------- 
+  Shows processed    0                    
+  Tracks matched     0                    
+  Products created   0                    
+  Products updated   0                    
+  Completed at       2026-01-30 14:58:23  
+ ------------------ --------------------- 
+
+
+Downloading: Goose (GooseBand)
+==============================
+
+ Correlation ID: 71a61a89-18a1-42d3-8bd2-4943d975c0c2
+Collection GooseBand already completed. Use --force to re-download.
+ ------------------ ------- 
+  Metric             Count  
+ ------------------ ------- 
+  Total Recordings   767    
+  Unique Shows       286    
+  Downloaded         10     
+  Already Cached     0      
+  Failed             0      
+ ------------------ ------- 
+
+ [OK] Download complete!                                                        
+
+
+ [OK] Collection GooseBand already populated. Use --force to re-populate.       
+
+ ------------------ --------------------- 
+  Metric             Count                
+ ------------------ --------------------- 
+  Shows processed    0                    
+  Tracks matched     0                    
+  Products created   0                    
+  Products updated   0                    
+  Completed at       2026-01-30 14:58:24  
+ ------------------ --------------------- 
+
+
+Downloading: Grace Potter and the Nocturnals (GracePotterandtheNocturnals)
+==========================================================================
+
+ Correlation ID: 44f8dd7c-6a4f-44ce-8369-f8826416c1c2
+Collection GracePotterandtheNocturnals already completed. Use --force to re-download.
+ ------------------ ------- 
+  Metric             Count  
+ ------------------ ------- 
+  Total Recordings   597    
+  Unique Shows       362    
+  Downloaded         10     
+  Already Cached     0      
+  Failed             0      
+ ------------------ ------- 
+
+ [OK] Download complete!                                                        
+
+
+ [OK] Collection GracePotterandtheNocturnals already populated. Use --force to  
+      re-populate.                                                              
+
+ ------------------ --------------------- 
+  Metric             Count                
+ ------------------ --------------------- 
+  Shows processed    10                   
+  Tracks matched     6                    
+  Products created   0                    
+  Products updated   6                    
+  Completed at       2026-01-30 14:58:25  
+ ------------------ --------------------- 
+
+
+Downloading: Guster (Guster)
+============================
+
+ Correlation ID: 908959f8-6a62-40f6-a4a1-77741ead41d2
+Fetching show list from Archive.org for collection: Guster
+Found 1033 total recordings
+   0/730 [>---------------------------]   0% < 1 sec/< 1 sec Starting...
+  52/730 [=>--------------------------]   7% 2 secs/28 secs gus2003-06-24.sr71
+  77/730 [==>--------------------]  10% 3 secs/28 secs gus2004-08-25.m300.flac16
+ 107/730 [===>-------------------]  14% 4 secs/27 secs guster2003-12-12.shnf
+ 114/730 [>]  15% 6 secs/38 secs GUS2016-07-07.Gus2016-07-07.guster2016-07-07HighlandParkFlac16
+ 122/730 [>]  16% 7 secs/42 secs gus1998-07-18.sbd.shnf

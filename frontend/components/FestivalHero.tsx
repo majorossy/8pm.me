@@ -1,7 +1,11 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { useLineStartDetection } from '@/hooks/useLineStartDetection';
+import { useFestivalSort } from '@/hooks/useFestivalSort';
+import AlgorithmSelector from '@/components/AlgorithmSelector';
 
 interface LineupArtist {
   name: string;
@@ -112,20 +116,33 @@ function ArtistStatsTooltip({
 }
 
 export default function FestivalHero({ artists, onStartListening }: FestivalHeroProps) {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  // Check for reduced motion preference
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      setPrefersReducedMotion(mediaQuery.matches);
+
+      const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
+      mediaQuery.addEventListener('change', handler);
+      return () => mediaQuery.removeEventListener('change', handler);
+    }
+  }, []);
+
+  // Get sorted artists from context
+  const { sortedArtists } = useFestivalSort();
+
+  // Use sortedArtists from context instead of local sorting
+  const lineupArtists = sortedArtists.length > 0 ? sortedArtists : artists;
+
   // Calculate min/max for both songs and albums
-  const maxSongs = Math.max(...artists.map(a => a.songCount || 0));
-  const minSongs = Math.min(...artists.map(a => a.songCount || 0));
-  const maxAlbums = Math.max(...artists.map(a => a.albumCount || 0));
-  const minAlbums = Math.min(...artists.map(a => a.albumCount || 0));
+  const maxSongs = Math.max(...lineupArtists.map(a => a.songCount || 0));
+  const minSongs = Math.min(...lineupArtists.map(a => a.songCount || 0));
+  const maxAlbums = Math.max(...lineupArtists.map(a => a.albumCount || 0));
+  const minAlbums = Math.min(...lineupArtists.map(a => a.albumCount || 0));
   const songRange = maxSongs - minSongs || 1;
   const albumRange = maxAlbums - minAlbums || 1;
-
-  // Sort by combined score (75% products, 25% albums)
-  const lineupArtists = [...artists].sort((a, b) => {
-    const scoreA = ((a.songCount || 0) * 0.75) + ((a.albumCount || 0) * 0.25);
-    const scoreB = ((b.songCount || 0) * 0.75) + ((b.albumCount || 0) * 0.25);
-    return scoreB - scoreA;
-  });
 
   // Detect line starts to hide star separators via direct DOM manipulation (no flicker)
   const { containerRef, setItemRef, setStarRef } = useLineStartDetection(lineupArtists.length);
@@ -138,11 +155,11 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
     // Weighted combination: 75% products, 25% albums
     const combinedScore = (songRatio * 0.75) + (albumRatio * 0.25);
 
-    // Scale from 0.6rem (smallest) to 1.8rem (largest) on mobile
-    // Scale from 0.8rem (smallest) to 2.4rem (largest) on desktop
+    // Scale from 0.6rem (smallest) to 3.6rem (largest) on mobile
+    // Scale from 0.8rem (smallest) to 7.2rem (largest) on desktop
     return {
-      mobile: 0.6 + combinedScore * 1.2,    // 0.6rem to 1.8rem (3x difference)
-      desktop: 0.8 + combinedScore * 1.6,   // 0.8rem to 2.4rem (3x difference)
+      mobile: 0.6 + combinedScore * 3.0,    // 0.6rem to 3.6rem (6x difference)
+      desktop: 0.8 + combinedScore * 6.4,   // 0.8rem to 7.2rem (9x difference)
     };
   };
 
@@ -197,6 +214,11 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
           Streaming The Grateful Dead &amp; Beyond
         </div>
 
+        {/* Algorithm Selector */}
+        <div className="mb-6 flex justify-center">
+          <AlgorithmSelector />
+        </div>
+
         {/* Tonight's lineup */}
         <div className="mb-4 md:mb-6 w-full px-2">
           <div className="text-[#d4a060] text-xs md:text-sm tracking-[3px] md:tracking-[6px] uppercase mb-3 md:mb-4">
@@ -209,9 +231,16 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
             {lineupArtists.map((artist, index) => {
               const fontSize = getFontSize(artist.songCount || 0, artist.albumCount || 0);
               return (
-                <span
+                <motion.span
                   key={artist.slug}
                   ref={setItemRef(index)}
+                  layout
+                  transition={{
+                    layout: {
+                      duration: prefersReducedMotion ? 0 : 0.4,
+                      ease: 'easeOut',
+                    },
+                  }}
                   className="flex items-baseline whitespace-nowrap"
                 >
                   {/* Star separator - starts invisible, JS reveals appropriate ones after measurement */}
@@ -242,7 +271,7 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
                       formationYear={artist.formationYear}
                     />
                   </span>
-                </span>
+                </motion.span>
               );
             })}
           </div>
