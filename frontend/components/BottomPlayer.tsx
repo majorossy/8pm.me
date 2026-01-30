@@ -19,7 +19,7 @@ export default function BottomPlayer() {
   const { isMobile, expandPlayer, isPlayerExpanded, isTransitioning } = useMobileUI();
   const { reducedMotion } = useBatteryOptimization();
   const { vibrate, BUTTON_PRESS, SWIPE_COMPLETE } = useHaptic();
-  const { preferredQuality, getStreamUrl } = useQuality();
+  const { preferredQuality, setPreferredQuality, getStreamUrl } = useQuality();
   const {
     currentSong,
     isPlaying,

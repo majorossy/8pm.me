@@ -15,7 +15,7 @@ import {
 } from '@/utils/festivalSorting';
 
 const STORAGE_KEY = 'festivalSortAlgorithm';
-const DEFAULT_ALGORITHM: SortAlgorithm = 'balanced';
+const DEFAULT_ALGORITHM: SortAlgorithm = 'songVersions';
 
 interface FestivalSortContextValue {
   sortedArtists: ArtistWithStats[];
@@ -68,7 +68,7 @@ export function FestivalSortProvider({
   // Memoized setter - persists to localStorage
   const setAlgorithm = useCallback((algo: SortAlgorithm) => {
     if (!isValidAlgorithm(algo)) {
-      console.warn(`Invalid algorithm: ${algo}, falling back to balanced`);
+      console.warn(`Invalid algorithm: ${algo}, falling back to songVersions`);
       return;
     }
 

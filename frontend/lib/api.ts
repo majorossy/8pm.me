@@ -557,6 +557,12 @@ const GET_ALBUM_CATEGORIES_QUERY = `
 `;
 
 // Type definitions for GraphQL responses
+interface CategoryBreadcrumb {
+  category_uid: string;
+  category_name: string;
+  category_url_key: string;
+}
+
 interface MagentoCategory {
   uid: string;
   name: string;
@@ -565,6 +571,7 @@ interface MagentoCategory {
   image?: string;
   product_count?: number;
   children_count?: number;
+  breadcrumbs?: CategoryBreadcrumb[];
   wikipedia_artwork_url?: string;
   band_formation_date?: string;
   band_origin_location?: string;
@@ -1546,13 +1553,14 @@ export async function search(query: string): Promise<{
     const trackAlbumKeys = new Set<string>();
 
     for (const track of matchingTracks) {
-      if (track.breadcrumbs?.length >= 1) {
+      const breadcrumbs = track.breadcrumbs;
+      if (breadcrumbs && breadcrumbs.length >= 1) {
         // First breadcrumb = artist
-        trackArtistSlugs.add(track.breadcrumbs[0].category_url_key);
+        trackArtistSlugs.add(breadcrumbs[0].category_url_key);
       }
-      if (track.breadcrumbs?.length >= 2) {
+      if (breadcrumbs && breadcrumbs.length >= 2) {
         // Second breadcrumb = album
-        trackAlbumKeys.add(track.breadcrumbs[1].category_url_key);
+        trackAlbumKeys.add(breadcrumbs[1].category_url_key);
       }
     }
 

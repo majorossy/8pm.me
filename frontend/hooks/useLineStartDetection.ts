@@ -77,5 +77,6 @@ export function useLineStartDetection(itemCount: number) {
     containerRef,
     setItemRef,
     setStarRef,
+    detectAndHideLineStarts, // Expose for manual triggering
   };
 }

@@ -39,3 +39,6 @@ src/LICENSE_AFL.txt
 src/SECURITY.md
 src/composer.json
 src/composer.lock
+
+# Local logs
+var/log/

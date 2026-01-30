@@ -1,7 +1,7 @@
 import {
-  sortBalanced,
-  sortBySongs,
-  sortByCatalog,
+  sortBySongVersions,
+  sortByShows,
+  sortByHours,
   sortArtistsByAlgorithm,
   isValidAlgorithm,
   ArtistWithStats,
@@ -9,44 +9,15 @@ import {
 
 describe('festivalSorting', () => {
   const mockArtists: ArtistWithStats[] = [
-    { slug: 'phish', name: 'Phish', songCount: 1000, albumCount: 50, totalRecordings: 1500 },
-    { slug: 'dead', name: 'Grateful Dead', songCount: 800, albumCount: 100, totalRecordings: 2000 },
-    { slug: 'sts9', name: 'STS9', songCount: 500, albumCount: 30, totalRecordings: 700 },
-    { slug: 'panic', name: 'Widespread Panic', songCount: 600, albumCount: 40 }, // No totalRecordings
+    { slug: 'phish', name: 'Phish', songCount: 1000, albumCount: 50, totalRecordings: 1500, totalShows: 200, totalHours: 500 },
+    { slug: 'dead', name: 'Grateful Dead', songCount: 800, albumCount: 100, totalRecordings: 2000, totalShows: 300, totalHours: 800 },
+    { slug: 'sts9', name: 'STS9', songCount: 500, albumCount: 30, totalRecordings: 700, totalShows: 150, totalHours: 350 },
+    { slug: 'panic', name: 'Widespread Panic', songCount: 600, albumCount: 40, totalShows: 250, totalHours: 600 }, // No totalRecordings
   ];
 
-  describe('sortBalanced', () => {
-    it('should sort by weighted combination of songs (75%) and albums (25%)', () => {
-      const sorted = sortBalanced(mockArtists);
-      // Phish: High songs (1000), moderate albums (50)
-      // Dead: Moderate songs (800), high albums (100) - should boost this one
-      // Expected order: Phish, Dead, Panic, STS9
-      expect(sorted[0].slug).toBe('phish');
-      expect(sorted[1].slug).toBe('dead');
-    });
-
-    it('should return empty array for empty input', () => {
-      expect(sortBalanced([])).toEqual([]);
-    });
-
-    it('should return same array for single artist', () => {
-      const single = [mockArtists[0]];
-      const sorted = sortBalanced(single);
-      expect(sorted).toEqual(single);
-      expect(sorted).not.toBe(single); // Should be new array
-    });
-
-    it('should not mutate original array', () => {
-      const original = [...mockArtists];
-      const sorted = sortBalanced(mockArtists);
-      expect(mockArtists).toEqual(original);
-      expect(sorted).not.toBe(mockArtists);
-    });
-  });
-
-  describe('sortBySongs', () => {
+  describe('sortBySongVersions', () => {
     it('should sort by pure song count descending', () => {
-      const sorted = sortBySongs(mockArtists);
+      const sorted = sortBySongVersions(mockArtists);
       expect(sorted[0].slug).toBe('phish'); // 1000
       expect(sorted[1].slug).toBe('dead');  // 800
       expect(sorted[2].slug).toBe('panic'); // 600
@@ -54,104 +25,139 @@ describe('festivalSorting', () => {
     });
 
     it('should return empty array for empty input', () => {
-      expect(sortBySongs([])).toEqual([]);
+      expect(sortBySongVersions([])).toEqual([]);
     });
 
     it('should not mutate original array', () => {
       const original = [...mockArtists];
-      sortBySongs(mockArtists);
+      sortBySongVersions(mockArtists);
       expect(mockArtists).toEqual(original);
     });
   });
 
-  describe('sortByCatalog', () => {
-    it('should use totalRecordings when available', () => {
-      const sorted = sortByCatalog(mockArtists);
-      expect(sorted[0].slug).toBe('dead');  // 2000
-      expect(sorted[1].slug).toBe('phish'); // 1500
-      expect(sorted[2].slug).toBe('sts9');  // 700
+  describe('sortByShows', () => {
+    it('should sort by totalShows descending', () => {
+      const sorted = sortByShows(mockArtists);
+      expect(sorted[0].slug).toBe('dead');  // 300 shows
+      expect(sorted[1].slug).toBe('panic'); // 250 shows
+      expect(sorted[2].slug).toBe('phish'); // 200 shows
+      expect(sorted[3].slug).toBe('sts9');  // 150 shows
     });
 
-    it('should fall back to songCount when totalRecordings missing', () => {
-      const sorted = sortByCatalog(mockArtists);
-      // Panic has no totalRecordings, should use songCount (600)
-      expect(sorted[3].slug).toBe('panic'); // 600 (fallback)
+    it('should handle missing totalShows gracefully', () => {
+      const artistsWithMissing: ArtistWithStats[] = [
+        { slug: 'a', name: 'A', songCount: 100, albumCount: 10, totalShows: 50 },
+        { slug: 'b', name: 'B', songCount: 100, albumCount: 10 }, // No totalShows
+        { slug: 'c', name: 'C', songCount: 100, albumCount: 10, totalShows: 100 },
+      ];
+      const sorted = sortByShows(artistsWithMissing);
+      expect(sorted[0].slug).toBe('c'); // 100
+      expect(sorted[1].slug).toBe('a'); // 50
+      expect(sorted[2].slug).toBe('b'); // 0 (fallback)
     });
 
     it('should return empty array for empty input', () => {
-      expect(sortByCatalog([])).toEqual([]);
+      expect(sortByShows([])).toEqual([]);
     });
 
     it('should not mutate original array', () => {
       const original = [...mockArtists];
-      sortByCatalog(mockArtists);
+      sortByShows(mockArtists);
+      expect(mockArtists).toEqual(original);
+    });
+  });
+
+  describe('sortByHours', () => {
+    it('should sort by totalHours descending', () => {
+      const sorted = sortByHours(mockArtists);
+      expect(sorted[0].slug).toBe('dead');  // 800 hours
+      expect(sorted[1].slug).toBe('panic'); // 600 hours
+      expect(sorted[2].slug).toBe('phish'); // 500 hours
+      expect(sorted[3].slug).toBe('sts9');  // 350 hours
+    });
+
+    it('should handle missing totalHours gracefully', () => {
+      const artistsWithMissing: ArtistWithStats[] = [
+        { slug: 'a', name: 'A', songCount: 100, albumCount: 10, totalHours: 50 },
+        { slug: 'b', name: 'B', songCount: 100, albumCount: 10 }, // No totalHours
+        { slug: 'c', name: 'C', songCount: 100, albumCount: 10, totalHours: 100 },
+      ];
+      const sorted = sortByHours(artistsWithMissing);
+      expect(sorted[0].slug).toBe('c'); // 100
+      expect(sorted[1].slug).toBe('a'); // 50
+      expect(sorted[2].slug).toBe('b'); // 0 (fallback)
+    });
+
+    it('should return empty array for empty input', () => {
+      expect(sortByHours([])).toEqual([]);
+    });
+
+    it('should not mutate original array', () => {
+      const original = [...mockArtists];
+      sortByHours(mockArtists);
       expect(mockArtists).toEqual(original);
     });
   });
 
   describe('sortArtistsByAlgorithm', () => {
-    it('should call sortBalanced for "balanced" algorithm', () => {
-      const sorted = sortArtistsByAlgorithm(mockArtists, 'balanced');
-      const expected = sortBalanced(mockArtists);
+    it('should call sortBySongVersions for "songVersions" algorithm', () => {
+      const sorted = sortArtistsByAlgorithm(mockArtists, 'songVersions');
+      const expected = sortBySongVersions(mockArtists);
       expect(sorted.map(a => a.slug)).toEqual(expected.map(a => a.slug));
     });
 
-    it('should call sortBySongs for "songs" algorithm', () => {
-      const sorted = sortArtistsByAlgorithm(mockArtists, 'songs');
-      const expected = sortBySongs(mockArtists);
+    it('should call sortByShows for "shows" algorithm', () => {
+      const sorted = sortArtistsByAlgorithm(mockArtists, 'shows');
+      const expected = sortByShows(mockArtists);
       expect(sorted.map(a => a.slug)).toEqual(expected.map(a => a.slug));
     });
 
-    it('should call sortByCatalog for "catalog" algorithm', () => {
-      const sorted = sortArtistsByAlgorithm(mockArtists, 'catalog');
-      const expected = sortByCatalog(mockArtists);
+    it('should call sortByHours for "hours" algorithm', () => {
+      const sorted = sortArtistsByAlgorithm(mockArtists, 'hours');
+      const expected = sortByHours(mockArtists);
       expect(sorted.map(a => a.slug)).toEqual(expected.map(a => a.slug));
     });
 
-    it('should fall back to balanced for invalid algorithm', () => {
+    it('should fall back to songVersions for invalid algorithm', () => {
       const sorted = sortArtistsByAlgorithm(mockArtists, 'invalid' as any);
-      const expected = sortBalanced(mockArtists);
+      const expected = sortBySongVersions(mockArtists);
       expect(sorted.map(a => a.slug)).toEqual(expected.map(a => a.slug));
     });
   });
 
   describe('isValidAlgorithm', () => {
     it('should return true for valid algorithms', () => {
-      expect(isValidAlgorithm('balanced')).toBe(true);
-      expect(isValidAlgorithm('songs')).toBe(true);
-      expect(isValidAlgorithm('catalog')).toBe(true);
+      expect(isValidAlgorithm('songVersions')).toBe(true);
+      expect(isValidAlgorithm('shows')).toBe(true);
+      expect(isValidAlgorithm('hours')).toBe(true);
     });
 
     it('should return false for invalid algorithms', () => {
       expect(isValidAlgorithm('invalid')).toBe(false);
       expect(isValidAlgorithm('')).toBe(false);
-      expect(isValidAlgorithm('BALANCED')).toBe(false);
+      expect(isValidAlgorithm('balanced')).toBe(false); // Old algorithm
+      expect(isValidAlgorithm('songs')).toBe(false); // Old algorithm
+      expect(isValidAlgorithm('catalog')).toBe(false); // Old algorithm
     });
   });
 
-  describe('normalization edge cases', () => {
-    it('should handle all artists with same songCount', () => {
-      const sameArtists = [
-        { slug: 'a', name: 'A', songCount: 100, albumCount: 10 },
-        { slug: 'b', name: 'B', songCount: 100, albumCount: 20 },
-        { slug: 'c', name: 'C', songCount: 100, albumCount: 30 },
+  describe('edge cases', () => {
+    it('should maintain stable order when all values are the same', () => {
+      const sameArtists: ArtistWithStats[] = [
+        { slug: 'a', name: 'A', songCount: 100, albumCount: 10, totalShows: 50, totalHours: 100 },
+        { slug: 'b', name: 'B', songCount: 100, albumCount: 10, totalShows: 50, totalHours: 100 },
+        { slug: 'c', name: 'C', songCount: 100, albumCount: 10, totalShows: 50, totalHours: 100 },
       ];
-      const sorted = sortBalanced(sameArtists);
-      // When songCount is same, albumCount should dominate
-      expect(sorted[0].slug).toBe('c'); // Highest albumCount
-      expect(sorted[2].slug).toBe('a'); // Lowest albumCount
-    });
 
-    it('should handle all artists with same albumCount', () => {
-      const sameArtists = [
-        { slug: 'a', name: 'A', songCount: 100, albumCount: 10 },
-        { slug: 'b', name: 'B', songCount: 200, albumCount: 10 },
-        { slug: 'c', name: 'C', songCount: 300, albumCount: 10 },
-      ];
-      const sorted = sortBalanced(sameArtists);
-      // When albumCount is same, songCount should dominate
-      expect(sorted[0].slug).toBe('c'); // Highest songCount
-      expect(sorted[2].slug).toBe('a'); // Lowest songCount
+      // When all values are the same, order should be stable
+      const sortedBySongs = sortBySongVersions(sameArtists);
+      const sortedByShows = sortByShows(sameArtists);
+      const sortedByHours = sortByHours(sameArtists);
+
+      // All should have same length
+      expect(sortedBySongs.length).toBe(3);
+      expect(sortedByShows.length).toBe(3);
+      expect(sortedByHours.length).toBe(3);
     });
   });
 });

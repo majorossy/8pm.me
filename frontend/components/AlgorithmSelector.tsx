@@ -15,22 +15,22 @@ interface AlgorithmOption {
 
 const ALGORITHMS: AlgorithmOption[] = [
   {
-    id: 'balanced',
+    id: 'songVersions',
     icon: '🎵',
-    label: 'Balanced',
-    description: 'Balanced mix of recordings and albums',
+    label: 'Song Versions',
+    description: 'Sort by number of song versions',
   },
   {
-    id: 'songs',
-    icon: '📀',
-    label: 'Songs',
-    description: 'Most individual recordings',
+    id: 'shows',
+    icon: '⭐',
+    label: 'Shows',
+    description: 'Sort by number of shows',
   },
   {
-    id: 'catalog',
-    icon: '📚',
-    label: 'Catalog',
-    description: 'Largest catalog size',
+    id: 'hours',
+    icon: '⏱️',
+    label: 'Hours',
+    description: 'Sort by hours of music',
   },
 ];
 

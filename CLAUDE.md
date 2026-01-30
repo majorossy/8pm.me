@@ -59,6 +59,90 @@
 
 ---
 
+## Catalog Category Product Indexer Fix - COMPLETE (2026-01-30)
+
+**Status:** ✅ Fixed - GraphQL queries now return correct product counts
+
+### Problem
+
+GraphQL queries returned 0 products for artist categories (e.g., Keller Williams) even though products existed in the database. The native `catalog_category_product` indexer reported success but wasn't populating the correct tables.
+
+### Root Cause
+
+**Magento 2.4+ uses store-specific index tables for GraphQL queries:**
+
+| Table | Purpose | What Queries It |
+|-------|---------|-----------------|
+| `catalog_category_product_index` | Base index | Admin, some REST APIs |
+| `catalog_category_product_index_store1` | Store 1 index | **GraphQL, Frontend** |
+
+The native indexer was populating the base table but failing to populate the store-specific table. This is a **known Magento bug** documented in multiple GitHub issues:
+- GitHub #10591: Indexer clears table before rebuilding (race condition)
+- GitHub #9676: `is_parent` flag corruption during import
+- MDVA-40550: Lock timeout during concurrent reindex
+
+**Additionally found:** SQL bug at `AbstractAction.php:584` - extra space in JOIN condition (`'cpe. '` instead of `'cpe.'`)
+
+### Fix Implemented
+
+Updated `bin/fix-index` to populate **both** tables:
+
+1. **Steps 1-2:** Populate base `catalog_category_product_index` (existing)
+2. **Steps 3-4:** Populate `catalog_category_product_index_store1` (NEW)
+
+**Before fix:**
+```
+catalog_category_product_index (base):   2,445 rows for Keller Williams
+catalog_category_product_index_store1:   52 rows ❌
+GraphQL total_count:                     0 ❌
+```
+
+**After fix:**
+```
+catalog_category_product_index (base):   4,849 rows
+catalog_category_product_index_store1:   4,849 rows ✅
+GraphQL total_count:                     4,849 ✅
+```
+
+### Usage
+
+The fix runs automatically after `bin/import-all-artists`. To run manually:
+
+```bash
+bin/fix-index
+```
+
+### Verification
+
+```bash
+# Check index counts for a category (e.g., Keller Williams = 1510)
+bin/mysql -e "SELECT COUNT(*) FROM catalog_category_product_index_store1 WHERE category_id = 1510;"
+
+# Test GraphQL query
+curl -X POST https://magento.test/graphql -H "Content-Type: application/json" -k -d '{
+  "query": "{ products(filter: {category_id: {eq: \"1510\"}}, pageSize: 1) { total_count } }"
+}'
+```
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `bin/fix-index` | Added Steps 3-4 to populate `catalog_category_product_index_store1` |
+
+### Known Upstream Bug (Not Fixed)
+
+**File:** `src/vendor/mage-os/module-catalog/Model/Indexer/Category/Product/AbstractAction.php:584`
+
+```php
+// Bug: Extra space after 'cpe.'
+'cpvd.' . $productLinkField . ' = cpe. ' . $productLinkField  // ← 'cpe. ' should be 'cpe.'
+```
+
+This bug exists in Mage-OS/Magento core. Our `bin/fix-index` workaround bypasses this issue entirely.
+
+---
+
 ## Overview
 Mage-OS 1.0.5 (Magento Open Source fork) as headless backend with Next.js/React frontend.
 

@@ -68,7 +68,9 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
     const totalShows = artist.totalShows || uniqueShows.size || 0;
 
     // Years active (can use band_formation_date if present)
-    const firstYear = formationYear || (allYears.length ? Math.min(...allYears) : null);
+    // Ensure firstYear is always a number for type safety
+    const firstYearRaw = formationYear || (allYears.length ? Math.min(...allYears) : null);
+    const firstYear = firstYearRaw ? (typeof firstYearRaw === 'string' ? parseInt(firstYearRaw, 10) : firstYearRaw) : null;
     const lastYear = allYears.length ? Math.max(...allYears) : null;
 
     return {
@@ -354,7 +356,6 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
                   totalVenues: calculatedStats.totalVenues,
                   recordingStats: { total: calculatedStats.totalRecordings },
                   yearsActive: formationYear ? { first: parseInt(formationYear, 10), last: new Date().getFullYear() } : calculatedStats.yearsActive,
-                  topVenues: calculatedStats.topVenues,
                   mostPlayedTrack: calculatedStats.mostPlayedTrack,
                 }}
               />

@@ -128,7 +128,7 @@ function ArtistsContentInner() {
           const mapped = {
             name: a.name,
             slug: a.slug,
-            songCount: a.songCount ?? a.albums.reduce((sum, album) => sum + album.totalSongs, 0),
+            songCount: a.songCount ?? a.albums.reduce((sum: number, album: { totalSongs: number }) => sum + album.totalSongs, 0),
             albumCount: a.albumCount ?? a.albums.length,
             totalShows: a.totalShows,
             mostPlayedTrack: a.mostPlayedTrack,
@@ -172,7 +172,7 @@ function ArtistsContentInner() {
                   isComingSoon ? 'cursor-default' : 'hover:scale-105'
                 }`}
                 style={{
-                  width: '140px',
+                  width: '250px',
                   border: `2px solid ${hexToRgba(album.color, isComingSoon ? 0.3 : 0.6)}`,
                   boxShadow: isComingSoon
                     ? `0 0 8px ${hexToRgba(album.color, 0.1)}`

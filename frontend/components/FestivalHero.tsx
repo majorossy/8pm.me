@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useLineStartDetection } from '@/hooks/useLineStartDetection';
@@ -130,36 +130,71 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
     }
   }, []);
 
-  // Get sorted artists from context
-  const { sortedArtists } = useFestivalSort();
+  // Get sorted artists and algorithm from context
+  const { sortedArtists, algorithm } = useFestivalSort();
 
   // Use sortedArtists from context instead of local sorting
   const lineupArtists = sortedArtists.length > 0 ? sortedArtists : artists;
 
-  // Calculate min/max for both songs and albums
-  const maxSongs = Math.max(...lineupArtists.map(a => a.songCount || 0));
-  const minSongs = Math.min(...lineupArtists.map(a => a.songCount || 0));
-  const maxAlbums = Math.max(...lineupArtists.map(a => a.albumCount || 0));
-  const minAlbums = Math.min(...lineupArtists.map(a => a.albumCount || 0));
-  const songRange = maxSongs - minSongs || 1;
-  const albumRange = maxAlbums - minAlbums || 1;
-
   // Detect line starts to hide star separators via direct DOM manipulation (no flicker)
-  const { containerRef, setItemRef, setStarRef } = useLineStartDetection(lineupArtists.length);
+  const { containerRef, setItemRef, setStarRef, detectAndHideLineStarts } = useLineStartDetection(lineupArtists.length);
 
-  const getFontSize = (songCount: number, albumCount: number) => {
-    // Normalize both metrics to 0-1 range
-    const songRatio = (songCount - minSongs) / songRange;
-    const albumRatio = (albumCount - minAlbums) / albumRange;
+  // Debounce star detection after animations
+  const detectionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    // Weighted combination: 75% products, 25% albums
-    const combinedScore = (songRatio * 0.75) + (albumRatio * 0.25);
+  const handleLayoutAnimationComplete = useCallback(() => {
+    // Clear any pending detection
+    if (detectionTimeoutRef.current) {
+      clearTimeout(detectionTimeoutRef.current);
+    }
+
+    // Debounce: wait for all animations to complete before detecting
+    detectionTimeoutRef.current = setTimeout(() => {
+      // Use double RAF to ensure DOM is fully settled
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          detectAndHideLineStarts();
+          detectionTimeoutRef.current = null;
+        });
+      });
+    }, 50); // Small delay after last animation completes
+  }, [detectAndHideLineStarts]);
+
+  const getFontSize = (artist: LineupArtist) => {
+    let value: number;
+    let minValue: number;
+    let maxValue: number;
+
+    switch (algorithm) {
+      case 'songVersions':
+        value = artist.songCount || 0;
+        minValue = Math.min(...lineupArtists.map(a => a.songCount || 0));
+        maxValue = Math.max(...lineupArtists.map(a => a.songCount || 0));
+        break;
+      case 'shows':
+        value = artist.totalShows || 0;
+        minValue = Math.min(...lineupArtists.map(a => a.totalShows || 0));
+        maxValue = Math.max(...lineupArtists.map(a => a.totalShows || 0));
+        break;
+      case 'hours':
+        value = artist.totalHours || 0;
+        minValue = Math.min(...lineupArtists.map(a => a.totalHours || 0));
+        maxValue = Math.max(...lineupArtists.map(a => a.totalHours || 0));
+        break;
+      default:
+        value = artist.songCount || 0;
+        minValue = Math.min(...lineupArtists.map(a => a.songCount || 0));
+        maxValue = Math.max(...lineupArtists.map(a => a.songCount || 0));
+    }
+
+    const range = maxValue - minValue || 1;
+    const ratio = (value - minValue) / range;
 
     // Scale from 0.6rem (smallest) to 3.6rem (largest) on mobile
     // Scale from 0.8rem (smallest) to 7.2rem (largest) on desktop
     return {
-      mobile: 0.6 + combinedScore * 3.0,    // 0.6rem to 3.6rem (6x difference)
-      desktop: 0.8 + combinedScore * 6.4,   // 0.8rem to 7.2rem (9x difference)
+      mobile: 0.6 + ratio * 3.0,    // 0.6rem to 3.6rem
+      desktop: 0.8 + ratio * 6.4,   // 0.8rem to 7.2rem
     };
   };
 
@@ -196,22 +231,20 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
       </span>
 
       {/* Main content */}
-      <div className="flex flex-col items-center text-center z-10 max-w-4xl">
+      <div className="flex flex-col items-center text-center z-10 max-w-6xl">
         {/* Top decoration */}
         <div className="text-[#d4a060] text-base md:text-xl tracking-[4px] md:tracking-[8px] uppercase mb-2 md:mb-3">
-          &#9733; Live From The Archive &#9733;
+          &#9733; Live From Archive.org &#9733;
         </div>
 
         {/* Main title */}
         <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-[96px] font-bold text-[#e8dcc4] tracking-[3px] md:tracking-[6px] uppercase leading-none mb-2 md:mb-3">
-          Campfire
-          <br />
-          Tapes
+          8pm.me
         </h1>
 
         {/* Subtitle */}
         <div className="text-[#8a8478] text-sm md:text-lg tracking-[2px] md:tracking-[4px] uppercase mb-4 md:mb-6 px-4">
-          Streaming The Grateful Dead &amp; Beyond
+          Streaming The Best JamBands of All Time
         </div>
 
         {/* Algorithm Selector */}
@@ -222,14 +255,14 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
         {/* Tonight's lineup */}
         <div className="mb-4 md:mb-6 w-full px-2">
           <div className="text-[#d4a060] text-xs md:text-sm tracking-[3px] md:tracking-[6px] uppercase mb-3 md:mb-4">
-            Tonight&apos;s Lineup
+            The Lineup
           </div>
           <div
             ref={containerRef}
             className="flex flex-wrap items-baseline justify-center gap-x-2 md:gap-x-4 gap-y-2 text-[#e8dcc4] font-bold uppercase tracking-[1px] md:tracking-[2px]"
           >
             {lineupArtists.map((artist, index) => {
-              const fontSize = getFontSize(artist.songCount || 0, artist.albumCount || 0);
+              const fontSize = getFontSize(artist);
               return (
                 <motion.span
                   key={artist.slug}
@@ -241,6 +274,7 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
                       ease: 'easeOut',
                     },
                   }}
+                  onLayoutAnimationComplete={handleLayoutAnimationComplete}
                   className="flex items-baseline whitespace-nowrap"
                 >
                   {/* Star separator - starts invisible, JS reveals appropriate ones after measurement */}
@@ -275,22 +309,6 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
               );
             })}
           </div>
-        </div>
-
-        {/* CTA buttons */}
-        <div className="flex flex-col sm:flex-row gap-3 md:gap-4 mb-4 md:mb-6 w-full sm:w-auto px-4 sm:px-0">
-          <button
-            onClick={onStartListening}
-            className="px-6 md:px-10 py-3 md:py-4 bg-[#d4a060] text-[#1c1a17] font-bold text-sm md:text-base uppercase tracking-[2px] md:tracking-[3px] rounded-full hover:bg-[#e8b470] transition-colors duration-200"
-          >
-            Start Listening
-          </button>
-          <Link
-            href="/artists"
-            className="px-6 md:px-10 py-3 md:py-4 border-2 border-[#d4a060] text-[#d4a060] font-bold text-sm md:text-base uppercase tracking-[2px] md:tracking-[3px] rounded-full hover:bg-[#d4a060] hover:text-[#1c1a17] transition-colors duration-200 text-center"
-          >
-            Browse Artists
-          </Link>
         </div>
 
         {/* Stats */}
