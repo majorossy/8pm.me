@@ -15,6 +15,7 @@ import { useHaptic } from '@/hooks/useHaptic';
 import { formatDuration } from '@/lib/api';
 import { getSelectedSong } from '@/lib/queueTypes';
 import { formatLineage } from '@/lib/lineageUtils';
+import ShareButton from '@/components/ShareButton';
 
 // Custom hook for screen reader announcements
 function usePlayerAnnouncements(
@@ -428,6 +429,12 @@ export default function BottomPlayer() {
               </svg>
             )}
           </button>
+
+          {/* Share button */}
+          <ShareButton
+            title={currentSong.title}
+            artistName={currentSong.artistName}
+          />
         </div>
 
         {/* Center section - Player controls (40%) */}
