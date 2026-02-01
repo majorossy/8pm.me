@@ -2,6 +2,17 @@
 
 **Time Required:** ~1 hour/month
 **Frequency:** First Monday of each month
+**Last Updated:** 2026-02-01
+
+---
+
+## Pre-Audit Setup
+
+Before starting the audit, ensure you have access to:
+- [ ] Google Search Console (https://search.google.com/search-console)
+- [ ] Google Analytics 4 (https://analytics.google.com)
+- [ ] Lighthouse CLI or Chrome DevTools
+- [ ] Site access for manual testing
 
 ---
 
@@ -29,6 +40,29 @@
 - [ ] Check for structured data errors
 - [ ] Verify MusicEvent, MusicAlbum, Breadcrumb markup detected
 - [ ] Review rich result impressions (growing?)
+- [ ] Test sample pages with Rich Results Test tool
+
+---
+
+## Google Analytics 4 Review (15 min)
+
+### Traffic Analysis
+- [ ] Compare organic traffic to previous month
+- [ ] Review top landing pages
+- [ ] Check bounce rate trends
+- [ ] Analyze user flow through site
+
+### Event Tracking Verification
+- [ ] Verify song_play events are firing
+- [ ] Check search event tracking
+- [ ] Confirm share events are logged
+- [ ] Review Web Vitals events (CLS, LCP, INP, FCP, TTFB)
+
+### User Engagement
+- [ ] Average session duration
+- [ ] Pages per session
+- [ ] Returning vs new visitors
+- [ ] Device breakdown (mobile vs desktop)
 
 ---
 
@@ -49,6 +83,31 @@ npx lighthouse http://localhost:3001/artists/railroad-earth \
 - [ ] SEO score 100
 - [ ] Accessibility score >95
 - [ ] No new errors or warnings
+- [ ] Image optimization issues
+- [ ] Render-blocking resources
+
+---
+
+## Technical SEO Checks (10 min)
+
+- [ ] Sitemap is accessible at /sitemap.xml
+- [ ] Robots.txt is configured correctly
+- [ ] SSL certificate is valid
+- [ ] No mixed content warnings
+- [ ] Canonical tags are correct
+- [ ] Mobile rendering works properly
+
+### Quick Technical Tests
+```bash
+# Test sitemap (replace with production URL when live)
+curl -I https://8pm.fm/sitemap.xml
+
+# Test robots.txt
+curl https://8pm.fm/robots.txt
+
+# Test SSL
+curl -I https://8pm.fm
+```
 
 ---
 
@@ -143,3 +202,34 @@ Set up alerts for:
 - [ ] Keyword research refresh
 - [ ] Schema.org updates (check for new types)
 - [ ] Performance optimization sprint
+- [ ] Content audit and pruning
+- [ ] Backlink disavow review
+
+---
+
+## Monthly Metrics Snapshot Template
+
+| Metric | Previous Month | This Month | Change |
+|--------|---------------|------------|--------|
+| Indexed Pages | | | |
+| Organic Sessions | | | |
+| Avg. CTR | | | |
+| Avg. Position | | | |
+| LCP (mobile) | | | |
+| CLS (mobile) | | | |
+| INP (mobile) | | | |
+
+---
+
+## Notes
+
+_Add any observations or notes from this month's audit:_
+
+```
+Date:
+Auditor:
+Key Findings:
+-
+-
+-
+```

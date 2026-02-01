@@ -100,12 +100,16 @@ class TrackImporter implements TrackImporterInterface
 
         try {
             if ($isUpdate) {
-                $product = $this->productRepository->get($sku);
+                // Get product with store_id = 0 (admin/global scope) to ensure attributes save globally
+                $product = $this->productRepository->getById($existingProductId, false, 0);
             } else {
                 /** @var Product $product */
                 $product = $this->productFactory->create();
                 $this->initializeNewProduct($product, $sku);
             }
+
+            // Ensure store_id is set to 0 for global scope attributes
+            $product->setStoreId(0);
 
             // Set product data from track and show
             $this->setProductData($product, $track, $show, $artistName, $formatTracks);
@@ -349,6 +353,42 @@ class TrackImporter implements TrackImporterInterface
             $product->setData('archive_avg_rating', $avgRating);
         }
         $product->setData('archive_num_reviews', $show->getNumReviews() ?? 0);
+
+        // SEO Meta Fields with null safety
+        $trackTitle = $track->getTitle() ?? 'Untitled Track';
+        $showYear = $show->getYear() ?? 'Live';
+        $showVenue = $show->getVenue() ?? 'Unknown Venue';
+        $showDate = $show->getDate() ?? $showYear;
+
+        $metaTitle = sprintf(
+            '%s - %s (%s at %s) | 8PM',
+            $trackTitle,
+            $artistName,
+            $showYear,
+            $showVenue
+        );
+
+        $metaDescription = sprintf(
+            'Listen to %s performed by %s on %s at %s. High-quality live concert recording - free streaming.',
+            $trackTitle,
+            $artistName,
+            $showDate,
+            $showVenue
+        );
+
+        $metaKeyword = implode(', ', array_filter([
+            $artistName,
+            $trackTitle,
+            $showVenue,
+            $showYear,
+            'live concert',
+            'free streaming'
+        ]));
+
+        // Use magic setters for proper EAV attribute handling
+        $product->setMetaTitle($this->truncateToLength($metaTitle, 70));
+        $product->setMetaDescription($this->truncateToLength($metaDescription, 160));
+        $product->setMetaKeyword($metaKeyword);
     }
 
     /**
@@ -529,5 +569,29 @@ class TrackImporter implements TrackImporterInterface
 
         // Default estimates based on format
         return $format === 'mp3' ? '256k' : '192k';
+    }
+
+    /**
+     * Truncate string to maximum length without breaking words
+     *
+     * @param string $text
+     * @param int $maxLength
+     * @return string
+     */
+    private function truncateToLength(string $text, int $maxLength): string
+    {
+        if (mb_strlen($text) <= $maxLength) {
+            return $text;
+        }
+
+        $truncated = mb_substr($text, 0, $maxLength);
+        $lastSpace = mb_strrpos($truncated, ' ');
+
+        // Only break at space if it's not too far back (>75% of max length)
+        if ($lastSpace !== false && $lastSpace > $maxLength * 0.75) {
+            return mb_substr($truncated, 0, $lastSpace) . '...';
+        }
+
+        return $truncated . '...';
     }
 }

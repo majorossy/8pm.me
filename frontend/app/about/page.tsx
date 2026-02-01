@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { Metadata } from 'next';
 import {
   InfoIcon,
   HeartIcon,
@@ -9,6 +10,14 @@ import {
   ClockIcon,
   ArchiveIcon,
 } from '@/components/icons/FooterIcons';
+
+export const metadata: Metadata = {
+  title: 'About 8PM',
+  description: 'Learn about 8PM, your gateway to thousands of free live concert recordings from Archive.org. Discover our mission to preserve and share the joy of live music.',
+  alternates: {
+    canonical: '/about',
+  },
+};
 
 export default function AboutPage() {
   return (

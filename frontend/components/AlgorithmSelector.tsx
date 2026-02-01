@@ -16,26 +16,26 @@ interface AlgorithmOption {
 const ALGORITHMS: AlgorithmOption[] = [
   {
     id: 'songVersions',
-    icon: '🎵',
+    icon: '',
     label: 'Song Versions',
     description: 'Sort by number of song versions',
   },
   {
     id: 'shows',
-    icon: '⭐',
+    icon: '',
     label: 'Shows',
     description: 'Sort by number of shows',
   },
   {
     id: 'hours',
-    icon: '⏱️',
+    icon: '',
     label: 'Hours',
     description: 'Sort by hours of music',
   },
 ];
 
 export default function AlgorithmSelector() {
-  const { algorithm, setAlgorithm } = useFestivalSort();
+  const { algorithm, setAlgorithm, isAlphaMode, toggleAlphaMode } = useFestivalSort();
   const { vibrate, BUTTON_PRESS } = useHaptic();
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
@@ -53,7 +53,13 @@ export default function AlgorithmSelector() {
 
   const handleSelect = (algo: SortAlgorithm) => {
     vibrate(BUTTON_PRESS);
-    setAlgorithm(algo);
+    if (algo === algorithm) {
+      // Already selected - toggle alpha mode
+      toggleAlphaMode();
+    } else {
+      // New algorithm selected
+      setAlgorithm(algo);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent, currentIndex: number) => {
@@ -98,7 +104,7 @@ export default function AlgorithmSelector() {
             key={algo.id}
             role="radio"
             aria-checked={isSelected}
-            aria-label={`${algo.label}: ${algo.description}`}
+            aria-label={`${algo.label}: ${algo.description}${isSelected && isAlphaMode ? ' (sorted A-Z)' : ''}`}
             onClick={() => handleSelect(algo.id)}
             onKeyDown={(e) => handleKeyDown(e, index)}
             tabIndex={isSelected ? 0 : -1}
@@ -132,21 +138,17 @@ export default function AlgorithmSelector() {
             )}
 
             {/* Content */}
-            <span className="relative z-10 flex items-center justify-center gap-2">
-              <span className="text-base" aria-hidden="true">
-                {algo.icon}
-              </span>
+            <span className="relative z-10 flex flex-col items-center justify-center">
               <span>{algo.label}</span>
-              {isSelected && (
+              {/* Subtle underline indicator for alpha mode */}
+              {isSelected && isAlphaMode && (
                 <motion.span
-                  initial={prefersReducedMotion ? false : { scale: 0, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
+                  initial={prefersReducedMotion ? false : { scaleX: 0, opacity: 0 }}
+                  animate={{ scaleX: 1, opacity: 1 }}
                   transition={{ duration: prefersReducedMotion ? 0 : 0.2 }}
-                  className="text-base"
-                  aria-label="Selected"
-                >
-                  ✓
-                </motion.span>
+                  className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-[var(--bg)] rounded-full"
+                  aria-label="Sorted alphabetically"
+                />
               )}
             </span>
           </motion.button>

@@ -3,6 +3,7 @@ import { getArtists, getArtistAlbums } from '@/lib/api';
 import ArtistsPageContent from '@/components/ArtistsPageContent';
 import StructuredData from '@/components/StructuredData';
 import { getBaseUrl } from '@/lib/seo';
+import { generateWebSiteSchema } from '@/lib/schema';
 
 export const metadata: Metadata = {
   title: 'EIGHTPM - Stream Live Concert Recordings',
@@ -29,21 +30,7 @@ export default async function HomePage() {
   const baseUrl = getBaseUrl();
 
   // Schema.org WebSite + SearchAction structured data
-  const webSiteSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    name: 'EIGHTPM',
-    url: baseUrl,
-    description: 'Stream live concert recordings from Archive.org',
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: `${baseUrl}/search?q={search_term_string}`,
-      },
-      'query-input': 'required name=search_term_string',
-    },
-  };
+  const webSiteSchema = generateWebSiteSchema(baseUrl);
 
   return (
     <>

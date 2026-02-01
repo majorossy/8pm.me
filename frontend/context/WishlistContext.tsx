@@ -17,6 +17,7 @@ import {
   SyncStatus,
 } from '@/lib/syncService';
 import { isSupabaseConfigured } from '@/lib/supabase';
+import { trackLike, trackUnlike, trackFollowArtist, trackUnfollowArtist } from '@/lib/analytics';
 
 interface WishlistContextType {
   wishlist: Wishlist;
@@ -195,6 +196,9 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
       return [...prev, newItem];
     });
 
+    // Track analytics event
+    trackLike(song);
+
     // Sync to server
     if (authIsAuthenticated && user && isSupabaseConfigured()) {
       syncWishlistItemToServer(user.id, newItem).catch(error => {
@@ -204,6 +208,12 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   }, [authIsAuthenticated, user]);
 
   const removeFromWishlist = useCallback((itemId: string) => {
+    // Find the song being removed for analytics
+    const itemToRemove = items.find(item => item.id === itemId);
+    if (itemToRemove) {
+      trackUnlike(itemToRemove.song);
+    }
+
     setItems(prev => prev.filter(item => item.id !== itemId));
 
     // Sync to server
@@ -212,7 +222,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
         console.error('Failed to remove wishlist item from server:', error);
       });
     }
-  }, [authIsAuthenticated, user]);
+  }, [authIsAuthenticated, user, items]);
 
   const isInWishlist = useCallback((songId: string) => {
     return items.some(item => item.song.id === songId);
@@ -226,6 +236,9 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
       return [...prev, slug];
     });
 
+    // Track analytics event
+    trackFollowArtist(slug, slug);
+
     // Sync to server
     if (authIsAuthenticated && user && isSupabaseConfigured()) {
       syncFollowedArtist(user.id, slug, true).catch(error => {
@@ -236,6 +249,9 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
 
   const unfollowArtist = useCallback((slug: string) => {
     setFollowedArtists(prev => prev.filter(s => s !== slug));
+
+    // Track analytics event
+    trackUnfollowArtist(slug, slug);
 
     // Sync to server
     if (authIsAuthenticated && user && isSupabaseConfigured()) {

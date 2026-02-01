@@ -77,6 +77,17 @@ export function sortArtistsByAlgorithm(
 }
 
 /**
+ * Alphabetical Algorithm: Sort by name A-Z
+ * Used when alpha mode is toggled on the current algorithm
+ */
+export function sortAlphabetically(artists: ArtistWithStats[]): ArtistWithStats[] {
+  if (artists.length === 0) return [];
+  if (artists.length === 1) return [...artists];
+
+  return [...artists].sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/**
  * Validate algorithm string
  */
 export function isValidAlgorithm(value: string): value is SortAlgorithm {

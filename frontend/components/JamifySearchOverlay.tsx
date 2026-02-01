@@ -15,6 +15,7 @@ import { SearchTrackResult } from './SearchTrackResult';
 import { SearchFilters } from './SearchFilters';
 import { VinylSpinner } from './VinylSpinner';
 import { SearchSilence } from './NoResultsIcons';
+import { trackSearch, trackSearchResultClick } from '@/lib/analytics';
 
 interface JamifySearchOverlayProps {
   isOpen: boolean;
@@ -149,6 +150,13 @@ export function JamifySearchOverlay({ isOpen, onClose }: JamifySearchOverlayProp
             return 0;
           });
           setTracks(sortedTracks);
+
+          // Track search analytics
+          const totalResults =
+            (searchResults.artists?.length || 0) +
+            (searchResults.albums?.length || 0) +
+            sortedTracks.length;
+          trackSearch(debouncedQuery, totalResults);
         }
       } catch (error) {
         if (error instanceof Error && error.name !== 'AbortError') {
@@ -180,14 +188,18 @@ export function JamifySearchOverlay({ isOpen, onClose }: JamifySearchOverlayProp
     setDebouncedQuery(query);
   };
 
-  const handleArtistClick = (artist: Artist) => {
+  const handleArtistClick = (artist: Artist, index: number) => {
     addSearch(artist.name);
+    // Track search result click
+    trackSearchResultClick(debouncedQuery, 'artist', artist.name, index);
     onClose();
     router.push(`/artists/${artist.slug}`);
   };
 
-  const handleAlbumClick = (album: AlbumCategory) => {
+  const handleAlbumClick = (album: AlbumCategory, index: number) => {
     addSearch(album.name);
+    // Track search result click
+    trackSearchResultClick(debouncedQuery, 'album', album.name, index);
     onClose();
     const artistSlug = album.breadcrumbs?.[0]?.category_url_key || '';
     if (artistSlug) {
@@ -368,10 +380,10 @@ export function JamifySearchOverlay({ isOpen, onClose }: JamifySearchOverlayProp
                             Artists
                           </h3>
                           <div className="space-y-2">
-                            {results.artists.map((artist) => (
+                            {results.artists.map((artist, index) => (
                               <button
                                 key={artist.id}
-                                onClick={() => handleArtistClick(artist)}
+                                onClick={() => handleArtistClick(artist, index)}
                                 className="w-full flex items-center gap-3 p-3 bg-[#2d2a26] hover:bg-[#3a3632] rounded-lg cursor-pointer transition-colors btn-touch text-left"
                               >
                                 <div className="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center flex-shrink-0 relative overflow-hidden">
@@ -403,12 +415,12 @@ export function JamifySearchOverlay({ isOpen, onClose }: JamifySearchOverlayProp
                             Albums
                           </h3>
                           <div className="space-y-2">
-                            {results.albums.map((album) => {
+                            {results.albums.map((album, index) => {
                               const artistName = album.breadcrumbs?.[0]?.category_name || 'Unknown Artist';
                               return (
                                 <button
                                   key={album.uid}
-                                  onClick={() => handleAlbumClick(album)}
+                                  onClick={() => handleAlbumClick(album, index)}
                                   className="w-full flex items-center gap-3 p-3 bg-[#2d2a26] hover:bg-[#3a3632] rounded-lg cursor-pointer transition-colors btn-touch text-left"
                                 >
                                   <div className="w-12 h-12 bg-gray-700 rounded flex items-center justify-center flex-shrink-0 overflow-hidden relative">

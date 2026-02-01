@@ -4,7 +4,12 @@ import { notFound } from 'next/navigation';
 import TrackPageContent from '@/components/TrackPageContent';
 import StructuredData from '@/components/StructuredData';
 import { generateSeoMetadata, getBaseUrl } from '@/lib/seo';
-import { formatDuration } from '@/lib/formatDuration';
+import {
+  generateMusicRecordingSchema,
+  generateTrackMusicEventSchema,
+  generateBreadcrumbSchema,
+  combineSchemas,
+} from '@/lib/schema';
 
 interface TrackPageProps {
   params: Promise<{ slug: string; album: string; track: string }>;
@@ -67,91 +72,28 @@ export default async function TrackPage({ params }: TrackPageProps) {
 
   const baseUrl = getBaseUrl();
 
-  // Get the first recording for audio and rating data
-  const primarySong = track.songs?.[0];
+  // Generate Schema.org structured data using centralized utilities
+  // MusicRecording includes AggregateRating and AudioObject when available
+  const musicRecordingSchema = generateMusicRecordingSchema(track, slug, albumSlug, baseUrl);
 
-  // Schema.org MusicRecording structured data
-  const musicRecordingSchema = {
-    '@type': 'MusicRecording',
-    name: track.title,
-    url: `${baseUrl}/artists/${slug}/album/${albumSlug}/track/${trackSlug}`,
-    byArtist: {
-      '@type': 'MusicGroup',
-      name: track.artistName,
-      url: `${baseUrl}/artists/${slug}`,
-    },
-    recordingOf: {
-      '@type': 'MusicComposition',
-      name: track.title,
-      composer: {
-        '@type': 'MusicGroup',
-        name: track.artistName,
-      },
-    },
-    inAlbum: {
-      '@type': 'MusicAlbum',
-      name: track.albumName,
-      datePublished: primarySong?.showDate,
-      url: `${baseUrl}/artists/${slug}/album/${albumSlug}`,
-    },
-    duration: formatDuration(track.totalDuration),
-    recordedAt: primarySong?.showVenue ? {
-      '@type': 'Place',
-      name: primarySong.showVenue,
-      address: primarySong.showLocation,
-    } : undefined,
-    datePublished: primarySong?.showDate,
-    aggregateRating: primarySong?.numReviews && primarySong.numReviews >= 2 ? {
-      '@type': 'AggregateRating',
-      ratingValue: primarySong.avgRating?.toFixed(1),
-      reviewCount: primarySong.numReviews,
-      bestRating: 5,
-      worstRating: 1,
-    } : undefined,
-    audio: primarySong?.streamUrl ? {
-      '@type': 'AudioObject',
-      contentUrl: primarySong.streamUrl,
-      encodingFormat: 'audio/mpeg',
-      duration: formatDuration(primarySong.duration),
-    } : undefined,
-  };
+  // MusicEvent schema for local SEO (track was part of a live event)
+  // Helps capture venue-based search queries
+  const musicEventSchema = generateTrackMusicEventSchema(track, slug, albumSlug, baseUrl);
 
-  // Breadcrumb schema
-  const breadcrumbSchema = {
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: 'Home',
-        item: baseUrl,
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: track.artistName,
-        item: `${baseUrl}/artists/${slug}`,
-      },
-      {
-        '@type': 'ListItem',
-        position: 3,
-        name: track.albumName,
-        item: `${baseUrl}/artists/${slug}/album/${albumSlug}`,
-      },
-      {
-        '@type': 'ListItem',
-        position: 4,
-        name: track.title,
-        item: `${baseUrl}/artists/${slug}/album/${albumSlug}/track/${trackSlug}`,
-      },
-    ],
-  };
+  // Breadcrumb schema for navigation
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'Home', url: baseUrl },
+    { name: track.artistName, url: `${baseUrl}/artists/${slug}` },
+    { name: track.albumName, url: `${baseUrl}/artists/${slug}/album/${albumSlug}` },
+    { name: track.title, url: `${baseUrl}/artists/${slug}/album/${albumSlug}/track/${trackSlug}` },
+  ]);
 
-  // Combine schemas using @graph
-  const combinedSchema = {
-    '@context': 'https://schema.org',
-    '@graph': [musicRecordingSchema, breadcrumbSchema],
-  };
+  // Combine schemas using @graph (Google's preferred format)
+  const combinedSchema = combineSchemas(
+    musicRecordingSchema,
+    breadcrumbSchema,
+    musicEventSchema
+  );
 
   return (
     <>

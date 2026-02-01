@@ -13,6 +13,12 @@ export function getBaseUrl(): string {
   return process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3001';
 }
 
+export function getCanonicalUrl(path: string): string {
+  const base = getBaseUrl();
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  return `${base}${cleanPath}`;
+}
+
 export function generateSeoMetadata(data: SeoData): Metadata {
   const baseUrl = getBaseUrl();
   const fullUrl = data.path ? `${baseUrl}${data.path}` : baseUrl;

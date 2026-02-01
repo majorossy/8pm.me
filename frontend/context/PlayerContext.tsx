@@ -12,6 +12,7 @@ import { useMediaSession } from '@/hooks/useMediaSession';
 import { useCrossfade } from '@/hooks/useCrossfade';
 import { useToast } from '@/hooks/useToast';
 import { useAudioAnalyzer, AudioAnalyzerData } from '@/hooks/useAudioAnalyzer';
+import { trackSongPlay, trackSongComplete, trackPlaybackError } from '@/lib/analytics';
 
 interface PlayerState {
   isPlaying: boolean;
@@ -68,6 +69,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const { trackPlay } = useRecentlyPlayed();
   const { getStreamUrl } = useQuality();
   const trackedSongsRef = useRef<Set<string>>(new Set()); // Track which songs we've already counted
+  const completedSongsRef = useRef<Set<string>>(new Set()); // Track which songs completed (>90%)
 
   // Toast notifications for playback errors
   // Note: useToast may throw if not in ToastProvider - we handle this gracefully
@@ -149,6 +151,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       : (error as MediaError)?.message || 'Stream unavailable';
 
     console.error(`[PlayerContext] Playback error for "${songTitle}":`, errorMessage);
+
+    // Track playback error for analytics
+    if (failedSong) {
+      trackPlaybackError(failedSong, errorMessage);
+    }
 
     // Show toast notification
     if (toast) {
@@ -339,11 +346,28 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     }
   }, [currentSong, state.isPlaying, state.currentTime, trackPlay]);
 
+  // Track song completion (when user listens to >90% of the song)
+  useEffect(() => {
+    if (!currentSong || !state.isPlaying || state.duration === 0) return;
+
+    // Check if we've already tracked completion for this song
+    if (completedSongsRef.current.has(currentSong.id)) return;
+
+    // Check if playback has reached 90% of the song
+    const completionThreshold = state.duration * 0.9;
+    if (state.currentTime >= completionThreshold) {
+      console.log('[PlayerContext] 🎵 Song completed:', currentSong.title, 'at', Math.floor(state.currentTime), 'seconds');
+      trackSongComplete(currentSong);
+      completedSongsRef.current.add(currentSong.id);
+    }
+  }, [currentSong, state.isPlaying, state.currentTime, state.duration]);
+
   // Clear tracked songs when song changes
   useEffect(() => {
     if (currentSong) {
       // Reset tracking for new song (allow same song to be tracked again if replayed later)
       trackedSongsRef.current.delete(currentSong.id);
+      completedSongsRef.current.delete(currentSong.id);
       // Announce song change for screen readers
       setState(prev => ({
         ...prev,
@@ -378,6 +402,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       isPlaying: true,
       activeSong: song, // Track what's actually playing
     }));
+
+    // Track analytics event
+    trackSongPlay(song);
 
     audio.src = getStreamUrl(song);
     audio.play().catch(err => {

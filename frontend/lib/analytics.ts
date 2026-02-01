@@ -6,6 +6,9 @@
  * - Playlist interactions (measures engagement depth)
  * - Search activity (measures discovery patterns)
  * - Share actions (measures viral potential)
+ * - Core Web Vitals (measures performance)
+ *
+ * @see CARD-7C for implementation details
  */
 
 import type { Song, Album, Artist } from './types';
@@ -22,7 +25,22 @@ declare global {
 }
 
 /**
+ * Check if analytics is available (GA4 loaded and configured)
+ */
+export function isAnalyticsAvailable(): boolean {
+  return typeof window !== 'undefined' && typeof window.gtag === 'function';
+}
+
+/**
+ * Get the current GA measurement ID from environment
+ */
+export function getGAMeasurementId(): string | undefined {
+  return process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+}
+
+/**
  * Core event tracking function
+ * Sends events to Google Analytics 4 with structured parameters
  */
 export function trackEvent(
   action: string,
@@ -36,6 +54,11 @@ export function trackEvent(
       event_label: label,
       value: value,
     });
+
+    // Log in development for debugging
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`[Analytics] Event: ${action}`, { category, label, value });
+    }
   }
 }
 
@@ -167,7 +190,7 @@ export function trackSearchResultClick(
  * Track share actions
  */
 export function trackShare(
-  contentType: 'song' | 'album' | 'artist' | 'playlist',
+  contentType: 'song' | 'track' | 'album' | 'artist' | 'playlist',
   contentName: string,
   method?: 'copy_link' | 'native_share' | 'twitter' | 'facebook'
 ): void {
@@ -243,4 +266,316 @@ export function trackError(errorType: string, errorMessage: string): void {
       fatal: false,
     });
   }
+}
+
+// ============================================
+// Core Web Vitals Events
+// ============================================
+
+/**
+ * Web Vitals metric data structure
+ */
+export interface WebVitalMetric {
+  name: 'CLS' | 'FCP' | 'INP' | 'LCP' | 'TTFB';
+  value: number;
+  rating: 'good' | 'needs-improvement' | 'poor';
+  delta: number;
+  id: string;
+  navigationType?: string;
+}
+
+/**
+ * Track Core Web Vitals metrics to GA4
+ * Sends metrics with proper thresholds for monitoring
+ */
+export function trackWebVitals(metric: WebVitalMetric): void {
+  if (typeof window !== 'undefined' && window.gtag) {
+    // Send to GA4 with structured data for analysis
+    window.gtag('event', metric.name, {
+      event_category: 'Web Vitals',
+      event_label: metric.id,
+      value: Math.round(metric.name === 'CLS' ? metric.value * 1000 : metric.value),
+      non_interaction: true,
+      // Custom dimensions for detailed analysis
+      metric_value: metric.value,
+      metric_rating: metric.rating,
+      metric_delta: metric.delta,
+      metric_navigation_type: metric.navigationType || 'navigate',
+    });
+
+    // Log in development
+    if (process.env.NODE_ENV === 'development') {
+      const color = metric.rating === 'good' ? '32' : metric.rating === 'needs-improvement' ? '33' : '31';
+      console.log(
+        `[Analytics] Web Vital: \x1b[${color}m${metric.name}\x1b[0m = ${metric.value.toFixed(2)} (${metric.rating})`
+      );
+    }
+  }
+}
+
+// ============================================
+// Page View Events
+// ============================================
+
+/**
+ * Track page views (for SPA navigation)
+ * Next.js handles initial page view, this is for client-side navigation
+ */
+export function trackPageView(url: string, title?: string): void {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'page_view', {
+      page_location: url,
+      page_title: title || document.title,
+    });
+  }
+}
+
+// ============================================
+// Engagement Events
+// ============================================
+
+/**
+ * Track time spent on page (for engagement metrics)
+ */
+export function trackTimeOnPage(seconds: number, pagePath: string): void {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'time_on_page', {
+      event_category: 'Engagement',
+      page_path: pagePath,
+      engagement_time_seconds: seconds,
+      non_interaction: true,
+    });
+  }
+}
+
+/**
+ * Track scroll depth (for content engagement)
+ */
+export function trackScrollDepth(percentage: number, pagePath: string): void {
+  if (typeof window !== 'undefined' && window.gtag) {
+    // Only track at 25%, 50%, 75%, 90% thresholds
+    const thresholds = [25, 50, 75, 90];
+    const threshold = thresholds.find(t => percentage >= t && percentage < t + 25);
+
+    if (threshold) {
+      window.gtag('event', 'scroll', {
+        event_category: 'Engagement',
+        page_path: pagePath,
+        percent_scrolled: threshold,
+        non_interaction: true,
+      });
+    }
+  }
+}
+
+/**
+ * Track user sign-up
+ */
+export function trackSignUp(method: 'email' | 'google' | 'apple' | 'anonymous'): void {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'sign_up', {
+      method,
+    });
+  }
+}
+
+/**
+ * Track user login
+ */
+export function trackLogin(method: 'email' | 'google' | 'apple' | 'anonymous'): void {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'login', {
+      method,
+    });
+  }
+}
+
+// ============================================
+// Playlist Events (Extended)
+// ============================================
+
+/**
+ * Track playlist creation
+ */
+export function trackPlaylistCreate(playlistName: string): void {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'playlist_create', {
+      event_category: 'Engagement',
+      playlist_name: playlistName,
+    });
+  }
+}
+
+/**
+ * Track playlist deletion
+ */
+export function trackPlaylistDelete(playlistName: string): void {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'playlist_delete', {
+      event_category: 'Engagement',
+      playlist_name: playlistName,
+    });
+  }
+}
+
+/**
+ * Track removing a song from playlist
+ */
+export function trackRemoveFromPlaylist(song: Song, playlistName?: string): void {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'remove_from_playlist', {
+      event_category: 'Engagement',
+      artist_name: song.artistName,
+      track_title: song.trackTitle,
+      playlist_name: playlistName || 'default',
+    });
+  }
+}
+
+// ============================================
+// Follow Events
+// ============================================
+
+/**
+ * Track following an artist
+ */
+export function trackFollowArtist(artistName: string, artistSlug: string): void {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'follow_artist', {
+      event_category: 'Engagement',
+      artist_name: artistName,
+      artist_slug: artistSlug,
+    });
+  }
+}
+
+/**
+ * Track unfollowing an artist
+ */
+export function trackUnfollowArtist(artistName: string, artistSlug: string): void {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'unfollow_artist', {
+      event_category: 'Engagement',
+      artist_name: artistName,
+      artist_slug: artistSlug,
+    });
+  }
+}
+
+/**
+ * Track following an album
+ */
+export function trackFollowAlbum(albumName: string, artistName: string): void {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'follow_album', {
+      event_category: 'Engagement',
+      album_name: albumName,
+      artist_name: artistName,
+    });
+  }
+}
+
+/**
+ * Track unfollowing an album
+ */
+export function trackUnfollowAlbum(albumName: string, artistName: string): void {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'unfollow_album', {
+      event_category: 'Engagement',
+      album_name: albumName,
+      artist_name: artistName,
+    });
+  }
+}
+
+// ============================================
+// Audio Quality Events
+// ============================================
+
+/**
+ * Track audio quality change
+ */
+export function trackQualityChange(
+  quality: 'high' | 'medium' | 'low',
+  previousQuality?: string
+): void {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'quality_change', {
+      event_category: 'Audio',
+      quality: quality,
+      previous_quality: previousQuality,
+    });
+  }
+}
+
+/**
+ * Track shuffle toggle
+ */
+export function trackShuffleToggle(enabled: boolean): void {
+  trackEvent(enabled ? 'shuffle_on' : 'shuffle_off', 'Audio');
+}
+
+/**
+ * Track repeat mode change
+ */
+export function trackRepeatChange(mode: 'off' | 'all' | 'one'): void {
+  trackEvent(`repeat_${mode}`, 'Audio');
+}
+
+// ============================================
+// Download Events
+// ============================================
+
+/**
+ * Track download initiation
+ */
+export function trackDownload(song: Song): void {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'download', {
+      event_category: 'Audio',
+      artist_name: song.artistName,
+      track_title: song.trackTitle,
+      album_name: song.albumName,
+    });
+  }
+}
+
+// ============================================
+// PWA Events
+// ============================================
+
+/**
+ * Track PWA install prompt shown
+ */
+export function trackPWAInstallPrompt(): void {
+  trackEvent('pwa_install_prompt', 'PWA');
+}
+
+/**
+ * Track PWA installation
+ */
+export function trackPWAInstall(): void {
+  trackEvent('pwa_install', 'PWA');
+}
+
+/**
+ * Track PWA install dismissed
+ */
+export function trackPWAInstallDismissed(): void {
+  trackEvent('pwa_install_dismissed', 'PWA');
+}
+
+// ============================================
+// Utility: Batch Event Tracking
+// ============================================
+
+/**
+ * Track multiple events at once (useful for complex interactions)
+ */
+export function trackEvents(
+  events: Array<{ action: string; category: string; label?: string; value?: number }>
+): void {
+  events.forEach(event => {
+    trackEvent(event.action, event.category, event.label, event.value);
+  });
 }

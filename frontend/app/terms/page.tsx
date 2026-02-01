@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { Metadata } from 'next';
 import {
   DocumentIcon,
   ScaleIcon,
@@ -13,6 +14,14 @@ import {
   GlobeIcon,
   ClockIcon,
 } from '@/components/icons/FooterIcons';
+
+export const metadata: Metadata = {
+  title: 'Terms of Service',
+  description: 'Terms of service for 8PM, a frontend interface to the Live Music Archive. Stream and share freely, never sell. All content for noncommercial use only.',
+  alternates: {
+    canonical: '/terms',
+  },
+};
 
 export default function TermsPage() {
   return (

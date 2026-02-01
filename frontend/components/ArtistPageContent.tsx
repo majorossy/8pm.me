@@ -13,6 +13,9 @@ import BandStatistics from '@/components/artist/BandStatistics';
 import BandLinks from '@/components/artist/BandLinks';
 import DetailedCassette from '@/components/artist/DetailedCassette';
 import PolaroidCard from '@/components/artist/PolaroidCard';
+import RelatedArtists, { RelatedArtist } from '@/components/RelatedArtists';
+import ExpandedBiography from '@/components/ExpandedBiography';
+import ArtistFAQ from '@/components/ArtistFAQ';
 
 interface ArtistWithAlbums extends ArtistDetail {
   albums: any[];
@@ -21,9 +24,10 @@ interface ArtistWithAlbums extends ArtistDetail {
 interface ArtistPageContentProps {
   artist: ArtistWithAlbums;
   bandData?: BandMemberData | null;
+  relatedArtists?: RelatedArtist[];
 }
 
-export default function ArtistPageContent({ artist, bandData }: ArtistPageContentProps) {
+export default function ArtistPageContent({ artist, bandData, relatedArtists }: ArtistPageContentProps) {
   const { setBreadcrumbs } = useBreadcrumbs();
   const { followArtist, unfollowArtist, isArtistFollowed } = useWishlist();
   const { vibrate, BUTTON_PRESS } = useHaptic();
@@ -297,9 +301,14 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
         </div>
       </section>
 
-      {/* Discography - Carousel */}
+      {/* Discography - Carousel - Keyword-rich heading for SEO */}
       <section className="pb-8 max-w-[1000px] mx-auto px-4 md:px-8">
-        <h2 className="text-xl md:text-2xl font-bold text-white mb-4 text-center">Discography</h2>
+        <h2 className="text-xl md:text-2xl font-bold text-white mb-2 text-center">
+          {artist.name} Live Recordings &amp; Concert Archive
+        </h2>
+        <p className="text-sm text-[#8a8478] mb-4 text-center">
+          Stream {artist.albums.length} {artist.albums.length === 1 ? 'show' : 'shows'} - High-quality recordings from Archive.org
+        </p>
         {artist.albums.length > 0 ? (
           <div className="flex justify-center gap-4 md:gap-6 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-[#3a3632] scrollbar-track-transparent">
             {artist.albums.map((album) => (
@@ -319,33 +328,27 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
           {/* Left Column: bio + members + stats */}
           <div className="space-y-8 md:space-y-12">
 
-            {/* Biography Text Only */}
+            {/* Biography - Keyword-rich heading with expanded content */}
             <div>
-              <h2 className="text-xl md:text-2xl font-bold text-white mb-6">Biography</h2>
-              <div className="space-y-4">
-                {artist.wikipediaSummary?.extract && (
-                  <div className="text-[#8a8478] text-sm md:text-base leading-relaxed">
-                    <p>{artist.wikipediaSummary.extract}</p>
-                    {artist.wikipediaSummary.url && (
-                      <p className="mt-2 text-xs">
-                        <a
-                          href={artist.wikipediaSummary.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[#d4a060] hover:underline"
-                        >
-                          Read more on Wikipedia →
-                        </a>
-                      </p>
-                    )}
-                  </div>
-                )}
-                {artist.extendedBio && artist.extendedBio.split('\n\n').map((paragraph, index) => (
-                  <p key={index} className="text-[#8a8478] text-sm md:text-base leading-relaxed">
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
+              <h2 className="text-xl md:text-2xl font-bold text-white mb-2">
+                About {artist.name} - Biography, Band Members &amp; History
+              </h2>
+              <p className="text-sm text-[#6a6458] mb-6">
+                {artist.originLocation && `From ${artist.originLocation}`}
+                {artist.originLocation && artist.yearsActive && ' - '}
+                {artist.yearsActive && `Active ${artist.yearsActive}`}
+              </p>
+              <ExpandedBiography
+                artistName={artist.name}
+                extendedBio={artist.extendedBio}
+                wikipediaExtract={artist.wikipediaSummary?.extract}
+                wikipediaUrl={artist.wikipediaSummary?.url}
+                totalShows={artist.totalShows || artist.albums.length}
+                yearsActive={artist.yearsActive}
+                genres={artist.genres}
+                originLocation={artist.originLocation}
+                formationDate={artist.formationDate}
+              />
             </div>
 
             {/* Band Statistics - from real API data */}
@@ -382,6 +385,7 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
                       fill
                       sizes="(max-width: 768px) 100vw, 300px"
                       quality={85}
+                      priority={index === 0}
                       className="object-cover"
                     />
                   </div>
@@ -400,6 +404,28 @@ export default function ArtistPageContent({ artist, bandData }: ArtistPageConten
             </div>
           )}
         </div>
+      </section>
+
+      {/* Related Artists Section - Internal linking for SEO */}
+      {relatedArtists && relatedArtists.length > 0 && (
+        <section className="max-w-[1000px] mx-auto px-4 md:px-8 pb-8">
+          <RelatedArtists
+            currentArtistName={artist.name}
+            relatedArtists={relatedArtists}
+          />
+        </section>
+      )}
+
+      {/* FAQ Section - Voice search optimization */}
+      <section className="max-w-[1000px] mx-auto px-4 md:px-8 pb-8">
+        <ArtistFAQ
+          artistName={artist.name}
+          totalShows={artist.totalShows || artist.albums.length}
+          yearsActive={artist.yearsActive}
+          genres={artist.genres}
+          originLocation={artist.originLocation}
+          mostPlayedTrack={artist.mostPlayedTrack}
+        />
       </section>
     </div>
   );

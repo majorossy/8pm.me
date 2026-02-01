@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Song, Track, Album } from '@/lib/api';
+import { trackShare } from '@/lib/analytics';
 
 type ShareableItem = {
   type: 'song' | 'track' | 'artist' | 'album' | 'playlist';
@@ -54,11 +55,17 @@ export function useShare() {
   };
 
   // Copy URL to clipboard
-  const copyToClipboard = async (url: string): Promise<boolean> => {
+  const copyToClipboard = async (url: string, contentType?: ShareableItem['type'], contentName?: string): Promise<boolean> => {
     try {
       await navigator.clipboard.writeText(url);
       setCopiedToClipboard(true);
       setTimeout(() => setCopiedToClipboard(false), 2000);
+
+      // Track share analytics
+      if (contentType && contentName) {
+        trackShare(contentType, contentName, 'copy_link');
+      }
+
       return true;
     } catch (err) {
       console.error('Failed to copy to clipboard:', err);
@@ -67,13 +74,19 @@ export function useShare() {
   };
 
   // Use native Web Share API (mobile)
-  const nativeShare = async (url: string, title: string): Promise<boolean> => {
+  const nativeShare = async (url: string, title: string, contentType?: ShareableItem['type']): Promise<boolean> => {
     if (typeof navigator !== 'undefined' && navigator.share) {
       try {
         await navigator.share({
           title,
           url,
         });
+
+        // Track share analytics
+        if (contentType) {
+          trackShare(contentType, title, 'native_share');
+        }
+
         return true;
       } catch (err) {
         // User cancelled or share failed

@@ -11,6 +11,7 @@ import { useWishlist } from '@/context/WishlistContext';
 import { useHaptic } from '@/hooks/useHaptic';
 import { VUMeter, Waveform, SpinningReel } from '@/components/AudioVisualizations';
 import { getRecordingBadge } from '@/lib/lineageUtils';
+import TaperNotes from '@/components/TaperNotes';
 
 interface AlbumWithTracks extends Album {
   tracks: Track[];
@@ -284,6 +285,7 @@ function CassetteTape({
                 fill
                 sizes="200px"
                 quality={85}
+                priority
                 className="object-cover rounded-sm"
                 style={{
                   border: '2px solid white',
@@ -946,6 +948,17 @@ export default function AlbumPageContent({ album }: AlbumPageContentProps) {
               })}
             </div>
           </>
+        )}
+
+        {/* Taper Notes Section - Show recording info when available */}
+        {album.tracks.length > 0 && (
+          <TaperNotes
+            track={album.tracks[0]}
+            albumName={album.name}
+            artistName={album.artistName}
+            showDate={album.showDate}
+            showVenue={album.showVenue}
+          />
         )}
 
         {/* Footer */}

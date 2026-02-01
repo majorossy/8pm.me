@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { Metadata } from 'next';
 import {
   StepNumber,
   LightbulbIcon,
@@ -9,6 +10,14 @@ import {
   ShareIcon,
   QuestionIcon,
 } from '@/components/icons/FooterIcons';
+
+export const metadata: Metadata = {
+  title: 'How It Works',
+  description: 'Learn how to use 8PM to discover and enjoy thousands of free live concert recordings. Browse artists, search shows, create playlists, and stream music from Archive.org.',
+  alternates: {
+    canonical: '/how-it-works',
+  },
+};
 
 // Step data
 const steps = [

@@ -5,6 +5,14 @@ import { notFound } from 'next/navigation';
 import ArtistPageContent from '@/components/ArtistPageContent';
 import StructuredData from '@/components/StructuredData';
 import { generateSeoMetadata, getBaseUrl } from '@/lib/seo';
+import {
+  generateMusicGroupSchema,
+  generateBreadcrumbSchema,
+  generateArtistFAQSchema,
+  combineSchemas,
+} from '@/lib/schema';
+import { getRelatedArtistSlugs } from '@/lib/relatedArtists';
+import { RelatedArtist } from '@/components/RelatedArtists';
 
 interface ArtistPageProps {
   params: Promise<{ slug: string }>;
@@ -51,70 +59,53 @@ export default async function ArtistPage({ params }: ArtistPageProps) {
   const bandData = await getArtistBandData(slug);
   const baseUrl = getBaseUrl();
 
-  // Schema.org MusicGroup structured data
-  const musicGroupSchema = {
-    '@type': 'MusicGroup',
-    name: artist.name,
-    url: `${baseUrl}/artists/${slug}`,
-    image: artist.bandImageUrl || artist.image,
-    description: artist.extendedBio || artist.bio,
-    genre: artist.genres,
-    foundingDate: artist.formationDate,
-    foundingLocation: artist.originLocation,
-    sameAs: [
-      artist.officialWebsite,
-      artist.facebook,
-      artist.instagram,
-      artist.twitter,
-      artist.youtubeChannel,
-    ].filter(Boolean),
-    member: bandData?.members?.current?.map(member => ({
-      '@type': 'OrganizationRole',
-      member: {
-        '@type': 'Person',
-        name: member.name,
-      },
-      roleName: member.role,
-      startDate: member.years?.split('-')[0],
-      endDate: member.years?.includes('present') ? undefined : member.years?.split('-')[1],
-    })),
-  };
+  // Get all artists for related artists lookup
+  const allArtists = await getArtists();
 
-  // Breadcrumb schema
-  const breadcrumbSchema = {
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: 'Home',
-        item: baseUrl,
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: 'Artists',
-        item: `${baseUrl}/artists`,
-      },
-      {
-        '@type': 'ListItem',
-        position: 3,
-        name: artist.name,
-        item: `${baseUrl}/artists/${slug}`,
-      },
-    ],
-  };
+  // Get related artist slugs from the configuration
+  const relatedSlugs = getRelatedArtistSlugs(slug, 4);
 
-  // Combine schemas using @graph
-  const combinedSchema = {
-    '@context': 'https://schema.org',
-    '@graph': [musicGroupSchema, breadcrumbSchema],
-  };
+  // Build related artists data with full details
+  const relatedArtists: RelatedArtist[] = relatedSlugs
+    .map((relatedSlug): RelatedArtist | null => {
+      const relatedArtist = allArtists.find((a) => a.slug === relatedSlug);
+      if (!relatedArtist) return null;
+      return {
+        slug: relatedArtist.slug,
+        name: relatedArtist.name,
+        image: relatedArtist.bandImageUrl || relatedArtist.image,
+        showCount: relatedArtist.totalShows || relatedArtist.albumCount,
+        genres: relatedArtist.genres,
+      };
+    })
+    .filter((a): a is RelatedArtist => a !== null);
+
+  // Generate Schema.org structured data using centralized utilities
+  const musicGroupSchema = generateMusicGroupSchema(artist, baseUrl, bandData);
+
+  // Breadcrumb schema for navigation
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'Home', url: baseUrl },
+    { name: 'Artists', url: `${baseUrl}/artists` },
+    { name: artist.name, url: `${baseUrl}/artists/${slug}` },
+  ]);
+
+  // FAQ schema for voice search optimization
+  const faqSchema = generateArtistFAQSchema(
+    artist.name,
+    artist.totalShows,
+    artist.yearsActive,
+    artist.originLocation,
+    artist.mostPlayedTrack
+  );
+
+  // Combine schemas using @graph (Google's preferred format)
+  const combinedSchema = combineSchemas(musicGroupSchema, breadcrumbSchema, faqSchema);
 
   return (
     <>
       <StructuredData data={combinedSchema} />
-      <ArtistPageContent artist={artist} bandData={bandData} />
+      <ArtistPageContent artist={artist} bandData={bandData} relatedArtists={relatedArtists} />
     </>
   );
 }

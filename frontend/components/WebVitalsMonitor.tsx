@@ -2,33 +2,51 @@
 
 import { useEffect } from 'react';
 import { onCLS, onFCP, onINP, onLCP, onTTFB, type Metric } from 'web-vitals';
+import { trackWebVitals, type WebVitalMetric, isAnalyticsAvailable } from '@/lib/analytics';
 
 /**
- * WebVitalsMonitor - Reports Core Web Vitals metrics
+ * WebVitalsMonitor - Reports Core Web Vitals metrics to Google Analytics 4
  *
  * Metrics tracked:
- * - CLS (Cumulative Layout Shift) - Visual stability
- * - FCP (First Contentful Paint) - Time to first content
- * - INP (Interaction to Next Paint) - Responsiveness (replaced FID)
- * - LCP (Largest Contentful Paint) - Loading performance
- * - TTFB (Time to First Byte) - Server response time
+ * - CLS (Cumulative Layout Shift) - Visual stability (threshold: good < 0.1, poor > 0.25)
+ * - FCP (First Contentful Paint) - Time to first content (threshold: good < 1.8s, poor > 3s)
+ * - INP (Interaction to Next Paint) - Responsiveness (threshold: good < 200ms, poor > 500ms)
+ * - LCP (Largest Contentful Paint) - Loading performance (threshold: good < 2.5s, poor > 4s)
+ * - TTFB (Time to First Byte) - Server response time (threshold: good < 800ms, poor > 1.8s)
  *
- * In development: Logs to console
- * In production: Can send to analytics endpoint
+ * In development: Logs to console with color coding
+ * In production: Sends to Google Analytics 4
+ *
+ * @see CARD-7C for SEO monitoring implementation
+ * @see https://web.dev/vitals/ for Core Web Vitals thresholds
  */
 
 function reportMetric(metric: Metric) {
-  // Log in development
+  // Convert web-vitals Metric to our WebVitalMetric type
+  const webVitalMetric: WebVitalMetric = {
+    name: metric.name as WebVitalMetric['name'],
+    value: metric.value,
+    rating: metric.rating as WebVitalMetric['rating'],
+    delta: metric.delta,
+    id: metric.id,
+    navigationType: metric.navigationType,
+  };
+
+  // Log in development with color-coded output
   if (process.env.NODE_ENV === 'development') {
     const rating = metric.rating || 'unknown';
     const color = rating === 'good' ? '🟢' : rating === 'needs-improvement' ? '🟡' : '🔴';
     console.log(`[WebVitals] ${color} ${metric.name}: ${metric.value.toFixed(2)} (${rating})`);
   }
 
-  // In production, send to analytics
-  // Uncomment and configure when analytics is set up:
-  /*
-  if (process.env.NODE_ENV === 'production') {
+  // Send to Google Analytics 4 (works in both dev and production)
+  if (isAnalyticsAvailable()) {
+    trackWebVitals(webVitalMetric);
+  }
+
+  // Fallback: Send to custom endpoint for aggregation (production only)
+  // This is useful for creating custom dashboards or alerting
+  if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_VITALS_ENDPOINT) {
     const body = JSON.stringify({
       name: metric.name,
       value: metric.value,
@@ -36,26 +54,30 @@ function reportMetric(metric: Metric) {
       delta: metric.delta,
       id: metric.id,
       navigationType: metric.navigationType,
+      url: typeof window !== 'undefined' ? window.location.href : '',
+      timestamp: Date.now(),
     });
 
     // Use sendBeacon for reliability during page unload
-    if (navigator.sendBeacon) {
-      navigator.sendBeacon('/api/analytics/vitals', body);
+    if (typeof navigator !== 'undefined' && navigator.sendBeacon) {
+      navigator.sendBeacon(process.env.NEXT_PUBLIC_VITALS_ENDPOINT, body);
     } else {
-      fetch('/api/analytics/vitals', {
+      fetch(process.env.NEXT_PUBLIC_VITALS_ENDPOINT, {
         method: 'POST',
         body,
         keepalive: true,
         headers: { 'Content-Type': 'application/json' },
+      }).catch(() => {
+        // Silently fail - vitals reporting should not impact user experience
       });
     }
   }
-  */
 }
 
 export default function WebVitalsMonitor() {
   useEffect(() => {
     // Register all Core Web Vitals metrics
+    // These callbacks fire once per page load with final metric values
     onCLS(reportMetric);
     onFCP(reportMetric);
     onINP(reportMetric);
@@ -63,6 +85,6 @@ export default function WebVitalsMonitor() {
     onTTFB(reportMetric);
   }, []);
 
-  // This component renders nothing
+  // This component renders nothing - it's just a side-effect provider
   return null;
 }

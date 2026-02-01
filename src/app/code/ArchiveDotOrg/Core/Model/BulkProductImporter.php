@@ -501,7 +501,9 @@ class BulkProductImporter implements BulkProductImporterInterface
 
         $varcharAttributes['meta_title'] = $this->truncateToLength($metaTitle, 70);
         $varcharAttributes['meta_description'] = $this->truncateToLength($metaDescription, 160);
-        $varcharAttributes['meta_keyword'] = implode(', ', array_filter([
+
+        // meta_keyword uses text backend type, will be saved separately
+        $metaKeyword = implode(', ', array_filter([
             $artistName,
             $trackTitle,
             $showVenue,
@@ -589,10 +591,11 @@ class BulkProductImporter implements BulkProductImporterInterface
             );
         }
 
-        // Text attributes (description)
+        // Text attributes (description, meta_keyword)
         if ($show->getDescription()) {
             $this->saveAttribute($entityId, 'description', $show->getDescription(), 'text');
         }
+        $this->saveAttribute($entityId, 'meta_keyword', $metaKeyword, 'text');
     }
 
     /**

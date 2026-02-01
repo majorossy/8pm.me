@@ -184,6 +184,7 @@ export default function PolaroidCard({ imageUrl, artistName, caption, socialLink
                   fill
                   sizes="300px"
                   quality={85}
+                  priority
                   style={{
                     objectFit: 'cover',
                     objectPosition: 'left center',

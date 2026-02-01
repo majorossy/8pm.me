@@ -281,6 +281,49 @@ bin/mysql -e "SELECT artist_name, collection_id, downloaded_shows, imported_trac
 ## Overview
 Mage-OS 1.0.5 (Magento Open Source fork) as headless backend with Next.js/React frontend.
 
+## MCP Servers (Model Context Protocol)
+
+Claude Code has access to project-specific MCP tools for Docker, Redis, and MySQL.
+
+**Zero setup required** - bundles are pre-built and committed to git.
+
+### Available MCP Tools
+
+| Server | Tools | Use Case |
+|--------|-------|----------|
+| `mysql-8pm` | `query`, `execute`, `list_tables`, `describe_table` | Database queries |
+| `docker-8pm` | `list_containers`, `container_logs`, `container_exec`, `container_restart`, `container_stats` | Container management |
+| `redis-8pm` | `keys`, `get`, `hgetall`, `ttl`, `info`, `dbsize`, `del`, `del_pattern`, `flushdb`, `magento_cache_stats` | Cache inspection |
+
+### How It Works
+
+```
+.mcp.json           → Tells Claude Code which MCPs to load
+mcp/docker-8pm/     → Docker MCP (scoped to 8pm-* containers only)
+mcp/redis-8pm/      → Redis MCP (connects to port 6380)
+```
+
+Claude automatically uses these tools when relevant:
+- "Check container logs" → uses `docker-8pm`
+- "What's in the cache?" → uses `redis-8pm`
+- "Query the database" → uses `mysql-8pm`
+
+### For Developers: Modifying MCPs
+
+If you change `mcp/*/src/index.ts`, rebuild the bundle:
+
+```bash
+cd mcp/docker-8pm  # or redis-8pm
+npm install        # first time only
+npx esbuild src/index.ts --bundle --platform=node --target=node18 --format=cjs --outfile=bundle.cjs
+git add bundle.cjs
+git commit -m "Rebuild MCP bundle"
+```
+
+See `mcp/*/README.md` for full documentation.
+
+---
+
 ## ⚠️ IMPORTANT - Frontend Port
 **The Next.js frontend ALWAYS runs on port 3001, not 3000.**
 - Development: `cd frontend && npm run dev` → http://localhost:3001

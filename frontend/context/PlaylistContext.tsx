@@ -14,6 +14,7 @@ import {
   SyncStatus,
 } from '@/lib/syncService';
 import { isSupabaseConfigured } from '@/lib/supabase';
+import { trackPlaylistCreate, trackPlaylistDelete, trackAddToPlaylist, trackRemoveFromPlaylist } from '@/lib/analytics';
 
 export interface Playlist {
   id: string;
@@ -175,6 +176,9 @@ export function PlaylistProvider({ children }: { children: React.ReactNode }) {
 
     setPlaylists(prev => [...prev, newPlaylist]);
 
+    // Track analytics event
+    trackPlaylistCreate(name);
+
     // Sync to server
     if (isAuthenticated && user && isSupabaseConfigured()) {
       syncPlaylistDebounced(newPlaylist);
@@ -184,6 +188,12 @@ export function PlaylistProvider({ children }: { children: React.ReactNode }) {
   }, [isAuthenticated, user, syncPlaylistDebounced]);
 
   const deletePlaylist = useCallback((playlistId: string) => {
+    // Find playlist name for analytics before deleting
+    const playlistToDelete = playlists.find(p => p.id === playlistId);
+    if (playlistToDelete) {
+      trackPlaylistDelete(playlistToDelete.name);
+    }
+
     setPlaylists(prev => prev.filter(p => p.id !== playlistId));
 
     // Delete from server
@@ -192,10 +202,11 @@ export function PlaylistProvider({ children }: { children: React.ReactNode }) {
         console.error('Failed to delete playlist from server:', error);
       });
     }
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated, user, playlists]);
 
   const addToPlaylist = useCallback((playlistId: string, song: Song) => {
     let updatedPlaylist: Playlist | null = null;
+    let playlistName: string | undefined;
 
     setPlaylists(prev => prev.map(playlist => {
       if (playlist.id !== playlistId) return playlist;
@@ -205,6 +216,7 @@ export function PlaylistProvider({ children }: { children: React.ReactNode }) {
         return playlist;
       }
 
+      playlistName = playlist.name;
       updatedPlaylist = {
         ...playlist,
         songs: [...playlist.songs, song],
@@ -215,6 +227,11 @@ export function PlaylistProvider({ children }: { children: React.ReactNode }) {
       return updatedPlaylist;
     }));
 
+    // Track analytics event (only if song was actually added)
+    if (updatedPlaylist && playlistName) {
+      trackAddToPlaylist(song, playlistName);
+    }
+
     // Sync to server
     if (updatedPlaylist && isAuthenticated && user && isSupabaseConfigured()) {
       syncPlaylistDebounced(updatedPlaylist);
@@ -223,10 +240,14 @@ export function PlaylistProvider({ children }: { children: React.ReactNode }) {
 
   const removeFromPlaylist = useCallback((playlistId: string, songId: string) => {
     let updatedPlaylist: Playlist | null = null;
+    let removedSong: Song | undefined;
+    let playlistName: string | undefined;
 
     setPlaylists(prev => prev.map(playlist => {
       if (playlist.id !== playlistId) return playlist;
 
+      playlistName = playlist.name;
+      removedSong = playlist.songs.find(s => s.id === songId);
       updatedPlaylist = {
         ...playlist,
         songs: playlist.songs.filter(s => s.id !== songId),
@@ -234,6 +255,11 @@ export function PlaylistProvider({ children }: { children: React.ReactNode }) {
       };
       return updatedPlaylist;
     }));
+
+    // Track analytics event
+    if (removedSong && playlistName) {
+      trackRemoveFromPlaylist(removedSong, playlistName);
+    }
 
     // Sync to server
     if (updatedPlaylist && isAuthenticated && user && isSupabaseConfigured()) {

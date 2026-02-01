@@ -1103,6 +1103,12 @@ export async function getArtist(slug: string): Promise<ArtistDetail | null> {
           sum + t.songs.reduce((s, song) => s + song.duration, 0), 0
         );
 
+        // Extract show info from first song (venue, location, date)
+        const firstSong = tracks[0]?.songs[0];
+        const showDate = firstSong?.showDate;
+        const showVenue = firstSong?.showVenue;
+        const showLocation = firstSong?.showLocation;
+
         return {
           id: albumCat.uid,
           identifier: albumCat.url_key,
@@ -1111,6 +1117,9 @@ export async function getArtist(slug: string): Promise<ArtistDetail | null> {
           artistId: category.uid,
           artistName: category.name,
           artistSlug: category.url_key,
+          showDate,
+          showVenue,
+          showLocation,
           tracks,
           totalTracks: tracks.length,
           totalSongs,
@@ -1368,7 +1377,15 @@ export async function getAlbum(
       sum + t.songs.reduce((s, song) => s + song.duration, 0), 0
     );
 
+    // Extract show info from first song (venue, location, date)
+    // All songs in an album share the same show metadata
+    const firstSong = tracks[0]?.songs[0];
+    const showDate = firstSong?.showDate;
+    const showVenue = firstSong?.showVenue;
+    const showLocation = firstSong?.showLocation;
+
     console.log('[getAlbum] Found album:', albumCat.name, 'with', tracks.length, 'tracks,', totalSongs, 'songs');
+    console.log('[getAlbum] Show info - date:', showDate, 'venue:', showVenue, 'location:', showLocation);
 
     return {
       id: albumCat.uid,
@@ -1378,6 +1395,9 @@ export async function getAlbum(
       artistId: artistBreadcrumb.category_uid,
       artistName: artistBreadcrumb.category_name,
       artistSlug: artistBreadcrumb.category_url_key,
+      showDate,
+      showVenue,
+      showLocation,
       tracks,
       totalTracks: tracks.length,
       totalSongs,

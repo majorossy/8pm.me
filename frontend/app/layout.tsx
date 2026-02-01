@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Orbitron, Space_Mono } from 'next/font/google';
+import { Orbitron, Space_Mono, Bebas_Neue } from 'next/font/google';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import './globals.css';
 import ClientLayout from '@/components/ClientLayout';
@@ -8,6 +8,8 @@ const orbitron = Orbitron({
   subsets: ['latin'],
   variable: '--font-orbitron',
   display: 'swap',
+  adjustFontFallback: true,
+  fallback: ['system-ui', 'sans-serif'],
 });
 
 const spaceMono = Space_Mono({
@@ -15,6 +17,17 @@ const spaceMono = Space_Mono({
   subsets: ['latin'],
   variable: '--font-space-mono',
   display: 'swap',
+  adjustFontFallback: true,
+  fallback: ['Courier New', 'monospace'],
+});
+
+const bebasNeue = Bebas_Neue({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-bebas-neue',
+  display: 'swap',
+  adjustFontFallback: true,
+  fallback: ['Impact', 'sans-serif'],
 });
 
 export const metadata: Metadata = {
@@ -50,8 +63,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${orbitron.variable} ${spaceMono.variable}`}>
+    <html lang="en" className={`${orbitron.variable} ${spaceMono.variable} ${bebasNeue.variable}`}>
       <head>
+        {/* Preconnect hints for critical resources - improves LCP */}
+        <link rel="preconnect" href="https://magento.test" />
+        <link rel="dns-prefetch" href="https://magento.test" />
+        <link rel="preconnect" href="https://archive.org" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://archive.org" />
+        {/* Archive.org uses dynamic CDN subdomains like ia800200.us.archive.org */}
+        <link rel="preconnect" href="https://ia800200.us.archive.org" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://ia800200.us.archive.org" />
+        <link rel="preconnect" href="https://ia600200.us.archive.org" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://ia600200.us.archive.org" />
+
         {/* PWA Meta Tags */}
         <meta name="application-name" content="EIGHTPM" />
         <meta name="theme-color" content="#d4a060" />

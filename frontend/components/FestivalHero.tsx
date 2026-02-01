@@ -42,75 +42,153 @@ function ArtistStatsTooltip({
   totalVenues,
   formationYear
 }: ArtistStatsTooltipProps) {
-  // Debug logging
-  console.log('[ArtistStatsTooltip]', {
-    totalShows,
-    mostPlayedTrack,
-    totalRecordings,
-    totalHours,
-    totalVenues,
-    formationYear
-  });
-
   // Don't render if no stats available
   const hasStats = totalShows || mostPlayedTrack || totalRecordings || totalHours || totalVenues || formationYear;
   if (!hasStats) {
-    console.log('[ArtistStatsTooltip] No stats, not rendering');
     return null;
   }
 
   return (
-    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-out pointer-events-none z-50 hidden md:block">
-      <div className="bg-[var(--bg)] border border-[var(--neon-pink)]/60 rounded-lg px-4 py-3 shadow-2xl w-max">
-        {/* Grid layout: 2 columns x 3 rows */}
-        <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs">
-          {/* Row 1 */}
-          {totalRecordings !== undefined && (
-            <div className="flex items-center gap-1.5 whitespace-nowrap">
-              <span className="text-[var(--neon-pink)]">🎵</span>
-              <span className="text-[var(--text)]">{totalRecordings.toLocaleString()} Recordings</span>
-            </div>
-          )}
-          {totalHours !== undefined && (
-            <div className="flex items-center gap-1.5 whitespace-nowrap">
-              <span className="text-[var(--neon-pink)]">⏱️</span>
-              <span className="text-[var(--text)]">{totalHours.toLocaleString()} Hours</span>
-            </div>
-          )}
+    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-out pointer-events-none z-50 hidden md:block">
+      {/* Vintage Ticket Stub */}
+      <div
+        className="relative flex overflow-hidden font-mono"
+        style={{
+          width: '400px',
+          height: '120px',
+          background: `
+            linear-gradient(90deg,
+              rgba(139,115,85,0.1) 0%,
+              transparent 5%,
+              transparent 95%,
+              rgba(139,115,85,0.1) 100%
+            ),
+            linear-gradient(90deg, #ede0cc 0%, #ede0cc 73%, #ddd0b8 73%, #ddd0b8 100%)
+          `,
+          borderRadius: '4px',
+          boxShadow: '0 6px 24px rgba(0,0,0,0.4), inset 0 0 30px rgba(139,115,85,0.15)',
+        }}
+      >
+        {/* Perforation line */}
+        <div
+          className="absolute top-0 h-full"
+          style={{
+            left: '73%',
+            width: '2px',
+            background: 'repeating-linear-gradient(to bottom, transparent 0px, transparent 5px, #a99a8a 5px, #a99a8a 10px)',
+          }}
+        />
 
-          {/* Row 2 */}
-          {totalShows !== undefined && (
-            <div className="flex items-center gap-1.5 whitespace-nowrap">
-              <span className="text-[var(--neon-pink)]">⭐</span>
-              <span className="text-[var(--text)]">{totalShows.toLocaleString()} Shows</span>
-            </div>
-          )}
-          {totalVenues !== undefined && (
-            <div className="flex items-center gap-1.5 whitespace-nowrap">
-              <span className="text-[var(--neon-pink)]">🏛️</span>
-              <span className="text-[var(--text)]">{totalVenues.toLocaleString()} Venues</span>
-            </div>
-          )}
+        {/* Decorative star */}
+        <span
+          className="absolute"
+          style={{
+            top: '8px',
+            left: '12px',
+            fontSize: '0.7rem',
+            color: '#d35400',
+          }}
+        >
+          ★
+        </span>
 
-          {/* Row 3 */}
-          {formationYear !== undefined && (
-            <div className="flex items-center gap-1.5 whitespace-nowrap">
-              <span className="text-[var(--neon-pink)]">📅</span>
-              <span className="text-[var(--text)]">Since &apos;{formationYear.toString().slice(-2)}</span>
-            </div>
-          )}
+        {/* Main section */}
+        <div
+          className="flex flex-col justify-center"
+          style={{
+            flex: '0.73',
+            padding: '16px 20px',
+            paddingTop: '26px',
+          }}
+        >
+          {/* Stats row */}
+          <div className="flex justify-between gap-5">
+            {totalShows !== undefined && (
+              <div className="text-center flex-1">
+                <div className="font-bebas-neue" style={{ fontSize: '1.5rem', color: '#5a8a7a', lineHeight: 1 }}>
+                  {totalShows.toLocaleString()}
+                </div>
+                <div style={{ fontSize: '0.5rem', color: '#8a7a6a', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  Shows
+                </div>
+              </div>
+            )}
+            {totalRecordings !== undefined && (
+              <div className="text-center flex-1">
+                <div className="font-bebas-neue" style={{ fontSize: '1.5rem', color: '#5a8a7a', lineHeight: 1 }}>
+                  {totalRecordings.toLocaleString()}
+                </div>
+                <div style={{ fontSize: '0.5rem', color: '#8a7a6a', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  Recordings
+                </div>
+              </div>
+            )}
+            {totalVenues !== undefined && (
+              <div className="text-center flex-1">
+                <div className="font-bebas-neue" style={{ fontSize: '1.5rem', color: '#5a8a7a', lineHeight: 1 }}>
+                  {totalVenues.toLocaleString()}
+                </div>
+                <div style={{ fontSize: '0.5rem', color: '#8a7a6a', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  Venues
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Most played track */}
           {mostPlayedTrack && (
-            <div className="flex items-center gap-1.5 whitespace-nowrap">
-              <span className="text-[var(--neon-pink)]">🎸</span>
-              <span className="text-[var(--text)] truncate max-w-[120px]" title={mostPlayedTrack}>
-                {mostPlayedTrack}
-              </span>
+            <div
+              className="text-center truncate"
+              style={{
+                marginTop: '10px',
+                fontSize: '0.5rem',
+                color: '#6a5a4a',
+                borderTop: '1px dashed #c4a882',
+                paddingTop: '6px',
+              }}
+            >
+              Top Track: <strong style={{ color: '#d35400' }}>{mostPlayedTrack}</strong>
             </div>
           )}
         </div>
+
+        {/* Hours section (stub tear-off) */}
+        <div
+          className="flex flex-col items-center justify-center"
+          style={{ flex: '0.27' }}
+        >
+          {totalHours !== undefined && (
+            <>
+              <div className="font-bebas-neue" style={{ fontSize: '2.2rem', color: '#5a8a7a', lineHeight: 1 }}>
+                {totalHours.toLocaleString()}
+              </div>
+              <div style={{ fontSize: '0.55rem', color: '#8a7a6a', textTransform: 'uppercase' }}>
+                Hours
+              </div>
+            </>
+          )}
+          {formationYear !== undefined && !totalHours && (
+            <>
+              <div className="font-bebas-neue" style={{ fontSize: '1.5rem', color: '#5a8a7a', lineHeight: 1 }}>
+                {formationYear}
+              </div>
+              <div style={{ fontSize: '0.5rem', color: '#8a7a6a', textTransform: 'uppercase' }}>
+                Est.
+              </div>
+            </>
+          )}
+        </div>
       </div>
+
       {/* Arrow pointer */}
-      <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-[var(--neon-pink)]/60"></div>
+      <div
+        className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0"
+        style={{
+          borderLeft: '8px solid transparent',
+          borderRight: '8px solid transparent',
+          borderTop: '8px solid #ede0cc',
+        }}
+      />
     </div>
   );
 }
@@ -289,112 +367,181 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
       </span>
 
       {/* Main content */}
-      <div className="flex flex-col items-center text-center z-10 max-w-6xl">
-        {/* Top decoration */}
-        <div className="text-[var(--neon-pink)] text-base md:text-xl tracking-[4px] md:tracking-[8px] uppercase mb-2 md:mb-3">
-          &#9733; Live Jamband Music &#9733;
+      <div className="flex flex-col items-center text-center z-10 max-w-6xl w-full">
+        {/* Eyebrow with gradient lines */}
+        <div className="flex items-center justify-center gap-3 mb-6">
+          <div
+            className="h-px w-12"
+            style={{ background: 'linear-gradient(90deg, transparent, var(--neon-pink))' }}
+          />
+          <span
+            className="text-[var(--neon-pink)]"
+            style={{ letterSpacing: '0.2em', fontSize: '11px' }}
+          >
+            ARCHIVE.ORG BY ALBUMS
+          </span>
+          <div
+            className="h-px w-12"
+            style={{ background: 'linear-gradient(90deg, var(--neon-pink), transparent)' }}
+          />
         </div>
 
-        {/* Main title */}
-        <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-[96px] font-bold text-[var(--text)] tracking-[3px] md:tracking-[6px] uppercase leading-none mb-2 md:mb-3">
-          8pm.me
+        {/* Main logo with gold period accent */}
+        <h1 className="mb-4">
+          <span
+            className="text-7xl md:text-8xl lg:text-9xl font-black tracking-tight text-[var(--text)]"
+            style={{ fontFamily: 'system-ui' }}
+          >
+            8PM
+          </span>
+          <span
+            className="text-7xl md:text-8xl lg:text-9xl font-black text-[var(--neon-pink)]"
+          >
+            .
+          </span>
+          <span
+            className="text-7xl md:text-8xl lg:text-9xl font-black tracking-tight text-[var(--text)]"
+            style={{ fontFamily: 'system-ui' }}
+          >
+            ME
+          </span>
         </h1>
 
-        {/* Subtitle */}
-        <div className="text-[var(--text-dim)] text-sm md:text-lg tracking-[2px] md:tracking-[4px] uppercase mb-4 md:mb-6 px-4">
-          The Idea is Archive.org by Album
-        </div>
+        {/* Tagline */}
+        <p
+          className="text-sm mb-10 text-[var(--text-dim)]"
+          style={{ letterSpacing: '0.35em' }}
+        >
+          LIVE JAMBAND MUSIC
+        </p>
 
-        {/* Algorithm Selector */}
-        <div className="mb-6 flex justify-center">
-          <AlgorithmSelector />
-        </div>
-
-        {/* Tonight's lineup */}
-        <div className="mb-4 md:mb-6 w-full px-2">
-          <div className="text-[var(--neon-pink)] text-xs md:text-sm tracking-[3px] md:tracking-[6px] uppercase mb-3 md:mb-4">
-            The Lineup
-          </div>
+        {/* Bordered lineup container */}
+        <div className="w-full mb-6 md:mb-8">
           <div
-            ref={containerRef}
-            className="flex flex-wrap items-baseline justify-center gap-x-2 md:gap-x-4 gap-y-2 text-[var(--text)] font-bold uppercase tracking-[1px] md:tracking-[2px]"
+            className="relative rounded-xl p-4 md:p-8 pt-14 md:pt-16"
+            style={{
+              border: '1px solid rgba(212, 160, 96, 0.25)',
+              background: 'linear-gradient(180deg, rgba(212, 160, 96, 0.06) 0%, rgba(212, 160, 96, 0.02) 40%, transparent 100%)'
+            }}
           >
-            {lineupArtists.map((artist, index) => {
-              const fontSize = getFontSize(artist);
-              return (
-                <motion.span
-                  key={artist.slug}
-                  ref={setItemRef(index)}
-                  layout
-                  transition={{
-                    layout: {
-                      duration: prefersReducedMotion ? 0 : 0.4,
-                      ease: 'easeOut',
-                    },
-                  }}
-                  onLayoutAnimationComplete={handleLayoutAnimationComplete}
-                  className="flex items-baseline whitespace-nowrap"
-                >
-                  {/* Star separator - starts invisible, JS reveals appropriate ones after measurement */}
-                  {index > 0 && (
-                    <span
-                      ref={setStarRef(index)}
-                      className="text-[var(--neon-pink)] mr-2 md:mr-4 text-base invisible"
-                    >
-                      &#9733;
+            {/* THE LINEUP title breaking the top border */}
+            <div
+              className="absolute -top-3 left-1/2 -translate-x-1/2 px-2 flex items-center gap-4"
+              style={{ background: 'var(--bg)' }}
+            >
+              <div
+                className="h-px flex-1 w-16 md:w-32"
+                style={{ background: 'linear-gradient(90deg, transparent, rgba(212, 160, 96, 0.4))' }}
+              />
+              <span className="flex items-center gap-2 text-[var(--neon-pink)]">
+                <span style={{ fontSize: '10px' }}>✦</span>
+                <span style={{ letterSpacing: '0.25em', fontSize: '12px' }}>THE LINEUP</span>
+                <span style={{ fontSize: '10px' }}>✦</span>
+              </span>
+              <div
+                className="h-px flex-1 w-16 md:w-32"
+                style={{ background: 'linear-gradient(90deg, rgba(212, 160, 96, 0.4), transparent)' }}
+              />
+            </div>
+
+            {/* Algorithm Selector inside the border */}
+            <div className="absolute top-3 md:top-4 left-1/2 -translate-x-1/2">
+              <AlgorithmSelector />
+            </div>
+
+            {/* Corner accents */}
+            <div className="absolute top-0 left-0 w-6 h-6 border-l-2 border-t-2 rounded-tl-xl" style={{ borderColor: 'rgba(212, 160, 96, 0.5)' }} />
+            <div className="absolute top-0 right-0 w-6 h-6 border-r-2 border-t-2 rounded-tr-xl" style={{ borderColor: 'rgba(212, 160, 96, 0.5)' }} />
+            <div className="absolute bottom-0 left-0 w-6 h-6 border-l-2 border-b-2 rounded-bl-xl" style={{ borderColor: 'rgba(212, 160, 96, 0.5)' }} />
+            <div className="absolute bottom-0 right-0 w-6 h-6 border-r-2 border-b-2 rounded-br-xl" style={{ borderColor: 'rgba(212, 160, 96, 0.5)' }} />
+
+            {/* Artist names */}
+            <div
+              ref={containerRef}
+              className="flex flex-wrap items-baseline justify-center gap-x-2 md:gap-x-4 gap-y-2 text-[var(--text)] font-bold uppercase tracking-[1px] md:tracking-[2px] mt-8 md:mt-6"
+            >
+              {lineupArtists.map((artist, index) => {
+                const fontSize = getFontSize(artist);
+                return (
+                  <motion.span
+                    key={artist.slug}
+                    ref={setItemRef(index)}
+                    layout
+                    transition={{
+                      layout: {
+                        duration: prefersReducedMotion ? 0 : 0.4,
+                        ease: 'easeOut',
+                      },
+                    }}
+                    onLayoutAnimationComplete={handleLayoutAnimationComplete}
+                    className="flex items-baseline whitespace-nowrap"
+                  >
+                    {/* Star separator - starts invisible, JS reveals appropriate ones after measurement */}
+                    {index > 0 && (
+                      <span
+                        ref={setStarRef(index)}
+                        className="text-[var(--neon-pink)] mr-2 md:mr-4 text-base invisible"
+                      >
+                        &#9733;
+                      </span>
+                    )}
+                    <span className="relative group inline-block">
+                      <Link
+                        href={`/artists/${artist.slug}`}
+                        className="artist-name-hover"
+                        style={{
+                          fontSize: `clamp(${fontSize.min}rem, calc(${fontSize.base.toFixed(3)}rem + ${fontSize.slope.toFixed(3)}vw), ${fontSize.max}rem)`,
+                        }}
+                      >
+                        {artist.name}
+                      </Link>
+                      <ArtistStatsTooltip
+                        totalShows={artist.totalShows}
+                        mostPlayedTrack={artist.mostPlayedTrack}
+                        totalRecordings={artist.totalRecordings}
+                        totalHours={artist.totalHours}
+                        totalVenues={artist.totalVenues}
+                        formationYear={artist.formationYear}
+                      />
                     </span>
-                  )}
-                  <span className="relative group inline-block">
-                    <Link
-                      href={`/artists/${artist.slug}`}
-                      className="hover:text-[var(--neon-pink)] transition-colors duration-200"
-                      style={{
-                        fontSize: `clamp(${fontSize.min}rem, calc(${fontSize.base.toFixed(3)}rem + ${fontSize.slope.toFixed(3)}vw), ${fontSize.max}rem)`,
-                      }}
-                    >
-                      {artist.name}
-                    </Link>
-                    <ArtistStatsTooltip
-                      totalShows={artist.totalShows}
-                      mostPlayedTrack={artist.mostPlayedTrack}
-                      totalRecordings={artist.totalRecordings}
-                      totalHours={artist.totalHours}
-                      totalVenues={artist.totalVenues}
-                      formationYear={artist.formationYear}
-                    />
-                  </span>
-                </motion.span>
-              );
-            })}
+                  </motion.span>
+                );
+              })}
+            </div>
           </div>
         </div>
 
         {/* Stats */}
-        <div className="flex flex-wrap justify-center gap-4 md:gap-8 text-center">
+        <div className="flex flex-wrap justify-center gap-6 md:gap-10 text-center mt-4 md:mt-6">
           <div>
-            <div className="text-xl md:text-3xl font-bold text-[var(--text)]">10,000+</div>
-            <div className="text-xs text-[var(--text-dim)] uppercase tracking-[1px] md:tracking-[2px]">
+            <div className="text-xl md:text-3xl font-bold text-[var(--campfire-teal)]">10,000+</div>
+            <div className="text-[10px] md:text-xs text-[var(--text-dim)] uppercase tracking-[1px] md:tracking-[2px] mt-0.5">
               Live Shows
             </div>
           </div>
           <div>
-            <div className="text-xl md:text-3xl font-bold text-[var(--text)]">50+</div>
-            <div className="text-xs text-[var(--text-dim)] uppercase tracking-[1px] md:tracking-[2px]">
+            <div className="text-xl md:text-3xl font-bold text-[var(--campfire-teal)]">50+</div>
+            <div className="text-[10px] md:text-xs text-[var(--text-dim)] uppercase tracking-[1px] md:tracking-[2px] mt-0.5">
               Years of Music
             </div>
           </div>
           <div>
-            <div className="text-xl md:text-3xl font-bold text-[var(--text)]">Free</div>
-            <div className="text-xs text-[var(--text-dim)] uppercase tracking-[1px] md:tracking-[2px]">
+            <div className="text-xl md:text-3xl font-bold text-[var(--campfire-teal)]">Free</div>
+            <div className="text-[10px] md:text-xs text-[var(--text-dim)] uppercase tracking-[1px] md:tracking-[2px] mt-0.5">
               Forever
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Bottom decoration */}
-      <div className="absolute bottom-3 md:bottom-4 text-[var(--text-dim)] text-xs tracking-[2px] md:tracking-[4px] uppercase opacity-60">
-        Powered by Archive.org
+        {/* Bottom decoration */}
+        <a
+          href="https://archive.org/details/etree"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[var(--text-dim)] text-[10px] md:text-xs tracking-[2px] md:tracking-[4px] uppercase opacity-50 mt-6 md:mt-8 hover:opacity-80 hover:text-[var(--campfire-teal)] transition-all duration-200"
+        >
+          Powered by Archive.org
+        </a>
       </div>
     </section>
   );

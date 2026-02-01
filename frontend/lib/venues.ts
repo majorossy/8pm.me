@@ -274,6 +274,116 @@ export const VENUE_DATABASE: Record<string, Venue> = {
     lon: -72.6824,
     aliases: ['hartford civic center', 'xl center', 'civic center hartford'],
   },
+
+  // Florida
+  'big-cypress': {
+    name: 'Big Cypress Seminole Reservation',
+    city: 'Big Cypress',
+    state: 'FL',
+    country: 'US',
+    lat: 26.0564,
+    lon: -80.8267,
+    aliases: ['big cypress', 'seminole reservation'],
+  },
+
+  // North Carolina
+  'walnut-creek': {
+    name: 'Coastal Credit Union Music Park',
+    city: 'Raleigh',
+    state: 'NC',
+    country: 'US',
+    lat: 35.8748,
+    lon: -78.5391,
+    aliases: ['walnut creek', 'coastal credit union', 'raleigh amphitheatre'],
+  },
+
+  // Ohio
+  'blossom': {
+    name: 'Blossom Music Center',
+    city: 'Cuyahoga Falls',
+    state: 'OH',
+    country: 'US',
+    lat: 41.1153,
+    lon: -81.5642,
+    aliases: ['blossom', 'blossom music center', 'cuyahoga falls'],
+  },
+
+  // Oregon
+  'edgefield': {
+    name: 'Edgefield',
+    city: 'Troutdale',
+    state: 'OR',
+    country: 'US',
+    lat: 45.5350,
+    lon: -122.3889,
+    aliases: ['edgefield', 'mcmenamins edgefield', 'troutdale'],
+  },
+
+  // Michigan
+  'pine-knob': {
+    name: 'Pine Knob Music Theatre',
+    city: 'Clarkston',
+    state: 'MI',
+    country: 'US',
+    lat: 42.7633,
+    lon: -83.3856,
+    aliases: ['pine knob', 'dte energy', 'clarkston mi'],
+  },
+
+  // Texas
+  'austin-city-limits': {
+    name: 'Moody Theater',
+    city: 'Austin',
+    state: 'TX',
+    country: 'US',
+    lat: 30.2656,
+    lon: -97.7469,
+    aliases: ['austin city limits', 'moody theater', 'acl'],
+  },
+
+  // Maine
+  'waterfront': {
+    name: 'Thompson\'s Point',
+    city: 'Portland',
+    state: 'ME',
+    country: 'US',
+    lat: 43.6635,
+    lon: -70.2763,
+    aliases: ['thompsons point', 'portland waterfront', 'waterfront portland'],
+  },
+
+  // New Hampshire
+  'hampton-beach': {
+    name: 'Hampton Beach Casino Ballroom',
+    city: 'Hampton Beach',
+    state: 'NH',
+    country: 'US',
+    lat: 42.9085,
+    lon: -70.8120,
+    aliases: ['hampton beach', 'casino ballroom', 'hampton casino'],
+  },
+
+  // Rhode Island
+  'providence-performing': {
+    name: 'Providence Performing Arts Center',
+    city: 'Providence',
+    state: 'RI',
+    country: 'US',
+    lat: 41.8246,
+    lon: -71.4129,
+    aliases: ['providence performing', 'ppac', 'providence arts center'],
+  },
+
+  // Nevada
+  'mgm-grand': {
+    name: 'MGM Grand Garden Arena',
+    city: 'Las Vegas',
+    state: 'NV',
+    country: 'US',
+    lat: 36.1024,
+    lon: -115.1711,
+    aliases: ['mgm grand', 'grand garden arena', 'las vegas mgm'],
+  },
 };
 
 /**

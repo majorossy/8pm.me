@@ -46,3 +46,7 @@ var/log/
 # Track Archive.org metadata (protected data - do NOT delete)
 # Stored in data/archivedotorg-metadata/ with Git LFS
 !data/archivedotorg-metadata/
+
+# MCP servers - ignore dev artifacts, but KEEP bundle.cjs (committed)
+mcp/*/node_modules/
+mcp/*/dist/

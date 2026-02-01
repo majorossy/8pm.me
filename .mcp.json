@@ -14,6 +14,20 @@
         "MYSQL_PASSWORD": "magento",
         "MYSQL_DATABASE": "magento"
       }
+    },
+    "docker-8pm": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "mcp/docker-8pm/bundle.cjs"
+      ]
+    },
+    "redis-8pm": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "mcp/redis-8pm/bundle.cjs"
+      ]
     }
   }
 }

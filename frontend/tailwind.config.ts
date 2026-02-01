@@ -50,6 +50,7 @@ const config: Config = {
       fontFamily: {
         display: ['var(--font-orbitron)', 'sans-serif'],
         mono: ['var(--font-space-mono)', 'monospace'],
+        'bebas-neue': ['var(--font-bebas-neue)', 'Impact', 'sans-serif'],
         serif: ['Georgia', 'serif'],
         sans: ['system-ui', 'sans-serif'],
       },

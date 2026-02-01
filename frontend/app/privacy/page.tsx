@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { Metadata } from 'next';
 import {
   ShieldIcon,
   EyeIcon,
@@ -10,6 +11,14 @@ import {
   CheckIcon,
   InfoIcon,
 } from '@/components/icons/FooterIcons';
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy',
+  description: 'Learn how 8PM handles your data. We prioritize your privacy with local storage, no tracking across websites, and no selling of personal information.',
+  alternates: {
+    canonical: '/privacy',
+  },
+};
 
 export default function PrivacyPage() {
   return (
