@@ -245,9 +245,13 @@ export function JamifySearchOverlay({ isOpen, onClose }: JamifySearchOverlayProp
               </button>
 
               <div className="flex-1 relative">
+                <label htmlFor="search-input" className="sr-only">
+                  Search for artists, albums, or tracks
+                </label>
                 <input
+                  id="search-input"
                   ref={inputRef}
-                  type="text"
+                  type="search"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="What do you want to listen to?"
@@ -332,7 +336,7 @@ export function JamifySearchOverlay({ isOpen, onClose }: JamifySearchOverlayProp
                 )
               ) : isSearching ? (
                 /* Loading State */
-                <div className="flex flex-col items-center justify-center gap-5 py-16">
+                <div className="flex flex-col items-center justify-center gap-5 py-16" role="status" aria-live="polite">
                   <VinylSpinner size="lg" />
                   <span className="text-[#d4a060] text-base font-medium tracking-wide">Searching the archives...</span>
                 </div>

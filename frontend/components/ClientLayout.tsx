@@ -100,9 +100,12 @@ function InnerLayout({ children }: { children: ReactNode }) {
       {/* Top loading bar for navigation */}
       <LoadingBar />
 
-      {/* Skip to main content link for keyboard users */}
+      {/* Skip links for keyboard users */}
       <a href="#main-content" className="skip-to-main">
         Skip to main content
+      </a>
+      <a href="#player-controls" className="skip-to-main">
+        Skip to player controls
       </a>
 
       {/* Organic blob background */}

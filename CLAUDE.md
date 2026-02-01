@@ -419,6 +419,7 @@ bin/mysql                 # Access MySQL CLI
 bin/bash                  # Shell into PHP container
 bin/restart               # Restart containers
 bin/status                # Check container status
+bin/check-status          # Archive data health (products, indexes, GraphQL)
 bin/xdebug enable         # Enable Xdebug
 bin/xdebug disable        # Disable Xdebug
 bin/cache-clean           # Watch and auto-clean cache

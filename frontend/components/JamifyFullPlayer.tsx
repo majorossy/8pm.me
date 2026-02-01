@@ -529,11 +529,14 @@ export default function JamifyFullPlayer() {
       {isSettingsOpen && (
         <div className="fixed inset-0 bg-black/80 z-50 flex items-end md:items-center md:justify-center" onClick={() => setIsSettingsOpen(false)}>
           <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="settings-title"
             className="bg-[#2d2a26] w-full md:w-96 md:rounded-lg p-6 space-y-4 safe-bottom"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-white text-lg font-bold">Sleep Timer</h3>
+              <h3 id="settings-title" className="text-white text-lg font-bold">Sleep Timer</h3>
               <button
                 onClick={() => {
                   vibrate(BUTTON_PRESS);

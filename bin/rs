@@ -354,6 +354,12 @@ logs_all() {
   docker_logs ""
 }
 
+archive_status() {
+  echo -e "${CYAN}📊 Archive Data Health Check${NC}"
+  echo -e "${CYAN}════════════════════════════════════════${NC}"
+  "$SCRIPT_DIR/check-status"
+}
+
 status_check() {
   echo -e "${CYAN}📊 Service Health Check${NC}"
   echo -e "${CYAN}════════════════════════════════════════${NC}"
@@ -630,6 +636,9 @@ execute_command() {
     status)
       status_check
       ;;
+    archive-status)
+      archive_status
+      ;;
     ports)
       ports_check
       ;;
@@ -726,6 +735,7 @@ show_help() {
   echo "  logs-db                Tail database logs"
   echo "  logs-all               Tail all logs"
   echo "  status                 Health check"
+  echo "  archive-status         Archive data health (products, indexes, GQL)"
   echo "  ports                  Check port usage"
   echo ""
   echo -e "${YELLOW}WORKFLOWS:${NC}"
@@ -799,6 +809,7 @@ declare -a MENU_ITEMS=(
   "logs-db:Tail database logs"
   "logs-all:Tail all service logs"
   "status:Complete health check"
+  "archive-status:Archive data health (products, indexes, GQL)"
   "ports:Check port usage"
   ""
   "HEADER:WORKFLOWS"

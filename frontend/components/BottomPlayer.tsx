@@ -16,6 +16,38 @@ import { formatDuration } from '@/lib/api';
 import { getSelectedSong } from '@/lib/queueTypes';
 import { formatLineage } from '@/lib/lineageUtils';
 
+// Custom hook for screen reader announcements
+function usePlayerAnnouncements(
+  currentSong: { title: string; artistName: string; id: string } | null,
+  isPlaying: boolean
+) {
+  const [announcement, setAnnouncement] = useState('');
+  const prevSongIdRef = useRef<string | null>(null);
+  const prevIsPlayingRef = useRef<boolean | null>(null);
+
+  // Announce track changes
+  useEffect(() => {
+    if (currentSong && currentSong.id !== prevSongIdRef.current) {
+      setAnnouncement(`Now playing: ${currentSong.title} by ${currentSong.artistName}`);
+      prevSongIdRef.current = currentSong.id;
+      const timer = setTimeout(() => setAnnouncement(''), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [currentSong]);
+
+  // Announce play/pause state changes (only after initial load)
+  useEffect(() => {
+    if (currentSong && prevIsPlayingRef.current !== null && isPlaying !== prevIsPlayingRef.current) {
+      setAnnouncement(isPlaying ? 'Playing' : 'Paused');
+      const timer = setTimeout(() => setAnnouncement(''), 2000);
+      return () => clearTimeout(timer);
+    }
+    prevIsPlayingRef.current = isPlaying;
+  }, [isPlaying, currentSong]);
+
+  return announcement;
+}
+
 export default function BottomPlayer() {
   const { isMobile, expandPlayer, isPlayerExpanded, isTransitioning } = useMobileUI();
   const { reducedMotion } = useBatteryOptimization();
@@ -96,6 +128,9 @@ export default function BottomPlayer() {
     direction: 'vertical',
   });
 
+  // Screen reader announcements
+  const announcement = usePlayerAnnouncements(currentSong, isPlaying);
+
   if (!currentSong) return null;
 
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
@@ -131,6 +166,17 @@ export default function BottomPlayer() {
     if (isPlayerExpanded) return null;
 
     return (
+      <>
+        {/* ARIA Live Region for screen reader announcements */}
+        <div
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          className="sr-only"
+        >
+          {announcement}
+        </div>
+
         <div className="fixed bottom-[50px] left-2 right-2 z-50">
           {/* Mini player card with swipe gesture */}
           <div
@@ -301,12 +347,24 @@ export default function BottomPlayer() {
             </div>
         </div>
       </div>
+      </>
     );
   }
 
   // DESKTOP: Full 3-column layout - positioned above bottom nav (50px)
   return (
-      <div className="fixed bottom-[50px] left-0 right-0 h-[90px] bg-[#252220] border-t border-[#2d2a26] z-50 px-4 flex items-center">
+    <>
+      {/* ARIA Live Region for screen reader announcements */}
+      <div
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {announcement}
+      </div>
+
+      <div id="player-controls" className="fixed bottom-[50px] left-0 right-0 h-[90px] bg-[#252220] border-t border-[#2d2a26] z-50 px-4 flex items-center" role="region" aria-label="Audio player">
         {/* Left section - Now playing info (30%) */}
         <div className="w-[30%] min-w-[180px] flex items-center gap-3">
           {/* Album art */}
@@ -647,5 +705,6 @@ export default function BottomPlayer() {
           </div>
       </div>
     </div>
+    </>
   );
 }
