@@ -16,6 +16,7 @@ import { formatDuration } from '@/lib/api';
 import { getSelectedSong } from '@/lib/queueTypes';
 import { formatLineage } from '@/lib/lineageUtils';
 import ShareButton from '@/components/ShareButton';
+import QueuePreview from '@/components/QueuePreview';
 
 // Custom hook for screen reader announcements
 function usePlayerAnnouncements(
@@ -94,6 +95,10 @@ export default function BottomPlayer() {
   const [showQualityPopup, setShowQualityPopup] = useState(false);
   const qualityPopupRef = useRef<HTMLDivElement>(null);
 
+  // Queue preview hover state
+  const [showQueuePreview, setShowQueuePreview] = useState(false);
+  const queuePreviewTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
     if (currentSong && !reducedMotion) {
       setIsPulsing(true);
@@ -115,6 +120,22 @@ export default function BottomPlayer() {
       return () => document.removeEventListener('mousedown', handleClickOutside);
     }
   }, [showQualityPopup]);
+
+  // Cleanup queue preview timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (queuePreviewTimeoutRef.current) {
+        clearTimeout(queuePreviewTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Hide queue preview when queue drawer opens
+  useEffect(() => {
+    if (isQueueOpen) {
+      setShowQueuePreview(false);
+    }
+  }, [isQueueOpen]);
 
   // Swipe gesture for expanding player (mobile only)
   const swipeHandlers = useSwipeGesture({
@@ -646,23 +667,54 @@ export default function BottomPlayer() {
             )}
           </div>
 
-          {/* Queue button */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              vibrate(BUTTON_PRESS);
-              toggleQueue();
+          {/* Queue button with preview */}
+          <div
+            className="relative"
+            onMouseEnter={() => {
+              if (queuePreviewTimeoutRef.current) {
+                clearTimeout(queuePreviewTimeoutRef.current);
+              }
+              queuePreviewTimeoutRef.current = setTimeout(() => {
+                if (!isQueueOpen) setShowQueuePreview(true);
+              }, 300);
             }}
-            className={`transition-colors focus:outline-none focus:ring-2 focus:ring-[#d4a060] rounded ${
-              isQueueOpen ? 'text-[#d4a060]' : 'text-[#8a8478] hover:text-white'
-            }`}
-            aria-label={isQueueOpen ? 'Close queue' : 'Open queue'}
-            title="Queue"
+            onMouseLeave={() => {
+              if (queuePreviewTimeoutRef.current) {
+                clearTimeout(queuePreviewTimeoutRef.current);
+              }
+              setShowQueuePreview(false);
+            }}
           >
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z" />
-            </svg>
-          </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                vibrate(BUTTON_PRESS);
+                setShowQueuePreview(false);
+                toggleQueue();
+              }}
+              className={`transition-colors focus:outline-none focus:ring-2 focus:ring-[#d4a060] rounded ${
+                isQueueOpen ? 'text-[#d4a060]' : 'text-[#8a8478] hover:text-white'
+              }`}
+              aria-label={isQueueOpen ? 'Close queue' : 'Open queue'}
+              title="Queue"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z" />
+              </svg>
+            </button>
+
+            {/* Queue preview tooltip */}
+            {showQueuePreview && !isQueueOpen && (
+              <div className="absolute bottom-full right-0 mb-2 w-80 bg-[#1c1a17] border border-[#2d2a26] rounded-lg shadow-2xl overflow-hidden z-50 animate-fadeIn">
+                <QueuePreview />
+                <div className="px-3 py-2 bg-[#252220] border-t border-[#2d2a26]">
+                  <p className="text-[10px] text-[#6a6458] text-center">
+                    Click to open full queue
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Volume */}
           <button
