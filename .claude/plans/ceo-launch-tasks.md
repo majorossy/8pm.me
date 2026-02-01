@@ -89,7 +89,7 @@ Comprehensive task list for launching 8PM as a production service.
 
 - [ ] **Application Security**
   - [x] ~~Security headers (CSP, HSTS, etc.)~~ (Added Feb 1, 2026 - nginx.conf + next.config.js)
-  - [ ] Input validation audit (basic validation exists)
+  - [x] ~~Input validation audit~~ (Feb 1, 2026 - lib/validation.ts + forms updated)
   - [ ] Dependency vulnerability scan
 
 - [ ] **Backup & Recovery**
@@ -190,9 +190,9 @@ Comprehensive task list for launching 8PM as a production service.
 ### HIGH (Before Public Launch)
 7. [x] ~~Create og-default.jpg (1200x630px)~~ (Feb 1, 2026)
 8. [x] ~~Add favicon.ico~~ (Feb 1, 2026 - .ico, .svg, 16px, 32px)
-9. [ ] Wire analytics tracking to components
-10. [ ] Input validation improvements
-11. [ ] CSP header implementation
+9. [x] ~~Wire analytics tracking to components~~ (Feb 1, 2026 - search, artist, album pages)
+10. [x] ~~Input validation improvements~~ (Feb 1, 2026 - lib/validation.ts + forms)
+11. [x] ~~CSP header implementation~~ (Feb 1, 2026 - PWA support added)
 12. [ ] Domain purchase (8pm.me)
 
 ### INFRASTRUCTURE (Production Deployment)
