@@ -15,6 +15,8 @@ import { SearchTrackResult } from '@/components/SearchTrackResult';
 import { SearchFilters } from '@/components/SearchFilters';
 import { VinylSpinner } from '@/components/VinylSpinner';
 import { SearchSilence } from '@/components/NoResultsIcons';
+import { trackSearch, trackSearchResultClick } from '@/lib/analytics';
+import { VALIDATION_LIMITS } from '@/lib/validation';
 
 interface SearchResults {
   artists: Artist[];
@@ -124,6 +126,13 @@ export default function SearchPage() {
               return merged;
             });
           }
+
+          // Track search analytics
+          const totalResults =
+            (searchResults.artists?.length || 0) +
+            (searchResults.albums?.length || 0) +
+            (searchResults.tracks?.length || 0);
+          trackSearch(debouncedQuery, totalResults);
         }
       } catch (error) {
         if (error instanceof Error && error.name !== 'AbortError') {
@@ -155,13 +164,15 @@ export default function SearchPage() {
     setDebouncedQuery(query);
   };
 
-  const handleArtistClick = (artist: Artist) => {
+  const handleArtistClick = (artist: Artist, position: number) => {
     addSearch(artist.name);
+    trackSearchResultClick(debouncedQuery, 'artist', artist.name, position);
     router.push(`/artists/${artist.slug}`);
   };
 
-  const handleAlbumClick = (album: AlbumCategory) => {
+  const handleAlbumClick = (album: AlbumCategory, position: number) => {
     addSearch(album.name);
+    trackSearchResultClick(debouncedQuery, 'album', album.name, position);
     const artistSlug = album.breadcrumbs?.[0]?.category_url_key || '';
     if (artistSlug) {
       router.push(`/artists/${artistSlug}/album/${album.url_key}`);
@@ -192,8 +203,9 @@ export default function SearchPage() {
               ref={inputRef}
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => setSearchQuery(e.target.value.slice(0, VALIDATION_LIMITS.SEARCH_QUERY_MAX))}
               placeholder="What do you want to listen to?"
+              maxLength={VALIDATION_LIMITS.SEARCH_QUERY_MAX}
               className="w-full bg-[#2d2a26] text-white placeholder-gray-400 rounded-full px-6 py-4 pr-12 text-base focus:outline-none focus:ring-2 focus:ring-[#d4a060]"
             />
             {searchQuery && (
@@ -300,10 +312,10 @@ export default function SearchPage() {
                     <div>
                       <h3 className="text-white font-bold text-xl mb-4">Artists</h3>
                       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {results.artists.map((artist) => (
+                        {results.artists.map((artist, index) => (
                           <button
                             key={artist.id}
-                            onClick={() => handleArtistClick(artist)}
+                            onClick={() => handleArtistClick(artist, index + 1)}
                             className="flex flex-col items-center p-4 bg-[#252220] hover:bg-[#2d2a26] rounded-lg transition-colors text-left"
                           >
                             <div className="w-32 h-32 bg-gray-700 rounded-full flex items-center justify-center mb-3 overflow-hidden relative">
@@ -328,12 +340,12 @@ export default function SearchPage() {
                     <div>
                       <h3 className="text-white font-bold text-xl mb-4">Albums</h3>
                       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                        {results.albums.map((album) => {
+                        {results.albums.map((album, index) => {
                           const artistName = album.breadcrumbs?.[0]?.category_name || 'Unknown Artist';
                           return (
                             <button
                               key={album.uid}
-                              onClick={() => handleAlbumClick(album)}
+                              onClick={() => handleAlbumClick(album, index + 1)}
                               className="flex flex-col p-4 bg-[#252220] hover:bg-[#2d2a26] rounded-lg transition-colors text-left"
                             >
                               <div className="w-full aspect-square bg-gray-700 rounded mb-3 overflow-hidden relative">

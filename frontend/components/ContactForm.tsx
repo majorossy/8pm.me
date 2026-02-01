@@ -4,6 +4,7 @@ import React, { useState, useCallback, FormEvent } from 'react';
 import { useToast } from '@/hooks/useToast';
 import { useContactSubmissions } from '@/hooks/useContactSubmissions';
 import { SendIcon } from '@/components/icons/FooterIcons';
+import { VALIDATION_LIMITS } from '@/lib/validation';
 
 // Subject options for the dropdown
 const SUBJECT_OPTIONS = [
@@ -55,10 +56,12 @@ export function ContactForm() {
     switch (name) {
       case 'name':
         if (!value.trim()) return 'Name is required';
-        if (value.trim().length < 2) return 'Name must be at least 2 characters';
+        if (value.trim().length < VALIDATION_LIMITS.NAME_MIN) return `Name must be at least ${VALIDATION_LIMITS.NAME_MIN} characters`;
+        if (value.length > VALIDATION_LIMITS.NAME_MAX) return `Name must be less than ${VALIDATION_LIMITS.NAME_MAX} characters`;
         return undefined;
       case 'email':
         if (!value.trim()) return 'Email is required';
+        if (value.length > VALIDATION_LIMITS.EMAIL_MAX) return 'Email address too long';
         if (!EMAIL_REGEX.test(value)) return 'Please enter a valid email address';
         return undefined;
       case 'subject':
@@ -66,7 +69,8 @@ export function ContactForm() {
         return undefined;
       case 'message':
         if (!value.trim()) return 'Message is required';
-        if (value.trim().length < 10) return 'Message must be at least 10 characters';
+        if (value.trim().length < VALIDATION_LIMITS.MESSAGE_MIN) return `Message must be at least ${VALIDATION_LIMITS.MESSAGE_MIN} characters`;
+        if (value.length > VALIDATION_LIMITS.MESSAGE_MAX) return `Message must be less than ${VALIDATION_LIMITS.MESSAGE_MAX} characters`;
         return undefined;
       default:
         return undefined;
@@ -182,6 +186,7 @@ export function ContactForm() {
           onChange={handleChange}
           onBlur={handleBlur}
           placeholder="John Doe"
+          maxLength={VALIDATION_LIMITS.NAME_MAX}
           className={getInputClassName('name')}
           aria-invalid={touched.name && !!errors.name}
           aria-describedby={errors.name ? 'name-error' : undefined}
@@ -206,6 +211,7 @@ export function ContactForm() {
           onChange={handleChange}
           onBlur={handleBlur}
           placeholder="john@example.com"
+          maxLength={VALIDATION_LIMITS.EMAIL_MAX}
           className={getInputClassName('email')}
           aria-invalid={touched.email && !!errors.email}
           aria-describedby={errors.email ? 'email-error' : undefined}
@@ -258,6 +264,7 @@ export function ContactForm() {
           onBlur={handleBlur}
           placeholder="Tell us what's on your mind..."
           rows={5}
+          maxLength={VALIDATION_LIMITS.MESSAGE_MAX}
           className={`${getInputClassName('message')} resize-none`}
           aria-invalid={touched.message && !!errors.message}
           aria-describedby={errors.message ? 'message-error' : undefined}
@@ -268,7 +275,7 @@ export function ContactForm() {
           </p>
         )}
         <p className="mt-1 text-xs text-[#6a6458]">
-          {formData.message.length} / 1000 characters
+          {formData.message.length} / {VALIDATION_LIMITS.MESSAGE_MAX} characters
         </p>
       </div>
 

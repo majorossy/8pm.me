@@ -12,6 +12,7 @@ import { useHaptic } from '@/hooks/useHaptic';
 import { VUMeter, Waveform, SpinningReel } from '@/components/AudioVisualizations';
 import { getRecordingBadge } from '@/lib/lineageUtils';
 import TaperNotes from '@/components/TaperNotes';
+import { trackAlbumView } from '@/lib/analytics';
 
 interface AlbumWithTracks extends Album {
   tracks: Track[];
@@ -742,6 +743,7 @@ export default function AlbumPageContent({ album }: AlbumPageContentProps) {
 
   const [expandedTrack, setExpandedTrack] = useState<number>(-1);
   const prevSongIdRef = useRef<string | null>(null);
+  const hasTrackedView = useRef(false);
 
   // Check if this album is currently loaded in the queue
   const isCurrentAlbum = queue.album?.identifier === album.identifier;
@@ -757,6 +759,14 @@ export default function AlbumPageContent({ album }: AlbumPageContentProps) {
     ]);
     return () => setBreadcrumbs([]);
   }, [setBreadcrumbs, album.artistName, album.artistSlug, album.name]);
+
+  // Track album page view (once per mount)
+  useEffect(() => {
+    if (!hasTrackedView.current) {
+      trackAlbumView(album);
+      hasTrackedView.current = true;
+    }
+  }, [album]);
 
   // Auto-expand accordion when track changes (not on every render)
   // This allows manual accordion control while still following track advancement

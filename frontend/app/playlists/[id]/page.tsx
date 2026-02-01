@@ -1,27 +1,32 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import { usePlaylists } from '@/context/PlaylistContext';
 import { useQueue } from '@/context/QueueContext';
 import { formatDuration } from '@/lib/api';
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
+import { VALIDATION_LIMITS, validatePlaylistId } from '@/lib/validation';
 
 export default function PlaylistDetailPage() {
   const params = useParams();
-  const id = params.id as string;
+  const rawId = params.id as string;
   const router = useRouter();
   const { getPlaylist, deletePlaylist, removeFromPlaylist, updatePlaylist } = usePlaylists();
+
+  // Validate playlist ID format
+  const idValidationError = validatePlaylistId(rawId);
+  const id = idValidationError ? '' : rawId;
   const { loadAlbum, addToUpNext } = useQueue();
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState('');
   const [editDescription, setEditDescription] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const playlist = getPlaylist(id);
+  const playlist = id ? getPlaylist(id) : undefined;
 
-  if (!playlist) {
+  if (idValidationError || !playlist) {
     return (
       <div className="min-h-screen bg-[#1c1a17] flex items-center justify-center">
         <div className="text-center">
@@ -115,7 +120,8 @@ export default function PlaylistDetailPage() {
               <input
                 type="text"
                 value={editName}
-                onChange={(e) => setEditName(e.target.value)}
+                onChange={(e) => setEditName(e.target.value.slice(0, VALIDATION_LIMITS.PLAYLIST_NAME_MAX))}
+                maxLength={VALIDATION_LIMITS.PLAYLIST_NAME_MAX}
                 className="w-full bg-transparent text-white text-3xl md:text-5xl font-bold mb-4 border-b border-white/20 focus:outline-none focus:border-white"
                 autoFocus
               />
@@ -127,7 +133,8 @@ export default function PlaylistDetailPage() {
               <input
                 type="text"
                 value={editDescription}
-                onChange={(e) => setEditDescription(e.target.value)}
+                onChange={(e) => setEditDescription(e.target.value.slice(0, VALIDATION_LIMITS.PLAYLIST_DESCRIPTION_MAX))}
+                maxLength={VALIDATION_LIMITS.PLAYLIST_DESCRIPTION_MAX}
                 placeholder="Add description..."
                 className="w-full bg-transparent text-[#8a8478] mb-4 border-b border-white/20 focus:outline-none focus:border-white"
               />

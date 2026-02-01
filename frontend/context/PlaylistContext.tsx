@@ -15,6 +15,7 @@ import {
 } from '@/lib/syncService';
 import { isSupabaseConfigured } from '@/lib/supabase';
 import { trackPlaylistCreate, trackPlaylistDelete, trackAddToPlaylist, trackRemoveFromPlaylist } from '@/lib/analytics';
+import { VALIDATION_LIMITS } from '@/lib/validation';
 
 export interface Playlist {
   id: string;
@@ -165,10 +166,18 @@ export function PlaylistProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const createPlaylist = useCallback((name: string, description?: string): Playlist => {
+    // Validate and sanitize inputs
+    const sanitizedName = name.trim().slice(0, VALIDATION_LIMITS.PLAYLIST_NAME_MAX);
+    const sanitizedDescription = description?.trim().slice(0, VALIDATION_LIMITS.PLAYLIST_DESCRIPTION_MAX);
+
+    if (!sanitizedName) {
+      throw new Error('Playlist name is required');
+    }
+
     const newPlaylist: Playlist = {
       id: generatePlaylistId(),
-      name,
-      description,
+      name: sanitizedName,
+      description: sanitizedDescription,
       songs: [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -271,6 +280,21 @@ export function PlaylistProvider({ children }: { children: React.ReactNode }) {
     playlistId: string,
     updates: Partial<Pick<Playlist, 'name' | 'description'>>
   ) => {
+    // Validate and sanitize inputs
+    const sanitizedUpdates: Partial<Pick<Playlist, 'name' | 'description'>> = {};
+
+    if (updates.name !== undefined) {
+      const sanitizedName = updates.name.trim().slice(0, VALIDATION_LIMITS.PLAYLIST_NAME_MAX);
+      if (!sanitizedName) {
+        return; // Don't update with empty name
+      }
+      sanitizedUpdates.name = sanitizedName;
+    }
+
+    if (updates.description !== undefined) {
+      sanitizedUpdates.description = updates.description.trim().slice(0, VALIDATION_LIMITS.PLAYLIST_DESCRIPTION_MAX);
+    }
+
     let updatedPlaylist: Playlist | null = null;
 
     setPlaylists(prev => prev.map(playlist => {
@@ -278,7 +302,7 @@ export function PlaylistProvider({ children }: { children: React.ReactNode }) {
 
       updatedPlaylist = {
         ...playlist,
-        ...updates,
+        ...sanitizedUpdates,
         updatedAt: new Date().toISOString(),
       };
       return updatedPlaylist;

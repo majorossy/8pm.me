@@ -17,7 +17,7 @@ const ALGORITHMS: AlgorithmOption[] = [
   {
     id: 'songVersions',
     icon: '',
-    label: 'Song Versions',
+    label: 'Versions',
     description: 'Sort by number of song versions',
   },
   {

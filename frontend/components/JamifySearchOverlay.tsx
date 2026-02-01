@@ -16,6 +16,7 @@ import { SearchFilters } from './SearchFilters';
 import { VinylSpinner } from './VinylSpinner';
 import { SearchSilence } from './NoResultsIcons';
 import { trackSearch, trackSearchResultClick } from '@/lib/analytics';
+import { VALIDATION_LIMITS } from '@/lib/validation';
 
 interface JamifySearchOverlayProps {
   isOpen: boolean;
@@ -265,8 +266,9 @@ export function JamifySearchOverlay({ isOpen, onClose }: JamifySearchOverlayProp
                   ref={inputRef}
                   type="search"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => setSearchQuery(e.target.value.slice(0, VALIDATION_LIMITS.SEARCH_QUERY_MAX))}
                   placeholder="What do you want to listen to?"
+                  maxLength={VALIDATION_LIMITS.SEARCH_QUERY_MAX}
                   className="w-full bg-[#2d2a26] text-white placeholder-gray-400 rounded-full px-4 py-3 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-[#d4a060]"
                 />
                 {searchQuery && (

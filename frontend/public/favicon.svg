@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#1c1a17"/>
+
+  <!-- Lightning bolt -->
+  <path d="M320 48L176 240h80l-48 224 144-224h-80z" fill="#d4a060"/>
+
+  <!-- Subtle glow effect -->
+  <ellipse cx="256" cy="256" rx="160" ry="160" fill="url(#glow)" opacity="0.3"/>
+
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#d4a060" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#d4a060" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>

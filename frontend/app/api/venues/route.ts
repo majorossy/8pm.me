@@ -1,4 +1,5 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { heavyRateLimit } from '@/lib/rateLimit';
 
 const GRAPHQL_ENDPOINT = process.env.MAGENTO_GRAPHQL_URL || 'https://magento.test/graphql';
 
@@ -38,7 +39,13 @@ const GET_PRODUCTS_WITH_VENUES = `
   }
 `;
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Check rate limit (heavy endpoint - 10 req/min)
+  const rateLimitResult = await heavyRateLimit.check(request, 'venues');
+  if (!rateLimitResult.success) {
+    return rateLimitResult.response;
+  }
+
   try {
     // First try aggregations (more efficient if available)
     const aggResponse = await fetch(GRAPHQL_ENDPOINT, {
@@ -62,7 +69,8 @@ export async function GET() {
         .filter((v: string) => v && v.trim())
         .sort();
 
-      return NextResponse.json({ venues, source: 'aggregations' });
+      const response = NextResponse.json({ venues, source: 'aggregations' });
+      return heavyRateLimit.addHeaders(response, rateLimitResult);
     }
 
     // Fallback: fetch products and extract unique venues
@@ -90,11 +98,12 @@ export async function GET() {
 
     const venues = Array.from(venueSet).sort();
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       venues,
       source: 'products',
       totalProducts: productData?.data?.products?.total_count
     });
+    return heavyRateLimit.addHeaders(response, rateLimitResult);
 
   } catch (error) {
     console.error('[api/venues] Error fetching venues:', error);

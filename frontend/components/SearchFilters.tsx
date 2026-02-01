@@ -4,6 +4,7 @@ import { useState, useCallback, useMemo } from 'react';
 import type { VersionFilters } from '@/lib/filters';
 import { CustomSelect, type SelectOption } from './CustomSelect';
 import { VenueAutocomplete } from './VenueAutocomplete';
+import { VALIDATION_LIMITS } from '@/lib/validation';
 
 export type { VersionFilters } from '@/lib/filters';
 
@@ -88,7 +89,15 @@ export function SearchFilters({
   }, []);
 
   const handleYearChange = useCallback((year: string) => {
-    onFiltersChange({ ...filters, year: year ? parseInt(year) : undefined });
+    if (!year) {
+      onFiltersChange({ ...filters, year: undefined });
+      return;
+    }
+    const yearNum = parseInt(year, 10);
+    // Validate year is in reasonable range
+    if (!isNaN(yearNum) && yearNum >= VALIDATION_LIMITS.YEAR_MIN && yearNum <= VALIDATION_LIMITS.YEAR_MAX) {
+      onFiltersChange({ ...filters, year: yearNum });
+    }
   }, [filters, onFiltersChange]);
 
   const handleArtistChange = useCallback((artist: string) => {
@@ -96,7 +105,15 @@ export function SearchFilters({
   }, [filters, onFiltersChange]);
 
   const handleRatingChange = useCallback((rating: string) => {
-    onFiltersChange({ ...filters, minRating: rating ? parseInt(rating) : undefined });
+    if (!rating) {
+      onFiltersChange({ ...filters, minRating: undefined });
+      return;
+    }
+    const ratingNum = parseInt(rating, 10);
+    // Validate rating is 1-5
+    if (!isNaN(ratingNum) && ratingNum >= 1 && ratingNum <= 5) {
+      onFiltersChange({ ...filters, minRating: ratingNum });
+    }
   }, [filters, onFiltersChange]);
 
   const handleVenueChange = useCallback((venue: string) => {

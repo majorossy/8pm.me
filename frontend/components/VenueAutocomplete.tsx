@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { VALIDATION_LIMITS } from '@/lib/validation';
 
 interface VenueAutocompleteProps {
   value: string;
@@ -63,7 +64,8 @@ export function VenueAutocomplete({
   }, [highlightedIndex, isOpen]);
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
+    // Limit input length to prevent abuse
+    const newValue = e.target.value.slice(0, VALIDATION_LIMITS.VENUE_MAX);
     setInputValue(newValue);
     onChange(newValue);
     setIsOpen(true);
@@ -145,6 +147,7 @@ export function VenueAutocomplete({
           onFocus={handleFocus}
           placeholder={placeholder}
           disabled={disabled}
+          maxLength={VALIDATION_LIMITS.VENUE_MAX}
           className={`
             w-full px-3 py-1.5 pr-8 rounded-full text-sm
             bg-[#2a2520] text-[#e8dcc8]

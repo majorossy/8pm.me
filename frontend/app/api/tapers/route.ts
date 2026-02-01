@@ -1,4 +1,5 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { heavyRateLimit } from '@/lib/rateLimit';
 
 // GraphQL endpoint
 const MAGENTO_GRAPHQL_URL = process.env.MAGENTO_GRAPHQL_URL || 'https://app:8443/graphql';
@@ -96,17 +97,24 @@ let cachedTapers: Taper[] | null = null;
 let cacheTimestamp = 0;
 const CACHE_TTL = 3600 * 1000; // 1 hour
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Check rate limit (heavy endpoint - 10 req/min)
+  const rateLimitResult = await heavyRateLimit.check(request, 'tapers');
+  if (!rateLimitResult.success) {
+    return rateLimitResult.response;
+  }
+
   try {
     // Check cache
     if (cachedTapers && Date.now() - cacheTimestamp < CACHE_TTL) {
       console.log('[tapers API] Returning cached tapers:', cachedTapers.length);
-      return NextResponse.json({
+      const response = NextResponse.json({
         tapers: cachedTapers,
         totalTapers: cachedTapers.length,
         totalRecordings: cachedTapers.reduce((sum, t) => sum + t.count, 0),
         cached: true,
       });
+      return heavyRateLimit.addHeaders(response, rateLimitResult);
     }
 
     console.log('[tapers API] Fetching tapers from GraphQL...');
@@ -119,12 +127,13 @@ export async function GET() {
 
     console.log('[tapers API] Found', tapers.length, 'unique tapers');
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       tapers,
       totalTapers: tapers.length,
       totalRecordings: tapers.reduce((sum, t) => sum + t.count, 0),
       cached: false,
     });
+    return heavyRateLimit.addHeaders(response, rateLimitResult);
   } catch (error) {
     console.error('[tapers API] Error:', error);
     return NextResponse.json(

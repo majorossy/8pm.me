@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import Image from 'next/image';
 import { ArtistDetail } from '@/lib/api';
 import { BandMemberData } from '@/lib/types';
@@ -16,6 +16,7 @@ import PolaroidCard from '@/components/artist/PolaroidCard';
 import RelatedArtists, { RelatedArtist } from '@/components/RelatedArtists';
 import ExpandedBiography from '@/components/ExpandedBiography';
 import ArtistFAQ from '@/components/ArtistFAQ';
+import { trackArtistView } from '@/lib/analytics';
 
 interface ArtistWithAlbums extends ArtistDetail {
   albums: any[];
@@ -31,6 +32,7 @@ export default function ArtistPageContent({ artist, bandData, relatedArtists }: 
   const { setBreadcrumbs } = useBreadcrumbs();
   const { followArtist, unfollowArtist, isArtistFollowed } = useWishlist();
   const { vibrate, BUTTON_PRESS } = useHaptic();
+  const hasTrackedView = useRef(false);
 
   const isFollowed = isArtistFollowed(artist.slug);
 
@@ -38,6 +40,17 @@ export default function ArtistPageContent({ artist, bandData, relatedArtists }: 
     setBreadcrumbs([{ label: artist.name, type: 'artist' }]);
     return () => setBreadcrumbs([]);
   }, [setBreadcrumbs, artist.name]);
+
+  // Track artist page view (once per mount)
+  useEffect(() => {
+    if (!hasTrackedView.current) {
+      trackArtistView({
+        ...artist,
+        albumCount: artist.albums?.length || 0,
+      });
+      hasTrackedView.current = true;
+    }
+  }, [artist]);
 
   const handleFollowToggle = () => {
     vibrate(BUTTON_PRESS);

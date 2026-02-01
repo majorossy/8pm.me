@@ -160,10 +160,26 @@ export default function Footer() {
               </li>
               <li>
                 <Link
+                  href="/cookie-policy"
+                  className="text-sm text-[var(--text-dim)] hover:text-[var(--neon-pink)] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--neon-pink)] rounded"
+                >
+                  Cookie Policy
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/terms"
                   className="text-sm text-[var(--text-dim)] hover:text-[var(--neon-pink)] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--neon-pink)] rounded"
                 >
                   Terms of Service
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/dmca"
+                  className="text-sm text-[var(--text-dim)] hover:text-[var(--neon-pink)] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--neon-pink)] rounded"
+                >
+                  DMCA Policy
                 </Link>
               </li>
               <li>

@@ -3,6 +3,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useMagentoAuth } from '@/context/MagentoAuthContext';
+import { VALIDATION_LIMITS } from '@/lib/validation';
+
+// Auth-specific limits
+const AUTH_LIMITS = {
+  PASSWORD_MIN: 6,
+  PASSWORD_MAX: 128,
+  FIRSTNAME_MAX: 50,
+  LASTNAME_MAX: 50,
+} as const;
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -211,7 +220,8 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }: A
                 type="email"
                 id="magic-email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value.slice(0, VALIDATION_LIMITS.EMAIL_MAX))}
+                maxLength={VALIDATION_LIMITS.EMAIL_MAX}
                 required
                 className="w-full px-4 py-3 bg-[#2d2a26] border border-[#3a3632] rounded-md text-[#e8e0d4] placeholder-[#6a6458] focus:outline-none focus:ring-2 focus:ring-[#d4a060] focus:border-transparent"
                 placeholder="you@example.com"
@@ -265,7 +275,8 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }: A
                 type="email"
                 id="password-email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value.slice(0, VALIDATION_LIMITS.EMAIL_MAX))}
+                maxLength={VALIDATION_LIMITS.EMAIL_MAX}
                 required
                 className="w-full px-4 py-3 bg-[#2d2a26] border border-[#3a3632] rounded-md text-[#e8e0d4] placeholder-[#6a6458] focus:outline-none focus:ring-2 focus:ring-[#d4a060] focus:border-transparent"
                 placeholder="you@example.com"
@@ -283,7 +294,8 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }: A
                     type="text"
                     id="firstname"
                     value={firstname}
-                    onChange={(e) => setFirstname(e.target.value)}
+                    onChange={(e) => setFirstname(e.target.value.slice(0, AUTH_LIMITS.FIRSTNAME_MAX))}
+                    maxLength={AUTH_LIMITS.FIRSTNAME_MAX}
                     required
                     className="w-full px-4 py-3 bg-[#2d2a26] border border-[#3a3632] rounded-md text-[#e8e0d4] placeholder-[#6a6458] focus:outline-none focus:ring-2 focus:ring-[#d4a060] focus:border-transparent"
                     placeholder="John"
@@ -297,7 +309,8 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }: A
                     type="text"
                     id="lastname"
                     value={lastname}
-                    onChange={(e) => setLastname(e.target.value)}
+                    onChange={(e) => setLastname(e.target.value.slice(0, AUTH_LIMITS.LASTNAME_MAX))}
+                    maxLength={AUTH_LIMITS.LASTNAME_MAX}
                     required
                     className="w-full px-4 py-3 bg-[#2d2a26] border border-[#3a3632] rounded-md text-[#e8e0d4] placeholder-[#6a6458] focus:outline-none focus:ring-2 focus:ring-[#d4a060] focus:border-transparent"
                     placeholder="Doe"
@@ -315,9 +328,10 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }: A
                 type="password"
                 id="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value.slice(0, AUTH_LIMITS.PASSWORD_MAX))}
+                maxLength={AUTH_LIMITS.PASSWORD_MAX}
                 required
-                minLength={6}
+                minLength={AUTH_LIMITS.PASSWORD_MIN}
                 className="w-full px-4 py-3 bg-[#2d2a26] border border-[#3a3632] rounded-md text-[#e8e0d4] placeholder-[#6a6458] focus:outline-none focus:ring-2 focus:ring-[#d4a060] focus:border-transparent"
                 placeholder="••••••••"
               />
@@ -333,9 +347,10 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'signin' }: A
                   type="password"
                   id="confirmPassword"
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={(e) => setConfirmPassword(e.target.value.slice(0, AUTH_LIMITS.PASSWORD_MAX))}
+                  maxLength={AUTH_LIMITS.PASSWORD_MAX}
                   required
-                  minLength={6}
+                  minLength={AUTH_LIMITS.PASSWORD_MIN}
                   className="w-full px-4 py-3 bg-[#2d2a26] border border-[#3a3632] rounded-md text-[#e8e0d4] placeholder-[#6a6458] focus:outline-none focus:ring-2 focus:ring-[#d4a060] focus:border-transparent"
                   placeholder="••••••••"
                 />

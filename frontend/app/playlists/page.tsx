@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { usePlaylists } from '@/context/PlaylistContext';
 import { useQueue } from '@/context/QueueContext';
 import Link from 'next/link';
+import { VALIDATION_LIMITS } from '@/lib/validation';
 
 export default function PlaylistsPage() {
   const { playlists, createPlaylist, deletePlaylist, getPlaylist } = usePlaylists();
@@ -78,15 +79,17 @@ export default function PlaylistsPage() {
             <input
               type="text"
               value={newPlaylistName}
-              onChange={(e) => setNewPlaylistName(e.target.value)}
+              onChange={(e) => setNewPlaylistName(e.target.value.slice(0, VALIDATION_LIMITS.PLAYLIST_NAME_MAX))}
               placeholder="Playlist name"
+              maxLength={VALIDATION_LIMITS.PLAYLIST_NAME_MAX}
               autoFocus
               className="w-full bg-[#1c1a17] text-white placeholder-[#8a8478] rounded px-4 py-3 mb-3 focus:outline-none focus:ring-2 focus:ring-[#d4a060]"
             />
             <textarea
               value={newPlaylistDescription}
-              onChange={(e) => setNewPlaylistDescription(e.target.value)}
+              onChange={(e) => setNewPlaylistDescription(e.target.value.slice(0, VALIDATION_LIMITS.PLAYLIST_DESCRIPTION_MAX))}
               placeholder="Description (optional)"
+              maxLength={VALIDATION_LIMITS.PLAYLIST_DESCRIPTION_MAX}
               rows={3}
               className="w-full bg-[#1c1a17] text-white placeholder-[#8a8478] rounded px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-[#d4a060] resize-none"
             />

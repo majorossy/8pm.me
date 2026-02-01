@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { Orbitron, Space_Mono, Bebas_Neue } from 'next/font/google';
-import { GoogleAnalytics } from '@next/third-parties/google';
 import './globals.css';
 import ClientLayout from '@/components/ClientLayout';
+import ConditionalAnalytics from '@/components/ConditionalAnalytics';
 
 const orbitron = Orbitron({
   subsets: ['latin'],
@@ -42,9 +42,18 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     siteName: 'EIGHTPM',
+    images: [
+      {
+        url: '/images/og-default.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'EIGHTPM - Live Music Archive',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
+    images: ['/images/og-default.jpg'],
   },
   manifest: '/manifest.json',
   appleWebApp: {
@@ -87,6 +96,12 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="EIGHTPM" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
 
+        {/* Favicons */}
+        <link rel="icon" href="/favicon.ico" sizes="32x32" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+
         {/* Apple Touch Icons */}
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
         <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png" />
@@ -105,10 +120,8 @@ export default function RootLayout({
       </head>
       <body className="font-mono">
         <ClientLayout>{children}</ClientLayout>
-        {/* Google Analytics 4 - only loads when measurement ID is configured */}
-        {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
-          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
-        )}
+        {/* Google Analytics 4 - only loads when user has consented to analytics cookies */}
+        <ConditionalAnalytics />
       </body>
     </html>
   );

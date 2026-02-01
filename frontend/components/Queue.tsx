@@ -11,6 +11,7 @@ import { useMobileUI } from '@/context/MobileUIContext';
 import { formatDuration } from '@/lib/api';
 import { getSelectedSong } from '@/lib/queueTypes';
 import SwipeableQueueItem from '@/components/SwipeableQueueItem';
+import { VALIDATION_LIMITS } from '@/lib/validation';
 
 export default function Queue() {
   const { isMobile } = useMobileUI();
@@ -397,7 +398,8 @@ export default function Queue() {
                   <input
                     type="text"
                     value={playlistName}
-                    onChange={(e) => setPlaylistName(e.target.value)}
+                    onChange={(e) => setPlaylistName(e.target.value.slice(0, VALIDATION_LIMITS.PLAYLIST_NAME_MAX))}
+                    maxLength={VALIDATION_LIMITS.PLAYLIST_NAME_MAX}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && playlistName.trim()) {
                         handleSaveQueue();

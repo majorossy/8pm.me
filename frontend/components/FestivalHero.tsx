@@ -367,7 +367,7 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
       </span>
 
       {/* Main content */}
-      <div className="flex flex-col items-center text-center z-10 max-w-6xl w-full">
+      <div className="flex flex-col items-center text-center z-10 max-w-[1400px] w-full">
         {/* Eyebrow with gradient lines */}
         <div className="flex items-center justify-center gap-3 mb-6">
           <div
@@ -415,39 +415,20 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
           LIVE JAMBAND MUSIC
         </p>
 
+        {/* Algorithm Selector outside the border */}
+        <div className="mb-4 flex justify-center">
+          <AlgorithmSelector />
+        </div>
+
         {/* Bordered lineup container */}
         <div className="w-full mb-6 md:mb-8">
           <div
-            className="relative rounded-xl p-4 md:p-8 pt-14 md:pt-16"
+            className="relative rounded-xl p-4 md:p-8"
             style={{
               border: '1px solid rgba(212, 160, 96, 0.25)',
               background: 'linear-gradient(180deg, rgba(212, 160, 96, 0.06) 0%, rgba(212, 160, 96, 0.02) 40%, transparent 100%)'
             }}
           >
-            {/* THE LINEUP title breaking the top border */}
-            <div
-              className="absolute -top-3 left-1/2 -translate-x-1/2 px-2 flex items-center gap-4"
-              style={{ background: 'var(--bg)' }}
-            >
-              <div
-                className="h-px flex-1 w-16 md:w-32"
-                style={{ background: 'linear-gradient(90deg, transparent, rgba(212, 160, 96, 0.4))' }}
-              />
-              <span className="flex items-center gap-2 text-[var(--neon-pink)]">
-                <span style={{ fontSize: '10px' }}>✦</span>
-                <span style={{ letterSpacing: '0.25em', fontSize: '12px' }}>THE LINEUP</span>
-                <span style={{ fontSize: '10px' }}>✦</span>
-              </span>
-              <div
-                className="h-px flex-1 w-16 md:w-32"
-                style={{ background: 'linear-gradient(90deg, rgba(212, 160, 96, 0.4), transparent)' }}
-              />
-            </div>
-
-            {/* Algorithm Selector inside the border */}
-            <div className="absolute top-3 md:top-4 left-1/2 -translate-x-1/2">
-              <AlgorithmSelector />
-            </div>
 
             {/* Corner accents */}
             <div className="absolute top-0 left-0 w-6 h-6 border-l-2 border-t-2 rounded-tl-xl" style={{ borderColor: 'rgba(212, 160, 96, 0.5)' }} />
@@ -458,7 +439,7 @@ export default function FestivalHero({ artists, onStartListening }: FestivalHero
             {/* Artist names */}
             <div
               ref={containerRef}
-              className="flex flex-wrap items-baseline justify-center gap-x-2 md:gap-x-4 gap-y-2 text-[var(--text)] font-bold uppercase tracking-[1px] md:tracking-[2px] mt-8 md:mt-6"
+              className="flex flex-wrap items-baseline justify-center gap-x-2 md:gap-x-4 gap-y-2 text-[var(--text)] font-bold uppercase tracking-[1px] md:tracking-[2px]"
             >
               {lineupArtists.map((artist, index) => {
                 const fontSize = getFontSize(artist);

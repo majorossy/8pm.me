@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { usePlaylists } from '@/context/PlaylistContext';
 import { Song } from '@/lib/types';
+import { VALIDATION_LIMITS } from '@/lib/validation';
 
 interface AddToPlaylistModalProps {
   isOpen: boolean;
@@ -72,8 +73,9 @@ export function AddToPlaylistModal({ isOpen, onClose, song }: AddToPlaylistModal
                 <input
                   type="text"
                   value={newPlaylistName}
-                  onChange={(e) => setNewPlaylistName(e.target.value)}
+                  onChange={(e) => setNewPlaylistName(e.target.value.slice(0, VALIDATION_LIMITS.PLAYLIST_NAME_MAX))}
                   placeholder="Playlist name"
+                  maxLength={VALIDATION_LIMITS.PLAYLIST_NAME_MAX}
                   autoFocus
                   className="w-full bg-[#1c1a17] text-white placeholder-[#8a8478] rounded px-4 py-3 mb-3 focus:outline-none focus:ring-2 focus:ring-[#d4a060]"
                 />
