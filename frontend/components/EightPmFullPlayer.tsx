@@ -15,6 +15,7 @@ import { useSleepTimer, SleepTimerPreset } from '@/hooks/useSleepTimer';
 import { useShare } from '@/hooks/useShare';
 import { useHaptic } from '@/hooks/useHaptic';
 import { formatDuration } from '@/lib/api';
+import { getSelectedSong } from '@/lib/queueTypes';
 import Link from 'next/link';
 import ShareModal from '@/components/ShareModal';
 import { formatLineage } from '@/lib/lineageUtils';
@@ -40,6 +41,7 @@ export default function EightPmFullPlayer() {
     pause,
     crossfadeDuration,
     setCrossfadeDuration,
+    playFromQueue,
   } = usePlayer();
 
   const {
@@ -47,6 +49,7 @@ export default function EightPmFullPlayer() {
     isFirstTrack,
     isLastTrack,
     hasUpNext,
+    hasAlbum,
     setRepeat,
     setShuffle,
   } = useQueue();
@@ -68,6 +71,9 @@ export default function EightPmFullPlayer() {
   // Settings panel state
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [showTimerNotification, setShowTimerNotification] = useState(false);
+
+  // Mini queue expanded state
+  const [isQueueExpanded, setIsQueueExpanded] = useState(false);
 
   // Quality selector popup state
   const [showQualityPopup, setShowQualityPopup] = useState(false);
@@ -497,6 +503,90 @@ export default function EightPmFullPlayer() {
         </div>
       </div>
 
+      {/* Mini Queue / Up Next */}
+      {(() => {
+        // Get upcoming tracks
+        const upcomingAlbumTracks = hasAlbum
+          ? queue.tracks.slice(queue.currentTrackIndex + 1).map(track => ({
+              song: getSelectedSong(track),
+              source: 'album' as const,
+            })).filter(t => t.song)
+          : [];
+        const upcomingUpNext = queue.upNext.map(item => ({
+          song: item.song,
+          source: 'upnext' as const,
+        }));
+        const allUpcoming = [...upcomingAlbumTracks, ...upcomingUpNext];
+        const displayTracks = isQueueExpanded ? allUpcoming.slice(0, 10) : allUpcoming.slice(0, 3);
+        const hasMoreTracks = allUpcoming.length > displayTracks.length;
+
+        if (allUpcoming.length === 0) return null;
+
+        return (
+          <div className="px-4 pb-4">
+            {/* Header with expand/collapse */}
+            <button
+              onClick={() => {
+                vibrate(BUTTON_PRESS);
+                setIsQueueExpanded(!isQueueExpanded);
+              }}
+              className="w-full flex items-center justify-between py-2 text-left"
+            >
+              <span className="text-xs text-[#8a8478] uppercase tracking-wider">
+                Up Next ({allUpcoming.length})
+              </span>
+              <svg
+                className={`w-4 h-4 text-[#8a8478] transition-transform ${isQueueExpanded ? 'rotate-180' : ''}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+              </svg>
+            </button>
+
+            {/* Track list */}
+            <div className={`space-y-1 overflow-hidden transition-all duration-300 ${isQueueExpanded ? 'max-h-80' : 'max-h-32'}`}>
+              {displayTracks.map(({ song }, index) => (
+                <button
+                  key={`${song!.id}-${index}`}
+                  onClick={() => {
+                    vibrate(BUTTON_PRESS);
+                    // Calculate actual queue index (current + 1 + display index)
+                    const actualIndex = queue.currentTrackIndex + 1 + index;
+                    if (actualIndex < queue.tracks.length) {
+                      playFromQueue(actualIndex);
+                    } else {
+                      // It's from upNext, just skip ahead
+                      playNext();
+                    }
+                  }}
+                  className="w-full flex items-center gap-3 py-2 px-2 rounded-lg hover:bg-[#2d2a26] active:bg-[#3a3632] transition-colors text-left"
+                >
+                  <span className="text-xs text-[#6a6458] w-5 text-center font-mono">
+                    {index + 1}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-white truncate">{song!.title}</p>
+                    <p className="text-xs text-[#8a8478] truncate">{song!.artistName}</p>
+                  </div>
+                  <span className="text-xs text-[#6a6458] font-mono flex-shrink-0">
+                    {formatDuration(song!.duration)}
+                  </span>
+                </button>
+              ))}
+
+              {/* Show more indicator */}
+              {hasMoreTracks && !isQueueExpanded && (
+                <p className="text-[10px] text-[#6a6458] text-center py-1 italic">
+                  +{allUpcoming.length - 3} more • tap to expand
+                </p>
+              )}
+            </div>
+          </div>
+        );
+      })()}
+
       {/* Bottom Actions */}
       <div className="px-8 pb-6">
         <div className="flex items-center justify-between">
@@ -507,7 +597,7 @@ export default function EightPmFullPlayer() {
             </svg>
           </button>
 
-          {/* Queue */}
+          {/* Full Queue (opens drawer) */}
           <button
             onClick={() => {
               vibrate(BUTTON_PRESS);
@@ -515,8 +605,7 @@ export default function EightPmFullPlayer() {
               setTimeout(() => toggleQueue(), 100);
             }}
             className={`p-2 btn-touch ${isQueueOpen ? 'text-[#d4a060]' : 'text-[#8a8478]'}`}
-            aria-label={isQueueOpen ? 'Close queue' : 'View queue'}
-            aria-pressed={isQueueOpen}
+            aria-label="Open full queue"
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z" />
