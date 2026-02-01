@@ -16,6 +16,7 @@ import { formatDuration } from '@/lib/api';
 import { getSelectedSong } from '@/lib/queueTypes';
 import { formatLineage } from '@/lib/lineageUtils';
 import ShareButton from '@/components/ShareButton';
+import DownloadButton from '@/components/DownloadButton';
 import QueuePreview from '@/components/QueuePreview';
 
 // Custom hook for screen reader announcements
@@ -439,6 +440,7 @@ export default function BottomPlayer() {
               currentSong && isInWishlist(currentSong.id) ? 'text-[#d4a060]' : 'text-[#8a8478] hover:text-white'
             }`}
             aria-label={currentSong && isInWishlist(currentSong.id) ? 'Remove from favorites' : 'Add to favorites'}
+            title={currentSong && isInWishlist(currentSong.id) ? 'Unlike (L)' : 'Like (L)'}
           >
             {currentSong && isInWishlist(currentSong.id) ? (
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -453,6 +455,13 @@ export default function BottomPlayer() {
 
           {/* Share button */}
           <ShareButton
+            title={currentSong.title}
+            artistName={currentSong.artistName}
+          />
+
+          {/* Download button */}
+          <DownloadButton
+            streamUrl={currentSong.streamUrl}
             title={currentSong.title}
             artistName={currentSong.artistName}
           />
@@ -472,7 +481,7 @@ export default function BottomPlayer() {
                 queue.shuffle ? 'text-[#d4a060]' : 'text-[#8a8478] hover:text-white'
               }`}
               aria-label={queue.shuffle ? 'Disable shuffle' : 'Enable shuffle'}
-              title={queue.shuffle ? 'Shuffle on' : 'Shuffle off'}
+              title={queue.shuffle ? 'Shuffle on (S)' : 'Shuffle off (S)'}
             >
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z" />
@@ -488,6 +497,7 @@ export default function BottomPlayer() {
               disabled={isFirstTrack && !hasUpNext}
               className="text-[#8a8478] hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-[#d4a060] rounded"
               aria-label="Previous track"
+              title="Previous (P)"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
@@ -502,6 +512,7 @@ export default function BottomPlayer() {
               }}
               className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-black hover:scale-105 transition-transform focus:outline-none focus:ring-2 focus:ring-[#d4a060] focus:ring-offset-2 focus:ring-offset-[#252220]"
               aria-label={isPlaying ? 'Pause' : 'Play'}
+              title={isPlaying ? 'Pause (Space)' : 'Play (Space)'}
             >
               {isPlaying ? (
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -524,6 +535,7 @@ export default function BottomPlayer() {
               disabled={isLastTrack && !hasUpNext}
               className="text-[#8a8478] hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-[#d4a060] rounded"
               aria-label="Next track"
+              title="Next (N)"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
@@ -543,7 +555,7 @@ export default function BottomPlayer() {
                 queue.repeat === 'off' ? 'text-[#8a8478] hover:text-white' : 'text-[#d4a060]'
               }`}
               aria-label={`Repeat: ${queue.repeat}`}
-              title={`Repeat: ${queue.repeat}`}
+              title={`Repeat: ${queue.repeat} (R)`}
             >
               {queue.repeat === 'one' ? (
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -696,7 +708,7 @@ export default function BottomPlayer() {
                 isQueueOpen ? 'text-[#d4a060]' : 'text-[#8a8478] hover:text-white'
               }`}
               aria-label={isQueueOpen ? 'Close queue' : 'Open queue'}
-              title="Queue"
+              title="Queue (Q)"
             >
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z" />

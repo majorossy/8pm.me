@@ -60,6 +60,16 @@ interface PlayerContextType extends PlayerState {
   // Legacy queue access for compatibility (maps from QueueContext)
   queue: Song[];
   queueIndex: number;
+
+  // Saved playback progress (for resuming)
+  savedProgress: {
+    songId: string;
+    position: number;
+    title: string;
+    artistName: string;
+  } | null;
+  resumeSavedProgress: () => void;
+  clearSavedProgress: () => void;
 }
 
 const PlayerContext = createContext<PlayerContextType | null>(null);
@@ -96,6 +106,75 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     }
     return 3;
   });
+
+  // Playback progress persistence
+  const PROGRESS_STORAGE_KEY = '8pm_playback_progress';
+  const progressSaveIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Save playback progress to localStorage
+  const savePlaybackProgress = useCallback((song: Song, position: number, duration: number) => {
+    // Don't save if position is too small (just started) or near end (almost finished)
+    if (position < 5 || (duration > 0 && position > duration * 0.95)) {
+      return;
+    }
+
+    try {
+      const checkpoint = {
+        songId: song.id,
+        position,
+        duration,
+        timestamp: Date.now(),
+        title: song.title,
+        artistName: song.artistName,
+        albumName: song.albumName,
+        streamUrl: song.streamUrl,
+      };
+      localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(checkpoint));
+    } catch (error) {
+      console.error('Failed to save playback progress:', error);
+    }
+  }, []);
+
+  // Clear saved progress (when song completes normally)
+  const clearPlaybackProgress = useCallback(() => {
+    try {
+      localStorage.removeItem(PROGRESS_STORAGE_KEY);
+    } catch (error) {
+      console.error('Failed to clear playback progress:', error);
+    }
+  }, []);
+
+  // Load saved progress on mount
+  const [savedProgress, setSavedProgress] = useState<{
+    songId: string;
+    position: number;
+    duration: number;
+    timestamp: number;
+    title: string;
+    artistName: string;
+    albumName?: string;
+    streamUrl?: string;
+  } | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem(PROGRESS_STORAGE_KEY);
+        if (saved) {
+          const checkpoint = JSON.parse(saved);
+          // Only restore if less than 7 days old
+          const ageInDays = (Date.now() - checkpoint.timestamp) / (1000 * 60 * 60 * 24);
+          if (ageInDays < 7) {
+            setSavedProgress(checkpoint);
+          } else {
+            localStorage.removeItem(PROGRESS_STORAGE_KEY);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load playback progress:', error);
+      }
+    }
+  }, []);
 
   const [state, setState] = useState<PlayerState>({
     isPlaying: false,
@@ -202,6 +281,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     };
 
     const handleEnded = () => {
+      // Clear saved progress - track completed normally
+      clearPlaybackProgress();
+
       // Get next song from queue context
       const nextSong = queueContext.nextTrack();
 
@@ -266,7 +348,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       audio.removeEventListener('stalled', handleStalled);
       audio.removeEventListener('waiting', handleWaiting);
     };
-  }, [crossfade.state.activeElement, currentSong, handlePlaybackError]);
+  }, [crossfade.state.activeElement, currentSong, handlePlaybackError, clearPlaybackProgress]);
 
   // When currentSong changes (from QueueContext), update audio
   useEffect(() => {
@@ -386,6 +468,31 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     }
   }, [state.isPlaying, currentSong]);
 
+  // Periodically save playback progress while playing (every 30 seconds)
+  useEffect(() => {
+    if (!currentSong || !state.isPlaying) {
+      if (progressSaveIntervalRef.current) {
+        clearInterval(progressSaveIntervalRef.current);
+        progressSaveIntervalRef.current = null;
+      }
+      return;
+    }
+
+    progressSaveIntervalRef.current = setInterval(() => {
+      const audio = getAudio();
+      if (audio && currentSong) {
+        savePlaybackProgress(currentSong, audio.currentTime, audio.duration);
+      }
+    }, 30000); // Save every 30 seconds
+
+    return () => {
+      if (progressSaveIntervalRef.current) {
+        clearInterval(progressSaveIntervalRef.current);
+        progressSaveIntervalRef.current = null;
+      }
+    };
+  }, [currentSong, state.isPlaying, savePlaybackProgress]);
+
   const playSong = useCallback((song: Song) => {
     const audio = getAudio();
     if (!audio) return;
@@ -416,9 +523,15 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const pause = useCallback(() => {
     const audio = getAudio();
     if (!audio) return;
+
+    // Save progress before pausing
+    if (currentSong && audio.currentTime > 0) {
+      savePlaybackProgress(currentSong, audio.currentTime, audio.duration);
+    }
+
     audio.pause();
     setState(prev => ({ ...prev, isPlaying: false }));
-  }, [crossfade]);
+  }, [crossfade, currentSong, savePlaybackProgress]);
 
   const togglePlay = useCallback(() => {
     const audio = getAudio();
@@ -492,6 +605,49 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('crossfadeDuration', duration.toString());
     }
   }, []);
+
+  // Resume playback from saved progress
+  const resumeSavedProgress = useCallback(() => {
+    if (!savedProgress || !savedProgress.streamUrl) return;
+
+    const audio = getAudio();
+    if (!audio) return;
+
+    // Create a minimal Song object to resume playback
+    const resumeSong: Song = {
+      id: savedProgress.songId,
+      sku: savedProgress.songId,
+      title: savedProgress.title,
+      artistId: '',
+      artistName: savedProgress.artistName,
+      artistSlug: '',
+      duration: savedProgress.duration,
+      streamUrl: savedProgress.streamUrl,
+      albumArt: '',
+      qualityUrls: {},
+      albumIdentifier: '',
+      albumName: savedProgress.albumName || '',
+      trackTitle: savedProgress.title,
+    };
+
+    // Connect audio analyzer before playing
+    connectAudioElement(audio);
+    setAnalyzerVolume(state.volume);
+
+    audio.src = savedProgress.streamUrl;
+    audio.currentTime = savedProgress.position;
+    audio.play().catch(console.error);
+
+    setState(prev => ({
+      ...prev,
+      isPlaying: true,
+      activeSong: resumeSong,
+    }));
+
+    // Clear saved progress after resuming
+    setSavedProgress(null);
+    clearPlaybackProgress();
+  }, [savedProgress, connectAudioElement, setAnalyzerVolume, state.volume, clearPlaybackProgress]);
 
   const playFromQueue = useCallback((index: number) => {
     queueContext.setCurrentTrack(index);
@@ -614,6 +770,14 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         analyzerData,
         queue,
         queueIndex,
+        savedProgress: savedProgress ? {
+          songId: savedProgress.songId,
+          position: savedProgress.position,
+          title: savedProgress.title,
+          artistName: savedProgress.artistName,
+        } : null,
+        resumeSavedProgress,
+        clearSavedProgress: clearPlaybackProgress,
       }}
     >
       {/* ARIA live region for screen reader announcements */}
