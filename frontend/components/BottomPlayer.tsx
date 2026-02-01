@@ -69,6 +69,9 @@ export default function BottomPlayer() {
     seek,
     toggleQueue,
     isQueueOpen,
+    savedProgress,
+    resumeSavedProgress,
+    clearSavedProgress,
   } = usePlayer();
 
   const {
@@ -153,6 +156,50 @@ export default function BottomPlayer() {
 
   // Screen reader announcements
   const announcement = usePlayerAnnouncements(currentSong, isPlaying);
+
+  // Show resume UI when there's saved progress but no current song
+  if (!currentSong && savedProgress) {
+    return (
+      <div className={`fixed ${isMobile ? 'bottom-[50px] left-2 right-2' : 'bottom-[50px] left-0 right-0 h-[90px] px-4'} z-50`}>
+        <div className={`${isMobile ? 'bg-[#5c4d3d] rounded-lg p-3' : 'bg-[#252220] border-t border-[#2d2a26] h-full flex items-center justify-center'}`}>
+          <div className={`flex items-center gap-4 ${isMobile ? '' : 'max-w-xl'}`}>
+            {/* Resume info */}
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-[#8a8478] mb-1">Continue where you left off</p>
+              <p className="text-sm text-white font-medium truncate">{savedProgress.title}</p>
+              <p className="text-xs text-[#8a8478] truncate">{savedProgress.artistName} • {formatDuration(Math.floor(savedProgress.position))}</p>
+            </div>
+
+            {/* Resume button */}
+            <button
+              onClick={() => {
+                vibrate(BUTTON_PRESS);
+                resumeSavedProgress();
+              }}
+              className="px-4 py-2 bg-[#d4a060] hover:bg-[#c08a40] text-white text-sm font-semibold rounded-full transition-colors flex-shrink-0"
+            >
+              Resume
+            </button>
+
+            {/* Dismiss button */}
+            <button
+              onClick={() => {
+                vibrate(BUTTON_PRESS);
+                clearSavedProgress();
+              }}
+              className="p-2 text-[#8a8478] hover:text-white transition-colors flex-shrink-0"
+              aria-label="Dismiss"
+              title="Dismiss"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!currentSong) return null;
 
