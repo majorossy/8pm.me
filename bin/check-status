@@ -1,0 +1,431 @@
+#!/bin/bash
+#
+# 8PM Archive Status Checker
+# Reports data consistency across filesystem, database, and indexes
+#
+# Usage: bin/check-status [--artist "Artist Name"] [--no-gql]
+#        bin/check-status --no-gql  (fast mode, skips GraphQL queries)
+#
+# Checks:
+# - Downloaded recordings (JSON files from Archive.org)
+# - Matched products in database
+# - Index table consistency (CCP vs IDX)
+# - GraphQL actual results (same query frontend uses)
+# - Unmatched track counts
+#
+
+cd "$(dirname "$0")/.."
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+DIM='\033[2m'
+NC='\033[0m'
+
+# Parse arguments
+SINGLE_ARTIST=""
+CHECK_GQL=true
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --artist)
+            SINGLE_ARTIST="$2"
+            shift 2
+            ;;
+        --no-gql)
+            CHECK_GQL=false
+            shift
+            ;;
+        -h|--help)
+            echo "Usage: bin/check-status [--artist \"Artist Name\"] [--no-gql]"
+            echo ""
+            echo "Options:"
+            echo "  --artist \"Name\"   Show detailed status for a single artist"
+            echo "  --no-gql          Skip GraphQL queries (faster)"
+            echo "  -h, --help        Show this help message"
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            exit 1
+            ;;
+    esac
+done
+
+# Print header
+echo ""
+echo -e "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${BOLD}📊 8PM Archive Status Check${NC}"
+echo -e "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
+
+# Create temp files
+tmp_all_data=$(mktemp)
+tmp_metadata=$(mktemp)
+tmp_gql=$(mktemp)
+cleanup() {
+    rm -f "$tmp_all_data" "$tmp_metadata" "$tmp_gql"
+}
+trap cleanup EXIT
+
+echo -e "${DIM}Gathering data...${NC}"
+
+# Get metadata counts from filesystem first
+docker exec 8pm-phpfpm-1 bash -c '
+for dir in /var/www/html/var/archivedotorg/metadata/*/; do
+    if [ -d "$dir" ]; then
+        collection=$(basename "$dir")
+        count=$(ls -1 "$dir"*.json 2>/dev/null | wc -l | tr -d " ")
+        echo "${collection}|${count}"
+    fi
+done
+' 2>/dev/null > "$tmp_metadata"
+
+# Single SQL query that joins all data sources
+# NOTE: Artists are at level=3 in this Magento instance (level=2 is "Artists" parent)
+# Albums (shows) are at level=4, tracks are at level=5
+# collection_id mapping comes from archivedotorg_artist_status table
+docker compose exec -T db mysql -u magento -pmagento magento -N 2>/dev/null << 'SQL' > "$tmp_all_data"
+SELECT
+    artist.entity_id AS cat_id,
+    COALESCE(artist_name.value, 'Unknown') AS artist_name,
+
+    -- Get collection_id from archivedotorg_artist_status (has best coverage)
+    COALESCE(status.collection_id, '') AS collection_id,
+
+    -- CCP: Direct product assignments through track categories (level=5)
+    COALESCE(ccp_counts.ccp_count, 0) AS ccp_count,
+
+    -- IDX: Index table counts for artist category (GraphQL uses this)
+    COALESCE(idx_counts.idx_count, 0) AS idx_count,
+
+    -- Unmatched tracks
+    COALESCE(unmatched.unmatched_count, 0) AS unmatched_count,
+
+    -- Downloaded shows from status table (as backup)
+    COALESCE(status.downloaded_shows, 0) AS status_downloads
+
+FROM catalog_category_entity artist
+
+-- Artist name
+LEFT JOIN catalog_category_entity_varchar artist_name
+    ON artist.entity_id = artist_name.entity_id
+    AND artist_name.attribute_id = (
+        SELECT attribute_id FROM eav_attribute
+        WHERE attribute_code = 'name' AND entity_type_id = 3
+    )
+    AND artist_name.store_id = 0
+
+-- Join to archivedotorg_artist_status to get collection_id
+LEFT JOIN archivedotorg_artist_status status
+    ON COALESCE(artist_name.value, '') = status.artist_name
+
+-- CCP counts: products assigned through track categories (artist -> album -> track -> product)
+LEFT JOIN (
+    SELECT
+        artist.entity_id AS artist_id,
+        COUNT(DISTINCT ccp.product_id) AS ccp_count
+    FROM catalog_category_entity artist
+    JOIN catalog_category_entity album ON album.parent_id = artist.entity_id AND album.level = 4
+    JOIN catalog_category_entity track ON track.parent_id = album.entity_id AND track.level = 5
+    JOIN catalog_category_product ccp ON ccp.category_id = track.entity_id
+    WHERE artist.level = 3
+    GROUP BY artist.entity_id
+) ccp_counts ON artist.entity_id = ccp_counts.artist_id
+
+-- IDX counts at artist level (GraphQL uses this table)
+LEFT JOIN (
+    SELECT category_id, COUNT(*) AS idx_count
+    FROM catalog_category_product_index
+    WHERE category_id IN (SELECT entity_id FROM catalog_category_entity WHERE level = 3)
+    GROUP BY category_id
+) idx_counts ON artist.entity_id = idx_counts.category_id
+
+-- Unmatched tracks by artist name
+LEFT JOIN (
+    SELECT artist_name, COUNT(*) AS unmatched_count
+    FROM archivedotorg_unmatched_track
+    WHERE status = 'pending'
+    GROUP BY artist_name
+) unmatched ON COALESCE(artist_name.value, '') = unmatched.artist_name
+
+WHERE artist.level = 3
+ORDER BY artist_name.value;
+SQL
+
+# Function to get metadata count for collection
+get_metadata_count() {
+    local collection="$1"
+    local result=$(grep "^${collection}|" "$tmp_metadata" 2>/dev/null | cut -d'|' -f2)
+    echo "${result:-0}"
+}
+
+# Function to query GraphQL for product count
+query_graphql() {
+    local cat_id="$1"
+    local result=$(curl -s -k -X POST https://magento.test/graphql \
+        -H "Content-Type: application/json" \
+        -d "{\"query\": \"{ products(filter: {category_id: {eq: \\\"${cat_id}\\\"}}, pageSize: 1) { total_count } }\"}" \
+        2>/dev/null | grep -o '"total_count":[0-9]*' | cut -d':' -f2)
+    echo "${result:-0}"
+}
+
+# If --gql flag, pre-fetch all GraphQL counts
+if [ "$CHECK_GQL" = true ]; then
+    echo -e "${DIM}Querying GraphQL (this takes a moment)...${NC}"
+    while IFS=$'\t' read -r cat_id artist_name rest; do
+        [ -z "$cat_id" ] && continue
+        if [ -n "$SINGLE_ARTIST" ] && [ "$artist_name" != "$SINGLE_ARTIST" ]; then
+            continue
+        fi
+        gql_count=$(query_graphql "$cat_id")
+        echo "${cat_id}|${gql_count}" >> "$tmp_gql"
+        printf "."
+    done < "$tmp_all_data"
+    echo ""
+fi
+
+# Function to get cached GQL count
+get_gql_count() {
+    local cat_id="$1"
+    local result=$(grep "^${cat_id}|" "$tmp_gql" 2>/dev/null | cut -d'|' -f2)
+    echo "${result:-}"
+}
+
+# Counters for summary
+total_artists=0
+ok_count=0
+match_warning_count=0
+error_count=0
+
+# Arrays for tracking issues (bash 3.x compatible)
+populate_needed=""
+idx_mismatch_needed=""
+low_match_artists=""
+gql_mismatch_artists=""
+
+# Print table header
+echo ""
+if [ "$CHECK_GQL" = true ]; then
+    echo -e "${DIM}                                    ┌── Downloaded ──┐  ┌─── Matched ───┐  ┌─── Index Health ───┐${NC}"
+    printf "${BOLD}%-28s %6s  %10s %6s   %8s %6s   %6s %6s %6s   %-12s${NC}\n" \
+        "ARTIST" "CAT_ID" "RECORDINGS" "SONGS" "PRODUCTS" "MATCH%" "CCP" "IDX" "GQL" "STATUS"
+else
+    echo -e "${DIM}                                    ┌── Downloaded ──┐  ┌─── Matched ───┐  ┌─ Index ─┐${NC}"
+    printf "${BOLD}%-28s %6s  %10s %6s   %8s %6s   %6s %6s   %-12s${NC}\n" \
+        "ARTIST" "CAT_ID" "RECORDINGS" "SONGS" "PRODUCTS" "MATCH%" "CCP" "IDX" "STATUS"
+fi
+echo -e "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+
+# Process each artist
+while IFS=$'\t' read -r cat_id artist_name collection_id ccp idx unmatched status_downloads; do
+    [ -z "$cat_id" ] && continue
+
+    # Filter for single artist if specified
+    if [ -n "$SINGLE_ARTIST" ] && [ "$artist_name" != "$SINGLE_ARTIST" ]; then
+        continue
+    fi
+
+    total_artists=$((total_artists + 1))
+
+    # Get metadata count from filesystem (prefer this over status table)
+    recordings=$(get_metadata_count "$collection_id")
+    # Fallback to status table downloaded_shows if filesystem returns 0
+    if [ "$recordings" = "0" ] && [ "$status_downloads" -gt 0 ] 2>/dev/null; then
+        recordings="$status_downloads"
+    fi
+    [ -z "$recordings" ] && recordings=0
+
+    # Get GQL count if enabled
+    gql=""
+    if [ "$CHECK_GQL" = true ]; then
+        gql=$(get_gql_count "$cat_id")
+        [ -z "$gql" ] && gql=0
+    fi
+
+    # Calculate SONGS and MATCH%
+    products="$ccp"
+    songs=$((products + unmatched))
+    if [ "$songs" -gt 0 ]; then
+        match_pct=$(echo "scale=1; $products * 100 / $songs" | bc 2>/dev/null)
+        [ -z "$match_pct" ] && match_pct="0.0"
+    else
+        match_pct="—"
+    fi
+
+    # Determine status (priority order)
+    # NOTE: GraphQL uses catalog_category_product_index (IDX), NOT _store1 (STORE)
+    # GQL caps at 10,000 results, so GQL=10000 when IDX>10000 is expected
+    status=""
+    status_color=""
+
+    if [ "$recordings" -gt 0 ] && [ "$products" -eq 0 ]; then
+        status="🔴 POPULATE"
+        status_color="$RED"
+        populate_needed="${populate_needed}${artist_name}\n"
+        error_count=$((error_count + 1))
+    elif [ "$CHECK_GQL" = true ] && [ -n "$gql" ] && [ "$gql" -eq 0 ] && [ "$idx" -gt 0 ]; then
+        # GQL returns 0 but IDX has products = real problem
+        status="🔴 GQL_BROKEN"
+        status_color="$RED"
+        gql_mismatch_artists="${gql_mismatch_artists}${artist_name}\n"
+        error_count=$((error_count + 1))
+    elif [ "$ccp" -ne "$idx" ]; then
+        # CCP ≠ IDX means index needs rebuild (this affects GraphQL results)
+        status="⚠️ IDX_STALE"
+        status_color="$YELLOW"
+        idx_mismatch_needed="${idx_mismatch_needed}${artist_name}\n"
+        match_warning_count=$((match_warning_count + 1))
+    elif [ "$match_pct" != "—" ] && [ "$(echo "$match_pct < 80" | bc 2>/dev/null)" = "1" ]; then
+        status="⚠️ MATCH"
+        status_color="$YELLOW"
+        low_match_artists="${low_match_artists}${artist_name}\n"
+        match_warning_count=$((match_warning_count + 1))
+    else
+        status="✅ OK"
+        status_color="$GREEN"
+        ok_count=$((ok_count + 1))
+    fi
+
+    # Format numbers with commas
+    format_num() {
+        printf "%'d" "$1" 2>/dev/null || echo "$1"
+    }
+
+    rec_fmt=$(format_num "$recordings")
+    songs_fmt=$(format_num "$songs")
+    prod_fmt=$(format_num "$products")
+    ccp_fmt=$(format_num "$ccp")
+    idx_fmt=$(format_num "$idx")
+
+    # Truncate artist name if needed
+    truncated_name="${artist_name:0:27}"
+    if [ ${#artist_name} -gt 27 ]; then
+        truncated_name="${truncated_name}…"
+    fi
+
+    # Format match percentage
+    if [ "$match_pct" = "—" ]; then
+        match_fmt="—"
+    else
+        match_fmt="${match_pct}%"
+    fi
+
+    # Print row
+    if [ "$CHECK_GQL" = true ]; then
+        gql_fmt=$(format_num "$gql")
+        printf "%-28s %6s  %10s %6s   %8s %6s   %6s %6s %6s   ${status_color}%-12s${NC}\n" \
+            "$truncated_name" "$cat_id" "$rec_fmt" "$songs_fmt" "$prod_fmt" "$match_fmt" "$ccp_fmt" "$idx_fmt" "$gql_fmt" "$status"
+    else
+        printf "%-28s %6s  %10s %6s   %8s %6s   %6s %6s   ${status_color}%-12s${NC}\n" \
+            "$truncated_name" "$cat_id" "$rec_fmt" "$songs_fmt" "$prod_fmt" "$match_fmt" "$ccp_fmt" "$idx_fmt" "$status"
+    fi
+
+done < "$tmp_all_data"
+
+# Print column key
+echo -e "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
+echo -e "${BOLD}COLUMN KEY${NC}"
+echo -e "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo "  CAT_ID      = Artist category_id (for manual SQL queries)"
+echo "  RECORDINGS  = JSON files from Archive.org (unique recordings)"
+echo "  SONGS       = Total tracks (PRODUCTS + UNMATCHED)"
+echo "  PRODUCTS    = Tracks successfully matched to categories"
+echo "  MATCH%      = PRODUCTS / SONGS × 100"
+echo "  CCP         = catalog_category_product (base assignments)"
+echo -e "  IDX         = catalog_category_product_index ${CYAN}← GRAPHQL USES THIS${NC}"
+if [ "$CHECK_GQL" = true ]; then
+    echo -e "  GQL         = ${CYAN}Actual GraphQL result ← FRONTEND SEES THIS (caps at 10,000)${NC}"
+fi
+
+# Print summary
+echo ""
+echo -e "${BOLD}SUMMARY${NC}"
+echo -e "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+printf "  Total Artists:     %d\n" "$total_artists"
+printf "  ${GREEN}✅ OK:${NC}              %d   All checks passed\n" "$ok_count"
+printf "  ${YELLOW}⚠️  Warnings:${NC}       %d   Minor issues (frontend works)\n" "$match_warning_count"
+printf "  ${RED}🔴 Errors:${NC}          %d   Needs action\n" "$error_count"
+
+# Count issues
+populate_count=$(echo -e "$populate_needed" | grep -v '^$' | wc -l | tr -d ' ')
+idx_mismatch_count=$(echo -e "$idx_mismatch_needed" | grep -v '^$' | wc -l | tr -d ' ')
+low_match_count=$(echo -e "$low_match_artists" | grep -v '^$' | wc -l | tr -d ' ')
+gql_mismatch_count=$(echo -e "$gql_mismatch_artists" | grep -v '^$' | wc -l | tr -d ' ')
+
+# Print issues by type if any errors exist
+if [ "$error_count" -gt 0 ] || [ "$match_warning_count" -gt 0 ]; then
+    echo ""
+    echo -e "${BOLD}ISSUES BY TYPE${NC}"
+    echo -e "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+
+    if [ "$populate_count" -gt 0 ]; then
+        printf "  ${RED}🔴 POPULATE (%d):${NC}     Recordings exist, 0 products → bin/magento archive:populate \"Artist\"\n" "$populate_count"
+    fi
+    if [ "$gql_mismatch_count" -gt 0 ]; then
+        printf "  ${RED}🔴 GQL_BROKEN (%d):${NC}   GraphQL returns 0 but IDX has products → investigate\n" "$gql_mismatch_count"
+    fi
+    if [ "$idx_mismatch_count" -gt 0 ]; then
+        printf "  ${YELLOW}⚠️  IDX_STALE (%d):${NC}   CCP ≠ IDX (stale index) → bin/fix-index\n" "$idx_mismatch_count"
+    fi
+    if [ "$low_match_count" -gt 0 ]; then
+        printf "  ${YELLOW}⚠️  MATCH (%d):${NC}       <80%% match rate → Update YAML track definitions\n" "$low_match_count"
+    fi
+fi
+
+# Print recommended actions
+if [ "$error_count" -gt 0 ] || [ "$idx_mismatch_count" -gt 0 ]; then
+    echo ""
+    echo -e "${BOLD}RECOMMENDED ACTIONS${NC}"
+    echo -e "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+
+    action_num=1
+
+    # Populate needed artists (up to 5)
+    if [ "$populate_count" -gt 0 ]; then
+        echo -e "$populate_needed" | grep -v '^$' | head -5 | while read -r artist; do
+            printf "  %d. bin/magento archive:populate \"%s\"\n" "$action_num" "$artist"
+            action_num=$((action_num + 1))
+        done
+    fi
+
+    # Fix index if IDX_STALE (CCP ≠ IDX)
+    if [ "$idx_mismatch_count" -gt 0 ]; then
+        # Calculate next action number
+        if [ "$populate_count" -gt 5 ]; then
+            next_num=6
+        elif [ "$populate_count" -gt 0 ]; then
+            next_num=$((populate_count + 1))
+        else
+            next_num=1
+        fi
+        printf "  %d. bin/fix-index                             # Sync IDX with CCP\n" "$next_num"
+    fi
+
+    # Show unmatched suggestion
+    if [ "$low_match_count" -gt 0 ]; then
+        # Calculate next action number
+        if [ "$idx_mismatch_count" -gt 0 ]; then
+            if [ "$populate_count" -gt 5 ]; then
+                next_num=7
+            elif [ "$populate_count" -gt 0 ]; then
+                next_num=$((populate_count + 2))
+            else
+                next_num=2
+            fi
+        elif [ "$populate_count" -gt 5 ]; then
+            next_num=6
+        elif [ "$populate_count" -gt 0 ]; then
+            next_num=$((populate_count + 1))
+        else
+            next_num=1
+        fi
+        printf "  %d. bin/magento archive:show-unmatched        # See which tracks need YAML definitions\n" "$next_num"
+    fi
+fi
+
+echo ""

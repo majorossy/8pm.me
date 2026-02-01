@@ -1,6 +1,7 @@
 'use client';
 
-import { ReactNode, useState, useCallback } from 'react';
+import { ReactNode, useState, useCallback, lazy, Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import { CartProvider } from '@/context/CartContext';
 import { WishlistProvider, useWishlist } from '@/context/WishlistContext';
 import { PlaylistProvider } from '@/context/PlaylistContext';
@@ -15,12 +16,8 @@ import { AuthProvider } from '@/context/AuthContext';
 import { MagentoAuthProvider } from '@/context/MagentoAuthContext';
 import { UnifiedAuthProvider } from '@/context/UnifiedAuthContext';
 import BottomPlayer from '@/components/BottomPlayer';
-import Queue from '@/components/Queue';
 import JamifyTopBar from '@/components/JamifyTopBar';
 import JamifyMobileNav from '@/components/JamifyMobileNav';
-import JamifyFullPlayer from '@/components/JamifyFullPlayer';
-import { JamifySearchOverlay } from '@/components/JamifySearchOverlay';
-import KeyboardShortcutsHelp from '@/components/KeyboardShortcutsHelp';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { ToastProvider } from '@/components/ToastContainer';
@@ -28,6 +25,16 @@ import InstallPrompt from '@/components/InstallPrompt';
 import OfflineIndicator from '@/components/OfflineIndicator';
 import LoadingBar from '@/components/LoadingBar';
 import Footer from '@/components/Footer';
+import WebVitalsMonitor from '@/components/WebVitalsMonitor';
+
+// Lazy load heavy components that aren't immediately visible
+const Queue = dynamic(() => import('@/components/Queue'), { ssr: false });
+const JamifyFullPlayer = dynamic(() => import('@/components/JamifyFullPlayer'), { ssr: false });
+const JamifySearchOverlay = dynamic(
+  () => import('@/components/JamifySearchOverlay').then(mod => ({ default: mod.JamifySearchOverlay })),
+  { ssr: false }
+);
+const KeyboardShortcutsHelp = dynamic(() => import('@/components/KeyboardShortcutsHelp'), { ssr: false });
 
 // Inner layout that can access player state and contexts
 function InnerLayout({ children }: { children: ReactNode }) {
@@ -147,6 +154,9 @@ function InnerLayout({ children }: { children: ReactNode }) {
 
       {/* Offline Indicator */}
       <OfflineIndicator />
+
+      {/* Core Web Vitals monitoring */}
+      <WebVitalsMonitor />
     </>
   );
 }

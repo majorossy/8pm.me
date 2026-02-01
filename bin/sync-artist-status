@@ -40,22 +40,72 @@ updated=0
 # IMPORTANT: Redirect stdin for bin/mysql to /dev/null to prevent it from consuming the loop input
 while IFS='|' read -r collection count; do
     if [ -n "$collection" ] && [ -n "$count" ] && [ "$count" -gt 0 ]; then
-        # First check if row exists (redirect stdin to /dev/null)
+        # First check if row exists by collection_id
         existing=$(bin/mysql -N -e "SELECT collection_id FROM archivedotorg_artist_status WHERE collection_id = '$collection';" </dev/null 2>/dev/null)
 
         if [ -z "$existing" ]; then
-            # Row doesn't exist - INSERT with all required fields
-            bin/mysql -N -e "
-                INSERT INTO archivedotorg_artist_status (
-                    collection_id, downloaded_shows, has_yaml_config,
-                    last_download_at, created_at, updated_at
-                )
-                VALUES ('$collection', $count, 0, NOW(), NOW(), NOW());
-            " </dev/null 2>/dev/null
-            printf "  %-30s %s shows (created)\n" "$collection:" "$count"
-            created=$((created + 1))
+            # No row with this collection_id - try to find row by artist_name (fuzzy match)
+            # Convert collection_id to potential artist name patterns for matching
+            # e.g., "BillyStrings" -> match "Billy Strings", "billy strings", etc.
+            artist_row=$(bin/mysql -N -e "
+                SELECT artist_name FROM archivedotorg_artist_status
+                WHERE artist_name IS NOT NULL
+                  AND LOWER(REPLACE(REPLACE(artist_name, ' ', ''), '.', '')) = LOWER('$collection')
+                LIMIT 1;
+            " </dev/null 2>/dev/null)
+
+            if [ -n "$artist_row" ]; then
+                # Found matching artist_name row - UPDATE it with collection_id
+                bin/mysql -N -e "
+                    UPDATE archivedotorg_artist_status
+                    SET collection_id = '$collection',
+                        downloaded_shows = $count,
+                        last_download_at = COALESCE(last_download_at, NOW()),
+                        updated_at = NOW()
+                    WHERE artist_name = '$artist_row';
+                " </dev/null 2>/dev/null
+                printf "  %-30s %s shows (linked to '%s')\n" "$collection:" "$count" "$artist_row"
+                updated=$((updated + 1))
+            else
+                # No matching row found - look up artist_name from category table
+                artist_from_cat=$(bin/mysql -N -e "
+                    SELECT name.value
+                    FROM catalog_category_entity cce
+                    JOIN catalog_category_entity_varchar name
+                        ON cce.entity_id = name.entity_id
+                        AND name.attribute_id = (SELECT attribute_id FROM eav_attribute WHERE entity_type_id = 3 AND attribute_code = 'name')
+                        AND name.store_id = 0
+                    WHERE cce.level = 3
+                      AND LOWER(REPLACE(REPLACE(name.value, ' ', ''), '.', '')) = LOWER('$collection')
+                    LIMIT 1;
+                " </dev/null 2>/dev/null)
+
+                if [ -n "$artist_from_cat" ]; then
+                    # Found artist in category - INSERT with proper artist_name
+                    bin/mysql -N -e "
+                        INSERT INTO archivedotorg_artist_status (
+                            artist_name, collection_id, downloaded_shows, has_yaml_config,
+                            last_download_at, created_at, updated_at
+                        )
+                        VALUES ('$artist_from_cat', '$collection', $count, 0, NOW(), NOW(), NOW());
+                    " </dev/null 2>/dev/null
+                    printf "  %-30s %s shows (created with artist '%s')\n" "$collection:" "$count" "$artist_from_cat"
+                    created=$((created + 1))
+                else
+                    # No match found anywhere - INSERT with just collection_id (orphan)
+                    bin/mysql -N -e "
+                        INSERT INTO archivedotorg_artist_status (
+                            collection_id, downloaded_shows, has_yaml_config,
+                            last_download_at, created_at, updated_at
+                        )
+                        VALUES ('$collection', $count, 0, NOW(), NOW(), NOW());
+                    " </dev/null 2>/dev/null
+                    printf "  %-30s %s shows (created - NO ARTIST MATCH)\n" "$collection:" "$count"
+                    created=$((created + 1))
+                fi
+            fi
         else
-            # Row exists - UPDATE
+            # Row exists by collection_id - UPDATE
             bin/mysql -N -e "
                 UPDATE archivedotorg_artist_status
                 SET downloaded_shows = $count,

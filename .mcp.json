@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "mysql-8pm": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@f4ww4z/mcp-mysql-server"
+      ],
+      "env": {
+        "MYSQL_HOST": "127.0.0.1",
+        "MYSQL_PORT": "3307",
+        "MYSQL_USER": "magento",
+        "MYSQL_PASSWORD": "magento",
+        "MYSQL_DATABASE": "magento"
+      }
+    }
+  }
+}

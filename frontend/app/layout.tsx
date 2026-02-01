@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Orbitron, Space_Mono } from 'next/font/google';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import './globals.css';
 import ClientLayout from '@/components/ClientLayout';
 
@@ -80,6 +81,10 @@ export default function RootLayout({
       </head>
       <body className="font-mono">
         <ClientLayout>{children}</ClientLayout>
+        {/* Google Analytics 4 - only loads when measurement ID is configured */}
+        {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+        )}
       </body>
     </html>
   );

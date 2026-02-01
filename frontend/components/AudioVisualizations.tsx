@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState, useMemo } from 'react';
 
 interface VUMeterProps {
   volume: number;
@@ -13,7 +13,7 @@ interface VUMeterProps {
  * Displays a semi-circular meter with a swinging needle that responds to volume.
  * Perfect for cassette tape headers and album art.
  */
-export function VUMeter({ volume, size = 'normal' }: VUMeterProps) {
+export const VUMeter = memo(function VUMeter({ volume, size = 'normal' }: VUMeterProps) {
   const isSmall = size === 'small';
   const width = isSmall ? 24 : 36;
   const height = isSmall ? 14 : 20;
@@ -57,7 +57,7 @@ export function VUMeter({ volume, size = 'normal' }: VUMeterProps) {
       />
     </div>
   );
-}
+});
 
 interface SpinningReelProps {
   volume: number;
@@ -71,7 +71,7 @@ interface SpinningReelProps {
  * A spinning reel icon that rotates faster with higher volume.
  * Perfect for version cards and recording indicators.
  */
-export function SpinningReel({ volume, size = 'normal', isPlaying = true }: SpinningReelProps) {
+export const SpinningReel = memo(function SpinningReel({ volume, size = 'normal', isPlaying = true }: SpinningReelProps) {
   const isSmall = size === 'small';
   const diameter = isSmall ? 14 : 20;
   const [rotation, setRotation] = useState(0);
@@ -136,7 +136,7 @@ export function SpinningReel({ volume, size = 'normal', isPlaying = true }: Spin
       />
     </div>
   );
-}
+});
 
 interface WaveformProps {
   waveform: number[];
@@ -150,12 +150,12 @@ interface WaveformProps {
  * Displays a real-time oscilloscope-style waveform from audio data.
  * Perfect for track rows showing "now playing" state.
  */
-export function Waveform({ waveform, size = 'normal', color = '#e8a050' }: WaveformProps) {
+export const Waveform = memo(function Waveform({ waveform, size = 'normal', color = '#e8a050' }: WaveformProps) {
   const isSmall = size === 'small';
   const width = isSmall ? 30 : 50;
   const height = isSmall ? 12 : 16;
 
-  const generatePath = () => {
+  const path = useMemo(() => {
     if (!waveform || waveform.length === 0) {
       // Flat line when no data
       return `M0,${height / 2} L${width},${height / 2}`;
@@ -168,7 +168,7 @@ export function Waveform({ waveform, size = 'normal', color = '#e8a050' }: Wavef
     });
 
     return `M${points.join(' L')}`;
-  };
+  }, [waveform, width, height]);
 
   return (
     <div
@@ -181,7 +181,7 @@ export function Waveform({ waveform, size = 'normal', color = '#e8a050' }: Wavef
         style={{ filter: `drop-shadow(0 0 3px ${color}60)` }}
       >
         <path
-          d={generatePath()}
+          d={path}
           fill="none"
           stroke={color}
           strokeWidth="2"
@@ -191,7 +191,7 @@ export function Waveform({ waveform, size = 'normal', color = '#e8a050' }: Wavef
       </svg>
     </div>
   );
-}
+});
 
 interface EQBarsProps {
   frequencyData: number[];
@@ -206,7 +206,7 @@ interface EQBarsProps {
  * Classic bouncing EQ bars that respond to frequency data.
  * Alternative to waveform for "now playing" indicators.
  */
-export function EQBars({
+export const EQBars = memo(function EQBars({
   frequencyData,
   size = 'normal',
   color = '#e8a050',
@@ -253,7 +253,7 @@ export function EQBars({
       ))}
     </div>
   );
-}
+});
 
 interface PulsingDotProps {
   isPlaying: boolean;
@@ -267,7 +267,7 @@ interface PulsingDotProps {
  * A glowing dot that pulses when audio is playing.
  * Minimal CPU usage compared to waveform/EQ.
  */
-export function PulsingDot({ isPlaying, color = '#e8a050', size = 'normal' }: PulsingDotProps) {
+export const PulsingDot = memo(function PulsingDot({ isPlaying, color = '#e8a050', size = 'normal' }: PulsingDotProps) {
   const isSmall = size === 'small';
   const diameter = isSmall ? 6 : 8;
 
@@ -283,4 +283,4 @@ export function PulsingDot({ isPlaying, color = '#e8a050', size = 'normal' }: Pu
       }}
     />
   );
-}
+});

@@ -40,6 +40,9 @@ export function useAudioAnalyzer(): UseAudioAnalyzerReturn {
   const connectedElementRef = useRef<HTMLAudioElement | null>(null);
   // Track which elements have been connected (can only create source once per element)
   const connectedElementsRef = useRef<WeakSet<HTMLAudioElement>>(new WeakSet());
+  // Throttle frame rate for better performance (~30fps instead of 60fps)
+  const lastFrameTimeRef = useRef<number>(0);
+  const FRAME_INTERVAL = 33; // ~30fps (1000ms / 30)
 
   // Cleanup function
   const cleanup = useCallback(() => {
@@ -52,12 +55,21 @@ export function useAudioAnalyzer(): UseAudioAnalyzerReturn {
     // Don't set isConnected to false - keep the connection alive
   }, []);
 
-  // Analysis loop
-  const analyze = useCallback(() => {
+  // Analysis loop (throttled to ~30fps for performance)
+  const analyze = useCallback((timestamp?: number) => {
+    // Schedule next frame first
+    animationRef.current = requestAnimationFrame(analyze);
+
     if (!analyzerRef.current) {
-      animationRef.current = requestAnimationFrame(analyze);
       return;
     }
+
+    // Throttle: skip frame if not enough time has passed
+    const now = timestamp || performance.now();
+    if (now - lastFrameTimeRef.current < FRAME_INTERVAL) {
+      return;
+    }
+    lastFrameTimeRef.current = now;
 
     const bufferLength = analyzerRef.current.frequencyBinCount;
     const frequencyDataArray = new Uint8Array(bufferLength);
@@ -92,8 +104,6 @@ export function useAudioAnalyzer(): UseAudioAnalyzerReturn {
       volume,
       frequencyData: frequencyBands,
     });
-
-    animationRef.current = requestAnimationFrame(analyze);
   }, []);
 
   // Connect to an audio element

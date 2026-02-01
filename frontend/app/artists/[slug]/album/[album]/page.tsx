@@ -5,6 +5,7 @@ import AlbumPageContent from '@/components/AlbumPageContent';
 import StructuredData from '@/components/StructuredData';
 import { generateSeoMetadata, getBaseUrl } from '@/lib/seo';
 import { formatDuration } from '@/lib/formatDuration';
+import { getVenueDetails, extractCity, extractState, extractCountry } from '@/lib/venues';
 
 interface AlbumPageProps {
   params: Promise<{ slug: string; album: string }>;
@@ -110,10 +111,63 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
     ],
   };
 
+  // MusicEvent schema for local SEO (venue-based searches)
+  // This helps capture queries like "grateful dead red rocks 1978"
+  const venueDetails = getVenueDetails(album.showVenue);
+  const musicEventSchema = album.showVenue ? {
+    '@type': 'MusicEvent',
+    name: `${album.artistName} Live at ${album.showVenue}`,
+    startDate: album.showDate,
+    location: venueDetails ? {
+      '@type': 'Place',
+      name: venueDetails.name,
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: venueDetails.city,
+        addressRegion: venueDetails.state,
+        addressCountry: venueDetails.country,
+      },
+      geo: {
+        '@type': 'GeoCoordinates',
+        latitude: venueDetails.lat,
+        longitude: venueDetails.lon,
+      },
+    } : {
+      '@type': 'Place',
+      name: album.showVenue,
+      address: album.showLocation ? {
+        '@type': 'PostalAddress',
+        addressLocality: extractCity(album.showLocation),
+        addressRegion: extractState(album.showLocation),
+        addressCountry: extractCountry(album.showLocation),
+      } : album.showVenue,
+    },
+    performer: {
+      '@type': 'MusicGroup',
+      name: album.artistName,
+      url: `${baseUrl}/artists/${slug}`,
+    },
+    recordedIn: {
+      '@type': 'MusicAlbum',
+      name: album.name,
+      url: `${baseUrl}/artists/${slug}/album/${albumSlug}`,
+    },
+    eventStatus: 'https://schema.org/EventScheduled',
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    offers: {
+      '@type': 'Offer',
+      price: 0,
+      priceCurrency: 'USD',
+      availability: 'https://schema.org/InStock',
+      url: `${baseUrl}/artists/${slug}/album/${albumSlug}`,
+      description: 'Free streaming from Archive.org',
+    },
+  } : null;
+
   // Combine schemas using @graph
   const combinedSchema = {
     '@context': 'https://schema.org',
-    '@graph': [musicAlbumSchema, breadcrumbSchema],
+    '@graph': [musicAlbumSchema, breadcrumbSchema, ...(musicEventSchema ? [musicEventSchema] : [])],
   };
 
   return (
