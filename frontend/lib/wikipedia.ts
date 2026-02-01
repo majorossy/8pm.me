@@ -22,7 +22,7 @@ export async function fetchWikipediaSummary(
       headers: {
         'User-Agent': '8pm-music-app/1.0',
       },
-    });
+    } as RequestInit);
 
     if (!response.ok) {
       if (response.status === 404) {

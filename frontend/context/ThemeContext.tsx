@@ -1,9 +1,10 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 
 // Campfire Tapes theme - earthy, organic, warm analog vibes
 export type ThemeType = 'campfire';
+export type ModeType = 'light' | 'dark';
 
 interface ThemeConfig {
   name: string;
@@ -23,33 +24,73 @@ interface ThemeContextType {
   theme: ThemeType;
   setTheme: (theme: ThemeType) => void;
   themes: typeof THEMES;
+  mode: ModeType;
+  setMode: (mode: ModeType) => void;
+  toggleMode: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+// Get initial mode from localStorage or system preference
+function getInitialMode(): ModeType {
+  if (typeof window === 'undefined') return 'dark';
+
+  // Check localStorage first
+  const stored = localStorage.getItem('8pm-mode');
+  if (stored === 'light' || stored === 'dark') {
+    return stored;
+  }
+
+  // Fall back to system preference
+  if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+    return 'light';
+  }
+
+  return 'dark';
+}
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme] = useState<ThemeType>('campfire');
+  const [mode, setModeState] = useState<ModeType>('dark');
   const [mounted, setMounted] = useState(false);
 
-  // Clear old theme selections and set to campfire on mount
+  // Initialize mode on mount
   useEffect(() => {
+    const initialMode = getInitialMode();
+    setModeState(initialMode);
     localStorage.setItem('8pm-theme', 'campfire');
     setMounted(true);
   }, []);
 
-  // Apply theme class to document
+  // Apply theme and mode classes to document
   useEffect(() => {
     if (!mounted) return;
 
     // Remove any old theme classes
-    document.documentElement.classList.remove('theme-tron', 'theme-metro', 'theme-minimal', 'theme-classic', 'theme-forest', 'theme-jamify');
+    document.documentElement.classList.remove(
+      'theme-tron', 'theme-metro', 'theme-minimal',
+      'theme-classic', 'theme-forest', 'theme-jamify'
+    );
     // Add campfire theme class
     document.documentElement.classList.add('theme-campfire');
-  }, [mounted]);
 
-  const setTheme = () => {
+    // Apply mode class
+    document.documentElement.classList.remove('mode-light', 'mode-dark');
+    document.documentElement.classList.add(`mode-${mode}`);
+  }, [mounted, mode]);
+
+  const setTheme = useCallback(() => {
     // No-op: theme is always campfire
-  };
+  }, []);
+
+  const setMode = useCallback((newMode: ModeType) => {
+    setModeState(newMode);
+    localStorage.setItem('8pm-mode', newMode);
+  }, []);
+
+  const toggleMode = useCallback(() => {
+    setMode(mode === 'dark' ? 'light' : 'dark');
+  }, [mode, setMode]);
 
   // Prevent hydration mismatch by not rendering until mounted
   if (!mounted) {
@@ -57,7 +98,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, themes: THEMES }}>
+    <ThemeContext.Provider value={{ theme, setTheme, themes: THEMES, mode, setMode, toggleMode }}>
       {children}
     </ThemeContext.Provider>
   );
@@ -71,6 +112,9 @@ export function useTheme() {
       theme: 'campfire' as ThemeType,
       setTheme: () => {},
       themes: THEMES,
+      mode: 'dark' as ModeType,
+      setMode: () => {},
+      toggleMode: () => {},
     };
   }
   return context;

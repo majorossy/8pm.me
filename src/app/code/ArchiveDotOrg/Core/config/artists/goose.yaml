@@ -21,7 +21,7 @@
 # ========================================
 artist:
   name: "Goose"
-  collection_id: "Goose"
+  collection_id: "GooseBand"
   url_key: "goose"
 
 # ========================================
@@ -374,7 +374,7 @@ tracks:
     type: "original"
     # TODO: Add aliases for better matching
 
-  - key: ""
+  - key: "five-periods"
     name: "....."
     url_key: "fiveperiods"
     albums: ["chain-yer-dragon"]

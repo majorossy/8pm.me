@@ -13,6 +13,7 @@ use ArchiveDotOrg\Core\Model\Config;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\App\State;
 use Magento\Framework\App\Area;
+use Magento\Framework\Filesystem\DirectoryList;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -40,6 +41,7 @@ class PopulateCommand extends BaseLoggedCommand
     private Config $config;
     private State $state;
     private LockServiceInterface $lockService;
+    private DirectoryList $directoryList;
 
     public function __construct(
         TrackPopulatorServiceInterface $trackPopulatorService,
@@ -50,6 +52,7 @@ class PopulateCommand extends BaseLoggedCommand
         LockServiceInterface $lockService,
         LoggerInterface $logger,
         ResourceConnection $resourceConnection,
+        DirectoryList $directoryList,
         ?string $name = null
     ) {
         $this->trackPopulatorService = $trackPopulatorService;
@@ -60,6 +63,7 @@ class PopulateCommand extends BaseLoggedCommand
         $this->lockService = $lockService;
         $this->logger = $logger;
         $this->resourceConnection = $resourceConnection;
+        $this->directoryList = $directoryList;
         parent::__construct($name);
     }
 
@@ -196,7 +200,17 @@ HELP
             return Command::FAILURE;
         }
 
-        // Check if already populated (unless force, dry-run, or limit is used)
+        // Pre-flight check: Skip if artist is already fully populated
+        // This check uses the archivedotorg_artist_status table which is more reliable
+        // than the progress file (which is only saved when running without --limit)
+        if (!$force && !$dryRun) {
+            $skipResult = $this->shouldSkipAlreadyPopulated($artistName, $collectionId, $io, $limit);
+            if ($skipResult !== null) {
+                return $skipResult;
+            }
+        }
+
+        // Legacy check: progress file (for backward compatibility with full imports)
         if (!$force && !$dryRun && $limit === null) {
             $progress = $this->getPopulateProgress($collectionId);
             if ($progress !== null && isset($progress['status']) && $progress['status'] === 'completed') {
@@ -220,8 +234,9 @@ HELP
 
         $io->title("Archive.org Track Populate: $artistName");
 
-        // Set artist for progress tracking
+        // Set artist and collection_id for progress tracking
         $this->setCurrentArtist($artistName);
+        $this->setCollectionId($collectionId);
 
         if ($dryRun) {
             $io->note('DRY RUN MODE - No products will be created');
@@ -427,5 +442,141 @@ HELP
 
         // Save to file
         file_put_contents($progressFile, json_encode($allProgress, JSON_PRETTY_PRINT));
+    }
+
+    /**
+     * Check if artist should be skipped because it's already fully populated
+     *
+     * Uses the archivedotorg_artist_status table to determine if an artist
+     * has already been imported. This is more reliable than the progress file
+     * because it reflects the actual database state.
+     *
+     * @param string $artistName Artist name
+     * @param string $collectionId Archive.org collection ID
+     * @param SymfonyStyle $io Console output
+     * @param int|null $limit Current limit (null = full import)
+     * @return int|null Command exit code if should skip, null to continue
+     */
+    private function shouldSkipAlreadyPopulated(
+        string $artistName,
+        string $collectionId,
+        SymfonyStyle $io,
+        ?int $limit
+    ): ?int {
+        // Get artist status from database
+        $artistStatus = $this->getArtistStatus($artistName);
+
+        // If no status record or no imported tracks, continue with import
+        if ($artistStatus === null || (int)($artistStatus['imported_tracks'] ?? 0) === 0) {
+            return null;
+        }
+
+        $importedTracks = (int)$artistStatus['imported_tracks'];
+        $downloadedShows = (int)($artistStatus['downloaded_shows'] ?? 0);
+        $lastPopulateAt = $artistStatus['last_populate_at'] ?? null;
+
+        // Count cached shows in metadata directory
+        $cachedShows = $this->countCachedShows($collectionId);
+
+        // Skip conditions:
+        // 1. Has imported tracks AND
+        // 2. Either: has a previous populate timestamp (was fully populated before)
+        //    OR: downloaded shows matches cached shows (all shows were processed)
+        $hasBeenPopulated = $lastPopulateAt !== null;
+        $allShowsProcessed = $downloadedShows > 0 && $downloadedShows >= $cachedShows && $cachedShows > 0;
+
+        if ($hasBeenPopulated || $allShowsProcessed) {
+            $io->success(sprintf(
+                "Artist '%s' already has %s products imported.",
+                $artistName,
+                number_format($importedTracks)
+            ));
+
+            $io->table(
+                ['Metric', 'Value'],
+                [
+                    ['Imported tracks', number_format($importedTracks)],
+                    ['Downloaded shows', number_format($downloadedShows)],
+                    ['Cached shows', number_format($cachedShows)],
+                    ['Last populated', $lastPopulateAt ?? 'Unknown'],
+                ]
+            );
+
+            $io->note('Use --force to re-import.');
+            return Command::SUCCESS;
+        }
+
+        // If we have a limit, check if we've already imported enough
+        // (useful for incremental imports)
+        if ($limit !== null && $importedTracks > 0) {
+            $io->warning(sprintf(
+                "Artist '%s' has %s products already. Running with --limit=%d will import additional shows.",
+                $artistName,
+                number_format($importedTracks),
+                $limit
+            ));
+            // Don't skip - allow incremental import with --limit
+        }
+
+        return null;
+    }
+
+    /**
+     * Get artist status from archivedotorg_artist_status table
+     *
+     * @param string $artistName Artist name to look up
+     * @return array|null Artist status record or null if not found
+     */
+    private function getArtistStatus(string $artistName): ?array
+    {
+        try {
+            $connection = $this->resourceConnection->getConnection();
+            $tableName = $this->resourceConnection->getTableName('archivedotorg_artist_status');
+
+            if (!$connection->isTableExists($tableName)) {
+                return null;
+            }
+
+            $select = $connection->select()
+                ->from($tableName)
+                ->where('artist_name = ?', $artistName)
+                ->limit(1);
+
+            $result = $connection->fetchRow($select);
+            return $result ?: null;
+        } catch (\Exception $e) {
+            $this->logger->warning('Failed to get artist status', [
+                'artist' => $artistName,
+                'error' => $e->getMessage()
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * Count cached shows in metadata directory
+     *
+     * @param string $collectionId Archive.org collection ID
+     * @return int Number of cached JSON files
+     */
+    private function countCachedShows(string $collectionId): int
+    {
+        try {
+            $varDir = $this->directoryList->getPath('var');
+            $metadataDir = $varDir . '/archivedotorg/metadata/' . $collectionId;
+
+            if (!is_dir($metadataDir)) {
+                return 0;
+            }
+
+            $files = glob($metadataDir . '/*.json');
+            return $files ? count($files) : 0;
+        } catch (\Exception $e) {
+            $this->logger->warning('Failed to count cached shows', [
+                'collection_id' => $collectionId,
+                'error' => $e->getMessage()
+            ]);
+            return 0;
+        }
     }
 }

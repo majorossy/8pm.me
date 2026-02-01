@@ -100,6 +100,30 @@ class CleanupCacheCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        // DISABLED: Metadata is now tracked in git for version control and deletion protection.
+        // The 1.1GB of downloaded metadata took significant time to download and must be preserved.
+        // See: data/archivedotorg-metadata/ (git-tracked with LFS)
+        $output->writeln('');
+        $output->writeln('<error>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</error>');
+        $output->writeln('<error>  METADATA DELETION IS DISABLED</error>');
+        $output->writeln('<error>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</error>');
+        $output->writeln('');
+        $output->writeln('Archive.org metadata is now protected and tracked in git.');
+        $output->writeln('');
+        $output->writeln('Location: data/archivedotorg-metadata/');
+        $output->writeln('Size: ~1.1GB (downloaded over many hours)');
+        $output->writeln('');
+        $output->writeln('To update metadata:');
+        $output->writeln('  1. Re-download with: bin/magento archive:download "Artist"');
+        $output->writeln('  2. Export to git:    bin/sync-metadata export');
+        $output->writeln('  3. Commit changes:   git add data/ && git commit');
+        $output->writeln('');
+
+        return Command::FAILURE;
+
+        // Original code below is preserved but unreachable
+        // ----------------------------------------------------------------
+
         $olderThan = $input->getOption('older-than');
         $keepLatest = $input->getOption('keep-latest');
         $artist = $input->getOption('artist');

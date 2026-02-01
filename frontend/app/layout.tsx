@@ -17,8 +17,21 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'EIGHTPM - Music Archive',
-  description: 'Discover and stream live music recordings',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3001'),
+  title: {
+    default: 'EIGHTPM - Live Music Archive',
+    template: '%s | EIGHTPM',
+  },
+  description: 'Stream high-quality live concert recordings from legendary artists. Discover thousands of shows from Archive.org.',
+  keywords: ['live music', 'concert recordings', 'archive.org', 'streaming', 'grateful dead', 'phish', 'jam bands'],
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    siteName: 'EIGHTPM',
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,

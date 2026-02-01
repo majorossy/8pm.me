@@ -228,8 +228,9 @@ class ImportShowsCommand extends BaseLoggedCommand
             ['Mode', $dryRun ? 'Dry Run' : 'Live Import']
         ]);
 
-        // Set artist for progress tracking
+        // Set artist and collection_id for progress tracking
         $this->setCurrentArtist($artistName);
+        $this->setCollectionId($collectionId);
 
         // Acquire lock
         try {

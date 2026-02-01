@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Artist, Album } from '@/lib/api';
@@ -146,8 +147,8 @@ function ArtistsContentInner() {
       />
 
       {/* All albums in continuous flow */}
-      <div id="artists-content" className="px-4 md:px-8 pt-4 md:pt-6 mx-auto max-w-[1400px]">
-        <div className="flex flex-wrap gap-3 md:gap-4 justify-center">
+      <div id="artists-content" className="px-2 sm:px-4 md:px-8 pt-4 md:pt-6 mx-auto max-w-[1400px]">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3 md:gap-4">
           {allAlbums.map((album, index) => {
             const isComingSoon = album.totalSongs === 0;
             return (
@@ -168,11 +169,10 @@ function ArtistsContentInner() {
                 className="group"
               >
               <div
-                className={`rounded-lg overflow-hidden relative bg-[#1a1410] transition-transform duration-200 ${
+                className={`rounded-lg overflow-hidden relative bg-[var(--bg-card)] transition-transform duration-200 w-full ${
                   isComingSoon ? 'cursor-default' : 'hover:scale-105'
                 }`}
                 style={{
-                  width: '250px',
                   border: `2px solid ${hexToRgba(album.color, isComingSoon ? 0.3 : 0.6)}`,
                   boxShadow: isComingSoon
                     ? `0 0 8px ${hexToRgba(album.color, 0.1)}`
@@ -181,17 +181,20 @@ function ArtistsContentInner() {
               >
                 {/* Corner badge - Artist avatar */}
                 <div
-                  className="absolute top-2 left-2 z-10 rounded-full p-1 bg-[#1c1a17] shadow-lg"
+                  className="absolute top-2 left-2 z-10 rounded-full p-1 bg-[var(--bg)] shadow-lg"
                 >
                   {album.artistImage && !album.artistImage.includes('default') ? (
-                    <img
+                    <Image
                       src={album.artistImage}
-                      alt={album.artist}
-                      className="w-6 h-6 rounded-full object-cover"
+                      alt={album.artist || 'Artist'}
+                      width={24}
+                      height={24}
+                      quality={75}
+                      className="rounded-full object-cover"
                     />
                   ) : (
-                    <div className="w-6 h-6 rounded-full bg-[#2d2a26] flex items-center justify-center">
-                      <span className="text-[10px] font-bold text-white">
+                    <div className="w-6 h-6 rounded-full bg-[var(--bg-elevated)] flex items-center justify-center">
+                      <span className="text-[10px] font-bold text-[var(--text)]">
                         {album.artist.charAt(0)}
                       </span>
                     </div>
@@ -201,16 +204,19 @@ function ArtistsContentInner() {
                 {/* Album artwork */}
                 <div className="relative aspect-square">
                   {album.coverArt ? (
-                    <img
+                    <Image
                       src={album.coverArt}
-                      alt={album.name}
-                      className={`w-full h-full object-cover ${isComingSoon ? 'grayscale opacity-30' : ''}`}
+                      alt={album.name || 'Album cover'}
+                      fill
+                      sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 200px"
+                      quality={80}
+                      className={`object-cover ${isComingSoon ? 'grayscale opacity-30' : ''}`}
                     />
                   ) : (
-                    <div className={`w-full h-full bg-[#2d2a26] flex items-center justify-center ${
+                    <div className={`w-full h-full bg-[var(--bg-elevated)] flex items-center justify-center ${
                       isComingSoon ? 'opacity-30' : ''
                     }`}>
-                      <svg className="w-10 h-10 text-[#3a3632]" viewBox="0 0 24 24" fill="currentColor">
+                      <svg className="w-10 h-10 text-[var(--text-subdued)]" viewBox="0 0 24 24" fill="currentColor">
                         <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" fill="none"/>
                         <circle cx="12" cy="12" r="3" fill="currentColor"/>
                       </svg>
@@ -221,26 +227,24 @@ function ArtistsContentInner() {
                   {isComingSoon && (
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div
-                        className="transform -rotate-12 border-2 border-[#d4a060] bg-[#1a1715]/90 px-3 py-1.5 backdrop-blur-sm"
+                        className="transform -rotate-12 border-2 border-[var(--neon-pink)] bg-[var(--bg)]/90 px-3 py-1.5 backdrop-blur-sm"
                         style={{
-                          boxShadow: '0 2px 12px rgba(212, 160, 96, 0.3)',
+                          boxShadow: '0 2px 12px rgba(var(--neon-pink-rgb, 212, 160, 96), 0.3)',
                         }}
                       >
                         <div className="text-center">
                           <div
-                            className="text-xs font-bold tracking-wider text-[#d4a060]"
+                            className="text-xs font-bold tracking-wider text-[var(--neon-pink)]"
                             style={{
                               fontFamily: 'Georgia, serif',
-                              textShadow: '0 0 8px rgba(212, 160, 96, 0.5)',
                             }}
                           >
                             COMING
                           </div>
                           <div
-                            className="text-xs font-bold tracking-wider text-[#d4a060] -mt-0.5"
+                            className="text-xs font-bold tracking-wider text-[var(--neon-pink)] -mt-0.5"
                             style={{
                               fontFamily: 'Georgia, serif',
-                              textShadow: '0 0 8px rgba(212, 160, 96, 0.5)',
                             }}
                           >
                             SOON
@@ -253,8 +257,8 @@ function ArtistsContentInner() {
                   {/* Play button overlay - hide if coming soon */}
                   {!isComingSoon && (
                     <div className="absolute bottom-2 right-2 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-                      <button className="w-8 h-8 bg-[#d4a060] rounded-full flex items-center justify-center shadow-xl hover:scale-105 hover:bg-[#c08a40] transition-all">
-                        <svg className="w-3 h-3 text-black ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                      <button className="w-8 h-8 bg-[var(--neon-pink)] rounded-full flex items-center justify-center shadow-xl hover:scale-105 hover:brightness-110 transition-all">
+                        <svg className="w-3 h-3 text-[var(--bg)] ml-0.5" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M8 5v14l11-7z" />
                         </svg>
                       </button>
@@ -279,12 +283,12 @@ function ArtistsContentInner() {
                 {/* Album info */}
                 <div className="p-2">
                   <div className={`text-sm font-medium truncate ${
-                    isComingSoon ? 'text-[#4a4540]' : 'text-white'
+                    isComingSoon ? 'text-[var(--text-subdued)]' : 'text-[var(--text)]'
                   }`}>
                     {album.name}
                   </div>
                   <div className={`text-xs truncate ${
-                    isComingSoon ? 'text-[#3a3530]' : 'text-[#8a8478]'
+                    isComingSoon ? 'text-[var(--text-subdued)]' : 'text-[var(--text-dim)]'
                   }`}>
                     {isComingSoon
                       ? 'No recordings yet'

@@ -1,5 +1,76 @@
 # Magento 2 Headless Docker Development Environment
 
+## ⚠️ CRITICAL: Metadata Protection Rule
+
+**NEVER delete downloaded metadata - it's tracked in git with LFS**
+
+| Location | Purpose |
+|----------|---------|
+| `data/archivedotorg-metadata/` | Git-tracked (with LFS) |
+| `/var/www/html/var/archivedotorg/metadata/` | Docker container copy |
+
+**Size:** ~1.1GB (36 artists, thousands of JSON files)
+**Downloaded over:** Many hours of Archive.org API calls
+
+### Prohibited Actions
+- Running `archive:cleanup:cache` (command is disabled)
+- Deleting `*.json` files from metadata directories
+- Running `rm` commands on metadata folders
+- Clearing the Docker volume without backing up
+
+### Managing Metadata
+```bash
+# After downloading new metadata
+bin/sync-metadata export          # Docker → Host (for git commit)
+git add data/archivedotorg-metadata/
+git commit -m "Update metadata"
+
+# After git pull with new metadata
+bin/sync-metadata import          # Host → Docker
+
+# Check sync status
+bin/sync-metadata status
+```
+
+### Re-importing (Updates in Place)
+```bash
+bin/magento archive:download "Artist Name"  # Updates existing files
+bin/sync-metadata export                     # Export to git
+```
+
+---
+
+## Import Status - IN PROGRESS (2026-01-30)
+
+**Status:** 🔄 17/35 artists downloaded, populating tracks
+**Tracking:** `docs/IMPORT_STATUS.md` - **READ THIS TO RESUME**
+
+**Downloaded (ready for populate):**
+- moe (1,803), Grateful Dead (1,861), Keller Williams (955), Leftover Salmon (883)
+- Guster (759), Cabinet (615), Of a Revolution (541), Phil Lesh (487)
+- Lettuce (417), My Morning Jacket (414), God Street Wine (371)
+- Grace Potter (362), Matisyahu (344), Billy Strings (326)
+- Goose (286), Furthur (248), Dogs in a Pile (135)
+
+**Still need downloading:** Phish, STS9, Widespread Panic, String Cheese, Disco Biscuits, Railroad Earth, Tedeschi Trucks, Yonder Mountain, Twiddle, Ween, Ratdog, Rusted Root, Tea Leaf Green, Warren Zevon, King Gizzard, John Mayer, Smashing Pumpkins, Mac Creek
+
+**Resume commands:**
+```bash
+# Start Docker and containers
+open -a Docker && sleep 10 && bin/start
+
+# Populate downloaded artists (with --force to re-import)
+bin/magento archive:populate "Artist Name" --force
+
+# Download remaining artists
+bin/magento archive:download "Phish"
+bin/magento archive:populate "Phish"
+```
+
+See `docs/IMPORT_STATUS.md` for full resume instructions.
+
+---
+
 ## SEO Keyword Research - COMPLETE (2026-01-29)
 
 **Status:** ✅ Research phase complete, ready for CARD-1 and CARD-2 implementation
@@ -140,6 +211,70 @@ curl -X POST https://magento.test/graphql -H "Content-Type: application/json" -k
 ```
 
 This bug exists in Mage-OS/Magento core. Our `bin/fix-index` workaround bypasses this issue entirely.
+
+---
+
+## Artist Status Tracking Fix - UPDATED (2026-01-31)
+
+**Status:** ✅ Fixed - `archivedotorg_artist_status` table now syncs correctly
+
+### Problems Fixed
+
+**Bug 1: Column Name Mismatches (Dashboard/Cron)**
+- Dashboard.php queried `tracks_matched`, `tracks_unmatched` but schema has `matched_tracks`, `unmatched_tracks`
+- AggregateDailyMetrics.php queried `match_rate` but schema has `match_rate_percent`
+- Result: Dashboard stats always showed 0
+
+**Bug 2: Missing Row Creation**
+- `BaseLoggedCommand.updateArtistStats()` used UPDATE only
+- No code created rows in `archivedotorg_artist_status`
+- Result: UPDATE silently failed (0 rows affected)
+
+**Bug 3: Missing collection_id in Import Records**
+- Commands didn't save `collection_id` to `archivedotorg_import_run`
+- Result: `updateArtistStats()` couldn't create rows with proper collection_id
+
+### Fixes Applied
+
+| File | Change |
+|------|--------|
+| `Admin/Block/Adminhtml/Dashboard.php` | Fixed column names: `matched_tracks`, `unmatched_tracks` |
+| `Admin/Cron/AggregateDailyMetrics.php` | Fixed column names: `matched_tracks`, `unmatched_tracks`, `match_rate_percent` |
+| `Core/Console/Command/BaseLoggedCommand.php` | Added `setCollectionId()` method; `updateArtistStats()` now uses `insertOnDuplicate` to create rows |
+| `Core/Console/Command/DownloadCommand.php` | Call `setCollectionId()` to populate import_run record |
+| `Core/Console/Command/PopulateCommand.php` | Call `setCollectionId()` to populate import_run record |
+| `Core/Console/Command/ImportShowsCommand.php` | Call `setCollectionId()` to populate import_run record |
+| `bin/sync-artist-status` | Enhanced to create missing rows and sync downloaded_shows + imported_tracks |
+
+### Checking Artist Import Status
+
+**The `archivedotorg_artist_status` table may be out of sync.** Use these methods:
+
+#### Quick Check: Count Actual Files
+```bash
+docker exec 8pm-phpfpm-1 bash -c 'for dir in /var/www/html/var/archivedotorg/metadata/*/; do
+    name=$(basename "$dir");
+    count=$(ls -1 "$dir"*.json 2>/dev/null | wc -l);
+    echo "$name: $count shows";
+done' | sort
+```
+
+#### Sync Status Table
+```bash
+bin/sync-artist-status
+```
+
+#### Status Determination
+| Metadata Files | imported_tracks | Status |
+|---------------|-----------------|--------|
+| 0 | 0 | Need `archive:download` |
+| > 0 | 0 | Need `archive:populate` |
+| > 0 | > 0 | Populated |
+
+#### Verify Database vs Filesystem
+```bash
+bin/mysql -e "SELECT artist_name, collection_id, downloaded_shows, imported_tracks FROM archivedotorg_artist_status ORDER BY artist_name;"
+```
 
 ---
 
@@ -647,3 +782,80 @@ bin/magento archive:artist:enrich "Widespread Panic" --fields=stats --force
 - Archive.org Stats: ~0.07 seconds (pure SQL, no API calls)
 
 See `docs/ARTIST_ENRICHMENT_IMPLEMENTATION.md` for full documentation.
+
+---
+
+## Album Artwork Integration (Updated 2026-01-29)
+
+**Status:** ✅ **FUNCTIONAL** - Using Wikipedia API
+
+**See documentation:**
+- Full plan: `docs/album-artwork/ALBUM_ARTWORK_PLAN.md`
+
+**Implementation:**
+- ✅ WikipediaClient API integration (primary source)
+- ✅ AlbumArtworkService (fetches artist albums from Wikipedia)
+- ✅ Database table: `archivedotorg_studio_albums`
+- ✅ CLI command: `bin/magento archive:artwork:download "Artist" --limit=20`
+- ✅ Services registered in DI container
+- ✅ GraphQL query: `studioAlbums(artistName: "...")`
+- ✅ Works without proxy (Wikipedia API accessible from Docker)
+
+**Usage:**
+```bash
+bin/magento archive:artwork:download "Grateful Dead" --limit=20
+bin/magento archive:artwork:update    # Update existing albums
+bin/magento archive:artwork:retry     # Retry failed albums
+```
+
+**Key Files:**
+- Service: `src/app/code/ArchiveDotOrg/Core/Model/AlbumArtworkService.php`
+- Wikipedia Client: `src/app/code/ArchiveDotOrg/Core/Model/WikipediaClient.php`
+- CLI: `src/app/code/ArchiveDotOrg/Core/Console/Command/DownloadAlbumArtCommand.php`
+- GraphQL: `src/app/code/ArchiveDotOrg/Core/etc/schema.graphqls`
+- Database: `archivedotorg_studio_albums` table
+
+**Note:** MusicBrainz proxy exists but is not used. Wikipedia API provides reliable album artwork without SSL issues.
+
+---
+
+## Magento Headless Architecture (Updated 2026-01-28)
+
+### Architecture
+- **Frontend:** Runs on HOST (port 3001) - Docker frontend service disabled in compose.yaml
+- **Backend:** Magento runs in Docker containers
+- **Theme:** Campfire (warm analog aesthetic) - theme switcher removed
+
+### Frontend Cache Management - IMPORTANT FOR CLAUDE
+
+**Always use helper scripts, never manually delete cache:**
+
+```bash
+cd frontend
+bin/refresh   # Kill server, clean cache, restart (SAFEST)
+bin/clean     # Clean cache only (only if server NOT running)
+```
+
+**When to use `frontend/bin/refresh`:**
+- Changes not appearing after editing files (stale `.next/` cache)
+- TypeScript errors that won't resolve
+- After git pull or branch switching
+- "Cannot find module" errors related to `.next/`
+- Before major code changes
+- **NEVER manually delete `.next/` while server is running**
+
+**Frontend Details:**
+- Runs on port **3001** (not 3000)
+- Next.js with HMR enabled (most changes should be instant)
+- Only use refresh scripts when HMR fails or cache is stale
+- Healthy startup time: ~1.3 seconds
+
+**New Features (Jan 2026):**
+- Audio visualizations (VUMeter, Waveform, EQBars, etc.)
+- Crossfade between tracks
+- Keyboard shortcuts, sleep timer, media session API
+- Band members timeline on artist pages
+
+**Quick diagnostics:**
+- If site not loading on port 3001: `cd frontend && bin/refresh`
+- Frontend always runs outside Docker (via npm)

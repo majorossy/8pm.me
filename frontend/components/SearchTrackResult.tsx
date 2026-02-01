@@ -7,6 +7,7 @@ import { Song } from '@/lib/types';
 import { getRecordingBadge } from '@/lib/lineageUtils';
 import { usePlayer } from '@/context/PlayerContext';
 import { useQueue } from '@/context/QueueContext';
+import { type VersionFilters, applyFilters, hasActiveFilters } from '@/lib/filters';
 
 interface CategoryBreadcrumb {
   category_uid: string;
@@ -22,6 +23,14 @@ interface SearchTrackResultProps {
     product_count: number;
     breadcrumbs?: CategoryBreadcrumb[];
   };
+  /** Pre-filtered versions (if provided, skips fetch on expand) */
+  filteredVersions?: Song[];
+  /** Number of versions matching current filters */
+  versionCount?: number;
+  /** Total versions before filtering */
+  totalVersions?: number;
+  /** Filters to apply when lazy-loading versions */
+  filters?: VersionFilters;
   onPlay?: (song: Song) => void;
 }
 
@@ -141,9 +150,17 @@ function VersionCard({
   );
 }
 
-export function SearchTrackResult({ track, onPlay }: SearchTrackResultProps) {
+export function SearchTrackResult({
+  track,
+  filteredVersions,
+  versionCount,
+  totalVersions,
+  filters,
+  onPlay,
+}: SearchTrackResultProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [versions, setVersions] = useState<Song[]>([]);
+  const [allVersions, setAllVersions] = useState<Song[]>([]); // Store unfiltered for re-filtering
   const [isLoading, setIsLoading] = useState(false);
   const [hasLoaded, setHasLoaded] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -151,25 +168,48 @@ export function SearchTrackResult({ track, onPlay }: SearchTrackResultProps) {
   const { currentSong, isPlaying, playSong } = usePlayer();
   const { addToUpNext } = useQueue();
 
-  // Fetch versions when first expanded
+  // Use pre-filtered versions if provided, otherwise use lazy-loaded versions
+  const displayVersions = filteredVersions || versions;
+  const hasPreloadedVersions = !!filteredVersions;
+
+  // Fetch versions when first expanded (only if not pre-loaded)
   useEffect(() => {
-    if (isExpanded && !hasLoaded) {
+    if (isExpanded && !hasLoaded && !hasPreloadedVersions) {
       setIsLoading(true);
       fetch(`/api/track-versions?uid=${encodeURIComponent(track.uid)}`)
         .then(res => res.json())
         .then(data => {
-          setVersions(data || []);
+          const loadedVersions = data || [];
+          setAllVersions(loadedVersions);
+          // Apply filters if any are active
+          if (filters && hasActiveFilters(filters)) {
+            setVersions(applyFilters(loadedVersions, filters));
+          } else {
+            setVersions(loadedVersions);
+          }
           setHasLoaded(true);
         })
         .catch(err => {
           console.error('Failed to fetch track versions:', err);
           setVersions([]);
+          setAllVersions([]);
         })
         .finally(() => {
           setIsLoading(false);
         });
     }
-  }, [isExpanded, hasLoaded, track.uid]);
+  }, [isExpanded, hasLoaded, hasPreloadedVersions, track.uid, filters]);
+
+  // Re-apply filters when they change (for lazy-loaded versions)
+  useEffect(() => {
+    if (hasLoaded && !hasPreloadedVersions && allVersions.length > 0) {
+      if (filters && hasActiveFilters(filters)) {
+        setVersions(applyFilters(allVersions, filters));
+      } else {
+        setVersions(allVersions);
+      }
+    }
+  }, [filters, hasLoaded, hasPreloadedVersions, allVersions]);
 
   const handleToggle = () => {
     setIsExpanded(!isExpanded);
@@ -188,20 +228,26 @@ export function SearchTrackResult({ track, onPlay }: SearchTrackResultProps) {
   };
 
   // Check if any version of this track is currently playing
-  const isTrackPlaying = versions.some(v => v.id === currentSong?.id) && isPlaying;
+  const isTrackPlaying = displayVersions.some(v => v.id === currentSong?.id) && isPlaying;
+
+  // Check if track has no versions (disabled state)
+  const hasNoVersions = (track.product_count || 0) === 0;
 
   return (
     <div className={`
       rounded-lg overflow-hidden transition-all duration-200
-      ${isExpanded
-        ? 'bg-[rgba(232,160,80,0.04)] border border-[#e8a050]/20'
-        : 'hover:bg-[#2a2520]'
+      ${hasNoVersions
+        ? 'opacity-50 cursor-not-allowed'
+        : isExpanded
+          ? 'bg-[rgba(232,160,80,0.04)] border border-[#e8a050]/20'
+          : 'hover:bg-[#2a2520]'
       }
     `}>
       {/* Collapsed row (always visible) */}
       <button
-        onClick={handleToggle}
-        className="w-full flex items-center gap-3 p-3 text-left transition-colors"
+        onClick={hasNoVersions ? undefined : handleToggle}
+        disabled={hasNoVersions}
+        className={`w-full flex items-center gap-3 p-3 text-left transition-colors ${hasNoVersions ? 'cursor-not-allowed' : ''}`}
       >
         {/* Album cover image */}
         <div className={`
@@ -242,12 +288,40 @@ export function SearchTrackResult({ track, onPlay }: SearchTrackResultProps) {
 
         {/* Track info */}
         <div className="flex-1 min-w-0">
-          <p className={`font-medium truncate ${isExpanded ? 'text-[#e8dcc8]' : 'text-[#e8dcc8]'}`}>
+          <p className={`font-medium truncate ${hasNoVersions ? 'text-[#6a5a48]' : 'text-[#e8dcc8]'}`}>
             {track.name}
           </p>
-          <p className="text-sm text-[#4a9a8a] flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#4a9a8a]" />
-            {track.product_count} {track.product_count === 1 ? 'version' : 'versions'}
+          <p className={`text-sm flex items-center gap-1 ${hasNoVersions ? 'text-[#5a4a38]' : 'text-[#4a9a8a]'}`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${hasNoVersions ? 'bg-[#5a4a38]' : 'bg-[#4a9a8a]'}`} />
+            {/* Show "No recordings" for tracks with no versions */}
+            {hasNoVersions ? (
+              <span className="italic">No Track found for this Song</span>
+            ) : versionCount !== undefined ? (
+              // Pre-loaded versions with filter info
+              <>
+                {versionCount} {versionCount === 1 ? 'version' : 'versions'}
+                {totalVersions !== undefined && totalVersions !== versionCount && (
+                  <span className="text-[#6a5a48] ml-1">
+                    (of {totalVersions})
+                  </span>
+                )}
+              </>
+            ) : hasLoaded ? (
+              // Lazy-loaded versions (show actual counts)
+              <>
+                {displayVersions.length} {displayVersions.length === 1 ? 'version' : 'versions'}
+                {filters && hasActiveFilters(filters) && allVersions.length !== displayVersions.length && (
+                  <span className="text-[#6a5a48] ml-1">
+                    (of {allVersions.length})
+                  </span>
+                )}
+              </>
+            ) : (
+              // Not yet loaded - show product_count estimate
+              <>
+                {track.product_count} {track.product_count === 1 ? 'version' : 'versions'}
+              </>
+            )}
           </p>
         </div>
 
@@ -265,15 +339,17 @@ export function SearchTrackResult({ track, onPlay }: SearchTrackResultProps) {
           </Link>
         )}
 
-        {/* Expand/collapse chevron */}
-        <div className={`
-          p-1 rounded transition-transform duration-200
-          ${isExpanded ? 'rotate-180 text-[#e8a050]' : 'text-[#6a5a48]'}
-        `}>
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </div>
+        {/* Expand/collapse chevron - hidden for tracks with no versions */}
+        {!hasNoVersions && (
+          <div className={`
+            p-1 rounded transition-transform duration-200
+            ${isExpanded ? 'rotate-180 text-[#e8a050]' : 'text-[#6a5a48]'}
+          `}>
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        )}
       </button>
 
       {/* Expanded panel with versions carousel */}
@@ -288,7 +364,7 @@ export function SearchTrackResult({ track, onPlay }: SearchTrackResultProps) {
           )}
 
           {/* Versions carousel */}
-          {!isLoading && versions.length > 0 && (
+          {!isLoading && displayVersions.length > 0 && (
             <div className="pt-4">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-[#8a7a68] text-sm">
@@ -302,7 +378,7 @@ export function SearchTrackResult({ track, onPlay }: SearchTrackResultProps) {
                 ref={carouselRef}
                 className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-[#4a3a28] scrollbar-track-transparent"
               >
-                {versions.map((song) => (
+                {displayVersions.map((song) => (
                   <VersionCard
                     key={song.id}
                     song={song}
@@ -316,7 +392,7 @@ export function SearchTrackResult({ track, onPlay }: SearchTrackResultProps) {
           )}
 
           {/* No versions found */}
-          {!isLoading && hasLoaded && versions.length === 0 && (
+          {!isLoading && (hasLoaded || hasPreloadedVersions) && displayVersions.length === 0 && (
             <div className="py-6 text-center text-[#6a5a48] text-sm">
               No recordings found for this track.
             </div>

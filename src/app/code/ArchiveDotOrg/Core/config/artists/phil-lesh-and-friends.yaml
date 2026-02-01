@@ -45,7 +45,7 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "dark-star--12-31-01--oakland--california--with-derek-trucks-"
+  - key: "dark-star-12-31-01-oakland-california-with-derek-trucks"
     name: "Dark Star (12/31/01, Oakland, California, with Derek Trucks)"
     url_key: "darkstar"
     type: "original"
@@ -101,7 +101,7 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "the-eleven--3-30-02--san-francisco--california-"
+  - key: "the-eleven-3-30-02-san-francisco-california"
     name: "The Eleven (3/30/02, San Francisco, California)"
     url_key: "theeleven"
     type: "original"

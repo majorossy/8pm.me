@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { Album, Track, Song, formatDuration } from '@/lib/api';
 import { useBreadcrumbs } from '@/context/BreadcrumbContext';
@@ -277,10 +278,13 @@ function CassetteTape({
               className="absolute inset-0"
               style={{ transform: 'rotate(6deg)' }}
             >
-              <img
-                src={album.coverArt}
+              <Image
+                src={album.coverArt || '/images/default-album.jpg'}
                 alt={`${album.name} cover`}
-                className="w-full h-full object-cover rounded-sm"
+                fill
+                sizes="200px"
+                quality={85}
+                className="object-cover rounded-sm"
                 style={{
                   border: '2px solid white',
                   boxShadow: '0 4px 16px rgba(0,0,0,0.35), 0 2px 4px rgba(0,0,0,0.2)'
@@ -452,17 +456,14 @@ function RecordingCard({
     <div
       onClick={onSelect}
       className={`
-        min-w-[240px] cursor-pointer transition-all duration-200 rounded-xl overflow-hidden
-        ${isSelected
-          ? 'bg-gradient-to-b from-[#faf4e8] to-[#f0e4d0] border-2 border-[#e8a050] shadow-lg transform -translate-y-0.5'
-          : 'bg-gradient-to-b from-[#2a2520] to-[#1e1a15] border border-[#3a3028] hover:shadow-xl hover:-translate-y-0.5'
-        }
+        recording-card min-w-[240px] cursor-pointer transition-all duration-200 rounded-xl overflow-hidden
+        ${isSelected ? 'selected' : ''}
       `}
     >
       {/* Card header */}
-      <div className={`px-4 pt-4 pb-3 border-b ${isSelected ? 'border-[#8b5a2b]/15' : 'border-[#a88060]/8'}`}>
+      <div className={`recording-card-header px-4 pt-4 pb-3 border-b ${isSelected ? 'selected' : ''}`}>
         <div className="flex justify-between items-start">
-          <span className={`text-4xl font-bold font-serif leading-none ${isSelected ? 'text-[#1a0f08]' : 'text-[#a89080]'}`}>
+          <span className={`text-4xl font-bold font-serif leading-none ${isSelected ? 'text-[#1a0f08]' : 'text-[var(--text-dim)]'}`}>
             {year}
           </span>
           <div className="flex items-center gap-2">
@@ -470,10 +471,10 @@ function RecordingCard({
               const recordingBadge = getRecordingBadge(song.lineage);
               return recordingBadge ? (
                 <span
-                  className={`px-2 py-0.5 text-xs font-bold rounded-full ${
+                  className={`recording-badge px-2 py-0.5 text-xs font-bold rounded-full ${
                     isSelected
                       ? 'bg-[#c88030] text-[#1a1410]'
-                      : 'bg-[#d4a060] text-[#1c1a17]'
+                      : 'bg-[var(--neon-pink)] text-[var(--bg)]'
                   }`}
                   title={`${recordingBadge.text} Recording`}
                 >
@@ -493,11 +494,11 @@ function RecordingCard({
       </div>
 
       {/* Card body */}
-      <div className="px-4 py-3">
-        <div className={`text-base font-medium mb-1 ${isSelected ? 'text-[#2a1810]' : 'text-[#c8b8a8]'}`}>
+      <div className="recording-card-body px-4 py-3">
+        <div className={`text-base font-medium mb-1 ${isSelected ? 'text-[#2a1810]' : 'text-[var(--text-dim)]'}`}>
           {truncate(song.showVenue, 24)}
         </div>
-        <div className={`text-sm italic mb-3 ${isSelected ? 'text-[#5a4030]' : 'text-[#8a7a68]'}`}>
+        <div className={`text-sm italic mb-3 ${isSelected ? 'text-[#5a4030]' : 'text-[var(--text-subdued)]'}`}>
           {truncate(song.showLocation, 28)}
         </div>
 
@@ -510,12 +511,12 @@ function RecordingCard({
             ['Taper', truncate(song.taper, 18)],
           ].map(([label, value]) => (
             <div key={label} className="flex justify-between">
-              <span className={isSelected ? 'text-[#8a6a50]' : 'text-[#6a5a48]'}>{label}</span>
+              <span className={isSelected ? 'text-[#8a6a50]' : 'text-[var(--text-subdued)]'}>{label}</span>
               <span
                 className={`max-w-[130px] truncate ${
                   label === 'Rating'
-                    ? (isSelected ? 'text-[#c85028]' : 'text-[#e8a050]')
-                    : (isSelected ? 'text-[#2a1810]' : 'text-[#b8a898]')
+                    ? (isSelected ? 'text-[#c85028]' : 'text-[var(--neon-pink)]')
+                    : (isSelected ? 'text-[#2a1810]' : 'text-[var(--text)]')
                 }`}
               >
                 {value}
@@ -526,15 +527,12 @@ function RecordingCard({
       </div>
 
       {/* Card buttons */}
-      <div className={`flex gap-2.5 px-4 py-3 border-t ${isSelected ? 'border-[#8b5a2b]/10' : 'border-[#a88060]/5'}`}>
+      <div className={`recording-card-buttons flex gap-2.5 px-4 py-3 border-t ${isSelected ? 'selected' : ''}`}>
         <button
           onClick={(e) => { e.stopPropagation(); onPlay(); }}
           className={`
-            flex-1 py-2.5 rounded-md text-xs font-semibold transition-all
-            ${isSelected
-              ? 'bg-gradient-to-r from-[#e8a050] to-[#c88030] text-[#1a1410]'
-              : 'bg-gradient-to-r from-[#3a3028] to-[#2a2520] text-[#a89080] hover:from-[#4a4038] hover:to-[#3a3028]'
-            }
+            recording-card-play flex-1 py-2.5 rounded-md text-xs font-semibold transition-all
+            ${isSelected ? 'selected' : ''}
           `}
         >
           ▶ Play
@@ -542,11 +540,8 @@ function RecordingCard({
         <button
           onClick={(e) => { e.stopPropagation(); onQueue(); }}
           className={`
-            flex-1 py-2.5 rounded-md text-xs transition-all border
-            ${isSelected
-              ? 'border-[#c8a070] text-[#6a5040] hover:bg-[#e8d8c8]'
-              : 'border-[#4a3a28] text-[#8a7a68] hover:border-[#6a5a48]'
-            }
+            recording-card-queue flex-1 py-2.5 rounded-md text-xs transition-all border
+            ${isSelected ? 'selected' : ''}
           `}
         >
           + Queue
@@ -610,24 +605,18 @@ function TrackRow({
   };
 
   return (
-    <div className={`
-      ${isExpanded
-        ? 'border-l border-r border-b border-[#e8a050]/25 rounded-b-xl bg-[rgba(232,160,80,0.02)] mb-2'
-        : 'border-b border-[#a88060]/8'
-      }
-    `}>
+    <div
+      className={`track-row-wrapper ${isExpanded ? 'expanded rounded-b-xl mb-2' : ''}`}
+    >
       {/* Track row */}
       <div
         onClick={onToggle}
         className={`
-          grid grid-cols-[44px_1fr_auto] items-center px-4 py-4 cursor-pointer transition-all
-          ${isExpanded
-            ? 'bg-[rgba(232,160,80,0.06)] rounded-t-xl'
-            : 'hover:bg-[rgba(232,160,80,0.04)]'
-          }
+          track-row grid grid-cols-[44px_1fr_auto] items-center py-4 cursor-pointer
+          ${isExpanded ? 'expanded rounded-t-xl' : ''}
         `}
       >
-        <div className={`text-lg flex items-center justify-center ${isExpanded || isCurrentTrack ? 'text-[#e8a050]' : 'text-[#6a5a48]'}`}>
+        <div className={`text-lg flex items-center justify-center ${isExpanded || isCurrentTrack ? 'text-[var(--neon-pink)]' : 'text-[var(--text-subdued)]'}`}>
           {isCurrentTrack && isPlaying ? (
             <Waveform waveform={waveform} size="small" />
           ) : isExpanded ? (
@@ -637,42 +626,42 @@ function TrackRow({
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <div className={`text-lg font-serif mb-1 ${isExpanded || isCurrentTrack ? 'text-[#e8d8c8]' : 'text-[#c8b8a8]'}`}>
+          <div className={`text-lg font-serif mb-1 ${isExpanded || isCurrentTrack ? 'text-[var(--text)]' : 'text-[var(--text-dim)]'}`}>
             {track.title}
           </div>
           {/* Selected version info */}
           <div className="flex items-center gap-2 flex-wrap text-sm">
             {selectedYear && (
-              <span className="text-[#e8a050] font-semibold">{selectedYear}</span>
+              <span className="text-[var(--neon-pink)] font-semibold">{selectedYear}</span>
             )}
             {selectedVenue && (
               <>
-                <span className="text-[#4a3a28]">•</span>
-                <span className="text-[#8a7a68] truncate max-w-[180px] sm:max-w-[280px]">
+                <span className="text-[var(--text-subdued)] opacity-50">•</span>
+                <span className="text-[var(--text-dim)] truncate max-w-[180px] sm:max-w-[280px]">
                   {truncateVenue(selectedVenue, 35)}
                 </span>
               </>
             )}
             {selectedRating && (
               <>
-                <span className="text-[#4a3a28]">•</span>
-                <span className="text-[#e8a050]">
+                <span className="text-[var(--text-subdued)] opacity-50">•</span>
+                <span className="text-[var(--neon-pink)]">
                   {'★'.repeat(Math.round(selectedRating))}
-                  <span className="text-[#6a5a48] ml-0.5">({selectedReviews || 0})</span>
+                  <span className="text-[var(--text-subdued)] ml-0.5">({selectedReviews || 0})</span>
                 </span>
               </>
             )}
-            <span className="text-[#4a3a28]">•</span>
-            <span className="text-[#4a9a8a] flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#4a9a8a]" />
+            <span className="text-[var(--text-subdued)] opacity-50">•</span>
+            <span className="text-[var(--campfire-teal)] flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--campfire-teal)]" />
               {track.songCount} recordings
             </span>
           </div>
         </div>
-        <div className="flex items-center justify-end gap-3 text-[#6a5a48] text-base pl-3">
-          {isExpanded && <span className="text-[#e8a050] text-base">+</span>}
+        <div className="flex items-center justify-end gap-3 text-[var(--text-subdued)] text-base pl-3">
+          {isExpanded && <span className="text-[var(--neon-pink)] text-base">+</span>}
           {formatDuration(track.totalDuration)}
-          <span className={`text-[11px] ${isExpanded ? 'text-[#e8a050]' : 'text-[#4a3a28]'}`}>
+          <span className={`text-[11px] ${isExpanded ? 'text-[var(--neon-pink)]' : 'text-[var(--text-subdued)] opacity-50'}`}>
             {isExpanded ? '▲' : '▼'}
           </span>
         </div>
@@ -680,16 +669,16 @@ function TrackRow({
 
       {/* Expanded recordings panel */}
       {isExpanded && (
-        <div className="border-t border-[#e8a050]/20 px-5 py-5">
+        <div className="track-expanded-panel px-5 py-5">
           {/* Controls bar */}
           <div className="flex justify-between items-center mb-5">
-            <div className="text-[#8a7a68] text-sm">
+            <div className="text-[var(--text-dim)] text-sm">
               Choose your recording ✦
             </div>
             <select
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value as 'newest' | 'oldest')}
-              className="bg-[#2a2520] border border-[#4a3a28] text-[#a89080] px-3 py-2 rounded-md text-xs"
+              className="track-sort-select px-3 py-2 rounded-md text-xs"
             >
               <option value="newest">Best Rated</option>
               <option value="oldest">Oldest First</option>
@@ -829,7 +818,7 @@ export default function AlbumPageContent({ album }: AlbumPageContentProps) {
   const totalVersions = album.tracks.reduce((acc, track) => acc + track.songCount, 0);
 
   return (
-    <div className="min-h-screen font-serif text-[#e8d8c8] relative">
+    <div className="min-h-screen font-serif text-[var(--text)] relative">
       {/* Page fireflies */}
       <div className="firefly fixed top-[20%] left-[10%] w-1.5 h-1.5" />
       <div className="firefly-2 fixed top-[60%] left-[85%] w-1 h-1" />
@@ -837,7 +826,7 @@ export default function AlbumPageContent({ album }: AlbumPageContentProps) {
 
       {/* Vault header badge */}
       <div className="text-center pt-8 pb-4">
-        <div className="text-[#6a5a48] text-[11px] tracking-[4px]">
+        <div className="text-[var(--text-subdued)] text-[11px] tracking-[4px]">
           ✦ LIVE FROM THE VAULT ✦
         </div>
       </div>
@@ -854,19 +843,19 @@ export default function AlbumPageContent({ album }: AlbumPageContentProps) {
 
           {/* Album info */}
           <div className="pt-4 max-w-[400px] text-center lg:text-left">
-            <div className="text-[#4a9a8a] text-[10px] tracking-[3px] mb-2.5">
+            <div className="text-[var(--campfire-teal)] text-[10px] tracking-[3px] mb-2.5">
               ☮ LIVE ALBUM
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl text-[#e8d8c8] mb-2 leading-tight">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl text-[var(--text)] mb-2 leading-tight">
               {album.name}
             </h1>
             {album.showVenue && (
-              <div className="text-xl text-[#a89080] mb-1.5 italic">
+              <div className="text-xl text-[var(--text-dim)] mb-1.5 italic">
                 {album.showVenue}
               </div>
             )}
-            <div className="text-[#8a7a68] text-sm mb-6">
-              <Link href={`/artists/${album.artistSlug}`} className="text-[#e8a050] hover:underline">
+            <div className="text-[var(--text-subdued)] text-sm mb-6">
+              <Link href={`/artists/${album.artistSlug}`} className="text-[var(--neon-pink)] hover:underline">
                 {album.artistName}
               </Link>
               {album.showDate && <> • {album.showDate}</>}
@@ -876,8 +865,7 @@ export default function AlbumPageContent({ album }: AlbumPageContentProps) {
             {/* Quote box */}
             {album.description && (
               <div
-                className="text-[#6a5a48] text-sm italic mb-6 px-4 py-3 rounded-lg border-l-[3px] border-[#4a9a8a]"
-                style={{ background: 'rgba(74,154,138,0.08)' }}
+                className="album-quote-box text-[var(--text-subdued)] text-sm italic mb-6 px-4 py-3 rounded-lg border-l-[3px] border-[var(--campfire-teal)]"
               >
                 "{album.description}"
               </div>
@@ -887,23 +875,19 @@ export default function AlbumPageContent({ album }: AlbumPageContentProps) {
             <div className="flex gap-3.5 items-center justify-center lg:justify-start">
               <button
                 onClick={handlePlayPause}
-                className="w-14 h-14 rounded-full flex items-center justify-center text-[#1a1410] text-xl shadow-lg transition-all hover:scale-105"
-                style={{
-                  background: 'linear-gradient(135deg, #e8a050, #c88030)',
-                  boxShadow: '0 4px 20px rgba(232,160,80,0.4)'
-                }}
+                className="album-play-button w-14 h-14 rounded-full flex items-center justify-center text-[var(--bg)] text-xl shadow-lg transition-all hover:scale-105"
               >
                 {albumIsPlaying ? '❚❚' : '▶'}
               </button>
               <button
                 onClick={handleShuffle}
-                className="px-5 py-3.5 bg-transparent border border-[#4a3a28] rounded-md text-[#a89080] text-sm hover:border-[#6a5a48] hover:text-[#c8b8a8] transition-all"
+                className="album-shuffle-btn px-5 py-3.5 rounded-md text-sm transition-all"
               >
                 ⟲ Shuffle
               </button>
               <button
                 onClick={handleFollowToggle}
-                className="w-11 h-11 rounded-full border border-[#4a3a28] flex items-center justify-center text-xl text-[#8a7a68] hover:border-[#6a5a48] hover:text-[#c8b8a8] transition-all"
+                className="album-follow-btn w-11 h-11 rounded-full flex items-center justify-center text-xl transition-all"
               >
                 {isFollowed ? '♥' : '♡'}
               </button>
@@ -915,7 +899,7 @@ export default function AlbumPageContent({ album }: AlbumPageContentProps) {
         <SideDivider side="A" />
 
         {/* Side A tracks */}
-        <div className="mb-8 bg-white/5 rounded-xl">
+        <div className="mb-8 track-list-container">
           {sideATracks.map((track, idx) => (
             <TrackRow
               key={track.id}
@@ -940,7 +924,7 @@ export default function AlbumPageContent({ album }: AlbumPageContentProps) {
             <SideDivider side="B" />
 
             {/* Side B tracks */}
-            <div className="mb-8 bg-white/5 rounded-xl">
+            <div className="mb-8 track-list-container">
               {sideBTracks.map((track, idx) => {
                 const actualIndex = midpoint + idx;
                 return (
@@ -965,8 +949,8 @@ export default function AlbumPageContent({ album }: AlbumPageContentProps) {
         )}
 
         {/* Footer */}
-        <div className="mt-12 text-center text-[#4a3a28] text-[11px] flex flex-col items-center gap-2">
-          <div className="text-[#6a5a48]">☮ Please copy freely — never sell ☮</div>
+        <div className="mt-12 text-center text-[var(--text-subdued)] opacity-50 text-[11px] flex flex-col items-center gap-2">
+          <div className="text-[var(--text-subdued)]">☮ Please copy freely — never sell ☮</div>
           <div>POWERED BY ARCHIVE.ORG</div>
         </div>
       </div>

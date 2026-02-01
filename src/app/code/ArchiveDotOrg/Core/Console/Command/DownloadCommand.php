@@ -10,6 +10,7 @@ use ArchiveDotOrg\Core\Exception\LockException;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\App\State;
 use Magento\Framework\App\Area;
+use Magento\Framework\Filesystem\DirectoryList;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -33,6 +34,7 @@ class DownloadCommand extends BaseLoggedCommand
     private MetadataDownloaderInterface $metadataDownloader;
     private LockServiceInterface $lockService;
     private State $state;
+    private DirectoryList $directoryList;
 
     public function __construct(
         MetadataDownloaderInterface $metadataDownloader,
@@ -40,6 +42,7 @@ class DownloadCommand extends BaseLoggedCommand
         State $state,
         ResourceConnection $resourceConnection,
         LoggerInterface $logger,
+        DirectoryList $directoryList,
         ?string $name = null
     ) {
         $this->metadataDownloader = $metadataDownloader;
@@ -47,6 +50,7 @@ class DownloadCommand extends BaseLoggedCommand
         $this->state = $state;
         $this->resourceConnection = $resourceConnection;
         $this->logger = $logger;
+        $this->directoryList = $directoryList;
         parent::__construct($name);
     }
 
@@ -133,16 +137,47 @@ class DownloadCommand extends BaseLoggedCommand
         }
 
         $artistInfo = $allCollections[$collectionId];
-        $io->title("Downloading: {$artistInfo['artist_name']} ($collectionId)");
+        $artistName = $artistInfo['artist_name'];
+
+        // Pre-flight check: Skip if all metadata already downloaded
+        // This check runs BEFORE acquiring lock (fast check to avoid unnecessary operations)
+        if (!$force && !$incremental) {
+            $skipResult = $this->shouldSkipAlreadyDownloaded($artistName, $collectionId, $io);
+            if ($skipResult !== null) {
+                return $skipResult;
+            }
+        }
+
+        $io->title("Downloading: {$artistName} ($collectionId)");
         $io->text("Correlation ID: $correlationId");
 
-        // Set current artist for progress tracking
-        $this->setCurrentArtist($artistInfo['artist_name']);
+        // Set current artist and collection_id for progress tracking
+        $this->setCurrentArtist($artistName);
+        $this->setCollectionId($collectionId);
 
-        // Acquire lock
+        // Acquire GLOBAL lock first - prevents ANY concurrent Archive.org downloads
+        // Archive.org rate-limits requests; concurrent downloads cause API failures
+        $globalLockToken = null;
+        try {
+            $globalLockToken = $this->lockService->acquire('download', '_GLOBAL_', 300);
+        } catch (LockException $e) {
+            $io->error("Another Archive.org download is already running. Downloads must run one at a time.");
+            $io->note("Wait for the current download to complete, then retry.");
+            return self::FAILURE;
+        }
+
+        // Acquire per-artist lock (prevents duplicate artist downloads)
         try {
             $lockToken = $this->lockService->acquire('download', $collectionId, 300);
         } catch (LockException $e) {
+            // Release global lock before failing
+            if ($globalLockToken !== null) {
+                try {
+                    $this->lockService->release($globalLockToken);
+                } catch (\Exception $releaseEx) {
+                    // Ignore release errors
+                }
+            }
             $io->error($e->getMessage());
             return self::FAILURE;
         }
@@ -203,12 +238,13 @@ class DownloadCommand extends BaseLoggedCommand
                 $io->newLine(2);
             }
 
-            // Update progress in database
-            $this->updateProgress($correlationId, $result['unique_shows'] ?? 0);
-
             // Show results
             $failedCount = $result['failed'] ?? 0;
             $downloadedCount = $result['downloaded'] ?? 0;
+
+            // Update progress in database - pass both items_processed and items_successful
+            // items_processed = unique shows found, items_successful = actually downloaded
+            $this->updateProgress($correlationId, $result['unique_shows'] ?? 0, $downloadedCount);
             $cachedCount = $result['cached'] ?? 0;
 
             $io->table(
@@ -231,14 +267,25 @@ class DownloadCommand extends BaseLoggedCommand
             }
 
         } finally {
-            // Always release lock
+            // Always release locks (per-artist first, then global)
             try {
                 $this->lockService->release($lockToken);
             } catch (\Exception $e) {
-                $this->logger->error('Failed to release lock', [
+                $this->logger->error('Failed to release per-artist lock', [
                     'collection_id' => $collectionId,
                     'error' => $e->getMessage()
                 ]);
+            }
+
+            // Release global lock
+            if ($globalLockToken !== null) {
+                try {
+                    $this->lockService->release($globalLockToken);
+                } catch (\Exception $e) {
+                    $this->logger->error('Failed to release global lock', [
+                        'error' => $e->getMessage()
+                    ]);
+                }
             }
         }
     }
@@ -254,5 +301,138 @@ class DownloadCommand extends BaseLoggedCommand
         }
 
         $io->table(['Collection ID', 'Artist Name', 'Identifier Pattern'], $rows);
+    }
+
+    /**
+     * Check if download should be skipped because metadata is already fully downloaded
+     *
+     * Uses the archivedotorg_artist_status table to determine if an artist's
+     * metadata has already been downloaded. This is more reliable than the
+     * progress file because it reflects the actual database state.
+     *
+     * @param string $artistName Artist name
+     * @param string $collectionId Archive.org collection ID
+     * @param SymfonyStyle $io Console output
+     * @return int|null Command exit code if should skip, null to continue
+     */
+    private function shouldSkipAlreadyDownloaded(
+        string $artistName,
+        string $collectionId,
+        SymfonyStyle $io
+    ): ?int {
+        // Get artist status from database
+        $artistStatus = $this->getArtistStatus($artistName);
+
+        // If no status record, continue with download
+        if ($artistStatus === null) {
+            return null;
+        }
+
+        $downloadedShows = (int)($artistStatus['downloaded_shows'] ?? 0);
+
+        // If no shows downloaded yet, continue
+        if ($downloadedShows === 0) {
+            return null;
+        }
+
+        // Count cached shows in the metadata directory
+        $cachedShows = $this->countCachedShows($collectionId);
+
+        // Also check the progress file for completion status
+        $progress = $this->metadataDownloader->getProgress($collectionId);
+        $progressCompleted = $progress !== null && ($progress['status'] ?? '') === 'completed';
+
+        // Skip if:
+        // 1. Progress file says completed, OR
+        // 2. Downloaded shows >= cached shows (all shows processed)
+        if ($progressCompleted || ($downloadedShows > 0 && $cachedShows > 0 && $downloadedShows >= $cachedShows)) {
+            $io->success(sprintf(
+                "Artist '%s' already has %s shows downloaded.",
+                $artistName,
+                number_format($downloadedShows)
+            ));
+
+            $io->table(
+                ['Metric', 'Value'],
+                [
+                    ['Downloaded shows', number_format($downloadedShows)],
+                    ['Cached files', number_format($cachedShows)],
+                    ['Progress status', $progress['status'] ?? 'N/A'],
+                    ['Last updated', $progress['last_updated'] ?? 'N/A'],
+                ]
+            );
+
+            $io->note('Use --force to re-download or --incremental for new shows only.');
+            return self::SUCCESS;
+        }
+
+        return null;
+    }
+
+    /**
+     * Get artist status from archivedotorg_artist_status table
+     *
+     * @param string $artistName Artist name to look up
+     * @return array|null Artist status record or null if not found
+     */
+    private function getArtistStatus(string $artistName): ?array
+    {
+        try {
+            $connection = $this->resourceConnection->getConnection();
+            $tableName = $this->resourceConnection->getTableName('archivedotorg_artist_status');
+
+            if (!$connection->isTableExists($tableName)) {
+                return null;
+            }
+
+            $select = $connection->select()
+                ->from($tableName)
+                ->where('artist_name = ?', $artistName)
+                ->limit(1);
+
+            $result = $connection->fetchRow($select);
+            return $result ?: null;
+        } catch (\Exception $e) {
+            $this->logger->warning('Failed to get artist status', [
+                'artist' => $artistName,
+                'error' => $e->getMessage()
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * Count cached shows in metadata directory
+     *
+     * Checks both organized folder structure (preferred) and flat structure (legacy)
+     *
+     * @param string $collectionId Archive.org collection ID
+     * @return int Number of cached JSON files
+     */
+    private function countCachedShows(string $collectionId): int
+    {
+        try {
+            $varDir = $this->directoryList->getPath('var');
+            $baseDir = $varDir . '/archivedotorg/metadata';
+
+            // First check organized folder structure
+            $organizedDir = $baseDir . '/' . $collectionId;
+            if (is_dir($organizedDir)) {
+                $files = glob($organizedDir . '/*.json');
+                if ($files !== false && count($files) > 0) {
+                    return count($files);
+                }
+            }
+
+            // Fall back to using MetadataDownloader's method which handles both structures
+            $identifiers = $this->metadataDownloader->getDownloadedIdentifiers($collectionId);
+            return count($identifiers);
+        } catch (\Exception $e) {
+            $this->logger->warning('Failed to count cached shows', [
+                'collection_id' => $collectionId,
+                'error' => $e->getMessage()
+            ]);
+            return 0;
+        }
     }
 }

@@ -61,7 +61,7 @@ class EnrichArtistDataCommand extends Command
                 'fields',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Comma-separated fields to enrich (bio,origin,years_active,genres,website,facebook,instagram,twitter,stats,stats_extended)',
+                'Comma-separated fields to enrich (bio,origin,years_active,genres,website,facebook,instagram,twitter,stats,stats_extended) or "all_stats" for stats+stats_extended',
                 'all'
             )
             ->addOption(
@@ -186,6 +186,11 @@ class EnrichArtistDataCommand extends Command
             return $validFields;
         }
 
+        // Handle 'all_stats' alias - expands to stats + stats_extended
+        if ($fieldsOption === 'all_stats') {
+            return ['stats', 'stats_extended'];
+        }
+
         $fields = array_map('trim', explode(',', $fieldsOption));
         $invalid = array_diff($fields, $validFields);
 
@@ -206,13 +211,26 @@ class EnrichArtistDataCommand extends Command
         $artists = [];
         $availableArtists = $this->configLoader->getAvailableArtists();
 
-        foreach ($availableArtists as $artistKey => $artistName) {
-            $category = $this->findArtistCategory($artistName);
-            if ($category) {
-                $artists[] = [
-                    'category_id' => (int)$category->getId(),
-                    'artist_name' => $artistName,
-                ];
+        foreach ($availableArtists as $artistKey) {
+            try {
+                // Load the YAML config to get the actual artist name
+                $config = $this->configLoader->load($artistKey);
+                $artistName = $config['artist']['name'] ?? null;
+
+                if (!$artistName) {
+                    continue;
+                }
+
+                $category = $this->findArtistCategory($artistName);
+                if ($category) {
+                    $artists[] = [
+                        'category_id' => (int)$category->getId(),
+                        'artist_name' => $artistName,
+                    ];
+                }
+            } catch (\Exception $e) {
+                // Skip artists with invalid configs
+                continue;
             }
         }
 

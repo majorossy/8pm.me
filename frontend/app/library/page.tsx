@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
+import Image from 'next/image';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { useWishlist } from '@/context/WishlistContext';
 import { useQueue } from '@/context/QueueContext';
@@ -176,9 +177,9 @@ function LibraryPageInner() {
               href={`/artists/${artist.artistSlug}`}
               className="flex flex-col gap-3 p-4 rounded-lg hover:bg-white/10 transition-colors group"
             >
-              <div className="w-full aspect-square rounded-full bg-[#2d2a26] overflow-hidden">
+              <div className="w-full aspect-square rounded-full bg-[#2d2a26] overflow-hidden relative">
                 {artist.albumArt ? (
-                  <img src={artist.albumArt} alt={artist.artistName} className="w-full h-full object-cover" />
+                  <Image src={artist.albumArt} alt={artist.artistName || 'Artist'} fill sizes="200px" quality={80} className="object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
                     <svg className="w-12 h-12 text-[#3a3632]" fill="currentColor" viewBox="0 0 24 24">
@@ -229,9 +230,9 @@ function LibraryPageInner() {
               key={albumId}
               className="flex flex-col gap-3 p-4 rounded-lg hover:bg-white/10 transition-colors group cursor-pointer"
             >
-              <div className="w-full aspect-square rounded bg-[#2d2a26] overflow-hidden">
+              <div className="w-full aspect-square rounded bg-[#2d2a26] overflow-hidden relative">
                 {album.albumArt ? (
-                  <img src={album.albumArt} alt={album.albumName} className="w-full h-full object-cover" />
+                  <Image src={album.albumArt} alt={album.albumName || 'Album'} fill sizes="200px" quality={80} className="object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
                     <svg className="w-12 h-12 text-[#3a3632]" fill="currentColor" viewBox="0 0 24 24">
@@ -275,9 +276,9 @@ function LibraryPageInner() {
             className="flex items-center gap-3 p-3 rounded hover:bg-white/10 transition-colors group"
           >
             {/* Album art */}
-            <div className="w-12 h-12 flex-shrink-0 rounded overflow-hidden bg-[#2d2a26]">
+            <div className="w-12 h-12 flex-shrink-0 rounded overflow-hidden bg-[#2d2a26] relative">
               {item.song.albumArt ? (
-                <img src={item.song.albumArt} alt={item.song.albumName} className="w-full h-full object-cover" />
+                <Image src={item.song.albumArt} alt={item.song.albumName || 'Album'} fill sizes="48px" quality={75} className="object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
                   <svg className="w-6 h-6 text-[#3a3632]" fill="currentColor" viewBox="0 0 24 24">

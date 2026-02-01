@@ -121,9 +121,9 @@ for ARTIST_DATA in "${SORTED_ARTISTS[@]}"; do
     YAML_FILE=$(echo "$ARTIST_DATA" | cut -d: -f2)
     ARTIST_NAME=$(echo "$ARTIST_DATA" | cut -d: -f3-)
 
-    # Skip list (artists that cause problems)
-    if [[ "$ARTIST_NAME" == "Grateful Dead" ]]; then
-        echo -e "${YELLOW}[$CURRENT/$TOTAL_ARTISTS] Skipping: $ARTIST_NAME (problematic collection)${NC}"
+    # Skip list (artists that cause problems or are too large)
+    if [[ "$ARTIST_NAME" == "Grateful Dead" ]] || [[ "$ARTIST_NAME" == "Phish" ]]; then
+        echo -e "${YELLOW}[$CURRENT/$TOTAL_ARTISTS] Skipping: $ARTIST_NAME (too large - import separately)${NC}"
         SKIPPED+=("$ARTIST_NAME (in skip list)")
         SKIPPED_ARTISTS=$((SKIPPED_ARTISTS + 1))
         continue

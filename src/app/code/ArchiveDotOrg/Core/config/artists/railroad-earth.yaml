@@ -232,18 +232,6 @@ albums:
     type: "studio"
     # TODO: Add year field
 
-  - key: "colorado"
-    name: "Colorado"
-    url_key: "colorado63165"
-    type: "studio"
-    # TODO: Add year field
-
-  - key: "bird-in-a-house"
-    name: "Bird In A House"
-    url_key: "birdinahouse62719"
-    type: "studio"
-    # TODO: Add year field
-
   - key: "the-hunting-song"
     name: "The Hunting Song"
     url_key: "thehuntingsong"
@@ -256,45 +244,15 @@ albums:
     type: "studio"
     # TODO: Add year field
 
-  - key: "head"
-    name: "Head"
-    url_key: "head84169"
-    type: "studio"
-    # TODO: Add year field
-
   - key: "elko"
     name: "Elko"
     url_key: "elko65636"
     type: "studio"
     # TODO: Add year field
 
-  - key: "mighty-river"
-    name: "Mighty River"
-    url_key: "mightyriver56664"
-    type: "studio"
-    # TODO: Add year field
-
-  - key: "like-a-buddha"
-    name: "Like A Buddha"
-    url_key: "likeabuddha93308"
-    type: "studio"
-    # TODO: Add year field
-
   - key: "warhead-boogie"
     name: "Warhead Boogie"
     url_key: "warheadboogie"
-    type: "studio"
-    # TODO: Add year field
-
-  - key: "railroad-earth"
-    name: "Railroad Earth"
-    url_key: "railroadearth54826"
-    type: "studio"
-    # TODO: Add year field
-
-  - key: "seven-story-mountain"
-    name: "Seven Story Mountain"
-    url_key: "sevenstorymountain39279"
     type: "studio"
     # TODO: Add year field
 
@@ -450,13 +408,6 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "bird-in-a-house"
-    name: "Bird in a House"
-    url_key: "birdinahouse80993"
-    type: "original"
-    # TODO: Add album associations
-    # TODO: Add aliases for better matching
-
   - key: "black-bear"
     name: "Black Bear"
     url_key: "blackbear"
@@ -471,7 +422,7 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "blazin--a-trail"
+  - key: "blazin-a-trail"
     name: "Blazin' A Trail"
     url_key: "blazinatrail"
     type: "original"
@@ -485,14 +436,14 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "bringin--my-baby-back-home"
+  - key: "bringin-my-baby-back-home"
     name: "Bringin' My Baby Back Home"
     url_key: "bringinmybabybackhome"
     type: "original"
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "came-up-smilin-"
+  - key: "came-up-smilin"
     name: "Came up Smilin'"
     url_key: "cameupsmilin"
     type: "original"
@@ -523,13 +474,6 @@ tracks:
   - key: "colorado"
     name: "Colorado"
     url_key: "colorado63165"
-    type: "original"
-    # TODO: Add album associations
-    # TODO: Add aliases for better matching
-
-  - key: "colorado"
-    name: "Colorado"
-    url_key: "colorado"
     type: "original"
     # TODO: Add album associations
     # TODO: Add aliases for better matching
@@ -583,7 +527,7 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "hard-livin-"
+  - key: "hard-livin"
     name: "Hard Livin'"
     url_key: "hardlivin"
     type: "original"
@@ -593,13 +537,6 @@ tracks:
   - key: "head"
     name: "Head"
     url_key: "head84169"
-    type: "original"
-    # TODO: Add album associations
-    # TODO: Add aliases for better matching
-
-  - key: "head"
-    name: "Head"
-    url_key: "head"
     type: "original"
     # TODO: Add album associations
     # TODO: Add aliases for better matching
@@ -618,14 +555,7 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "like-a-buddha"
-    name: "Like a Buddha"
-    url_key: "likeabuddha"
-    type: "original"
-    # TODO: Add album associations
-    # TODO: Add aliases for better matching
-
-  - key: "little-bit-o--me"
+  - key: "little-bit-o-me"
     name: "Little Bit O' Me"
     url_key: "littlebitome"
     type: "original"
@@ -681,7 +611,7 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "lovin--you"
+  - key: "lovin-you"
     name: "Lovin' You"
     url_key: "lovinyou"
     type: "original"
@@ -691,13 +621,6 @@ tracks:
   - key: "mighty-river"
     name: "Mighty River"
     url_key: "mightyriver56664"
-    type: "original"
-    # TODO: Add album associations
-    # TODO: Add aliases for better matching
-
-  - key: "mighty-river"
-    name: "Mighty River"
-    url_key: "mightyriver"
     type: "original"
     # TODO: Add album associations
     # TODO: Add aliases for better matching
@@ -772,13 +695,6 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "railroad-earth"
-    name: "Railroad Earth"
-    url_key: "railroadearth94309"
-    type: "original"
-    # TODO: Add album associations
-    # TODO: Add aliases for better matching
-
   - key: "ravens-child"
     name: "Ravens Child"
     url_key: "ravenschild"
@@ -817,13 +733,6 @@ tracks:
   - key: "seven-story-mountain"
     name: "Seven Story Mountain"
     url_key: "sevenstorymountain"
-    type: "original"
-    # TODO: Add album associations
-    # TODO: Add aliases for better matching
-
-  - key: "seven-story-mountain"
-    name: "Seven Story Mountain"
-    url_key: "sevenstorymountain39279"
     type: "original"
     # TODO: Add album associations
     # TODO: Add aliases for better matching
@@ -877,7 +786,7 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "the-jupiter---the-119"
+  - key: "the-jupiter-the-119"
     name: "The Jupiter & The 119"
     url_key: "thejupiterthe119"
     type: "original"
@@ -891,7 +800,7 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "waggin--the-dog"
+  - key: "waggin-the-dog"
     name: "Waggin' The Dog"
     url_key: "wagginthedog"
     type: "original"

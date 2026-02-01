@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 
 interface SocialLink {
   icon: React.ReactNode;
@@ -177,12 +178,13 @@ export default function PolaroidCard({ imageUrl, artistName, caption, socialLink
               }}
             >
               {imageUrl ? (
-                <img
+                <Image
                   src={imageUrl}
-                  alt={artistName}
+                  alt={artistName || 'Artist'}
+                  fill
+                  sizes="300px"
+                  quality={85}
                   style={{
-                    width: '100%',
-                    height: '100%',
                     objectFit: 'cover',
                     objectPosition: 'left center',
                   }}

@@ -3,6 +3,7 @@
 // Queue drawer - displays album tracks + up-next (Jamify/Spotify theme)
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { usePlayer } from '@/context/PlayerContext';
 import { useQueue } from '@/context/QueueContext';
 import { usePlaylists } from '@/context/PlaylistContext';
@@ -186,10 +187,13 @@ export default function Queue() {
                     <p className="text-xs text-[#8a8478] uppercase tracking-wider mb-3">Now Playing</p>
                     <div className="flex items-center gap-3">
                       {queue.album?.coverArt ? (
-                        <img
+                        <Image
                           src={queue.album.coverArt}
-                          alt={queue.album.name}
-                          className="w-12 h-12 object-cover rounded"
+                          alt={queue.album.name || 'Album cover'}
+                          width={48}
+                          height={48}
+                          quality={80}
+                          className="object-cover rounded"
                         />
                       ) : (
                         <div className="w-12 h-12 bg-[#2d2a26] rounded flex items-center justify-center">

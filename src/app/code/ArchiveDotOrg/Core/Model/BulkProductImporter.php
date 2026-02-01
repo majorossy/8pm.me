@@ -477,6 +477,39 @@ class BulkProductImporter implements BulkProductImporterInterface
             'show_uploader' => $show->getUploader()
         ];
 
+        // SEO Meta Fields
+        $trackTitle = $track->getTitle() ?? 'Untitled Track';
+        $showYear = $show->getYear() ?? 'Live';
+        $showVenue = $show->getVenue() ?? 'Unknown Venue';
+        $showDate = $show->getDate() ?? $showYear;
+
+        $metaTitle = sprintf(
+            '%s - %s (%s at %s) | 8PM',
+            $trackTitle,
+            $artistName,
+            $showYear,
+            $showVenue
+        );
+
+        $metaDescription = sprintf(
+            'Listen to %s performed by %s on %s at %s. High-quality live concert recording - free streaming.',
+            $trackTitle,
+            $artistName,
+            $showDate,
+            $showVenue
+        );
+
+        $varcharAttributes['meta_title'] = $this->truncateToLength($metaTitle, 70);
+        $varcharAttributes['meta_description'] = $this->truncateToLength($metaDescription, 160);
+        $varcharAttributes['meta_keyword'] = implode(', ', array_filter([
+            $artistName,
+            $trackTitle,
+            $showVenue,
+            $showYear,
+            'live concert',
+            'free streaming'
+        ]));
+
         // Build song URL
         if ($show->getServerOne() && $show->getDir()) {
             $filename = pathinfo($track->getName(), PATHINFO_FILENAME) . '.flac';
@@ -560,6 +593,26 @@ class BulkProductImporter implements BulkProductImporterInterface
         if ($show->getDescription()) {
             $this->saveAttribute($entityId, 'description', $show->getDescription(), 'text');
         }
+    }
+
+    /**
+     * Truncate string to maximum length without breaking words
+     *
+     * @param string $text
+     * @param int $maxLength
+     * @return string
+     */
+    private function truncateToLength(string $text, int $maxLength): string
+    {
+        if (mb_strlen($text) <= $maxLength) {
+            return $text;
+        }
+        $truncated = mb_substr($text, 0, $maxLength);
+        $lastSpace = mb_strrpos($truncated, ' ');
+        if ($lastSpace !== false && $lastSpace > $maxLength * 0.75) {
+            return mb_substr($truncated, 0, $lastSpace) . '...';
+        }
+        return $truncated . '...';
     }
 
     /**

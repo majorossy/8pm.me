@@ -3,6 +3,7 @@
 // JamifyFullPlayer - Spotify-style full-screen mobile player
 
 import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import { usePlayer } from '@/context/PlayerContext';
 import { useQueue } from '@/context/QueueContext';
 import { useWishlist } from '@/context/WishlistContext';
@@ -228,14 +229,17 @@ export default function JamifyFullPlayer() {
 
       {/* Album Art */}
       <div className="flex-1 flex items-center justify-center px-8 py-4">
-        <div className="w-full max-w-[320px] aspect-square rounded-lg overflow-hidden shadow-2xl">
+        <div className="w-full max-w-[320px] aspect-square rounded-lg overflow-hidden shadow-2xl relative">
           {queue.album?.coverArt ? (
-            <img
+            <Image
               src={queue.album.coverArt}
               alt={`${queue.album.name} by ${currentSong.artistName}`}
-              loading="lazy"
+              fill
+              sizes="320px"
+              priority
+              quality={90}
               onLoad={() => setImageLoaded(true)}
-              className={`w-full h-full object-cover transition-opacity duration-300 ${
+              className={`object-cover transition-opacity duration-300 ${
                 imageLoaded ? 'opacity-100' : 'opacity-0'
               }`}
             />

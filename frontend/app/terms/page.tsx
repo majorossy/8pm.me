@@ -1,143 +1,403 @@
 import React from 'react';
 import Link from 'next/link';
+import {
+  DocumentIcon,
+  ScaleIcon,
+  CheckIcon,
+  XMarkIcon,
+  UserIcon,
+  HeartIcon,
+  InfoIcon,
+  MailIcon,
+  ArchiveIcon,
+  GlobeIcon,
+  ClockIcon,
+} from '@/components/icons/FooterIcons';
 
 export default function TermsPage() {
   return (
     <div className="max-w-[800px] mx-auto px-4 py-12 md:py-16">
-      <h1 className="text-4xl md:text-5xl font-bold text-[#d4a060] mb-8 tracking-tight">
-        Terms of Service
-      </h1>
+      {/* Header with icon */}
+      <div className="flex items-center gap-4 mb-8">
+        <div className="p-3 bg-[#2a2825] rounded-lg border border-[#3a3632]">
+          <DocumentIcon className="w-8 h-8 text-[#d4a060]" />
+        </div>
+        <h1 className="text-4xl md:text-5xl font-bold text-[#d4a060] tracking-tight">
+          Terms of Service
+        </h1>
+      </div>
 
       <div className="space-y-6 text-[#8a8478] leading-relaxed">
-        <div className="bg-[#2a2825] border border-[#3a3632] rounded-lg p-6 mb-8">
-          <p className="text-sm text-[#d4a060] font-semibold">
-            Note: This is a student project placeholder. 8PM is an educational
+        {/* Student project notice */}
+        <div className="bg-[#2a2825] border border-[#3a3632] rounded-lg p-4 flex items-start gap-3">
+          <InfoIcon className="w-5 h-5 text-[#d4a060] flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-[#d4a060]">
+            <strong>Note:</strong> This is a student project placeholder. 8PM is an educational
             demonstration and not a commercial service.
           </p>
         </div>
 
         <p className="text-lg">
-          By using 8PM, you agree to these terms. Please read them carefully.
+          By using 8PM, you agree to these terms and to the{' '}
+          <a
+            href="https://archive.org/about/terms"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#d4a060] hover:text-[#e8a050] underline"
+          >
+            Internet Archive's Terms of Use
+          </a>
+          . Please read them carefully.
         </p>
 
-        <div className="border-b border-[#3a3632]/30 pb-6 mt-8">
-          <h2 className="text-xl font-semibold text-[#d4a060] mb-3">
-            Acceptance of Terms
-          </h2>
+        {/* Archive.org Relationship - NEW SECTION */}
+        <div className="bg-[#2a2825] border border-[#3a3632] rounded-lg p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <ArchiveIcon className="w-6 h-6 text-[#d4a060]" />
+            <h2 className="text-xl font-semibold text-[#d4a060]">
+              Our Relationship with Archive.org
+            </h2>
+          </div>
+          <p className="mb-4">
+            8PM is a frontend interface to the{' '}
+            <a
+              href="https://archive.org/details/etree"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#d4a060] hover:text-[#e8a050] underline"
+            >
+              Live Music Archive
+            </a>
+            {' '}hosted by the Internet Archive. We do not host any audio files—all
+            recordings stream directly from Archive.org's servers.
+          </p>
+          <p className="mb-4">
+            By using 8PM, you also agree to abide by the{' '}
+            <a
+              href="https://archive.org/about/terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#d4a060] hover:text-[#e8a050] underline"
+            >
+              Internet Archive's Terms of Use
+            </a>
+            {' '}and the specific policies of the Live Music Archive collection.
+          </p>
+          <p className="text-sm italic">
+            The Internet Archive is a 501(c)(3) non-profit building a digital library
+            of Internet sites and other cultural artifacts in digital form.
+          </p>
+        </div>
+
+        {/* Acceptance of Terms */}
+        <div className="bg-[#2a2825] border border-[#3a3632] rounded-lg p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <ScaleIcon className="w-6 h-6 text-[#d4a060]" />
+            <h2 className="text-xl font-semibold text-[#d4a060]">
+              Acceptance of Terms
+            </h2>
+          </div>
           <p>
             By accessing and using 8PM, you accept and agree to be bound by these
-            Terms of Service. If you do not agree to these terms, please do not use
-            this service.
+            Terms of Service and the Internet Archive's terms. If you do not agree
+            to these terms, please do not use this service.
           </p>
         </div>
 
-        <div className="border-b border-[#3a3632]/30 pb-6 mt-8">
-          <h2 className="text-xl font-semibold text-[#d4a060] mb-3">
-            Use of Service
-          </h2>
-          <p>
-            8PM provides access to live concert recordings hosted on Archive.org.
-            You may:
+        {/* Use of Service */}
+        <div className="bg-[#2a2825] border border-[#3a3632] rounded-lg p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <CheckIcon className="w-6 h-6 text-[#d4a060]" />
+            <h2 className="text-xl font-semibold text-[#d4a060]">
+              Use of Service
+            </h2>
+          </div>
+          <p className="mb-4">
+            8PM provides a browsing and streaming interface to the Live Music Archive.
+            In accordance with Archive.org's policies, you may:
           </p>
-          <ul className="space-y-2 list-disc list-inside mt-2">
-            <li>Stream and listen to recordings for personal, non-commercial use</li>
-            <li>Create and share playlists</li>
-            <li>Share links to shows and tracks with others</li>
-            <li>Download recordings directly from Archive.org</li>
+          <ul className="space-y-2">
+            <li className="flex items-start gap-3">
+              <span className="w-5 h-5 flex items-center justify-center text-green-400 flex-shrink-0">✓</span>
+              <span>Stream and listen to recordings for personal, noncommercial enjoyment</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="w-5 h-5 flex items-center justify-center text-green-400 flex-shrink-0">✓</span>
+              <span>Download recordings for personal use and noncommercial sharing</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="w-5 h-5 flex items-center justify-center text-green-400 flex-shrink-0">✓</span>
+              <span>Create and share playlists with friends</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="w-5 h-5 flex items-center justify-center text-green-400 flex-shrink-0">✓</span>
+              <span>Share links to shows and tracks freely</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="w-5 h-5 flex items-center justify-center text-green-400 flex-shrink-0">✓</span>
+              <span>Trade or give away copies for free (never for profit)</span>
+            </li>
           </ul>
         </div>
 
-        <div className="border-b border-[#3a3632]/30 pb-6 mt-8">
-          <h2 className="text-xl font-semibold text-[#d4a060] mb-3">
-            Our Ethos: Please Copy Freely — Never Sell
-          </h2>
-          <p>
-            All recordings on 8PM are freely shareable. You may copy, distribute,
-            and share these recordings with others. However, you may not:
+        {/* The Tape Trading Tradition */}
+        <div className="bg-[#2a2825] border border-[#3a3632] rounded-lg p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <ClockIcon className="w-6 h-6 text-[#d4a060]" />
+            <h2 className="text-xl font-semibold text-[#d4a060]">
+              The Tape Trading Tradition
+            </h2>
+          </div>
+          <p className="mb-4">
+            Since the early 1970s, a community of concert tapers and traders has
+            preserved live music through an informal network built on one core
+            principle: <strong className="text-[#d4a060]">share freely, never profit</strong>.
           </p>
-          <ul className="space-y-2 list-disc list-inside mt-2">
-            <li>Sell or commercially exploit any recordings</li>
-            <li>Claim ownership of recordings you did not create</li>
-            <li>Remove or alter credits to tapers or Archive.org</li>
-            <li>Use recordings in ways that violate artist permissions</li>
+          <p className="mb-4">
+            Artists like the Grateful Dead, Phish, and many jam bands have embraced
+            this tradition, recognizing that freely traded recordings build community
+            and spread their music far wider than any marketing campaign.
+          </p>
+          <p className="text-sm italic">
+            In 2002, the Internet Archive partnered with the etree community to create
+            the Live Music Archive, preserving this tradition digitally for future generations.
+          </p>
+        </div>
+
+        {/* Our Ethos */}
+        <div className="bg-[#2a2825] border border-[#3a3632] rounded-lg p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <HeartIcon className="w-6 h-6 text-[#d4a060]" />
+            <h2 className="text-xl font-semibold text-[#d4a060]">
+              Our Ethos: Trade Freely — Never Sell
+            </h2>
+          </div>
+          <p className="mb-4">
+            Following the Live Music Archive's policies, all content accessible through
+            8PM is for <strong className="text-[#d4a060]">noncommercial, royalty-free
+            circulation only</strong>. You may freely share these recordings, but you may not:
+          </p>
+          <ul className="space-y-2">
+            <li className="flex items-start gap-3">
+              <XMarkIcon className="w-5 h-5 text-red-400 flex-shrink-0" />
+              <span>Sell recordings or charge for access to them</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <XMarkIcon className="w-5 h-5 text-red-400 flex-shrink-0" />
+              <span>Use recordings for commercial purposes of any kind</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <XMarkIcon className="w-5 h-5 text-red-400 flex-shrink-0" />
+              <span>Claim ownership or copyright over recordings you did not create</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <XMarkIcon className="w-5 h-5 text-red-400 flex-shrink-0" />
+              <span>Remove or alter credits to tapers, the Internet Archive, or artists</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <XMarkIcon className="w-5 h-5 text-red-400 flex-shrink-0" />
+              <span>Redistribute in ways that violate the artist's specific permissions</span>
+            </li>
           </ul>
         </div>
 
-        <div className="border-b border-[#3a3632]/30 pb-6 mt-8">
-          <h2 className="text-xl font-semibold text-[#d4a060] mb-3">
-            Content Rights
-          </h2>
-          <p>
-            All recordings are hosted on Archive.org and subject to their terms of
-            service. Artists featured on 8PM have granted permission for taping and
-            non-commercial sharing of their live performances. This permission does
-            not extend to studio recordings or commercial use.
+        {/* Artist Rights & Permissions */}
+        <div className="bg-[#2a2825] border border-[#3a3632] rounded-lg p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <DocumentIcon className="w-6 h-6 text-[#d4a060]" />
+            <h2 className="text-xl font-semibold text-[#d4a060]">
+              Artist Rights & Permissions
+            </h2>
+          </div>
+          <p className="mb-4">
+            <strong className="text-[#d4a060]">Artists retain full copyright</strong> to
+            their performances. Downloads and streams are provided with the understanding
+            that artists still hold their copyrights.
           </p>
-        </div>
-
-        <div className="border-b border-[#3a3632]/30 pb-6 mt-8">
-          <h2 className="text-xl font-semibold text-[#d4a060] mb-3">
-            User Conduct
-          </h2>
-          <p>
-            You agree not to:
+          <p className="mb-4">
+            Artists featured in the Live Music Archive have explicitly granted permission
+            for taping and noncommercial sharing of their live performances. Each artist
+            may have specific restrictions—these are noted on their Archive.org collection
+            pages and must be respected.
           </p>
-          <ul className="space-y-2 list-disc list-inside mt-2">
-            <li>Interfere with or disrupt the service</li>
-            <li>Attempt to gain unauthorized access to any systems</li>
-            <li>Use automated tools to scrape or download content in bulk</li>
-            <li>Impersonate others or misrepresent your affiliation</li>
-            <li>Violate any applicable laws or regulations</li>
+          <p className="text-sm">
+            This permission applies only to live performances that artists have approved
+            for sharing. It does <strong>not</strong> extend to:
+          </p>
+          <ul className="space-y-1 mt-2 text-sm">
+            <li className="flex items-start gap-2">
+              <span className="text-red-400">•</span>
+              <span>Official studio recordings or commercially released material</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-red-400">•</span>
+              <span>Recordings from satellite radio (XM, Sirius) or other restricted sources</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-red-400">•</span>
+              <span>Any commercial use whatsoever</span>
+            </li>
           </ul>
         </div>
 
-        <div className="border-b border-[#3a3632]/30 pb-6 mt-8">
-          <h2 className="text-xl font-semibold text-[#d4a060] mb-3">
-            Disclaimer of Warranties
-          </h2>
-          <p>
-            8PM is provided "as is" without warranties of any kind. As a student
-            project, we make no guarantees about service availability, accuracy of
-            metadata, or suitability for any particular purpose.
+        {/* User Conduct */}
+        <div className="bg-[#2a2825] border border-[#3a3632] rounded-lg p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <UserIcon className="w-6 h-6 text-[#d4a060]" />
+            <h2 className="text-xl font-semibold text-[#d4a060]">
+              User Conduct
+            </h2>
+          </div>
+          <p className="mb-4">You agree not to:</p>
+          <ul className="space-y-2">
+            <li className="flex items-start gap-3">
+              <XMarkIcon className="w-5 h-5 text-red-400 flex-shrink-0" />
+              <span>Interfere with or disrupt the service</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <XMarkIcon className="w-5 h-5 text-red-400 flex-shrink-0" />
+              <span>Attempt to gain unauthorized access to any systems</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <XMarkIcon className="w-5 h-5 text-red-400 flex-shrink-0" />
+              <span>Use automated tools to scrape or download content in bulk</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <XMarkIcon className="w-5 h-5 text-red-400 flex-shrink-0" />
+              <span>Impersonate others or misrepresent your affiliation</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <XMarkIcon className="w-5 h-5 text-red-400 flex-shrink-0" />
+              <span>Violate any applicable laws or regulations</span>
+            </li>
+          </ul>
+        </div>
+
+        {/* Disclaimers Grid */}
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="bg-[#2a2825] border border-[#3a3632] rounded-lg p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <InfoIcon className="w-5 h-5 text-[#d4a060]" />
+              <h3 className="text-lg font-semibold text-[#d4a060]">
+                Disclaimer of Warranties
+              </h3>
+            </div>
+            <p className="text-sm">
+              8PM is provided "as is" without warranties of any kind. As a student
+              project, we make no guarantees about service availability, accuracy of
+              metadata, or suitability for any particular purpose.
+            </p>
+          </div>
+
+          <div className="bg-[#2a2825] border border-[#3a3632] rounded-lg p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <ScaleIcon className="w-5 h-5 text-[#d4a060]" />
+              <h3 className="text-lg font-semibold text-[#d4a060]">
+                Limitation of Liability
+              </h3>
+            </div>
+            <p className="text-sm">
+              8PM and its creators shall not be liable for any damages arising from
+              your use of the service. This includes data loss, service interruptions,
+              or any other issues that may arise.
+            </p>
+          </div>
+        </div>
+
+        {/* External Resources */}
+        <div className="bg-[#2a2825] border border-[#3a3632] rounded-lg p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <GlobeIcon className="w-6 h-6 text-[#d4a060]" />
+            <h2 className="text-xl font-semibold text-[#d4a060]">
+              Archive.org Resources
+            </h2>
+          </div>
+          <p className="mb-4 text-sm">
+            For complete information about the Live Music Archive's policies:
           </p>
+          <div className="grid sm:grid-cols-2 gap-3">
+            <a
+              href="https://archive.org/about/terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 p-3 bg-[#1c1a17] rounded-lg hover:bg-[#252320] transition-colors group"
+            >
+              <DocumentIcon className="w-4 h-4 text-[#d4a060] flex-shrink-0" />
+              <span className="text-sm text-[#d4a060] group-hover:text-[#e8a050]">
+                Internet Archive Terms of Use
+              </span>
+            </a>
+            <a
+              href="https://help.archive.org/help/live-music-archive-etree-org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 p-3 bg-[#1c1a17] rounded-lg hover:bg-[#252320] transition-colors group"
+            >
+              <InfoIcon className="w-4 h-4 text-[#d4a060] flex-shrink-0" />
+              <span className="text-sm text-[#d4a060] group-hover:text-[#e8a050]">
+                Live Music Archive Help Center
+              </span>
+            </a>
+            <a
+              href="https://archive.org/details/etree"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 p-3 bg-[#1c1a17] rounded-lg hover:bg-[#252320] transition-colors group"
+            >
+              <ArchiveIcon className="w-4 h-4 text-[#d4a060] flex-shrink-0" />
+              <span className="text-sm text-[#d4a060] group-hover:text-[#e8a050]">
+                Live Music Archive Collection
+              </span>
+            </a>
+            <a
+              href="mailto:lma@archive.org"
+              className="flex items-center gap-2 p-3 bg-[#1c1a17] rounded-lg hover:bg-[#252320] transition-colors group"
+            >
+              <MailIcon className="w-4 h-4 text-[#d4a060] flex-shrink-0" />
+              <span className="text-sm text-[#d4a060] group-hover:text-[#e8a050]">
+                Contact Live Music Archive
+              </span>
+            </a>
+          </div>
         </div>
 
-        <div className="border-b border-[#3a3632]/30 pb-6 mt-8">
-          <h2 className="text-xl font-semibold text-[#d4a060] mb-3">
-            Limitation of Liability
-          </h2>
-          <p>
-            8PM and its creators shall not be liable for any damages arising from
-            your use of the service. This includes data loss, service interruptions,
-            or any other issues that may arise.
-          </p>
+        {/* Changes and Contact */}
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="bg-[#2a2825] border border-[#3a3632] rounded-lg p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <DocumentIcon className="w-5 h-5 text-[#d4a060]" />
+              <h3 className="text-lg font-semibold text-[#d4a060]">
+                Changes to Terms
+              </h3>
+            </div>
+            <p className="text-sm">
+              We reserve the right to modify these terms at any time. Continued use
+              of 8PM after changes constitutes acceptance of the new terms.
+            </p>
+          </div>
+
+          <div className="bg-[#2a2825] border border-[#3a3632] rounded-lg p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <MailIcon className="w-5 h-5 text-[#d4a060]" />
+              <h3 className="text-lg font-semibold text-[#d4a060]">
+                Contact
+              </h3>
+            </div>
+            <p className="text-sm">
+              If you have questions about these terms, please{' '}
+              <Link href="/contact" className="text-[#d4a060] hover:text-[#e8a050] underline">
+                contact us
+              </Link>
+              .
+            </p>
+          </div>
         </div>
 
-        <div className="border-b border-[#3a3632]/30 pb-6 mt-8">
-          <h2 className="text-xl font-semibold text-[#d4a060] mb-3">
-            Changes to Terms
-          </h2>
-          <p>
-            We reserve the right to modify these terms at any time. Continued use
-            of 8PM after changes constitutes acceptance of the new terms.
-          </p>
+        <div className="text-sm text-[#6a6458] italic">
+          Last updated: January 30, 2026
         </div>
 
-        <div className="border-b border-[#3a3632]/30 pb-6 mt-8">
-          <h2 className="text-xl font-semibold text-[#d4a060] mb-3">
-            Contact
-          </h2>
-          <p>
-            If you have questions about these terms, please contact us through our
-            contact page.
-          </p>
-        </div>
-
-        <div className="pt-8 text-sm text-[#6a6458] italic">
-          Last updated: January 29, 2026
-        </div>
-
-        <div className="pt-8 text-center">
+        <div className="pt-4 text-center">
           <Link
             href="/"
             className="text-sm text-[#8a8478] hover:text-[#d4a060] transition-colors duration-200"

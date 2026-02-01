@@ -105,12 +105,12 @@ export default function AlgorithmSelector() {
             className={`
               relative px-4 py-3 md:px-6 md:py-2 rounded-full text-sm
               border transition-all duration-200
-              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4a060] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c1a17]
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--neon-pink)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]
               active:scale-95
               ${
                 isSelected
-                  ? 'border-[#d4a060] text-[#1c1a17] font-semibold'
-                  : 'border-[#3a352f] text-[#e8dcc8] bg-[#2a2520] hover:border-[#d4a060] hover:bg-[#3a3025]'
+                  ? 'border-[var(--neon-pink)] text-[var(--bg)] font-semibold'
+                  : 'border-[var(--bg-elevated)] text-[var(--text)] bg-[var(--bg-card)] hover:border-[var(--neon-pink)] hover:bg-[var(--bg-elevated)]'
               }
             `}
             style={{
@@ -122,7 +122,7 @@ export default function AlgorithmSelector() {
             {isSelected && (
               <motion.div
                 layoutId="selectedBackground"
-                className="absolute inset-0 bg-[#d4a060] rounded-full"
+                className="absolute inset-0 bg-[var(--neon-pink)] rounded-full"
                 transition={
                   prefersReducedMotion
                     ? { duration: 0 }

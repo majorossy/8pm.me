@@ -424,14 +424,14 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "music--us"
+  - key: "music-us"
     name: "Music, Us"
     url_key: "musicus"
     type: "original"
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "musical-story--yes"
+  - key: "musical-story-yes"
     name: "Musical Story, Yes"
     url_key: "musicalstoryyes"
     type: "original"
@@ -459,7 +459,7 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "peoples--pt--2"
+  - key: "peoples-pt-2"
     name: "Peoples, Pt. 2"
     url_key: "peoplespt2"
     type: "original"

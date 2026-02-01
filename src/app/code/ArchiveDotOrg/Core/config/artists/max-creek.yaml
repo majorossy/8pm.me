@@ -1,0 +1,46 @@
+# ========================================
+# Max Creek Configuration
+# ========================================
+#
+# Generated: 2026-01-29 14:55:14
+# Albums Populated: 0
+# Tracks Populated: 0
+# Status: Ready for use
+#
+# TODO:
+#   1. Add year to each album
+#   2. Add track aliases for better matching
+#   3. Add medley patterns (if applicable)
+#   4. Run validation: bin/magento archive:validate max-creek
+#
+# See template.yaml for structure reference.
+# ========================================
+
+# ========================================
+# ARTIST SECTION
+# ========================================
+artist:
+  name: "Max Creek"
+  collection_id: "MaxCreek"
+  url_key: "max-creek"
+
+# ========================================
+# ALBUMS SECTION
+# ========================================
+albums: []
+
+# ========================================
+# TRACKS SECTION
+# ========================================
+tracks: []
+
+# ========================================
+# MEDLEYS SECTION (Optional)
+# ========================================
+# TODO: Add common medley patterns if applicable
+# Example:
+# medleys:
+#   - pattern: "Track A > Track B"
+#     tracks: ["track-a-key", "track-b-key"]
+#     separator: ">"
+# medleys: []

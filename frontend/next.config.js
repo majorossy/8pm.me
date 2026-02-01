@@ -34,6 +34,21 @@ const withPWA = require('next-pwa')({
         },
       },
     },
+    // Next.js optimized images - cache first, 30 days
+    {
+      urlPattern: /^\/_next\/image\?/,
+      handler: 'CacheFirst',
+      options: {
+        cacheName: 'next-images',
+        expiration: {
+          maxEntries: 200,
+          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+        },
+        cacheableResponse: {
+          statuses: [0, 200],
+        },
+      },
+    },
     // Google Fonts
     {
       urlPattern: /^https:\/\/fonts\.(?:gstatic|googleapis)\.com\/.*/i,
@@ -111,8 +126,35 @@ const withPWA = require('next-pwa')({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['localhost', 'magento.test'],
-    unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'localhost',
+      },
+      {
+        protocol: 'https',
+        hostname: 'magento.test',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.us.archive.org',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'upload.wikimedia.org',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.wikipedia.org',
+        pathname: '/**',
+      },
+    ],
+    formats: ['image/avif', 'image/webp'],
+    deviceSizes: [640, 750, 828, 1080, 1200],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
   },
   env: {
     MAGENTO_GRAPHQL_URL: process.env.MAGENTO_GRAPHQL_URL || 'https://app:8443/graphql',

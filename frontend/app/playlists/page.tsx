@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { usePlaylists } from '@/context/PlaylistContext';
 import { useQueue } from '@/context/QueueContext';
 import Link from 'next/link';
@@ -141,7 +142,7 @@ export default function PlaylistsPage() {
               {/* Cover art */}
               <div className="w-full aspect-square rounded bg-[#2d2a26] overflow-hidden relative">
                 {playlist.coverArt ? (
-                  <img src={playlist.coverArt} alt={playlist.name} className="w-full h-full object-cover" />
+                  <Image src={playlist.coverArt} alt={playlist.name || 'Playlist'} fill sizes="200px" quality={80} className="object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
                     <svg className="w-12 h-12 text-[#3a3632]" fill="currentColor" viewBox="0 0 24 24">

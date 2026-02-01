@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 
@@ -76,10 +77,13 @@ export default function ProfileMenu({ onSignInClick }: ProfileMenuProps) {
         aria-haspopup="true"
       >
         {avatarUrl ? (
-          <img
+          <Image
             src={avatarUrl}
-            alt={displayName}
-            className="w-8 h-8 rounded-full object-cover"
+            alt={displayName || 'Profile'}
+            width={32}
+            height={32}
+            quality={80}
+            className="rounded-full object-cover"
           />
         ) : (
           <div className="w-8 h-8 rounded-full bg-[#d4a060] flex items-center justify-center text-[#1c1a17] text-sm font-medium">

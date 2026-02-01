@@ -310,7 +310,7 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "no-good--mean-old--lowdown-lover-man"
+  - key: "no-good-mean-old-lowdown-lover-man"
     name: "No Good, Mean Old, Lowdown Lover Man"
     url_key: "nogoodmeanoldlowdownloverman"
     type: "original"

@@ -2,6 +2,7 @@
 
 // AlbumCarousel - responsive grid layout of album cards
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { Album } from '@/lib/api';
 
@@ -21,10 +22,13 @@ function AlbumCarouselCard({ album }: AlbumCarouselCardProps) {
         {/* Album artwork with play button overlay */}
         <div className="relative aspect-square mb-3 md:mb-4 rounded-md overflow-hidden shadow-lg">
           {album.coverArt ? (
-            <img
+            <Image
               src={album.coverArt}
-              alt={album.name}
-              className="w-full h-full object-cover"
+              alt={album.name || 'Album cover'}
+              fill
+              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 200px"
+              quality={80}
+              className="object-cover"
             />
           ) : (
             <div className="w-full h-full bg-[#2d2a26] flex items-center justify-center">

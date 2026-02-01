@@ -21,7 +21,7 @@
 # ========================================
 artist:
   name: "Of a Revolution"
-  collection_id: "OfaRevolution"
+  collection_id: "OfARevolution"
   url_key: "of-a-revolution"
 
 # ========================================
@@ -148,12 +148,6 @@ albums:
     type: "studio"
     # TODO: Add year field
 
-  - key: "hey-girl"
-    name: "Hey Girl"
-    url_key: "heygirl80214"
-    type: "studio"
-    # TODO: Add year field
-
   - key: "delicate-few"
     name: "Delicate Few"
     url_key: "delicatefew"
@@ -172,12 +166,6 @@ albums:
     type: "studio"
     # TODO: Add year field
 
-  - key: "untitled"
-    name: "Untitled"
-    url_key: "untitled81804"
-    type: "studio"
-    # TODO: Add year field
-
   - key: "she-gone"
     name: "She Gone"
     url_key: "shegone"
@@ -187,18 +175,6 @@ albums:
   - key: "king-of-the-thing"
     name: "King of the Thing"
     url_key: "kingofthething"
-    type: "studio"
-    # TODO: Add year field
-
-  - key: "night-shift"
-    name: "Night Shift"
-    url_key: "nightshift34560"
-    type: "studio"
-    # TODO: Add year field
-
-  - key: "about-mr-brown"
-    name: "About Mr. Brown"
-    url_key: "aboutmrbrown66679"
     type: "studio"
     # TODO: Add year field
 
@@ -241,12 +217,6 @@ albums:
   - key: "revisited"
     name: "Revisited"
     url_key: "revisited"
-    type: "studio"
-    # TODO: Add year field
-
-  - key: "hey-girl"
-    name: "Hey Girl"
-    url_key: "heygirl90331"
     type: "studio"
     # TODO: Add year field
 
@@ -309,16 +279,9 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "about-mr--brown"
+  - key: "about-mr-brown"
     name: "About Mr. Brown"
     url_key: "aboutmrbrown"
-    type: "original"
-    # TODO: Add album associations
-    # TODO: Add aliases for better matching
-
-  - key: "about-mr--brown"
-    name: "About Mr. Brown"
-    url_key: "aboutmrbrown66679"
     type: "original"
     # TODO: Add album associations
     # TODO: Add aliases for better matching
@@ -400,20 +363,6 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "hey-girl"
-    name: "Hey Girl"
-    url_key: "heygirl"
-    type: "original"
-    # TODO: Add album associations
-    # TODO: Add aliases for better matching
-
-  - key: "hey-girl"
-    name: "Hey Girl"
-    url_key: "heygirl80214"
-    type: "original"
-    # TODO: Add album associations
-    # TODO: Add aliases for better matching
-
   - key: "hold-on-true"
     name: "Hold on True"
     url_key: "holdontrue"
@@ -463,7 +412,7 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "mr--moon"
+  - key: "mr-moon"
     name: "Mr. Moon"
     url_key: "mrmoon"
     type: "original"
@@ -473,13 +422,6 @@ tracks:
   - key: "night-shift"
     name: "Night Shift"
     url_key: "nightshift"
-    type: "original"
-    # TODO: Add album associations
-    # TODO: Add aliases for better matching
-
-  - key: "night-shift"
-    name: "Night Shift"
-    url_key: "nightshift34560"
     type: "original"
     # TODO: Add album associations
     # TODO: Add aliases for better matching
@@ -603,21 +545,14 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "untitled"
-    name: "Untitled"
-    url_key: "untitled81804"
-    type: "original"
-    # TODO: Add album associations
-    # TODO: Add aliases for better matching
-
-  - key: "when-can-i-go-home-"
+  - key: "when-can-i-go-home"
     name: "When Can I Go Home?"
     url_key: "whencanigohome"
     type: "original"
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "whose-chariot-"
+  - key: "whose-chariot"
     name: "Whose Chariot?"
     url_key: "whosechariot"
     type: "original"

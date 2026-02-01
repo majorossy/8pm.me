@@ -3,6 +3,7 @@
 // BottomPlayer - fixed audio player bar (Jamify/Spotify theme)
 
 import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import { usePlayer } from '@/context/PlayerContext';
 import { useQueue } from '@/context/QueueContext';
 import { useWishlist } from '@/context/WishlistContext';
@@ -166,12 +167,14 @@ export default function BottomPlayer() {
                 aria-label="Expand player"
               >
                 {/* Album art */}
-                <div className="w-10 h-10 bg-[#2d2a26] flex-shrink-0 rounded">
+                <div className="w-10 h-10 bg-[#2d2a26] flex-shrink-0 rounded relative">
                   {queue.album?.coverArt ? (
-                    <img
+                    <Image
                       src={queue.album.coverArt}
-                      alt={queue.album.name}
-                      loading="lazy"
+                      alt={queue.album.name || 'Album cover'}
+                      width={40}
+                      height={40}
+                      quality={80}
                       onLoad={() => setImageLoaded(true)}
                       className={`w-full h-full object-cover rounded transition-opacity duration-300 ${
                         imageLoaded ? 'opacity-100' : 'opacity-0'
@@ -307,12 +310,14 @@ export default function BottomPlayer() {
         {/* Left section - Now playing info (30%) */}
         <div className="w-[30%] min-w-[180px] flex items-center gap-3">
           {/* Album art */}
-          <div className="w-14 h-14 bg-[#2d2a26] flex-shrink-0 rounded">
+          <div className="w-14 h-14 bg-[#2d2a26] flex-shrink-0 rounded relative">
             {queue.album?.coverArt ? (
-              <img
+              <Image
                 src={queue.album.coverArt}
                 alt={`${queue.album.name} by ${currentSong.artistName}`}
-                loading="lazy"
+                width={56}
+                height={56}
+                quality={85}
                 onLoad={() => setImageLoaded(true)}
                 className={`w-full h-full object-cover rounded transition-opacity duration-300 ${
                   imageLoaded ? 'opacity-100' : 'opacity-0'

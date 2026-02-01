@@ -1,0 +1,147 @@
+#!/bin/bash
+#
+# Sync archivedotorg_artist_status table with actual metadata file counts and product counts
+#
+# The archivedotorg_artist_status table may become out of sync with the actual
+# downloaded metadata files and imported products. This script:
+# 1. Creates missing rows for artists that have metadata but no status row
+# 2. Updates downloaded_shows from filesystem counts
+# 3. Updates imported_tracks from product counts
+#
+# Usage: bin/sync-artist-status
+#
+
+cd "$(dirname "$0")/.."
+
+echo "Syncing artist status with filesystem and database..."
+echo ""
+
+# Step 1: Get all metadata directories and their file counts from Docker container
+echo "Step 1: Syncing downloaded_shows from filesystem..."
+
+# Get metadata counts from filesystem and save to temp file
+tmpfile=$(mktemp)
+docker exec 8pm-phpfpm-1 bash -c '
+for dir in /var/www/html/var/archivedotorg/metadata/*/; do
+    if [ -d "$dir" ]; then
+        collection=$(basename "$dir")
+        count=$(ls -1 "$dir"*.json 2>/dev/null | wc -l | tr -d " ")
+        if [ "$count" -gt 0 ]; then
+            echo "$collection|$count"
+        fi
+    fi
+done
+' 2>/dev/null > "$tmpfile"
+
+created=0
+updated=0
+
+# Process each collection
+# IMPORTANT: Redirect stdin for bin/mysql to /dev/null to prevent it from consuming the loop input
+while IFS='|' read -r collection count; do
+    if [ -n "$collection" ] && [ -n "$count" ] && [ "$count" -gt 0 ]; then
+        # First check if row exists (redirect stdin to /dev/null)
+        existing=$(bin/mysql -N -e "SELECT collection_id FROM archivedotorg_artist_status WHERE collection_id = '$collection';" </dev/null 2>/dev/null)
+
+        if [ -z "$existing" ]; then
+            # Row doesn't exist - INSERT with all required fields
+            bin/mysql -N -e "
+                INSERT INTO archivedotorg_artist_status (
+                    collection_id, downloaded_shows, has_yaml_config,
+                    last_download_at, created_at, updated_at
+                )
+                VALUES ('$collection', $count, 0, NOW(), NOW(), NOW());
+            " </dev/null 2>/dev/null
+            printf "  %-30s %s shows (created)\n" "$collection:" "$count"
+            created=$((created + 1))
+        else
+            # Row exists - UPDATE
+            bin/mysql -N -e "
+                UPDATE archivedotorg_artist_status
+                SET downloaded_shows = $count,
+                    last_download_at = COALESCE(last_download_at, NOW()),
+                    updated_at = NOW()
+                WHERE collection_id = '$collection';
+            " </dev/null 2>/dev/null
+            printf "  %-30s %s shows (updated)\n" "$collection:" "$count"
+            updated=$((updated + 1))
+        fi
+    fi
+done < "$tmpfile"
+
+rm -f "$tmpfile"
+echo "  Created: $created, Updated: $updated"
+
+echo ""
+echo "Step 2: Syncing imported_tracks from product counts..."
+
+# Get product counts per collection and save to temp file
+tmpfile2=$(mktemp)
+docker exec 8pm-phpfpm-1 bash -c '
+mysql -u magento -pmagento magento -N -e "
+    SELECT
+        cce_collection.value AS collection_id,
+        COUNT(DISTINCT ccpi.product_id) AS product_count
+    FROM catalog_category_entity cce
+    JOIN catalog_category_entity_varchar cce_collection
+        ON cce.entity_id = cce_collection.entity_id
+        AND cce_collection.attribute_id = (
+            SELECT attribute_id FROM eav_attribute
+            WHERE entity_type_id = 3 AND attribute_code = '\''archive_collection_id'\''
+        )
+    JOIN catalog_category_product_index ccpi
+        ON cce.entity_id = ccpi.category_id
+    WHERE cce_collection.value IS NOT NULL
+        AND cce_collection.value != '\'''\''
+    GROUP BY cce_collection.value;
+" 2>/dev/null
+' > "$tmpfile2"
+
+track_updated=0
+
+# Process each collection
+while IFS=$'\t' read -r collection count; do
+    if [ -n "$collection" ] && [ -n "$count" ] && [ "$count" -gt 0 ]; then
+        result=$(bin/mysql -N -e "
+            UPDATE archivedotorg_artist_status
+            SET imported_tracks = $count,
+                updated_at = NOW()
+            WHERE collection_id = '$collection';
+            SELECT ROW_COUNT();
+        " </dev/null 2>/dev/null)
+
+        if [ "$result" = "1" ]; then
+            printf "  %-30s %s tracks\n" "$collection:" "$count"
+            track_updated=$((track_updated + 1))
+        fi
+    fi
+done < "$tmpfile2"
+
+rm -f "$tmpfile2"
+echo "  Updated: $track_updated"
+
+echo ""
+echo "Step 3: Syncing artist_name from archivedotorg_artist table..."
+
+# Update artist_name where it's missing (join with archivedotorg_artist table)
+result=$(bin/mysql -N -e "
+    UPDATE archivedotorg_artist_status s
+    JOIN archivedotorg_artist a ON s.collection_id = a.collection_id
+    SET s.artist_name = a.artist_name,
+        s.artist_id = a.artist_id,
+        s.updated_at = NOW()
+    WHERE s.artist_name IS NULL OR s.artist_name = '';
+    SELECT ROW_COUNT();
+" </dev/null 2>/dev/null)
+
+if [ -n "$result" ] && [ "$result" -gt 0 ] 2>/dev/null; then
+    echo "  Updated artist_name for $result rows"
+else
+    echo "  All artist_name values already set"
+fi
+
+echo ""
+echo "Done!"
+echo ""
+echo "To verify, run:"
+echo "  bin/mysql -e \"SELECT artist_name, collection_id, downloaded_shows, imported_tracks FROM archivedotorg_artist_status ORDER BY artist_name;\""

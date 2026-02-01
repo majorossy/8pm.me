@@ -257,7 +257,7 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "flippin--the-bird"
+  - key: "flippin-the-bird"
     name: "Flippin' the Bird"
     url_key: "flippinthebird"
     type: "original"

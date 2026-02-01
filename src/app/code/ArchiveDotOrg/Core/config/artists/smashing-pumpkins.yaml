@@ -719,7 +719,7 @@ tracks:
     # TODO: Add aliases for better matching
 
   - key: "cash-car-star-version-1"
-    name: "Cash Car Star "Version 1""
+    name: "Cash Car Star (Version 1)"
     url_key: "cashcarstarversion1"
     albums: ["machina-iithe-friends-and-enemies-of-modern-music"]
     canonical_album: "machina-iithe-friends-and-enemies-of-modern-music"

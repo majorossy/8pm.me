@@ -1,0 +1,4 @@
+# Git LFS tracking for Archive.org metadata
+# 1.1GB of JSON files - too large for regular git
+
+data/archivedotorg-metadata/**/*.json filter=lfs diff=lfs merge=lfs -text

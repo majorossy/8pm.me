@@ -72,11 +72,11 @@ class Dashboard extends Template
         try {
             $matched = (int)$connection->fetchOne(
                 $connection->select()
-                    ->from($tableName, ['SUM(tracks_matched)'])
+                    ->from($tableName, ['SUM(matched_tracks)'])
             );
             $unmatched = (int)$connection->fetchOne(
                 $connection->select()
-                    ->from($tableName, ['SUM(tracks_unmatched)'])
+                    ->from($tableName, ['SUM(unmatched_tracks)'])
             );
             return $matched + $unmatched;
         } catch (\Exception $e) {
@@ -95,18 +95,18 @@ class Dashboard extends Template
         try {
             $matched = (int)$connection->fetchOne(
                 $connection->select()
-                    ->from($tableName, ['SUM(tracks_matched)'])
+                    ->from($tableName, ['SUM(matched_tracks)'])
             );
             $unmatched = (int)$connection->fetchOne(
                 $connection->select()
-                    ->from($tableName, ['SUM(tracks_unmatched)'])
+                    ->from($tableName, ['SUM(unmatched_tracks)'])
             );
-            
+
             $total = $matched + $unmatched;
             if ($total === 0) {
                 return 0.0;
             }
-            
+
             return round(($matched / $total) * 100, 2);
         } catch (\Exception $e) {
             return 0.0;

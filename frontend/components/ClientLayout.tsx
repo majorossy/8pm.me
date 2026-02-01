@@ -110,7 +110,7 @@ function InnerLayout({ children }: { children: ReactNode }) {
       {/* Main content area */}
       <main
         id="main-content"
-        className="min-h-screen bg-[#1c1a17] relative z-10 pb-[120px] pt-14"
+        className="min-h-screen bg-[var(--bg)] relative z-10 pb-[120px] pt-14"
       >
         {children}
 

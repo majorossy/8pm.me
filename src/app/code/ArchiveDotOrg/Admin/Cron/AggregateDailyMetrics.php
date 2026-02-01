@@ -129,9 +129,9 @@ class AggregateDailyMetrics
     {
         $select = $connection->select()
             ->from($tableName, [
-                'total_matched' => 'SUM(tracks_matched)',
-                'total_unmatched' => 'SUM(tracks_unmatched)',
-                'avg_match_rate' => 'AVG(match_rate)'
+                'total_matched' => 'SUM(matched_tracks)',
+                'total_unmatched' => 'SUM(unmatched_tracks)',
+                'avg_match_rate' => 'AVG(match_rate_percent)'
             ]);
 
         $result = $connection->fetchRow($select);

@@ -1,5 +1,7 @@
 'use client';
 
+import Image from 'next/image';
+
 interface BandBiographyProps {
   biography?: string;
   wikipediaSummary?: {
@@ -100,10 +102,13 @@ export default function BandBiography({
             {allImages.slice(0, 3).map((image, index) => (
               <div key={index} className="bg-[#252220] rounded-lg overflow-hidden">
                 <div className="relative aspect-square">
-                  <img
+                  <Image
                     src={image.url}
                     alt={image.caption || 'Band photo'}
-                    className="w-full h-full object-cover"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 300px"
+                    quality={85}
+                    className="object-cover"
                   />
                 </div>
                 {image.caption && (

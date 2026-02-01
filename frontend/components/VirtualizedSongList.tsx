@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, CSSProperties, ReactElement } from 'react';
+import Image from 'next/image';
 import { List, ListImperativeAPI, useListCallbackRef } from 'react-window';
 import { Song } from '@/lib/types';
 import { formatDuration } from '@/lib/api';
@@ -71,11 +72,13 @@ function SongRow({
       >
         {/* Album art thumbnail */}
         {song.albumArt && (
-          <img
+          <Image
             src={song.albumArt}
-            alt=""
-            className="w-10 h-10 rounded flex-shrink-0 bg-[#2d2a26]"
-            loading="lazy"
+            alt={song.albumName || 'Album cover'}
+            width={40}
+            height={40}
+            quality={75}
+            className="rounded flex-shrink-0 bg-[#2d2a26]"
           />
         )}
         <div className="min-w-0 flex-1">
@@ -248,11 +251,13 @@ function RecentRow({
         className="flex-1 min-w-0 text-left flex items-center gap-3"
       >
         {song.albumArt && (
-          <img
+          <Image
             src={song.albumArt}
-            alt=""
-            className="w-10 h-10 rounded flex-shrink-0 bg-[#2d2a26]"
-            loading="lazy"
+            alt={song.albumName || 'Album cover'}
+            width={40}
+            height={40}
+            quality={75}
+            className="rounded flex-shrink-0 bg-[#2d2a26]"
           />
         )}
         <div className="min-w-0 flex-1">

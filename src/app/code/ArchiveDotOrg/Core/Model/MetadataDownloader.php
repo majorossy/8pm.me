@@ -150,7 +150,7 @@ class MetadataDownloader implements MetadataDownloaderInterface
 
             try {
                 $metadata = $this->fetchShowMetadata($identifier);
-                $this->saveMetadataToCache($identifier, $metadata);
+                $this->saveMetadataToCache($identifier, $metadata, $collectionId);
                 $downloaded++;
 
                 // Update progress after each successful download (crash-safe)

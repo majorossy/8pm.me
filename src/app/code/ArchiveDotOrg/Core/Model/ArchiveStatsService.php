@@ -147,11 +147,11 @@ class ArchiveStatsService
         $categoryIds = $this->getChildCategoryIds($categoryId);
         $categoryIds[] = $categoryId; // Include parent
 
-        // Count total products in these categories
+        // Count total UNIQUE products in these categories (products may be in multiple categories)
         $select = $connection->select()
             ->from(
                 ['p' => $connection->getTableName('catalog_product_entity')],
-                ['total_recordings' => 'COUNT(*)']
+                ['total_recordings' => 'COUNT(DISTINCT p.entity_id)']
             )
             ->joinInner(
                 ['cp' => $connection->getTableName('catalog_category_product')],

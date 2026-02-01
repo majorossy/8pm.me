@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { usePlaylists } from '@/context/PlaylistContext';
 import { useQueue } from '@/context/QueueContext';
 import { formatDuration } from '@/lib/api';
@@ -95,9 +96,9 @@ export default function PlaylistDetailPage() {
       <div className="bg-gradient-to-b from-[#3a3632] to-[#1c1a17] p-6 md:p-8 pb-8">
         <div className="flex items-end gap-6">
           {/* Cover art */}
-          <div className="w-32 h-32 md:w-56 md:h-56 rounded-lg bg-[#2d2a26] flex-shrink-0 overflow-hidden shadow-2xl">
+          <div className="w-32 h-32 md:w-56 md:h-56 rounded-lg bg-[#2d2a26] flex-shrink-0 overflow-hidden shadow-2xl relative">
             {playlist.coverArt ? (
-              <img src={playlist.coverArt} alt={playlist.name} className="w-full h-full object-cover" />
+              <Image src={playlist.coverArt} alt={playlist.name || 'Playlist'} fill sizes="(max-width: 768px) 128px, 224px" quality={85} className="object-cover" />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
                 <svg className="w-16 md:w-24 h-16 md:h-24 text-[#3a3632]" fill="currentColor" viewBox="0 0 24 24">

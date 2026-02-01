@@ -5,7 +5,7 @@ export default function Footer() {
   return (
     <footer
       aria-label="Site footer"
-      className="border-t border-[#3a3632]/30 bg-[#1c1a17] mb-[60px] md:mb-0"
+      className="border-t border-[#3a3632]/30 bg-[var(--bg)] mb-[60px] md:mb-0"
     >
       <div className="max-w-[1200px] mx-auto py-12 px-8 md:py-12 md:px-8 py-8 px-4">
         {/* 4-Column Grid */}
@@ -13,14 +13,14 @@ export default function Footer() {
 
           {/* Column 1: EXPLORE */}
           <nav aria-label="Explore navigation">
-            <h3 className="text-xs uppercase tracking-[3px] text-[#6a6458] font-semibold mb-4">
+            <h3 className="text-xs uppercase tracking-[3px] text-[var(--text-subdued)] font-semibold mb-4">
               Explore
             </h3>
             <ul className="space-y-3">
               <li>
                 <Link
                   href="/artists"
-                  className="text-sm text-[#8a8478] hover:text-[#d4a060] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4a060] rounded"
+                  className="text-sm text-[var(--text-dim)] hover:text-[var(--neon-pink)] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--neon-pink)] rounded"
                 >
                   Browse Artists
                 </Link>
@@ -28,7 +28,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/search"
-                  className="text-sm text-[#8a8478] hover:text-[#d4a060] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4a060] rounded"
+                  className="text-sm text-[var(--text-dim)] hover:text-[var(--neon-pink)] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--neon-pink)] rounded"
                 >
                   Search Shows
                 </Link>
@@ -36,7 +36,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/library"
-                  className="text-sm text-[#8a8478] hover:text-[#d4a060] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4a060] rounded"
+                  className="text-sm text-[var(--text-dim)] hover:text-[var(--neon-pink)] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--neon-pink)] rounded"
                 >
                   Your Library
                 </Link>
@@ -44,7 +44,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/playlists"
-                  className="text-sm text-[#8a8478] hover:text-[#d4a060] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4a060] rounded"
+                  className="text-sm text-[var(--text-dim)] hover:text-[var(--neon-pink)] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--neon-pink)] rounded"
                 >
                   Playlists
                 </Link>
@@ -54,14 +54,14 @@ export default function Footer() {
 
           {/* Column 2: FEATURES */}
           <nav aria-label="Features navigation">
-            <h3 className="text-xs uppercase tracking-[3px] text-[#6a6458] font-semibold mb-4">
+            <h3 className="text-xs uppercase tracking-[3px] text-[var(--text-subdued)] font-semibold mb-4">
               Features
             </h3>
             <ul className="space-y-3">
               <li>
                 <Link
                   href="/library?tab=recent"
-                  className="text-sm text-[#8a8478] hover:text-[#d4a060] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4a060] rounded"
+                  className="text-sm text-[var(--text-dim)] hover:text-[var(--neon-pink)] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--neon-pink)] rounded"
                 >
                   Recently Played
                 </Link>
@@ -69,18 +69,18 @@ export default function Footer() {
               <li>
                 <Link
                   href="/library?tab=liked"
-                  className="text-sm text-[#8a8478] hover:text-[#d4a060] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4a060] rounded"
+                  className="text-sm text-[var(--text-dim)] hover:text-[var(--neon-pink)] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--neon-pink)] rounded"
                 >
                   Liked Songs
                 </Link>
               </li>
               <li>
-                <span className="text-sm text-[#6a6458] leading-relaxed">
+                <span className="text-sm text-[var(--text-subdued)] leading-relaxed">
                   Queue
                 </span>
               </li>
               <li>
-                <span className="text-sm text-[#6a6458] leading-relaxed">
+                <span className="text-sm text-[var(--text-subdued)] leading-relaxed">
                   Keyboard Shortcuts
                 </span>
               </li>
@@ -89,14 +89,14 @@ export default function Footer() {
 
           {/* Column 3: ACCOUNT */}
           <nav aria-label="Account navigation">
-            <h3 className="text-xs uppercase tracking-[3px] text-[#6a6458] font-semibold mb-4">
+            <h3 className="text-xs uppercase tracking-[3px] text-[var(--text-subdued)] font-semibold mb-4">
               Account
             </h3>
             <ul className="space-y-3">
               <li>
                 <Link
                   href="/account"
-                  className="text-sm text-[#8a8478] hover:text-[#d4a060] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4a060] rounded"
+                  className="text-sm text-[var(--text-dim)] hover:text-[var(--neon-pink)] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--neon-pink)] rounded"
                 >
                   Sign In / Profile
                 </Link>
@@ -104,7 +104,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/account/settings"
-                  className="text-sm text-[#8a8478] hover:text-[#d4a060] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4a060] rounded"
+                  className="text-sm text-[var(--text-dim)] hover:text-[var(--neon-pink)] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--neon-pink)] rounded"
                 >
                   Account Settings
                 </Link>
@@ -112,7 +112,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/account/orders"
-                  className="text-sm text-[#8a8478] hover:text-[#d4a060] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4a060] rounded"
+                  className="text-sm text-[var(--text-dim)] hover:text-[var(--neon-pink)] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--neon-pink)] rounded"
                 >
                   Orders
                 </Link>
@@ -122,14 +122,14 @@ export default function Footer() {
 
           {/* Column 4: ABOUT */}
           <nav aria-label="About navigation">
-            <h3 className="text-xs uppercase tracking-[3px] text-[#6a6458] font-semibold mb-4">
+            <h3 className="text-xs uppercase tracking-[3px] text-[var(--text-subdued)] font-semibold mb-4">
               About
             </h3>
             <ul className="space-y-3">
               <li>
                 <Link
                   href="/about"
-                  className="text-sm text-[#8a8478] hover:text-[#d4a060] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4a060] rounded"
+                  className="text-sm text-[var(--text-dim)] hover:text-[var(--neon-pink)] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--neon-pink)] rounded"
                 >
                   About 8PM
                 </Link>
@@ -137,7 +137,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/how-it-works"
-                  className="text-sm text-[#8a8478] hover:text-[#d4a060] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4a060] rounded"
+                  className="text-sm text-[var(--text-dim)] hover:text-[var(--neon-pink)] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--neon-pink)] rounded"
                 >
                   How It Works
                 </Link>
@@ -145,7 +145,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/faq"
-                  className="text-sm text-[#8a8478] hover:text-[#d4a060] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4a060] rounded"
+                  className="text-sm text-[var(--text-dim)] hover:text-[var(--neon-pink)] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--neon-pink)] rounded"
                 >
                   FAQ
                 </Link>
@@ -153,7 +153,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/privacy"
-                  className="text-sm text-[#8a8478] hover:text-[#d4a060] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4a060] rounded"
+                  className="text-sm text-[var(--text-dim)] hover:text-[var(--neon-pink)] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--neon-pink)] rounded"
                 >
                   Privacy Policy
                 </Link>
@@ -161,7 +161,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/terms"
-                  className="text-sm text-[#8a8478] hover:text-[#d4a060] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4a060] rounded"
+                  className="text-sm text-[var(--text-dim)] hover:text-[var(--neon-pink)] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--neon-pink)] rounded"
                 >
                   Terms of Service
                 </Link>
@@ -169,9 +169,17 @@ export default function Footer() {
               <li>
                 <Link
                   href="/contact"
-                  className="text-sm text-[#8a8478] hover:text-[#d4a060] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4a060] rounded"
+                  className="text-sm text-[var(--text-dim)] hover:text-[var(--neon-pink)] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--neon-pink)] rounded"
                 >
                   Contact
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/tapers"
+                  className="text-sm text-[var(--text-dim)] hover:text-[var(--neon-pink)] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--neon-pink)] rounded"
+                >
+                  Tapers
                 </Link>
               </li>
             </ul>
@@ -179,10 +187,10 @@ export default function Footer() {
         </div>
 
         {/* Bottom Section */}
-        <div className="border-t border-[#3a3632]/20 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="border-t border-[var(--bg-elevated)]/20 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
 
           {/* Left: Ethos */}
-          <div className="text-sm text-[#d4a060] font-medium tracking-wide">
+          <div className="text-sm text-[var(--neon-pink)] font-medium tracking-wide">
             Please copy freely — never sell
           </div>
 
@@ -191,13 +199,13 @@ export default function Footer() {
             href="https://archive.org"
             target="_blank"
             rel="noopener noreferrer"
-            className="group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4a060] rounded"
+            className="group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--neon-pink)] rounded"
             aria-label="Powered by Archive.org (opens in new tab)"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 27 30"
-              className="w-8 h-8 fill-[#8a8478] group-hover:fill-[#d4a060] transition-all duration-300 group-hover:drop-shadow-[0_0_8px_rgba(212,160,96,0.4)]"
+              className="w-8 h-8 fill-[var(--text-dim)] group-hover:fill-[var(--neon-pink)] transition-all duration-300 group-hover:drop-shadow-[0_0_8px_rgba(199,90,90,0.4)]"
               role="img"
               aria-label="Archive.org logo"
             >
@@ -225,7 +233,7 @@ export default function Footer() {
           </a>
 
           {/* Right: Copyright */}
-          <div className="text-xs text-[#6a6458] uppercase tracking-wider">
+          <div className="text-xs text-[var(--text-subdued)] uppercase tracking-wider">
             © 2026 8PM
           </div>
         </div>

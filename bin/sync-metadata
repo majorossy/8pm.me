@@ -1,0 +1,201 @@
+#!/bin/bash
+#
+# Sync Archive.org metadata between host and Docker container
+#
+# Usage:
+#   bin/sync-metadata export      # Docker → Host (for git commit)
+#   bin/sync-metadata import      # Host → Docker (after git pull)
+#   bin/sync-metadata status      # Show sync status
+#
+
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+CONTAINER="8pm-phpfpm-1"
+CONTAINER_PATH="/var/www/html/var/archivedotorg/metadata"
+HOST_PATH="$PROJECT_ROOT/data/archivedotorg-metadata"
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+usage() {
+    echo "Usage: $0 <command>"
+    echo ""
+    echo "Commands:"
+    echo "  export    Copy metadata from Docker to host (for git commit)"
+    echo "  import    Copy metadata from host to Docker (after git pull)"
+    echo "  status    Show sync status and file counts"
+    echo ""
+    echo "Examples:"
+    echo "  $0 export              # After downloading new metadata"
+    echo "  $0 import              # After git pull with new metadata"
+    echo "  $0 status              # Check sync state"
+}
+
+check_container() {
+    if ! docker ps --format '{{.Names}}' | grep -q "^${CONTAINER}$"; then
+        echo -e "${RED}Error: Container $CONTAINER is not running${NC}"
+        echo "Start Docker with: bin/start"
+        exit 1
+    fi
+}
+
+sync_export() {
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "📤 Export: Docker → Host"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+
+    check_container
+
+    # Use the export script
+    "$PROJECT_ROOT/bin/export-metadata"
+}
+
+sync_import() {
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "📥 Import: Host → Docker"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+
+    check_container
+
+    # Check if host directory exists
+    if [ ! -d "$HOST_PATH" ]; then
+        echo -e "${YELLOW}No metadata found on host at $HOST_PATH${NC}"
+        echo "Run 'bin/sync-metadata export' first, or pull from git."
+        exit 0
+    fi
+
+    HOST_SIZE=$(du -sh "$HOST_PATH" 2>/dev/null | cut -f1)
+    echo "Host metadata size: $HOST_SIZE"
+    echo ""
+
+    # Ensure container directory exists
+    docker exec "$CONTAINER" mkdir -p "$CONTAINER_PATH"
+
+    # Get list of artists on host
+    ARTISTS=$(ls "$HOST_PATH" 2>/dev/null || true)
+
+    if [ -z "$ARTISTS" ]; then
+        echo -e "${YELLOW}No artists found in $HOST_PATH${NC}"
+        exit 0
+    fi
+
+    TOTAL_ARTISTS=$(echo "$ARTISTS" | wc -l | tr -d ' ')
+    CURRENT=0
+    TOTAL_FILES=0
+
+    echo "Importing $TOTAL_ARTISTS artists..."
+    echo ""
+
+    for ARTIST in $ARTISTS; do
+        ((CURRENT++))
+
+        # Skip hidden directories
+        if [[ "$ARTIST" == .* ]]; then
+            continue
+        fi
+
+        # Ensure artist directory exists in container
+        docker exec "$CONTAINER" mkdir -p "$CONTAINER_PATH/$ARTIST"
+
+        # Copy from host to container
+        docker cp "$HOST_PATH/$ARTIST/." "$CONTAINER:$CONTAINER_PATH/$ARTIST/" 2>/dev/null || true
+
+        FILE_COUNT=$(find "$HOST_PATH/$ARTIST" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
+        TOTAL_FILES=$((TOTAL_FILES + FILE_COUNT))
+
+        printf "  [%d/%d] %-30s %5d files\n" "$CURRENT" "$TOTAL_ARTISTS" "$ARTIST" "$FILE_COUNT"
+    done
+
+    # Fix permissions in container
+    docker exec "$CONTAINER" chown -R app:app "$CONTAINER_PATH" 2>/dev/null || true
+
+    echo ""
+    echo -e "${GREEN}✓ Imported $TOTAL_FILES total files from $TOTAL_ARTISTS artists${NC}"
+    echo ""
+
+    CONTAINER_SIZE=$(docker exec "$CONTAINER" du -sh "$CONTAINER_PATH" 2>/dev/null | cut -f1)
+    echo "Container metadata size: $CONTAINER_SIZE"
+}
+
+sync_status() {
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "📊 Metadata Sync Status"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+
+    # Host status
+    echo -e "${BLUE}Host (git-tracked):${NC} $HOST_PATH"
+    if [ -d "$HOST_PATH" ]; then
+        HOST_SIZE=$(du -sh "$HOST_PATH" 2>/dev/null | cut -f1)
+        HOST_FILES=$(find "$HOST_PATH" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
+        HOST_ARTISTS=$(ls -d "$HOST_PATH"/*/ 2>/dev/null | wc -l | tr -d ' ')
+        echo "  Size:    $HOST_SIZE"
+        echo "  Artists: $HOST_ARTISTS"
+        echo "  Files:   $HOST_FILES"
+    else
+        echo -e "  ${YELLOW}Not found${NC}"
+    fi
+    echo ""
+
+    # Container status
+    echo -e "${BLUE}Docker:${NC} $CONTAINER:$CONTAINER_PATH"
+    if docker ps --format '{{.Names}}' | grep -q "^${CONTAINER}$"; then
+        if docker exec "$CONTAINER" test -d "$CONTAINER_PATH" 2>/dev/null; then
+            CONTAINER_SIZE=$(docker exec "$CONTAINER" du -sh "$CONTAINER_PATH" 2>/dev/null | cut -f1)
+            CONTAINER_FILES=$(docker exec "$CONTAINER" find "$CONTAINER_PATH" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
+            CONTAINER_ARTISTS=$(docker exec "$CONTAINER" ls -d "$CONTAINER_PATH"/*/ 2>/dev/null | wc -l | tr -d ' ')
+            echo "  Size:    $CONTAINER_SIZE"
+            echo "  Artists: $CONTAINER_ARTISTS"
+            echo "  Files:   $CONTAINER_FILES"
+        else
+            echo -e "  ${YELLOW}Metadata directory not found${NC}"
+        fi
+    else
+        echo -e "  ${YELLOW}Container not running${NC}"
+    fi
+    echo ""
+
+    # Comparison
+    if [ -d "$HOST_PATH" ] && docker ps --format '{{.Names}}' | grep -q "^${CONTAINER}$" && docker exec "$CONTAINER" test -d "$CONTAINER_PATH" 2>/dev/null; then
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "Comparison:"
+
+        HOST_FILES=$(find "$HOST_PATH" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
+        CONTAINER_FILES=$(docker exec "$CONTAINER" find "$CONTAINER_PATH" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
+
+        if [ "$HOST_FILES" -eq "$CONTAINER_FILES" ]; then
+            echo -e "  ${GREEN}✓ In sync ($HOST_FILES files)${NC}"
+        elif [ "$HOST_FILES" -gt "$CONTAINER_FILES" ]; then
+            DIFF=$((HOST_FILES - CONTAINER_FILES))
+            echo -e "  ${YELLOW}Host has $DIFF more files - run 'bin/sync-metadata import'${NC}"
+        else
+            DIFF=$((CONTAINER_FILES - HOST_FILES))
+            echo -e "  ${YELLOW}Docker has $DIFF more files - run 'bin/sync-metadata export'${NC}"
+        fi
+    fi
+}
+
+# Main
+case "${1:-}" in
+    export)
+        sync_export
+        ;;
+    import)
+        sync_import
+        ;;
+    status)
+        sync_status
+        ;;
+    *)
+        usage
+        exit 1
+        ;;
+esac

@@ -220,12 +220,6 @@ albums:
     type: "studio"
     # TODO: Add year field
 
-  - key: "black-clouds"
-    name: "Black Clouds"
-    url_key: "blackclouds70723"
-    type: "studio"
-    # TODO: Add year field
-
   - key: "lesters-rant"
     name: "Lesters Rant"
     url_key: "lestersrant"
@@ -250,21 +244,9 @@ albums:
     type: "studio"
     # TODO: Add year field
 
-  - key: "jellyfish"
-    name: "Jellyfish"
-    url_key: "jellyfish46930"
-    type: "studio"
-    # TODO: Add year field
-
   - key: "drum-jam"
     name: "Drum Jam"
     url_key: "drumjam"
-    type: "studio"
-    # TODO: Add year field
-
-  - key: "texas"
-    name: "Texas"
-    url_key: "texas14345"
     type: "studio"
     # TODO: Add year field
 
@@ -331,12 +313,6 @@ albums:
   - key: "up-the-canyon"
     name: "Up The Canyon"
     url_key: "upthecanyon"
-    type: "studio"
-    # TODO: Add year field
-
-  - key: "wake-up"
-    name: "Wake Up"
-    url_key: "wakeup35704"
     type: "studio"
     # TODO: Add year field
 
@@ -568,21 +544,9 @@ albums:
     type: "studio"
     # TODO: Add year field
 
-  - key: "restless-wind"
-    name: "Restless Wind"
-    url_key: "restlesswind66522"
-    type: "studio"
-    # TODO: Add year field
-
   - key: "colorado-bluebird-sky"
     name: "Colorado Bluebird Sky"
     url_key: "coloradobluebirdsky"
-    type: "studio"
-    # TODO: Add year field
-
-  - key: "betray-the-dark"
-    name: "Betray The Dark"
-    url_key: "betraythedark97612"
     type: "studio"
     # TODO: Add year field
 
@@ -687,13 +651,6 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "round-the-wheel"
-    name: "'Round The Wheel"
-    url_key: "roundthewheel52539"
-    type: "original"
-    # TODO: Add album associations
-    # TODO: Add aliases for better matching
-
   - key: "year-flood"
     name: "100 Year Flood"
     url_key: "100yearflood"
@@ -722,7 +679,7 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "being-for-the-benefit-of-mr--kite-"
+  - key: "being-for-the-benefit-of-mr-kite"
     name: "Being For The Benefit Of Mr. Kite!"
     url_key: "beingforthebenefitofmrkite"
     type: "original"
@@ -739,13 +696,6 @@ tracks:
   - key: "betray-the-dark"
     name: "Betray The Dark"
     url_key: "betraythedark97612"
-    type: "original"
-    # TODO: Add album associations
-    # TODO: Add aliases for better matching
-
-  - key: "betray-the-dark"
-    name: "Betray The Dark"
-    url_key: "betraythedark"
     type: "original"
     # TODO: Add album associations
     # TODO: Add aliases for better matching
@@ -781,13 +731,6 @@ tracks:
   - key: "black-clouds"
     name: "Black Clouds"
     url_key: "blackclouds70723"
-    type: "original"
-    # TODO: Add album associations
-    # TODO: Add aliases for better matching
-
-  - key: "black-clouds-"
-    name: "Black Clouds "
-    url_key: "blackclouds"
     type: "original"
     # TODO: Add album associations
     # TODO: Add aliases for better matching
@@ -848,7 +791,7 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "diggin--in"
+  - key: "diggin-in"
     name: "Diggin' In"
     url_key: "digginin"
     type: "original"
@@ -1023,13 +966,6 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "jellyfish"
-    name: "Jellyfish"
-    url_key: "jellyfish46930"
-    type: "original"
-    # TODO: Add album associations
-    # TODO: Add aliases for better matching
-
   - key: "johnny-cash"
     name: "Johnny Cash"
     url_key: "johnnycash"
@@ -1044,14 +980,14 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "just-passin--through"
+  - key: "just-passin-through"
     name: "Just Passin' Through"
     url_key: "justpassinthrough"
     type: "original"
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "l-a--woman"
+  - key: "l-a-woman"
     name: "L.A. Woman"
     url_key: "lawoman"
     type: "original"
@@ -1061,20 +997,6 @@ tracks:
   - key: "land-s-end"
     name: "Land's End"
     url_key: "landsend59460"
-    type: "original"
-    # TODO: Add album associations
-    # TODO: Add aliases for better matching
-
-  - key: "land-s-end"
-    name: "Land's End"
-    url_key: "landsend53564"
-    type: "original"
-    # TODO: Add album associations
-    # TODO: Add aliases for better matching
-
-  - key: "land-s-end"
-    name: "Land's End"
-    url_key: "landsend"
     type: "original"
     # TODO: Add album associations
     # TODO: Add aliases for better matching
@@ -1142,7 +1064,7 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "missin--me"
+  - key: "missin-me"
     name: "Missin' Me"
     url_key: "missinme"
     type: "original"
@@ -1240,13 +1162,6 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "restless-wind"
-    name: "Restless Wind"
-    url_key: "restlesswind"
-    type: "original"
-    # TODO: Add album associations
-    # TODO: Add aliases for better matching
-
   - key: "resume-man"
     name: "Resume Man"
     url_key: "resumeman"
@@ -1296,7 +1211,7 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "san-jos-"
+  - key: "san-jos"
     name: "San Jos_"
     url_key: "sanjos"
     type: "original"
@@ -1422,14 +1337,7 @@ tracks:
     # TODO: Add album associations
     # TODO: Add aliases for better matching
 
-  - key: "texas"
-    name: "Texas"
-    url_key: "texas14345"
-    type: "original"
-    # TODO: Add album associations
-    # TODO: Add aliases for better matching
-
-  - key: "the-remington-ride-"
+  - key: "the-remington-ride"
     name: "The Remington Ride "
     url_key: "theremingtonride"
     type: "original"
@@ -1495,13 +1403,6 @@ tracks:
   - key: "wake-up"
     name: "Wake Up"
     url_key: "wakeup35704"
-    type: "original"
-    # TODO: Add album associations
-    # TODO: Add aliases for better matching
-
-  - key: "wake-up"
-    name: "Wake Up"
-    url_key: "wakeup"
     type: "original"
     # TODO: Add album associations
     # TODO: Add aliases for better matching

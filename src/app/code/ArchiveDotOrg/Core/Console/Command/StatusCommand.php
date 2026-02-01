@@ -245,15 +245,24 @@ class StatusCommand extends Command
     /**
      * Get count of downloaded shows from filesystem
      *
+     * Uses collection_id for folder lookup since metadata folders use
+     * collection IDs (e.g., "GratefulDead") not artist names (e.g., "Grateful Dead")
+     *
      * @param string $artistName
      * @return int
      */
     private function getDownloadedShowsCount(string $artistName): int
     {
         try {
+            // Get collection ID from config (folders use collection_id, not artist_name)
+            $collectionId = $this->getCollectionIdForArtist($artistName);
+            if (!$collectionId) {
+                return 0;
+            }
+
             // Get var directory path (BP is Magento root)
             $varPath = BP . '/var';
-            $metadataPath = $varPath . '/archivedotorg/metadata/' . $artistName;
+            $metadataPath = $varPath . '/archivedotorg/metadata/' . $collectionId;
 
             if (!is_dir($metadataPath)) {
                 return 0;
@@ -264,6 +273,23 @@ class StatusCommand extends Command
         } catch (\Exception $e) {
             return 0;
         }
+    }
+
+    /**
+     * Get collection ID for an artist from configuration
+     *
+     * @param string $artistName
+     * @return string|null
+     */
+    private function getCollectionIdForArtist(string $artistName): ?string
+    {
+        $mappings = $this->config->getArtistMappings();
+        foreach ($mappings as $mapping) {
+            if (($mapping['artist_name'] ?? '') === $artistName) {
+                return $mapping['collection_id'] ?? null;
+            }
+        }
+        return null;
     }
 
     /**
@@ -350,15 +376,24 @@ class StatusCommand extends Command
     /**
      * Get last download date from filesystem
      *
+     * Uses collection_id for folder lookup since metadata folders use
+     * collection IDs (e.g., "GratefulDead") not artist names (e.g., "Grateful Dead")
+     *
      * @param string $artistName
      * @return string|null
      */
     private function getLastDownloadDate(string $artistName): ?string
     {
         try {
+            // Get collection ID from config (folders use collection_id, not artist_name)
+            $collectionId = $this->getCollectionIdForArtist($artistName);
+            if (!$collectionId) {
+                return null;
+            }
+
             // Get var directory path (BP is Magento root)
             $varPath = BP . '/var';
-            $metadataPath = $varPath . '/archivedotorg/metadata/' . $artistName;
+            $metadataPath = $varPath . '/archivedotorg/metadata/' . $collectionId;
 
             if (!is_dir($metadataPath)) {
                 return null;

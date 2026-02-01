@@ -1,0 +1,115 @@
+#!/bin/bash
+#
+# Export Archive.org metadata from Docker to host filesystem
+#
+# This script copies downloaded metadata from the Docker container
+# to the git-tracked data/ directory for version control.
+#
+# Usage:
+#   bin/export-metadata              # Export all metadata
+#   bin/export-metadata "Phish"      # Export specific artist (by collection_id)
+#
+
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+CONTAINER="8pm-phpfpm-1"
+CONTAINER_PATH="/var/www/html/var/archivedotorg/metadata"
+HOST_PATH="$PROJECT_ROOT/data/archivedotorg-metadata"
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "📦 Export Archive.org Metadata to Git"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+
+# Check if container is running
+if ! docker ps --format '{{.Names}}' | grep -q "^${CONTAINER}$"; then
+    echo -e "${RED}Error: Container $CONTAINER is not running${NC}"
+    echo "Start Docker with: bin/start"
+    exit 1
+fi
+
+# Check if metadata exists in container
+if ! docker exec "$CONTAINER" test -d "$CONTAINER_PATH"; then
+    echo -e "${YELLOW}No metadata found in container at $CONTAINER_PATH${NC}"
+    exit 0
+fi
+
+# Create host directory if it doesn't exist
+mkdir -p "$HOST_PATH"
+
+# Get container metadata size
+CONTAINER_SIZE=$(docker exec "$CONTAINER" du -sh "$CONTAINER_PATH" 2>/dev/null | cut -f1)
+echo "Container metadata size: $CONTAINER_SIZE"
+echo ""
+
+# Specific artist or all?
+if [ -n "$1" ]; then
+    ARTIST="$1"
+    echo "Exporting: $ARTIST"
+
+    # Check if artist exists
+    if ! docker exec "$CONTAINER" test -d "$CONTAINER_PATH/$ARTIST"; then
+        echo -e "${RED}Error: Artist '$ARTIST' not found in container${NC}"
+        echo ""
+        echo "Available artists:"
+        docker exec "$CONTAINER" ls "$CONTAINER_PATH" | head -20
+        exit 1
+    fi
+
+    # Export single artist
+    mkdir -p "$HOST_PATH/$ARTIST"
+    docker cp "$CONTAINER:$CONTAINER_PATH/$ARTIST/." "$HOST_PATH/$ARTIST/"
+
+    FILE_COUNT=$(find "$HOST_PATH/$ARTIST" -name "*.json" | wc -l | tr -d ' ')
+    echo -e "${GREEN}✓ Exported $FILE_COUNT files for $ARTIST${NC}"
+else
+    echo "Exporting all artists..."
+    echo ""
+
+    # Get list of artists
+    ARTISTS=$(docker exec "$CONTAINER" ls "$CONTAINER_PATH")
+    TOTAL_ARTISTS=$(echo "$ARTISTS" | wc -l | tr -d ' ')
+    CURRENT=0
+    TOTAL_FILES=0
+
+    for ARTIST in $ARTISTS; do
+        ((CURRENT++))
+
+        # Skip hidden directories
+        if [[ "$ARTIST" == .* ]]; then
+            continue
+        fi
+
+        # Create artist directory and copy
+        mkdir -p "$HOST_PATH/$ARTIST"
+        docker cp "$CONTAINER:$CONTAINER_PATH/$ARTIST/." "$HOST_PATH/$ARTIST/" 2>/dev/null || true
+
+        FILE_COUNT=$(find "$HOST_PATH/$ARTIST" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
+        TOTAL_FILES=$((TOTAL_FILES + FILE_COUNT))
+
+        printf "  [%d/%d] %-30s %5d files\n" "$CURRENT" "$TOTAL_ARTISTS" "$ARTIST" "$FILE_COUNT"
+    done
+
+    echo ""
+    echo -e "${GREEN}✓ Exported $TOTAL_FILES total files from $TOTAL_ARTISTS artists${NC}"
+fi
+
+# Show host directory size
+HOST_SIZE=$(du -sh "$HOST_PATH" 2>/dev/null | cut -f1)
+echo ""
+echo "Host directory size: $HOST_SIZE"
+echo "Location: $HOST_PATH"
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "Next steps:"
+echo "  1. git add data/archivedotorg-metadata/"
+echo "  2. git commit -m 'Update Archive.org metadata'"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { usePlaylists } from '@/context/PlaylistContext';
 import { Song } from '@/lib/types';
 
@@ -130,9 +131,9 @@ export function AddToPlaylistModal({ isOpen, onClose, song }: AddToPlaylistModal
                         className="w-full flex items-center gap-3 p-4 hover:bg-white/10 transition-colors text-left"
                       >
                         {/* Cover art */}
-                        <div className="w-10 h-10 rounded bg-[#2d2a26] flex-shrink-0 overflow-hidden">
+                        <div className="w-10 h-10 rounded bg-[#2d2a26] flex-shrink-0 overflow-hidden relative">
                           {playlist.coverArt ? (
-                            <img src={playlist.coverArt} alt={playlist.name} className="w-full h-full object-cover" />
+                            <Image src={playlist.coverArt} alt={playlist.name || 'Playlist'} fill sizes="40px" quality={75} className="object-cover" />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">
                               <svg className="w-5 h-5 text-[#3a3632]" fill="currentColor" viewBox="0 0 24 24">

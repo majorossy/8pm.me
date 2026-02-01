@@ -3,6 +3,7 @@
 // AlbumCard - displays an album card (Jamify/Spotify style only)
 
 import { useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { Album } from '@/lib/api';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
@@ -48,11 +49,14 @@ export default function AlbumCard({ album }: AlbumCardProps) {
 
               {/* Actual image - only load when in viewport */}
               {isIntersecting && (
-                <img
-                  src={album.coverArt}
-                  alt={album.name}
+                <Image
+                  src={album.coverArt || '/images/default-album.jpg'}
+                  alt={album.name || 'Album cover'}
+                  fill
+                  sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 200px"
+                  quality={80}
                   onLoad={() => setImageLoaded(true)}
-                  className={`w-full h-full object-cover transition-opacity duration-500 ${
+                  className={`object-cover transition-opacity duration-500 ${
                     imageLoaded ? 'opacity-100' : 'opacity-0'
                   } ${isComingSoon ? 'grayscale opacity-30' : ''}`}
                 />

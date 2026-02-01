@@ -1,106 +1,182 @@
 import React from 'react';
 import Link from 'next/link';
+import {
+  StepNumber,
+  LightbulbIcon,
+  SearchIcon,
+  PlaylistIcon,
+  PlayIcon,
+  ShareIcon,
+  QuestionIcon,
+} from '@/components/icons/FooterIcons';
+
+// Step data
+const steps = [
+  {
+    number: 1,
+    title: 'Browse Artists',
+    description: 'Start by exploring our collection of jam bands and live music artists. Each artist page shows their available recordings, organized by date and venue.',
+  },
+  {
+    number: 2,
+    title: 'Search Shows',
+    description: "Looking for something specific? Use the search feature to find shows by artist, date, venue, or even specific songs. Our advanced search helps you narrow down exactly what you're looking for.",
+  },
+  {
+    number: 3,
+    title: 'Create Playlists',
+    description: "Found a great show or track? Add it to your library or create custom playlists. Your playlists are saved locally in your browser, so they're always available when you return.",
+  },
+  {
+    number: 4,
+    title: 'Listen & Enjoy',
+    description: 'Stream recordings directly from Archive.org. Use keyboard shortcuts for quick controls, enable crossfade for seamless transitions, or set a sleep timer for late-night listening.',
+  },
+  {
+    number: 5,
+    title: 'Share the Love',
+    description: 'All recordings on 8PM are freely shareable. Send links to friends, share on social media, or download tracks for offline listening. Remember: please copy freely — never sell.',
+  },
+];
+
+// Tips data
+const tips = [
+  { key: 'Space', action: 'to play/pause' },
+  { key: 'N', action: 'for next track' },
+  { key: 'P', action: 'for previous track' },
+];
 
 export default function HowItWorksPage() {
   return (
     <div className="max-w-[800px] mx-auto px-4 py-12 md:py-16">
-      <h1 className="text-4xl md:text-5xl font-bold text-[#d4a060] mb-8 tracking-tight">
-        How It Works
-      </h1>
-
-      <div className="space-y-8 text-[#8a8478] leading-relaxed">
-        <p className="text-lg">
-          8PM makes it easy to discover and enjoy thousands of live concert recordings
-          from Archive.org. Here's how to get started:
-        </p>
-
-        <div className="space-y-6">
-          <div className="border-l-2 border-[#d4a060] pl-6">
-            <h2 className="text-xl font-semibold text-[#d4a060] mb-2">
-              1. Browse Artists
-            </h2>
-            <p>
-              Start by exploring our collection of jam bands and live music artists.
-              Each artist page shows their available recordings, organized by date
-              and venue.
-            </p>
-          </div>
-
-          <div className="border-l-2 border-[#d4a060] pl-6">
-            <h2 className="text-xl font-semibold text-[#d4a060] mb-2">
-              2. Search Shows
-            </h2>
-            <p>
-              Looking for something specific? Use the search feature to find shows
-              by artist, date, venue, or even specific songs. Our advanced search
-              helps you narrow down exactly what you're looking for.
-            </p>
-          </div>
-
-          <div className="border-l-2 border-[#d4a060] pl-6">
-            <h2 className="text-xl font-semibold text-[#d4a060] mb-2">
-              3. Create Playlists
-            </h2>
-            <p>
-              Found a great show or track? Add it to your library or create custom
-              playlists. Your playlists are saved locally in your browser, so they're
-              always available when you return.
-            </p>
-          </div>
-
-          <div className="border-l-2 border-[#d4a060] pl-6">
-            <h2 className="text-xl font-semibold text-[#d4a060] mb-2">
-              4. Listen & Enjoy
-            </h2>
-            <p>
-              Stream recordings directly from Archive.org. Use keyboard shortcuts
-              for quick controls, enable crossfade for seamless transitions, or
-              set a sleep timer for late-night listening.
-            </p>
-          </div>
-
-          <div className="border-l-2 border-[#d4a060] pl-6">
-            <h2 className="text-xl font-semibold text-[#d4a060] mb-2">
-              5. Share the Love
-            </h2>
-            <p>
-              All recordings on 8PM are freely shareable. Send links to friends,
-              share on social media, or download tracks for offline listening.
-              Remember: please copy freely — never sell.
-            </p>
-          </div>
+      {/* Header with icon */}
+      <div className="flex items-center gap-4 mb-8">
+        <div className="p-3 bg-[#2a2825] rounded-lg border border-[#3a3632]">
+          <PlayIcon className="w-8 h-8 text-[#d4a060]" />
         </div>
+        <h1 className="text-4xl md:text-5xl font-bold text-[#d4a060] tracking-tight">
+          How It Works
+        </h1>
+      </div>
 
-        <div className="pt-8 border-t border-[#3a3632]/30 mt-8">
-          <h2 className="text-2xl font-semibold text-[#d4a060] mb-4">
+      <p className="text-[#8a8478] text-lg mb-10">
+        8PM makes it easy to discover and enjoy thousands of live concert recordings
+        from Archive.org. Here's how to get started:
+      </p>
+
+      {/* Steps with visual timeline */}
+      <div className="space-y-6 mb-12">
+        {steps.map((step, index) => (
+          <div key={step.number} className="relative">
+            {/* Connector line - only show if not last item */}
+            {index < steps.length - 1 && (
+              <div
+                className="absolute left-5 top-14 w-0.5 h-[calc(100%-16px)] bg-gradient-to-b from-[#d4a060] to-[#3a3632]"
+                aria-hidden="true"
+              />
+            )}
+
+            <div className="flex gap-4 md:gap-6">
+              {/* Step number circle */}
+              <StepNumber number={step.number} />
+
+              {/* Content card */}
+              <div className="flex-1 bg-[#2a2825] border border-[#3a3632] rounded-lg p-5 md:p-6">
+                <h2 className="text-xl font-semibold text-[#d4a060] mb-2">
+                  {step.title}
+                </h2>
+                <p className="text-[#8a8478] leading-relaxed">
+                  {step.description}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Tips & Tricks Section */}
+      <div className="bg-[#2a2825] border border-[#3a3632] rounded-lg p-6 md:p-8 mb-8">
+        <div className="flex items-center gap-3 mb-6">
+          <LightbulbIcon className="w-6 h-6 text-[#d4a060]" />
+          <h2 className="text-2xl font-semibold text-[#d4a060]">
             Tips & Tricks
           </h2>
-          <ul className="space-y-2 list-disc list-inside">
-            <li>Press <kbd className="px-2 py-1 bg-[#2a2825] rounded text-sm">Space</kbd> to play/pause</li>
-            <li>Use <kbd className="px-2 py-1 bg-[#2a2825] rounded text-sm">N</kbd> and <kbd className="px-2 py-1 bg-[#2a2825] rounded text-sm">P</kbd> for next/previous track</li>
-            <li>Like songs to quickly find them later in your library</li>
-            <li>Enable crossfade for smooth transitions between tracks</li>
-            <li>Check recently played to pick up where you left off</li>
-          </ul>
         </div>
 
-        <div className="pt-12 text-center">
-          <Link
-            href="/faq"
-            className="inline-block px-6 py-3 bg-[#d4a060] text-[#1c1a17] font-semibold rounded hover:bg-[#e8a050] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4a060] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c1a17]"
-          >
-            Read the FAQ
-          </Link>
-        </div>
+        <div className="grid sm:grid-cols-2 gap-4 mb-6">
+          {/* Keyboard shortcuts */}
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium text-[#d4a060] uppercase tracking-wider mb-3">
+              Keyboard Shortcuts
+            </h3>
+            {tips.map(tip => (
+              <div key={tip.key} className="flex items-center gap-3">
+                <kbd className="px-2.5 py-1.5 bg-[#1c1a17] rounded border border-[#3a3632] text-[#d4a060] text-sm font-mono min-w-[40px] text-center">
+                  {tip.key}
+                </kbd>
+                <span className="text-[#8a8478] text-sm">{tip.action}</span>
+              </div>
+            ))}
+          </div>
 
-        <div className="pt-8 text-center">
-          <Link
-            href="/"
-            className="text-sm text-[#8a8478] hover:text-[#d4a060] transition-colors duration-200"
-          >
-            ← Back to Home
-          </Link>
+          {/* Quick tips */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-medium text-[#d4a060] uppercase tracking-wider mb-3">
+              Pro Tips
+            </h3>
+            <div className="flex items-start gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#d4a060] mt-2 flex-shrink-0" />
+              <span className="text-[#8a8478] text-sm">Like songs to find them later in your library</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#d4a060] mt-2 flex-shrink-0" />
+              <span className="text-[#8a8478] text-sm">Enable crossfade for smooth transitions</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#d4a060] mt-2 flex-shrink-0" />
+              <span className="text-[#8a8478] text-sm">Check recently played to pick up where you left off</span>
+            </div>
+          </div>
         </div>
+      </div>
+
+      {/* Feature Cards */}
+      <div className="grid sm:grid-cols-3 gap-4 mb-8">
+        <div className="bg-[#2a2825] border border-[#3a3632] rounded-lg p-4 text-center">
+          <SearchIcon className="w-8 h-8 text-[#d4a060] mx-auto mb-3" />
+          <h3 className="text-sm font-semibold text-[#d4a060] mb-1">Search</h3>
+          <p className="text-xs text-[#8a8478]">Find any show instantly</p>
+        </div>
+        <div className="bg-[#2a2825] border border-[#3a3632] rounded-lg p-4 text-center">
+          <PlaylistIcon className="w-8 h-8 text-[#d4a060] mx-auto mb-3" />
+          <h3 className="text-sm font-semibold text-[#d4a060] mb-1">Playlists</h3>
+          <p className="text-xs text-[#8a8478]">Organize your favorites</p>
+        </div>
+        <div className="bg-[#2a2825] border border-[#3a3632] rounded-lg p-4 text-center">
+          <ShareIcon className="w-8 h-8 text-[#d4a060] mx-auto mb-3" />
+          <h3 className="text-sm font-semibold text-[#d4a060] mb-1">Share</h3>
+          <p className="text-xs text-[#8a8478]">Spread the music</p>
+        </div>
+      </div>
+
+      {/* CTA */}
+      <div className="text-center pt-4">
+        <Link
+          href="/faq"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-[#d4a060] text-[#1c1a17] font-semibold rounded hover:bg-[#e8a050] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4a060] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c1a17]"
+        >
+          <QuestionIcon className="w-5 h-5" />
+          Read the FAQ
+        </Link>
+      </div>
+
+      <div className="pt-8 text-center">
+        <Link
+          href="/"
+          className="text-sm text-[#8a8478] hover:text-[#d4a060] transition-colors duration-200"
+        >
+          ← Back to Home
+        </Link>
       </div>
     </div>
   );

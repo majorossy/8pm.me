@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { BandMember } from '@/lib/types';
 
 interface BandMembersProps {
@@ -31,10 +32,13 @@ export default function BandMembers({ members, formerMembers }: BandMembersProps
                   <div className="flex items-start gap-4">
                     {/* Member photo or initial */}
                     {member.image ? (
-                      <img
+                      <Image
                         src={member.image}
-                        alt={member.name}
-                        className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                        alt={member.name || 'Band member'}
+                        width={48}
+                        height={48}
+                        quality={80}
+                        className="rounded-full object-cover flex-shrink-0"
                       />
                     ) : (
                       <div className="w-12 h-12 rounded-full bg-[#d4a060] flex items-center justify-center flex-shrink-0">
@@ -81,10 +85,13 @@ export default function BandMembers({ members, formerMembers }: BandMembersProps
                   <div className="flex items-start gap-4">
                     {/* Member photo or initial */}
                     {member.image ? (
-                      <img
+                      <Image
                         src={member.image}
-                        alt={member.name}
-                        className="w-12 h-12 rounded-full object-cover flex-shrink-0 grayscale"
+                        alt={member.name || 'Former band member'}
+                        width={48}
+                        height={48}
+                        quality={80}
+                        className="rounded-full object-cover flex-shrink-0 grayscale"
                       />
                     ) : (
                       <div className="w-12 h-12 rounded-full bg-[#3a3632] flex items-center justify-center flex-shrink-0">

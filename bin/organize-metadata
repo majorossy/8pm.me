@@ -1,0 +1,319 @@
+#!/bin/bash
+#
+# Organize metadata files into artist-specific folders
+#
+# This script migrates metadata JSON files from a flat structure to an organized
+# folder structure: var/archivedotorg/metadata/{CollectionId}/{identifier}.json
+#
+# Usage:
+#   bin/organize-metadata          # Dry run (show what would be moved)
+#   bin/organize-metadata --run    # Actually move the files
+#
+
+set -e
+
+# Get the directory of this script
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
+# Determine execution mode
+DRY_RUN="true"
+if [[ "$1" == "--run" ]]; then
+    DRY_RUN="false"
+fi
+
+# The script to run inside Docker (optimized with sed for speed)
+read -r -d '' DOCKER_SCRIPT << 'SCRIPT_EOF' || true
+#!/bin/bash
+set -e
+
+METADATA_DIR="/var/www/html/var/archivedotorg/metadata"
+DRY_RUN="$1"
+
+echo "========================================="
+echo "Metadata Organization Script"
+echo "========================================="
+
+if [ "$DRY_RUN" = "true" ]; then
+    echo "MODE: DRY RUN (use --run to actually move files)"
+else
+    echo "MODE: LIVE (files will be moved)"
+fi
+echo ""
+
+# Check if metadata directory exists
+if [ ! -d "$METADATA_DIR" ]; then
+    echo "ERROR: Metadata directory not found: $METADATA_DIR"
+    exit 1
+fi
+
+cd "$METADATA_DIR"
+
+# Count files in root (not in subdirectories)
+total_files=$(find . -maxdepth 1 -name "*.json" -type f | wc -l)
+echo "Found $total_files JSON files in root directory"
+echo ""
+
+if [ "$total_files" -eq 0 ]; then
+    echo "No files to organize. All files may already be in subdirectories."
+    exit 0
+fi
+
+# Create temp directory for tracking
+tmpdir=$(mktemp -d)
+trap "rm -rf $tmpdir" EXIT
+
+# Build sed script for pattern matching (much faster than per-file grep)
+# This extracts the prefix and maps it to collection ID
+cat > "$tmpdir/map.sed" << 'SEDSCRIPT'
+# Extract prefix (alphabetic chars at start, or second field if starts with date)
+# Pattern: files starting with YYYY-
+/^[0-9][0-9][0-9][0-9]-/ {
+  s/^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][.-]\([a-zA-Z]*\).*/\1/
+  b mapprefix
+}
+# Pattern: files starting with letters
+s/^\([a-zA-Z]*\).*/\1/
+
+:mapprefix
+# Convert to lowercase and add marker for mapping
+y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/
+s/^/PREFIX:/
+
+# Map known prefixes to collection IDs
+# Grateful Dead
+s/^PREFIX:gd$/GratefulDead/
+
+# Phish
+s/^PREFIX:phish$/Phish/
+
+# STS9
+s/^PREFIX:sts9$/STS9/
+
+# moe.
+s/^PREFIX:moe$/moe/
+
+# String Cheese Incident
+s/^PREFIX:sci$/StringCheeseIncident/
+s/^PREFIX:stringcheese$/StringCheeseIncident/
+
+# Phil Lesh and Friends
+s/^PREFIX:paf$/PhilLeshandFriends/
+s/^PREFIX:plf$/PhilLeshandFriends/
+s/^PREFIX:phil$/PhilLeshandFriends/
+s/^PREFIX:pf$/PhilLeshandFriends/
+s/^PREFIX:pl$/PhilLeshandFriends/
+s/^PREFIX:plq$/PhilLeshandFriends/
+s/^PREFIX:philandfriends$/PhilLeshandFriends/
+s/^PREFIX:philleshandfriends$/PhilLeshandFriends/
+s/^PREFIX:philleshfriends$/PhilLeshandFriends/
+s/^PREFIX:phillesh$/PhilLeshandFriends/
+
+# Keller Williams (including various combos)
+s/^PREFIX:kw$/KellerWilliams/
+s/^PREFIX:keller$/KellerWilliams/
+s/^PREFIX:kellerwilliams$/KellerWilliams/
+s/^PREFIX:kwgg$/KellerWilliams/
+s/^PREFIX:kwtm$/KellerWilliams/
+s/^PREFIX:kwpg$/KellerWilliams/
+s/^PREFIX:kwahtro$/KellerWilliams/
+s/^PREFIX:kwilliams$/KellerWilliams/
+
+# Leftover Salmon
+s/^PREFIX:los$/LeftoverSalmon/
+s/^PREFIX:leftoversalmon$/LeftoverSalmon/
+s/^PREFIX:ls$/LeftoverSalmon/
+s/^PREFIX:le$/LeftoverSalmon/
+s/^PREFIX:let$/LeftoverSalmon/
+
+# Of a Revolution (O.A.R.)
+s/^PREFIX:oar$/OfARevolution/
+
+# Billy Strings
+s/^PREFIX:billystrings$/BillyStrings/
+s/^PREFIX:bs$/BillyStrings/
+s/^PREFIX:bsb$/BillyStrings/
+s/^PREFIX:bst$/BillyStrings/
+s/^PREFIX:billystringanddonjulin$/BillyStrings/
+
+# Guster
+s/^PREFIX:guster$/Guster/
+s/^PREFIX:gus$/Guster/
+
+# Lettuce
+s/^PREFIX:lettuce$/Lettuce/
+
+# Matisyahu
+s/^PREFIX:matisyahu$/Matisyahu/
+s/^PREFIX:matis$/Matisyahu/
+s/^PREFIX:mat$/Matisyahu/
+
+# My Morning Jacket / Jim James
+s/^PREFIX:mmj$/MyMorningJacket/
+s/^PREFIX:jimjames$/MyMorningJacket/
+
+# Furthur
+s/^PREFIX:furthur$/Furthur/
+
+# Goose
+s/^PREFIX:goose$/Goose/
+s/^PREFIX:gooseband$/Goose/
+
+# Cabinet
+s/^PREFIX:cabinet$/Cabinet/
+s/^PREFIX:fca$/Cabinet/
+s/^PREFIX:katk$/Cabinet/
+
+# Dogs in a Pile
+s/^PREFIX:dogsinapile$/DogsInAPile/
+
+# God Street Wine
+s/^PREFIX:gsw$/GodStreetWine/
+
+# Grace Potter and the Nocturnals
+s/^PREFIX:gp$/GracePotterandtheNocturnals/
+s/^PREFIX:gpn$/GracePotterandtheNocturnals/
+s/^PREFIX:gptn$/GracePotterandtheNocturnals/
+s/^PREFIX:grace$/GracePotterandtheNocturnals/
+
+# Railroad Earth
+s/^PREFIX:rre$/RailroadEarth/
+
+# Ratdog
+s/^PREFIX:ratdog$/Ratdog/
+s/^PREFIX:cr$/Ratdog/
+
+# Tea Leaf Green
+s/^PREFIX:tlg$/TeaLeafGreen/
+s/^PREFIX:tltt$/TeaLeafGreen/
+s/^PREFIX:tealeafgreen$/TeaLeafGreen/
+
+# Disco Biscuits
+s/^PREFIX:db$/DiscoBiscuits/
+s/^PREFIX:tdb$/DiscoBiscuits/
+s/^PREFIX:discobiscuits$/DiscoBiscuits/
+
+# Widespread Panic
+s/^PREFIX:wsp$/WidespreadPanic/
+
+# Umphrey's McGee
+s/^PREFIX:um$/UmphreysMcGee/
+
+# Yonder Mountain String Band
+s/^PREFIX:ymsb$/YonderMountainStringBand/
+s/^PREFIX:yonder$/YonderMountainStringBand/
+
+# Tedeschi Trucks Band
+s/^PREFIX:ttb$/TedeschiTrucksBand/
+s/^PREFIX:tedeschi$/TedeschiTrucksBand/
+
+# Twiddle
+s/^PREFIX:twiddle$/Twiddle/
+s/^PREFIX:tw$/Twiddle/
+
+# JRAD
+s/^PREFIX:jrad$/JRAD/
+
+# Additional patterns for less common naming conventions
+# My Morning Jacket variants
+s/^PREFIX:my$/MyMorningJacket/
+s/^PREFIX:mymorningjacket$/MyMorningJacket/
+s/^PREFIX:mmy$/MyMorningJacket/
+
+# Matisyahu variants (misspellings)
+s/^PREFIX:mathisyahu$/Matisyahu/
+
+# Leftover Salmon variants
+s/^PREFIX:lo$/LeftoverSalmon/
+s/^PREFIX:lospr$/LeftoverSalmon/
+
+# Billy Strings longer patterns
+s/^PREFIX:billystringsanddonjulin$/BillyStrings/
+s/^PREFIX:billystringdonjulin$/BillyStrings/
+
+# Keller Williams longer patterns
+s/^PREFIX:kellerwilliamsthetravelinmccourys$/KellerWilliams/
+s/^PREFIX:kellerwilliamstrio$/KellerWilliams/
+
+# Mark anything still having PREFIX: as unmatched
+s/^PREFIX:.*$/UNMATCHED/
+SEDSCRIPT
+
+# Process all files and get collection mappings
+echo "Processing files..."
+ls -1 *.json 2>/dev/null | sed 's/\.json$//' | sed -f "$tmpdir/map.sed" > "$tmpdir/collections.txt"
+ls -1 *.json 2>/dev/null > "$tmpdir/files.txt"
+
+# Combine files and collections
+paste "$tmpdir/files.txt" "$tmpdir/collections.txt" > "$tmpdir/mapping.txt"
+
+# Count per collection
+echo ""
+echo "========================================="
+echo "Summary by Collection"
+echo "========================================="
+cut -f2 "$tmpdir/mapping.txt" | sort | uniq -c | sort -rn | while read count collection; do
+    if [ "$collection" != "UNMATCHED" ]; then
+        printf "  %-30s %6d files\n" "$collection" "$count"
+    fi
+done
+
+# Count unmatched
+unmatched=$(grep -c "UNMATCHED" "$tmpdir/mapping.txt" || echo 0)
+matched=$((total_files - unmatched))
+
+echo ""
+echo "========================================="
+echo "Overall Statistics"
+echo "========================================="
+echo "  Total files scanned:    $total_files"
+
+if [ "$DRY_RUN" = "true" ]; then
+    echo "  Would be organized:     $matched"
+else
+    # Actually move files
+    echo "  Moving files..."
+    moved=0
+    while IFS=$'\t' read filename collection; do
+        if [ "$collection" != "UNMATCHED" ] && [ -n "$collection" ]; then
+            mkdir -p "$collection"
+            mv "$filename" "$collection/"
+            moved=$((moved + 1))
+        fi
+    done < "$tmpdir/mapping.txt"
+    echo "  Files moved:            $moved"
+fi
+
+echo "  Unmatched files:        $unmatched"
+
+if [ "$unmatched" -gt 0 ]; then
+    echo ""
+    if [ "$unmatched" -le 20 ]; then
+        echo "Unmatched files (add patterns for these):"
+    else
+        echo "First 20 unmatched files (add patterns for these):"
+    fi
+    grep "UNMATCHED" "$tmpdir/mapping.txt" | cut -f1 | head -20 | while read f; do
+        echo "  - $f"
+    done
+    if [ "$unmatched" -gt 20 ]; then
+        echo "  ... and $((unmatched - 20)) more"
+    fi
+fi
+
+if [ "$DRY_RUN" = "true" ]; then
+    echo ""
+    echo "========================================="
+    echo "This was a DRY RUN. Run with --run to move files."
+    echo "========================================="
+else
+    echo ""
+    echo "========================================="
+    echo "Migration complete!"
+    echo "========================================="
+fi
+SCRIPT_EOF
+
+# Execute inside Docker container
+cd "$PROJECT_ROOT"
+docker compose exec -T phpfpm bash -c "$DOCKER_SCRIPT" -- "$DRY_RUN"

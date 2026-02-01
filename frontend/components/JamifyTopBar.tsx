@@ -1,8 +1,9 @@
 'use client';
 
-// JamifyTopBar - Top navigation bar with breadcrumbs
+// JamifyTopBar - Top navigation bar with breadcrumbs and theme toggle
 
 import Breadcrumb from './Breadcrumb';
+import ThemeToggle from './ThemeToggle';
 
 interface JamifyTopBarProps {
   transparent?: boolean;
@@ -12,17 +13,24 @@ export default function JamifyTopBar({ transparent = false }: JamifyTopBarProps)
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-colors ${
-        transparent ? 'bg-transparent' : 'bg-[#1c1a17]/95 backdrop-blur-sm'
+        transparent ? 'bg-transparent' : 'bg-[var(--bg)]/95 backdrop-blur-sm'
       }`}
     >
       {/* Breadcrumb navigation - constrained to same width as page content */}
-      <div className="max-w-[1000px] mx-auto px-4 md:px-8 py-1 flex items-center">
+      <div className="max-w-[1000px] mx-auto px-4 md:px-8 py-1 flex items-center justify-between">
         <Breadcrumb />
+        <ThemeToggle />
       </div>
 
-      {/* Soft gradient fade at bottom */}
+      {/* Soft gradient fade at bottom - uses CSS variable */}
       {!transparent && (
-        <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-b from-[#1c1a17]/80 via-[#1c1a17]/40 to-transparent pointer-events-none -mb-8" />
+        <div
+          className="absolute bottom-0 left-0 right-0 h-8 pointer-events-none -mb-8"
+          style={{
+            background: 'linear-gradient(to bottom, var(--bg, #1c1a17) 0%, transparent 100%)',
+            opacity: 0.8,
+          }}
+        />
       )}
     </header>
   );

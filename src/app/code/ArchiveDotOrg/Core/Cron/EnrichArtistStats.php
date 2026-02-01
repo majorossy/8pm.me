@@ -2,22 +2,22 @@
 namespace ArchiveDotOrg\Core\Cron;
 
 use ArchiveDotOrg\Core\Model\ArtistEnrichmentService;
-use ArchiveDotOrg\Core\Model\ArtistConfigManager;
+use ArchiveDotOrg\Core\Model\Config;
 use Psr\Log\LoggerInterface;
 
 class EnrichArtistStats
 {
     private $enrichmentService;
-    private $artistConfigManager;
+    private $config;
     private $logger;
 
     public function __construct(
         ArtistEnrichmentService $enrichmentService,
-        ArtistConfigManager $artistConfigManager,
+        Config $config,
         LoggerInterface $logger
     ) {
         $this->enrichmentService = $enrichmentService;
-        $this->artistConfigManager = $artistConfigManager;
+        $this->config = $config;
         $this->logger = $logger;
     }
 
@@ -26,7 +26,9 @@ class EnrichArtistStats
         $this->logger->info('Starting monthly artist stats enrichment');
 
         try {
-            $artists = $this->artistConfigManager->getAllArtists();
+            // Get all configured artists from Config
+            $artistMappings = $this->config->getArtistMappings();
+            $artists = array_column($artistMappings, 'artist_name');
             $fields = ['stats_extended']; // Only update stats, not bio/social
 
             $results = $this->enrichmentService->enrichBatch(

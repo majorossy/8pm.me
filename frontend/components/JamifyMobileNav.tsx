@@ -84,7 +84,7 @@ export default function JamifyMobileNav() {
       icon: (active: boolean) => (
         isAuthenticated ? (
           <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
-            active ? 'bg-[#d4a060] text-[#1c1a17]' : 'bg-[#3a3632] text-[#e8e0d4]'
+            active ? 'bg-[var(--neon-pink)] text-[var(--bg)]' : 'bg-[var(--bg-elevated)] text-[var(--text)]'
           }`}>
             {initials}
           </div>
@@ -104,7 +104,7 @@ export default function JamifyMobileNav() {
 
   return (
     <>
-      <nav className="fixed bottom-0 left-0 right-0 h-[50px] bg-gradient-to-t from-[#1c1a17] via-[#1c1a17]/95 to-[#1c1a17]/90 border-t border-[#3a3632]/30 z-40 safe-bottom" aria-label="Main navigation">
+      <nav className="fixed bottom-0 left-0 right-0 h-[50px] bg-gradient-to-t from-[var(--bg)] via-[var(--bg)]/95 to-[var(--bg)]/90 border-t border-[#3a3632]/30 z-40 safe-bottom" aria-label="Main navigation">
         <div className="flex items-center justify-around h-full px-4 max-w-[1000px] mx-auto">
           {tabs.map((tab) => {
             const active = isActive(tab.href);

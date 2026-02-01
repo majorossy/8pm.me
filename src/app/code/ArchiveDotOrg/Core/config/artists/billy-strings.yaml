@@ -376,7 +376,7 @@ tracks:
 
   - key: "i-havent-seen-mary-in-years"
     name: "I Haven't Seen Mary in Years"
-    url_key: "ihaven\'tseenmaryinyears"
+    url_key: "ihaventseenmaryinyears"
     albums: ["meanddad"]
     canonical_album: "meanddad"
     type: "original"

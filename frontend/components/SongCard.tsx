@@ -59,14 +59,14 @@ export default function SongCard({ song, index }: SongCardProps) {
     <div
       className={`
         group grid grid-cols-[16px_1fr_auto_auto_auto_auto_auto] gap-4 items-center px-4 py-2 rounded-md transition-all
-        ${isCurrentSong ? 'bg-[#2d2a26]' : 'hover:bg-[#2d2a26]'}
+        ${isCurrentSong ? 'bg-[var(--bg-elevated)]' : 'hover:bg-[var(--bg-elevated)]'}
       `}
     >
         {/* Index or play icon */}
         <div className="w-4 flex items-center justify-center">
-          <span className={`text-sm group-hover:hidden ${isCurrentSong ? 'text-[#d4a060]' : 'text-[#8a8478]'}`}>
+          <span className={`text-sm group-hover:hidden ${isCurrentSong ? 'text-[var(--neon-pink)]' : 'text-[var(--text-dim)]'}`}>
             {isCurrentSong && isPlaying ? (
-              <svg className="w-4 h-4 text-[#d4a060]" fill="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-[var(--neon-pink)]" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
               </svg>
             ) : (
@@ -75,7 +75,7 @@ export default function SongCard({ song, index }: SongCardProps) {
           </span>
           <button
             onClick={handlePlayClick}
-            className="hidden group-hover:block text-white"
+            className="hidden group-hover:block text-[var(--text)]"
             aria-label={isCurrentSong && isPlaying ? `Pause ${song.title}` : `Play ${song.title}`}
           >
             {isCurrentSong && isPlaying ? (
@@ -93,16 +93,16 @@ export default function SongCard({ song, index }: SongCardProps) {
 
         {/* Song info */}
         <div className="flex flex-col min-w-0">
-          <p className={`text-base truncate ${isCurrentSong ? 'text-[#d4a060]' : 'text-white'}`}>
+          <p className={`text-base truncate ${isCurrentSong ? 'text-[var(--neon-pink)]' : 'text-[var(--text)]'}`}>
             {song.title}
           </p>
-          <p className="text-sm text-[#8a8478] truncate">
+          <p className="text-sm text-[var(--text-dim)] truncate">
             {song.artistName}
           </p>
         </div>
 
         {/* Duration */}
-        <span className="text-sm text-[#8a8478]">
+        <span className="text-sm text-[var(--text-dim)]">
           {formatDuration(song.duration)}
         </span>
 
@@ -111,7 +111,7 @@ export default function SongCard({ song, index }: SongCardProps) {
           onClick={handleAddToFavorites}
           disabled={inFavorites}
           className={`transition-colors opacity-0 group-hover:opacity-100 ${
-            inFavorites ? 'text-[#d4a060] opacity-100' : 'text-[#8a8478] hover:text-white'
+            inFavorites ? 'text-[var(--neon-pink)] opacity-100' : 'text-[var(--text-dim)] hover:text-[var(--text)]'
           }`}
           aria-label={inFavorites ? `${song.title} is in favorites` : `Add ${song.title} to favorites`}
           aria-pressed={inFavorites}
@@ -137,7 +137,7 @@ export default function SongCard({ song, index }: SongCardProps) {
             e.stopPropagation();
             setShowPlaylistModal(true);
           }}
-          className="transition-colors opacity-0 group-hover:opacity-100 text-[#8a8478] hover:text-white"
+          className="transition-colors opacity-0 group-hover:opacity-100 text-[var(--text-dim)] hover:text-[var(--text)]"
           aria-label={`Add ${song.title} to playlist`}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -150,7 +150,7 @@ export default function SongCard({ song, index }: SongCardProps) {
           onClick={handleAddToQueue}
           disabled={inQueue}
           className={`transition-colors opacity-0 group-hover:opacity-100 ${
-            inQueue ? 'text-[#d4a060] opacity-100' : 'text-[#8a8478] hover:text-white'
+            inQueue ? 'text-[var(--neon-pink)] opacity-100' : 'text-[var(--text-dim)] hover:text-[var(--text)]'
           }`}
           aria-label={inQueue ? `${song.title} is in queue` : `Add ${song.title} to queue`}
           aria-pressed={inQueue}
@@ -172,7 +172,7 @@ export default function SongCard({ song, index }: SongCardProps) {
             e.stopPropagation();
             openShareModal(shareableSong(song));
           }}
-          className="transition-colors opacity-0 group-hover:opacity-100 text-[#8a8478] hover:text-white"
+          className="transition-colors opacity-0 group-hover:opacity-100 text-[var(--text-dim)] hover:text-[var(--text)]"
           aria-label={`Share ${song.title}`}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

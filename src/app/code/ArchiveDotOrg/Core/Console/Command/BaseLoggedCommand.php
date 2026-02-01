@@ -380,6 +380,36 @@ abstract class BaseLoggedCommand extends Command
     }
 
     /**
+     * Set collection ID for database logging
+     *
+     * Call this from doExecute() at the start of processing (after setCurrentArtist)
+     * This enables updateArtistStats() to create rows with proper collection_id
+     */
+    protected function setCollectionId(string $collectionId): void
+    {
+        if ($this->correlationId) {
+            try {
+                $connection = $this->resourceConnection->getConnection();
+                $table = $this->resourceConnection->getTableName('archivedotorg_import_run');
+
+                if ($connection->isTableExists($table)) {
+                    $connection->update(
+                        $table,
+                        ['collection_id' => $collectionId],
+                        ['correlation_id = ?' => $this->correlationId]
+                    );
+                }
+            } catch (\Exception $e) {
+                $this->logger->error('Failed to update collection_id in import_run', [
+                    'correlation_id' => $this->correlationId,
+                    'collection_id' => $collectionId,
+                    'error' => $e->getMessage()
+                ]);
+            }
+        }
+    }
+
+    /**
      * Update Redis progress for real-time dashboard updates
      *
      * @param int $current Current item number (e.g., show 150)
@@ -489,24 +519,45 @@ abstract class BaseLoggedCommand extends Command
             $artistName = $importData['artist_name'];
             $commandName = $importData['command_name'] ?? '';
             $itemsSuccessful = (int)($importData['items_successful'] ?? 0);
+            $collectionId = $importData['collection_id'] ?? '';
 
             // Update artist_status table based on command type
+            // Use insertOnDuplicate to create row if it doesn't exist
             if (str_contains($commandName, 'download')) {
-                // Update downloaded_shows
-                $connection->update(
-                    $artistTable,
-                    ['downloaded_shows' => new \Zend_Db_Expr('downloaded_shows + ' . $itemsSuccessful)],
-                    ['artist_name = ?' => $artistName]
-                );
-            } elseif (str_contains($commandName, 'populate')) {
-                // Update imported_tracks and last_populate_at
-                $connection->update(
+                // Insert or update downloaded_shows
+                $connection->insertOnDuplicate(
                     $artistTable,
                     [
-                        'imported_tracks' => new \Zend_Db_Expr('imported_tracks + ' . $itemsSuccessful),
-                        'last_populate_at' => new \Zend_Db_Expr('NOW()')
+                        'artist_name' => $artistName,
+                        'collection_id' => $collectionId,
+                        'downloaded_shows' => $itemsSuccessful,
+                        'last_download_at' => new \Zend_Db_Expr('NOW()'),
+                        'created_at' => new \Zend_Db_Expr('NOW()'),
+                        'updated_at' => new \Zend_Db_Expr('NOW()')
                     ],
-                    ['artist_name = ?' => $artistName]
+                    [
+                        'downloaded_shows' => new \Zend_Db_Expr('downloaded_shows + VALUES(downloaded_shows)'),
+                        'last_download_at' => new \Zend_Db_Expr('NOW()'),
+                        'updated_at' => new \Zend_Db_Expr('NOW()')
+                    ]
+                );
+            } elseif (str_contains($commandName, 'populate')) {
+                // Insert or update imported_tracks and last_populate_at
+                $connection->insertOnDuplicate(
+                    $artistTable,
+                    [
+                        'artist_name' => $artistName,
+                        'collection_id' => $collectionId,
+                        'imported_tracks' => $itemsSuccessful,
+                        'last_populate_at' => new \Zend_Db_Expr('NOW()'),
+                        'created_at' => new \Zend_Db_Expr('NOW()'),
+                        'updated_at' => new \Zend_Db_Expr('NOW()')
+                    ],
+                    [
+                        'imported_tracks' => new \Zend_Db_Expr('imported_tracks + VALUES(imported_tracks)'),
+                        'last_populate_at' => new \Zend_Db_Expr('NOW()'),
+                        'updated_at' => new \Zend_Db_Expr('NOW()')
+                    ]
                 );
             }
 
