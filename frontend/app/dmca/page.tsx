@@ -59,7 +59,7 @@ const BanIcon = ({ className = 'w-6 h-6' }: { className?: string }) => (
 
 export const metadata: Metadata = {
   title: 'DMCA Policy',
-  description: 'DMCA Copyright Policy for 8PM. Learn about our copyright compliance procedures, how to file takedown notices, and our relationship with Archive.org.',
+  description: 'DMCA Copyright Policy for 8pm.me. Learn about our copyright compliance procedures, how to file takedown notices, and our relationship with Archive.org.',
   alternates: {
     canonical: '/dmca',
   },
@@ -83,7 +83,7 @@ export default function DMCAPage() {
         <div className="bg-[#2a2825] border border-[#3a3632] rounded-lg p-4 flex items-start gap-3">
           <InfoIcon className="w-5 h-5 text-[#d4a060] flex-shrink-0 mt-0.5" />
           <p className="text-sm text-[#d4a060]">
-            <strong>Note:</strong> This is a student project placeholder. 8PM is an educational
+            <strong>Note:</strong> This is a student project placeholder. 8pm.me is an educational
             demonstration and not a commercial service.
           </p>
         </div>
@@ -97,7 +97,7 @@ export default function DMCAPage() {
             </h2>
           </div>
           <p className="mb-4">
-            8PM respects the intellectual property rights of artists, tapers, and content
+            8pm.me respects the intellectual property rights of artists, tapers, and content
             creators. We comply with the Digital Millennium Copyright Act (DMCA) and respond
             promptly to valid takedown notices.
           </p>
@@ -116,7 +116,7 @@ export default function DMCAPage() {
             </h2>
           </div>
           <p className="mb-4">
-            <strong className="text-[#e8e4dc]">8PM does not host any audio recordings.</strong>{' '}
+            <strong className="text-[#e8e4dc]">8pm.me does not host any audio recordings.</strong>{' '}
             All live music recordings are hosted by and stream directly from the{' '}
             <a
               href="https://archive.org/details/etree"
@@ -152,25 +152,25 @@ export default function DMCAPage() {
             </p>
           </div>
           <p className="mt-4 text-sm">
-            8PM will automatically reflect any content removed from Archive.org.
+            8pm.me will automatically reflect any content removed from Archive.org.
           </p>
         </div>
 
-        {/* What 8PM Hosts */}
+        {/* What 8pm.me Hosts */}
         <div className="bg-[#2a2825] border border-[#3a3632] rounded-lg p-6">
           <div className="flex items-center gap-3 mb-4">
             <DocumentCheckIcon className="w-6 h-6 text-[#d4a060]" />
             <h2 className="text-xl font-semibold text-[#d4a060]">
-              What 8PM Does Host
+              What 8pm.me Does Host
             </h2>
           </div>
           <p className="mb-4">
-            8PM hosts the following content, for which we are responsible:
+            8pm.me hosts the following content, for which we are responsible:
           </p>
           <ul className="space-y-2">
             <li className="flex items-start gap-3">
               <CheckIcon className="w-4 h-4 text-[#d4a060] mt-1 flex-shrink-0" />
-              <span>The 8PM website interface and software</span>
+              <span>The 8pm.me website interface and software</span>
             </li>
             <li className="flex items-start gap-3">
               <CheckIcon className="w-4 h-4 text-[#d4a060] mt-1 flex-shrink-0" />
@@ -199,7 +199,7 @@ export default function DMCAPage() {
             </h2>
           </div>
           <p className="mb-4">
-            To file a DMCA takedown notice for content hosted by 8PM (not audio recordings),
+            To file a DMCA takedown notice for content hosted by 8pm.me (not audio recordings),
             please provide the following information in writing:
           </p>
           <ol className="space-y-3 list-decimal list-inside">
@@ -248,7 +248,7 @@ export default function DMCAPage() {
         {/* DMCA Agent */}
         <div className="bg-[#2a2825] border border-[#3a3632] rounded-lg p-6">
           <h3 className="text-lg font-semibold text-[#d4a060] mb-4">
-            8PM Designated DMCA Agent
+            8pm.me Designated DMCA Agent
           </h3>
           <div className="bg-[#1c1a17] rounded-lg p-4">
             <p className="mb-2">
@@ -329,7 +329,7 @@ export default function DMCAPage() {
             </h2>
           </div>
           <p>
-            In accordance with the DMCA, 8PM maintains a policy to terminate, in appropriate
+            In accordance with the DMCA, 8pm.me maintains a policy to terminate, in appropriate
             circumstances, users who are deemed to be repeat infringers. We may also, at our
             discretion, limit access or terminate accounts of users who infringe any intellectual
             property rights, whether or not there is any repeat infringement.

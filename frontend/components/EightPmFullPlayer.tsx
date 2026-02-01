@@ -1,6 +1,6 @@
 'use client';
 
-// JamifyFullPlayer - Spotify-style full-screen mobile player
+// EightPmFullPlayer - Spotify-style full-screen mobile player
 
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
@@ -19,7 +19,7 @@ import Link from 'next/link';
 import ShareModal from '@/components/ShareModal';
 import { formatLineage } from '@/lib/lineageUtils';
 
-export default function JamifyFullPlayer() {
+export default function EightPmFullPlayer() {
   const { isPlayerExpanded, collapsePlayer, isTransitioning } = useMobileUI();
   const { reducedMotion } = useBatteryOptimization();
   const { vibrate, BUTTON_PRESS, SWIPE_COMPLETE } = useHaptic();

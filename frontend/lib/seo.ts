@@ -25,7 +25,7 @@ export function generateSeoMetadata(data: SeoData): Metadata {
   const ogImage = data.image || `${baseUrl}/images/og-default.jpg`;
 
   return {
-    title: data.title || 'EIGHTPM - Live Music Archive',
+    title: data.title || '8pm.me - Live Music Archive',
     description: data.description || 'Stream live concert recordings from Archive.org',
     keywords: data.keywords,
     alternates: {
@@ -35,8 +35,8 @@ export function generateSeoMetadata(data: SeoData): Metadata {
       title: data.title,
       description: data.description,
       url: fullUrl,
-      siteName: 'EIGHTPM',
-      images: [{ url: ogImage, width: 1200, height: 630, alt: data.title || 'EIGHTPM' }],
+      siteName: '8pm.me',
+      images: [{ url: ogImage, width: 1200, height: 630, alt: data.title || '8pm.me' }],
       type: data.type || 'website',
     },
     twitter: {

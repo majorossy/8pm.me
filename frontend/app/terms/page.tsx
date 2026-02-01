@@ -17,7 +17,7 @@ import {
 
 export const metadata: Metadata = {
   title: 'Terms of Service',
-  description: 'Terms of service for 8PM, a frontend interface to the Live Music Archive. Stream and share freely, never sell. All content for noncommercial use only.',
+  description: 'Terms of service for 8pm.me, a frontend interface to the Live Music Archive. Stream and share freely, never sell. All content for noncommercial use only.',
   alternates: {
     canonical: '/terms',
   },
@@ -41,13 +41,13 @@ export default function TermsPage() {
         <div className="bg-[#2a2825] border border-[#3a3632] rounded-lg p-4 flex items-start gap-3">
           <InfoIcon className="w-5 h-5 text-[#d4a060] flex-shrink-0 mt-0.5" />
           <p className="text-sm text-[#d4a060]">
-            <strong>Note:</strong> This is a student project placeholder. 8PM is an educational
+            <strong>Note:</strong> This is a student project placeholder. 8pm.me is an educational
             demonstration and not a commercial service.
           </p>
         </div>
 
         <p className="text-lg">
-          By using 8PM, you agree to these terms and to the{' '}
+          By using 8pm.me, you agree to these terms and to the{' '}
           <a
             href="https://archive.org/about/terms"
             target="_blank"
@@ -68,7 +68,7 @@ export default function TermsPage() {
             </h2>
           </div>
           <p className="mb-4">
-            8PM is a frontend interface to the{' '}
+            8pm.me is a frontend interface to the{' '}
             <a
               href="https://archive.org/details/etree"
               target="_blank"
@@ -81,7 +81,7 @@ export default function TermsPage() {
             recordings stream directly from Archive.org's servers.
           </p>
           <p className="mb-4">
-            By using 8PM, you also agree to abide by the{' '}
+            By using 8pm.me, you also agree to abide by the{' '}
             <a
               href="https://archive.org/about/terms"
               target="_blank"
@@ -107,7 +107,7 @@ export default function TermsPage() {
             </h2>
           </div>
           <p>
-            By accessing and using 8PM, you accept and agree to be bound by these
+            By accessing and using 8pm.me, you accept and agree to be bound by these
             Terms of Service and the Internet Archive's terms. If you do not agree
             to these terms, please do not use this service.
           </p>
@@ -122,7 +122,7 @@ export default function TermsPage() {
             </h2>
           </div>
           <p className="mb-4">
-            8PM provides a browsing and streaming interface to the Live Music Archive.
+            8pm.me provides a browsing and streaming interface to the Live Music Archive.
             In accordance with Archive.org's policies, you may:
           </p>
           <ul className="space-y-2">
@@ -183,7 +183,7 @@ export default function TermsPage() {
           </div>
           <p className="mb-4">
             Following the Live Music Archive's policies, all content accessible through
-            8PM is for <strong className="text-[#d4a060]">noncommercial, royalty-free
+            8pm.me is for <strong className="text-[#d4a060]">noncommercial, royalty-free
             circulation only</strong>. You may freely share these recordings, but you may not:
           </p>
           <ul className="space-y-2">
@@ -292,7 +292,7 @@ export default function TermsPage() {
               </h3>
             </div>
             <p className="text-sm">
-              8PM is provided "as is" without warranties of any kind. As a student
+              8pm.me is provided "as is" without warranties of any kind. As a student
               project, we make no guarantees about service availability, accuracy of
               metadata, or suitability for any particular purpose.
             </p>
@@ -306,7 +306,7 @@ export default function TermsPage() {
               </h3>
             </div>
             <p className="text-sm">
-              8PM and its creators shall not be liable for any damages arising from
+              8pm.me and its creators shall not be liable for any damages arising from
               your use of the service. This includes data loss, service interruptions,
               or any other issues that may arise.
             </p>
@@ -381,7 +381,7 @@ export default function TermsPage() {
             </div>
             <p className="text-sm">
               We reserve the right to modify these terms at any time. Continued use
-              of 8PM after changes constitutes acceptance of the new terms.
+              of 8pm.me after changes constitutes acceptance of the new terms.
             </p>
           </div>
 

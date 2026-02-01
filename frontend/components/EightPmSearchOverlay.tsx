@@ -18,7 +18,7 @@ import { SearchSilence } from './NoResultsIcons';
 import { trackSearch, trackSearchResultClick } from '@/lib/analytics';
 import { VALIDATION_LIMITS } from '@/lib/validation';
 
-interface JamifySearchOverlayProps {
+interface EightPmSearchOverlayProps {
   isOpen: boolean;
   onClose: () => void;
 }
@@ -28,7 +28,7 @@ interface SearchResults {
   albums: AlbumCategory[];
 }
 
-export function JamifySearchOverlay({ isOpen, onClose }: JamifySearchOverlayProps) {
+export function EightPmSearchOverlay({ isOpen, onClose }: EightPmSearchOverlayProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [results, setResults] = useState<SearchResults>({ artists: [], albums: [] });

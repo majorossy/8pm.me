@@ -6,7 +6,7 @@ import { getBaseUrl } from '@/lib/seo';
 import { generateWebSiteSchema } from '@/lib/schema';
 
 export const metadata: Metadata = {
-  title: 'EIGHTPM - Stream Live Concert Recordings',
+  title: '8pm.me - Stream Live Concert Recordings',
   description: 'Discover and stream thousands of live concert recordings from Archive.org. Featuring Grateful Dead, Phish, Widespread Panic, and more.',
   alternates: {
     canonical: '/',

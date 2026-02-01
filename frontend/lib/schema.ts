@@ -428,7 +428,7 @@ export function generateWebSiteSchema(baseUrl: string): Record<string, unknown> 
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'EIGHTPM',
+    name: '8pm.me',
     url: baseUrl,
     description: 'Stream live concert recordings from Archive.org',
     potentialAction: {
@@ -474,7 +474,7 @@ export function generateArtistFAQSchema(
   // How to listen
   faqs.push({
     question: `How can I listen to ${artistName} live recordings for free?`,
-    answer: `EIGHTPM streams ${totalShows ? `${totalShows.toLocaleString()} ` : ''}${artistName} concert recordings for free, sourced from Archive.org. No subscription or account required. Simply browse to the ${artistName} artist page and select any show to start listening instantly.`,
+    answer: `8pm.me streams ${totalShows ? `${totalShows.toLocaleString()} ` : ''}${artistName} concert recordings for free, sourced from Archive.org. No subscription or account required. Simply browse to the ${artistName} artist page and select any show to start listening instantly.`,
   });
 
   // Best shows
@@ -486,7 +486,7 @@ export function generateArtistFAQSchema(
   // Legal question
   faqs.push({
     question: `Are these ${artistName} live recordings legal to stream?`,
-    answer: `Yes! All ${artistName} recordings on EIGHTPM are sourced from Archive.org, which hosts concerts with permission from artists who allow fan taping and trading.`,
+    answer: `Yes! All ${artistName} recordings on 8pm.me are sourced from Archive.org, which hosts concerts with permission from artists who allow fan taping and trading.`,
   });
 
   // Formation/origin (if data exists)

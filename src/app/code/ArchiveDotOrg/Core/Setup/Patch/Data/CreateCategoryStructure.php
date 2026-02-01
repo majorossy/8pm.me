@@ -19,7 +19,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Create Category Structure Data Patch
  *
- * Creates the complete category hierarchy for the 8PM Music Platform:
+ * Creates the complete category hierarchy for the 8pm.me Music Platform:
  *   Root Catalog (1) → Default Category (2) → Artists (48)
  *     → Artist categories (7 artists)
  *       → Album categories (35 albums)

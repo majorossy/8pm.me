@@ -16,8 +16,8 @@ import { AuthProvider } from '@/context/AuthContext';
 import { MagentoAuthProvider } from '@/context/MagentoAuthContext';
 import { UnifiedAuthProvider } from '@/context/UnifiedAuthContext';
 import BottomPlayer from '@/components/BottomPlayer';
-import JamifyTopBar from '@/components/JamifyTopBar';
-import JamifyMobileNav from '@/components/JamifyMobileNav';
+import EightPmTopBar from '@/components/EightPmTopBar';
+import EightPmMobileNav from '@/components/EightPmMobileNav';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { ToastProvider } from '@/components/ToastContainer';
@@ -30,9 +30,9 @@ import CookieConsentBanner from '@/components/CookieConsentBanner';
 
 // Lazy load heavy components that aren't immediately visible
 const Queue = dynamic(() => import('@/components/Queue'), { ssr: false });
-const JamifyFullPlayer = dynamic(() => import('@/components/JamifyFullPlayer'), { ssr: false });
-const JamifySearchOverlay = dynamic(
-  () => import('@/components/JamifySearchOverlay').then(mod => ({ default: mod.JamifySearchOverlay })),
+const EightPmFullPlayer = dynamic(() => import('@/components/EightPmFullPlayer'), { ssr: false });
+const EightPmSearchOverlay = dynamic(
+  () => import('@/components/EightPmSearchOverlay').then(mod => ({ default: mod.EightPmSearchOverlay })),
   { ssr: false }
 );
 const KeyboardShortcutsHelp = dynamic(() => import('@/components/KeyboardShortcutsHelp'), { ssr: false });
@@ -116,7 +116,7 @@ function InnerLayout({ children }: { children: ReactNode }) {
       <div className="fire-glow" />
 
       {/* Top bar with breadcrumbs - OUTSIDE main for sticky positioning */}
-      <JamifyTopBar />
+      <EightPmTopBar />
 
       {/* Main content area */}
       <main
@@ -130,19 +130,19 @@ function InnerLayout({ children }: { children: ReactNode }) {
       </main>
 
       {/* Bottom navigation tabs (all screen sizes) */}
-      <JamifyMobileNav />
+      <EightPmMobileNav />
 
       {/* Mini player (mobile) or full player bar (desktop) */}
       <BottomPlayer />
 
       {/* Mobile: Full-screen player (expands from mini player) */}
-      {isMobile && <JamifyFullPlayer />}
+      {isMobile && <EightPmFullPlayer />}
 
       {/* Queue drawer (left side) */}
       <Queue />
 
       {/* Search overlay */}
-      <JamifySearchOverlay
+      <EightPmSearchOverlay
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
       />

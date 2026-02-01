@@ -97,7 +97,7 @@ export default function RelatedArtists({
 
       {/* SEO text for keyword relevance */}
       <p className="text-xs text-[#6a6458] mt-6 text-center">
-        Discover more jam bands and live concert recordings from Archive.org on EIGHTPM
+        Discover more jam bands and live concert recordings from Archive.org on 8pm.me
       </p>
     </section>
   );

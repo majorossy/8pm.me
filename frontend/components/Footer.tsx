@@ -131,7 +131,7 @@ export default function Footer() {
                   href="/about"
                   className="text-sm text-[var(--text-dim)] hover:text-[var(--neon-pink)] leading-relaxed transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--neon-pink)] rounded"
                 >
-                  About 8PM
+                  About
                 </Link>
               </li>
               <li>
@@ -250,7 +250,7 @@ export default function Footer() {
 
           {/* Right: Copyright */}
           <div className="text-xs text-[var(--text-subdued)] uppercase tracking-wider">
-            © 2026 8PM
+            © 2026 8pm.me
           </div>
         </div>
       </div>

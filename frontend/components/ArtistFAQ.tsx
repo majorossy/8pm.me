@@ -43,7 +43,7 @@ export default function ArtistFAQ({
     // How to listen to recordings
     faqs.push({
       question: `How can I listen to ${artistName} live recordings for free?`,
-      answer: `EIGHTPM streams ${totalShows ? `${totalShows.toLocaleString()} ` : ''}${artistName} concert recordings for free, sourced from Archive.org. No subscription or account required. Simply browse to the ${artistName} artist page and select any show to start listening instantly.`,
+      answer: `8pm.me streams ${totalShows ? `${totalShows.toLocaleString()} ` : ''}${artistName} concert recordings for free, sourced from Archive.org. No subscription or account required. Simply browse to the ${artistName} artist page and select any show to start listening instantly.`,
     });
 
     // Best shows question
@@ -55,7 +55,7 @@ export default function ArtistFAQ({
     // Are recordings legal
     faqs.push({
       question: `Are these ${artistName} live recordings legal to stream?`,
-      answer: `Yes! All ${artistName} recordings on EIGHTPM are sourced from Archive.org, which hosts concerts with permission from artists who allow fan taping and trading. ${artistName}${genres?.includes('jam band') || genres?.includes('Jam band') ? ', like many jam bands,' : ''} encourages fans to record and share live performances as part of the taping culture.`,
+      answer: `Yes! All ${artistName} recordings on 8pm.me are sourced from Archive.org, which hosts concerts with permission from artists who allow fan taping and trading. ${artistName}${genres?.includes('jam band') || genres?.includes('Jam band') ? ', like many jam bands,' : ''} encourages fans to record and share live performances as part of the taping culture.`,
     });
 
     // Recording quality
@@ -75,7 +75,7 @@ export default function ArtistFAQ({
     // Download vs stream
     faqs.push({
       question: `Can I download ${artistName} recordings or only stream them?`,
-      answer: `EIGHTPM is designed for free streaming. For downloads, each show links to the original Archive.org page where you can download in multiple formats including MP3, FLAC, and Ogg Vorbis. Downloads from Archive.org are also free.`,
+      answer: `8pm.me is designed for free streaming. For downloads, each show links to the original Archive.org page where you can download in multiple formats including MP3, FLAC, and Ogg Vorbis. Downloads from Archive.org are also free.`,
     });
 
     return faqs;
@@ -93,7 +93,7 @@ export default function ArtistFAQ({
         Frequently Asked Questions About {artistName}
       </h2>
       <p className="text-sm text-[#8a8478] mb-6">
-        Common questions about streaming {artistName} live recordings on EIGHTPM
+        Common questions about streaming {artistName} live recordings on 8pm.me
       </p>
 
       <div className="space-y-3">
@@ -159,7 +159,7 @@ export function generateArtistFAQSchema(
   const faqs = [
     {
       question: `How can I listen to ${artistName} live recordings for free?`,
-      answer: `EIGHTPM streams ${totalShows ? `${totalShows.toLocaleString()} ` : ''}${artistName} concert recordings for free, sourced from Archive.org. No subscription or account required. Simply browse to the ${artistName} artist page and select any show to start listening instantly.`,
+      answer: `8pm.me streams ${totalShows ? `${totalShows.toLocaleString()} ` : ''}${artistName} concert recordings for free, sourced from Archive.org. No subscription or account required. Simply browse to the ${artistName} artist page and select any show to start listening instantly.`,
     },
     {
       question: `What are the best ${artistName} live shows to listen to?`,
@@ -167,7 +167,7 @@ export function generateArtistFAQSchema(
     },
     {
       question: `Are these ${artistName} live recordings legal to stream?`,
-      answer: `Yes! All ${artistName} recordings on EIGHTPM are sourced from Archive.org, which hosts concerts with permission from artists who allow fan taping and trading.`,
+      answer: `Yes! All ${artistName} recordings on 8pm.me are sourced from Archive.org, which hosts concerts with permission from artists who allow fan taping and trading.`,
     },
   ];
 

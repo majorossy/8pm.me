@@ -13,7 +13,7 @@ import {
 
 export const metadata: Metadata = {
   title: 'How It Works',
-  description: 'Learn how to use 8PM to discover and enjoy thousands of free live concert recordings. Browse artists, search shows, create playlists, and stream music from Archive.org.',
+  description: 'Learn how to use 8pm.me to discover and enjoy thousands of free live concert recordings. Browse artists, search shows, create playlists, and stream music from Archive.org.',
   alternates: {
     canonical: '/how-it-works',
   },
@@ -44,7 +44,7 @@ const steps = [
   {
     number: 5,
     title: 'Share the Love',
-    description: 'All recordings on 8PM are freely shareable. Send links to friends, share on social media, or download tracks for offline listening. Remember: please copy freely — never sell.',
+    description: 'All recordings on 8pm.me are freely shareable. Send links to friends, share on social media, or download tracks for offline listening. Remember: please copy freely — never sell.',
   },
 ];
 
@@ -69,7 +69,7 @@ export default function HowItWorksPage() {
       </div>
 
       <p className="text-[#8a8478] text-lg mb-10">
-        8PM makes it easy to discover and enjoy thousands of live concert recordings
+        8pm.me makes it easy to discover and enjoy thousands of live concert recordings
         from Archive.org. Here's how to get started:
       </p>
 

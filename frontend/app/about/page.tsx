@@ -12,8 +12,8 @@ import {
 } from '@/components/icons/FooterIcons';
 
 export const metadata: Metadata = {
-  title: 'About 8PM',
-  description: 'Learn about 8PM, your gateway to thousands of free live concert recordings from Archive.org. Discover our mission to preserve and share the joy of live music.',
+  title: 'About 8pm.me',
+  description: 'Learn about 8pm.me, your gateway to thousands of free live concert recordings from Archive.org. Discover our mission to preserve and share the joy of live music.',
   alternates: {
     canonical: '/about',
   },
@@ -28,7 +28,7 @@ export default function AboutPage() {
           <InfoIcon className="w-8 h-8 text-[#d4a060]" />
         </div>
         <h1 className="text-4xl md:text-5xl font-bold text-[#d4a060] tracking-tight">
-          About 8PM
+          About 8pm.me
         </h1>
       </div>
 
@@ -39,12 +39,12 @@ export default function AboutPage() {
             <MusicNoteIcon className="w-8 h-8 text-[#d4a060] flex-shrink-0 mt-1" />
             <div>
               <p className="text-lg mb-4">
-                8PM is your gateway to thousands of live concert recordings from Archive.org.
+                8pm.me is your gateway to thousands of live concert recordings from Archive.org.
                 Explore, listen, and discover legendary performances from jam bands and beyond.
               </p>
               <p className="text-[#8a8478]">
                 Built on the foundation of the Internet Archive's vast collection of legally
-                shareable live music, 8PM brings together decades of incredible performances
+                shareable live music, 8pm.me brings together decades of incredible performances
                 from artists like the Grateful Dead, Phish, String Cheese Incident, and many more.
               </p>
             </div>
@@ -122,7 +122,7 @@ export default function AboutPage() {
         <div className="bg-[#2a2825] border border-[#3a3632] rounded-lg p-6">
           <p className="text-center text-lg">
             Whether you're reliving a show you attended or discovering a performance from
-            before you were born, 8PM makes it easy to browse, search, and enjoy these
+            before you were born, 8pm.me makes it easy to browse, search, and enjoy these
             cultural treasures.
           </p>
         </div>

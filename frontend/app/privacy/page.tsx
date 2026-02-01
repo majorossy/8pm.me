@@ -14,7 +14,7 @@ import {
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
-  description: 'Learn how 8PM handles your data. We prioritize your privacy with local storage, no tracking across websites, and no selling of personal information.',
+  description: 'Learn how 8pm.me handles your data. We prioritize your privacy with local storage, no tracking across websites, and no selling of personal information.',
   alternates: {
     canonical: '/privacy',
   },
@@ -38,7 +38,7 @@ export default function PrivacyPage() {
         <div className="bg-[#2a2825] border border-[#3a3632] rounded-lg p-4 flex items-start gap-3">
           <InfoIcon className="w-5 h-5 text-[#d4a060] flex-shrink-0 mt-0.5" />
           <p className="text-sm text-[#d4a060]">
-            <strong>Note:</strong> This is a student project placeholder. 8PM is an educational
+            <strong>Note:</strong> This is a student project placeholder. 8pm.me is an educational
             demonstration and not a commercial service.
           </p>
         </div>
@@ -52,7 +52,7 @@ export default function PrivacyPage() {
             </h2>
           </div>
           <p>
-            8PM is designed with privacy in mind. We believe your listening habits
+            8pm.me is designed with privacy in mind. We believe your listening habits
             and personal data should remain yours.
           </p>
         </div>
@@ -133,7 +133,7 @@ export default function PrivacyPage() {
             </h2>
           </div>
           <p>
-            8PM streams music directly from Archive.org. When you play a recording,
+            8pm.me streams music directly from Archive.org. When you play a recording,
             your browser connects directly to Archive.org's servers. Please refer to
             Archive.org's privacy policy for information about their data practices.
           </p>

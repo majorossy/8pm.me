@@ -1,16 +1,16 @@
 'use client';
 
-// JamifyMobileNav - Spotify-style bottom tab navigation for mobile
+// EightPmMobileNav - Spotify-style bottom tab navigation for mobile
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { JamifySearchOverlay } from './JamifySearchOverlay';
+import { EightPmSearchOverlay } from './EightPmSearchOverlay';
 import { useHaptic } from '@/hooks/useHaptic';
 import { useAuth } from '@/context/AuthContext';
 import AuthModal from '@/components/AuthModal';
 
-export default function JamifyMobileNav() {
+export default function EightPmMobileNav() {
   const pathname = usePathname();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -148,7 +148,7 @@ export default function JamifyMobileNav() {
       </nav>
 
       {/* Search Overlay */}
-      <JamifySearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+      <EightPmSearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
       {/* Auth Modal */}
       <AuthModal

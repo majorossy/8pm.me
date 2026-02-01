@@ -27,8 +27,18 @@ interface RecentlyPlayedContextType {
 
 const RecentlyPlayedContext = createContext<RecentlyPlayedContextType | null>(null);
 
-const STORAGE_KEY = 'jamify_recently_played';
+const STORAGE_KEY = '8pm_recently_played';
 const MAX_ITEMS = 50;
+
+// Legacy key migration helper
+const migrateStorageKey = (oldKey: string, newKey: string) => {
+  if (typeof window === 'undefined') return;
+  const oldData = localStorage.getItem(oldKey);
+  if (oldData && !localStorage.getItem(newKey)) {
+    localStorage.setItem(newKey, oldData);
+    localStorage.removeItem(oldKey);
+  }
+};
 
 export function RecentlyPlayedProvider({ children }: { children: React.ReactNode }) {
   const { user, isAuthenticated } = useAuth();
@@ -41,6 +51,9 @@ export function RecentlyPlayedProvider({ children }: { children: React.ReactNode
 
   // Load from localStorage on mount
   useEffect(() => {
+    // Migrate legacy key on first load
+    migrateStorageKey('jamify_recently_played', STORAGE_KEY);
+
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {

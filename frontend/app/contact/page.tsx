@@ -72,14 +72,14 @@ export default function ContactPage() {
             </h3>
           </div>
           <p className="text-[#8a8478] mb-4">
-            8PM is a student project demonstrating headless Magento/Mage-OS with
+            8pm.me is a student project demonstrating headless Magento/Mage-OS with
             Next.js and React.
           </p>
           <Link
             href="/about"
             className="inline-flex items-center gap-2 text-[#d4a060] hover:text-[#e8a050] transition-colors duration-200"
           >
-            Learn more about 8PM
+            Learn more about 8pm.me
             <span className="text-sm">→</span>
           </Link>
         </div>
@@ -94,7 +94,7 @@ export default function ContactPage() {
           </h2>
         </div>
         <p className="text-[#8a8478] mb-6">
-          All recordings on 8PM are hosted by the Internet Archive, a non-profit
+          All recordings on 8pm.me are hosted by the Internet Archive, a non-profit
           digital library that preserves cultural artifacts for free public access.
           If you love what they do, consider supporting them.
         </p>

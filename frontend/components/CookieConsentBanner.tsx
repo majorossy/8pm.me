@@ -154,7 +154,7 @@ export default function CookieConsentBanner() {
               <>
                 <p className="text-sm text-[#8a8478] mb-4 leading-relaxed">
                   We use cookies to enhance your experience. Essential cookies are required for basic functionality.
-                  Analytics cookies help us improve 8PM.{' '}
+                  Analytics cookies help us improve 8pm.me.{' '}
                   <Link
                     href="/cookie-policy"
                     className="text-[#d4a060] hover:underline focus:outline-none focus:ring-2 focus:ring-[#d4a060] rounded"
@@ -208,7 +208,7 @@ export default function CookieConsentBanner() {
 
                   <CategoryToggle
                     label="Analytics Cookies"
-                    description="Help us understand how you use 8PM so we can improve the experience."
+                    description="Help us understand how you use 8pm.me so we can improve the experience."
                     checked={customSettings.analytics}
                     onChange={(checked) => setCustomSettings((s) => ({ ...s, analytics: checked }))}
                   />

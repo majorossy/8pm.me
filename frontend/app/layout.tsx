@@ -33,21 +33,21 @@ const bebasNeue = Bebas_Neue({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3001'),
   title: {
-    default: 'EIGHTPM - Live Music Archive',
-    template: '%s | EIGHTPM',
+    default: '8pm.me - Live Music Archive',
+    template: '%s | 8pm.me',
   },
   description: 'Stream high-quality live concert recordings from legendary artists. Discover thousands of shows from Archive.org.',
   keywords: ['live music', 'concert recordings', 'archive.org', 'streaming', 'grateful dead', 'phish', 'jam bands'],
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    siteName: 'EIGHTPM',
+    siteName: '8pm.me',
     images: [
       {
         url: '/images/og-default.jpg',
         width: 1200,
         height: 630,
-        alt: 'EIGHTPM - Live Music Archive',
+        alt: '8pm.me - Live Music Archive',
       },
     ],
   },
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'EIGHTPM',
+    title: '8pm.me',
   },
   formatDetection: {
     telephone: false,
@@ -86,14 +86,14 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://ia600200.us.archive.org" />
 
         {/* PWA Meta Tags */}
-        <meta name="application-name" content="EIGHTPM" />
+        <meta name="application-name" content="8pm.me" />
         <meta name="theme-color" content="#d4a060" />
         <meta name="mobile-web-app-capable" content="yes" />
 
         {/* iOS Web App Meta Tags */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="EIGHTPM" />
+        <meta name="apple-mobile-web-app-title" content="8pm.me" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
 
         {/* Favicons */}

@@ -484,7 +484,7 @@ class BulkProductImporter implements BulkProductImporterInterface
         $showDate = $show->getDate() ?? $showYear;
 
         $metaTitle = sprintf(
-            '%s - %s (%s at %s) | 8PM',
+            '%s - %s (%s at %s) | 8pm.me',
             $trackTitle,
             $artistName,
             $showYear,

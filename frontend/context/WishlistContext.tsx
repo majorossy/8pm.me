@@ -46,9 +46,19 @@ const WishlistContext = createContext<WishlistContextType | null>(null);
 let mockItemId = 0;
 const generateItemId = () => `wishlist-item-${++mockItemId}`;
 
-const WISHLIST_STORAGE_KEY = 'jamify_wishlist';
-const FOLLOWED_ARTISTS_STORAGE_KEY = 'jamify_followed_artists';
-const FOLLOWED_ALBUMS_STORAGE_KEY = 'jamify_followed_albums';
+const WISHLIST_STORAGE_KEY = '8pm_wishlist';
+const FOLLOWED_ARTISTS_STORAGE_KEY = '8pm_followed_artists';
+const FOLLOWED_ALBUMS_STORAGE_KEY = '8pm_followed_albums';
+
+// Legacy key migration helper
+const migrateStorageKey = (oldKey: string, newKey: string) => {
+  if (typeof window === 'undefined') return;
+  const oldData = localStorage.getItem(oldKey);
+  if (oldData && !localStorage.getItem(newKey)) {
+    localStorage.setItem(newKey, oldData);
+    localStorage.removeItem(oldKey);
+  }
+};
 
 export function WishlistProvider({ children }: { children: React.ReactNode }) {
   const { user, isAuthenticated: authIsAuthenticated } = useAuth();
@@ -61,6 +71,11 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
 
   // Load wishlist from localStorage on mount
   useEffect(() => {
+    // Migrate legacy keys on first load
+    migrateStorageKey('jamify_wishlist', WISHLIST_STORAGE_KEY);
+    migrateStorageKey('jamify_followed_artists', FOLLOWED_ARTISTS_STORAGE_KEY);
+    migrateStorageKey('jamify_followed_albums', FOLLOWED_ALBUMS_STORAGE_KEY);
+
     const stored = localStorage.getItem(WISHLIST_STORAGE_KEY);
     if (stored) {
       try {

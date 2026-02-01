@@ -24,14 +24,14 @@
     <path d="M320 48L176 240h80l-48 224 144-224h-80z" fill="#d4a060"/>
   </g>
 
-  <!-- EIGHTPM text -->
+  <!-- 8pm.me text -->
   <text x="600" y="420"
         font-family="system-ui, -apple-system, sans-serif"
         font-size="72"
         font-weight="700"
         fill="#d4a060"
         text-anchor="middle"
-        letter-spacing="8">EIGHTPM</text>
+        letter-spacing="4">8pm.me</text>
 
   <!-- Tagline -->
   <text x="600" y="480"

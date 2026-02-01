@@ -1,15 +1,15 @@
 'use client';
 
-// JamifyTopBar - Top navigation bar with breadcrumbs and theme toggle
+// EightPmTopBar - Top navigation bar with breadcrumbs and theme toggle
 
 import Breadcrumb from './Breadcrumb';
 import ThemeToggle from './ThemeToggle';
 
-interface JamifyTopBarProps {
+interface EightPmTopBarProps {
   transparent?: boolean;
 }
 
-export default function JamifyTopBar({ transparent = false }: JamifyTopBarProps) {
+export default function EightPmTopBar({ transparent = false }: EightPmTopBarProps) {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-colors ${

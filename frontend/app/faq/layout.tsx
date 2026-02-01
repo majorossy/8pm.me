@@ -3,7 +3,7 @@ import StructuredData from '@/components/StructuredData';
 
 export const metadata: Metadata = {
   title: 'FAQ - Frequently Asked Questions',
-  description: 'Find answers to common questions about 8PM, the free live music streaming platform. Learn about recordings, downloads, accounts, and more.',
+  description: 'Find answers to common questions about 8pm.me, the free live music streaming platform. Learn about recordings, downloads, accounts, and more.',
   alternates: {
     canonical: '/faq',
   },
@@ -12,8 +12,8 @@ export const metadata: Metadata = {
 // FAQ data for schema (must match the client component)
 const faqItems = [
   {
-    question: 'Is 8PM really free?',
-    answer: 'Yes! 8PM is completely free to use. All recordings come from Archive.org, which hosts legally shareable live music. There are no subscriptions, no ads, and no hidden fees.',
+    question: 'Is 8pm.me really free?',
+    answer: 'Yes! 8pm.me is completely free to use. All recordings come from Archive.org, which hosts legally shareable live music. There are no subscriptions, no ads, and no hidden fees.',
   },
   {
     question: 'Where do the recordings come from?',
@@ -21,11 +21,11 @@ const faqItems = [
   },
   {
     question: 'Can I download shows for offline listening?',
-    answer: 'While 8PM is designed for streaming, you can visit Archive.org directly to download complete shows in various formats (MP3, FLAC, etc.). Each show page includes a link to the original Archive.org recording.',
+    answer: 'While 8pm.me is designed for streaming, you can visit Archive.org directly to download complete shows in various formats (MP3, FLAC, etc.). Each show page includes a link to the original Archive.org recording.',
   },
   {
     question: 'Are these recordings legal?',
-    answer: 'Yes! All artists featured on 8PM allow or encourage taping and sharing of their live performances. This is a long-standing tradition in the jam band community that helps spread the music and build fan communities.',
+    answer: 'Yes! All artists featured on 8pm.me allow or encourage taping and sharing of their live performances. This is a long-standing tradition in the jam band community that helps spread the music and build fan communities.',
   },
   {
     question: 'Do I need to create an account?',

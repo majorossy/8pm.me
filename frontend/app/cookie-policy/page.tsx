@@ -52,7 +52,7 @@ const CogIcon = ({ className = 'w-6 h-6' }: { className?: string }) => (
 
 export const metadata: Metadata = {
   title: 'Cookie Policy',
-  description: 'Learn about how 8PM uses cookies to enhance your experience. Understand your choices for essential, functional, and analytics cookies.',
+  description: 'Learn about how 8pm.me uses cookies to enhance your experience. Understand your choices for essential, functional, and analytics cookies.',
   alternates: {
     canonical: '/cookie-policy',
   },
@@ -98,13 +98,13 @@ export default function CookiePolicyPage() {
       name: '8pm_cookie_consent',
       purpose: 'Stores your cookie preferences',
       duration: 'Persistent',
-      provider: '8PM',
+      provider: '8pm.me',
     },
     {
       name: 'theme_preference',
       purpose: 'Remembers your display theme',
       duration: 'Persistent',
-      provider: '8PM',
+      provider: '8pm.me',
     },
   ];
 
@@ -113,37 +113,37 @@ export default function CookiePolicyPage() {
       name: '8pm_playlists',
       purpose: 'Stores your created playlists locally',
       duration: 'Persistent',
-      provider: '8PM',
+      provider: '8pm.me',
     },
     {
       name: '8pm_recently_played',
       purpose: 'Remembers your listening history',
       duration: 'Persistent',
-      provider: '8PM',
+      provider: '8pm.me',
     },
     {
       name: '8pm_liked_songs',
       purpose: 'Stores your liked songs',
       duration: 'Persistent',
-      provider: '8PM',
+      provider: '8pm.me',
     },
     {
       name: '8pm_queue',
       purpose: 'Preserves your play queue',
       duration: 'Session',
-      provider: '8PM',
+      provider: '8pm.me',
     },
     {
       name: '8pm_volume',
       purpose: 'Remembers your volume setting',
       duration: 'Persistent',
-      provider: '8PM',
+      provider: '8pm.me',
     },
     {
       name: '8pm_quality',
       purpose: 'Stores your audio quality preference',
       duration: 'Persistent',
-      provider: '8PM',
+      provider: '8pm.me',
     },
   ];
 
@@ -179,7 +179,7 @@ export default function CookiePolicyPage() {
         <div className="bg-[#2a2825] border border-[#3a3632] rounded-lg p-4 flex items-start gap-3">
           <InfoIcon className="w-5 h-5 text-[#d4a060] flex-shrink-0 mt-0.5" />
           <p className="text-sm text-[#d4a060]">
-            <strong>Note:</strong> This is a student project placeholder. 8PM is an educational
+            <strong>Note:</strong> This is a student project placeholder. 8pm.me is an educational
             demonstration and not a commercial service.
           </p>
         </div>
@@ -197,7 +197,7 @@ export default function CookiePolicyPage() {
             They help websites remember your preferences and understand how you use them.
           </p>
           <p>
-            8PM uses cookies and similar technologies (like localStorage) to provide you
+            8pm.me uses cookies and similar technologies (like localStorage) to provide you
             with a better experience. You have control over which cookies we use.
           </p>
         </div>
@@ -256,7 +256,7 @@ export default function CookiePolicyPage() {
             </span>
           </div>
           <p className="mb-4">
-            These cookies help us understand how visitors use 8PM. They collect anonymous
+            These cookies help us understand how visitors use 8pm.me. They collect anonymous
             information about which pages are visited and how long users stay. This helps
             us improve the site for everyone.
           </p>
@@ -286,7 +286,7 @@ export default function CookiePolicyPage() {
             </h2>
           </div>
           <p className="mb-4">
-            8PM streams music from Archive.org. When you play a recording, your browser
+            8pm.me streams music from Archive.org. When you play a recording, your browser
             connects directly to Archive.org's servers. Please refer to{' '}
             <a
               href="https://archive.org/about/terms.php"

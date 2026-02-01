@@ -1,7 +1,7 @@
 {
-  "name": "EIGHTPM - Music Archive",
-  "short_name": "EIGHTPM",
-  "description": "Discover and stream live music recordings",
+  "name": "8pm.me - Live Music Archive",
+  "short_name": "8pm.me",
+  "description": "Stream live concert recordings",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#1c1a17",

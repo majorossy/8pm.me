@@ -46,7 +46,7 @@ export default function ExpandedBiography({
     // Archive.org collection info
     if (totalShows && totalShows > 0) {
       parts.push(
-        `Explore ${totalShows.toLocaleString()} live ${artistName} recordings in the EIGHTPM archive. ` +
+        `Explore ${totalShows.toLocaleString()} live ${artistName} recordings in the 8pm.me archive. ` +
         `Each concert captures the unique energy and improvisational spirit that makes ${artistName} performances legendary.`
       );
     }
@@ -81,7 +81,7 @@ export default function ExpandedBiography({
 
     // Call to action
     parts.push(
-      `Stream ${artistName} concerts for free on EIGHTPM, featuring high-quality recordings from Archive.org. ` +
+      `Stream ${artistName} concerts for free on 8pm.me, featuring high-quality recordings from Archive.org. ` +
       `No subscription required - dive into the complete archive of live performances and discover why fans return to these recordings again and again.`
     );
 
@@ -126,7 +126,7 @@ export default function ExpandedBiography({
       {needsExpansion && supplementaryParagraphs.length > 0 && (
         <div className="mt-6 pt-4 border-t border-[#3a3632]/30">
           <h3 className="text-sm font-semibold text-[#a8a098] mb-3">
-            About {artistName} on EIGHTPM
+            About {artistName} on 8pm.me
           </h3>
           {supplementaryParagraphs.map((paragraph, index) => (
             <p
