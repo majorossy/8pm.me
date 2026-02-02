@@ -18,8 +18,21 @@ interface AlbumWithTracks extends Album {
   tracks: Track[];
 }
 
+// Related show for internal linking
+interface RelatedShow {
+  slug: string;
+  name: string;
+  artistSlug: string;
+  artistName: string;
+  showDate?: string;
+  showVenue?: string;
+  coverArt?: string;
+  totalTracks: number;
+}
+
 interface AlbumPageContentProps {
   album: AlbumWithTracks;
+  moreFromVenue?: RelatedShow[];
 }
 
 // Format hours from seconds
@@ -734,7 +747,7 @@ function SideDivider({ side }: { side: 'A' | 'B' }) {
   );
 }
 
-export default function AlbumPageContent({ album }: AlbumPageContentProps) {
+export default function AlbumPageContent({ album, moreFromVenue = [] }: AlbumPageContentProps) {
   const { setBreadcrumbs } = useBreadcrumbs();
   const { currentSong, isPlaying, togglePlay, playAlbum, playAlbumFromTrack, analyzerData, volume, setVolume } = usePlayer();
   const { queue, setShuffle } = useQueue();
@@ -969,6 +982,63 @@ export default function AlbumPageContent({ album }: AlbumPageContentProps) {
             showDate={album.showDate}
             showVenue={album.showVenue}
           />
+        )}
+
+        {/* More from this Venue - Internal Linking for SEO */}
+        {moreFromVenue.length > 0 && album.showVenue && (
+          <div className="mt-12">
+            <div className="flex items-center gap-4 mb-6">
+              <div
+                className="flex-1 h-px"
+                style={{ background: 'linear-gradient(90deg, transparent, rgba(168,128,96,0.25))' }}
+              />
+              <div className="text-[#8a7a68] text-[11px] tracking-[4px] flex items-center gap-2.5">
+                <span className="text-[#e8a050]">🏛</span>
+                MORE FROM {album.showVenue.toUpperCase()}
+                <span className="text-[#e8a050]">🏛</span>
+              </div>
+              <div
+                className="flex-1 h-px"
+                style={{ background: 'linear-gradient(90deg, rgba(168,128,96,0.25), transparent)' }}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+              {moreFromVenue.map((show) => (
+                <Link
+                  key={show.slug}
+                  href={`/artists/${show.artistSlug}/album/${show.slug}`}
+                  className="group block"
+                >
+                  <div className="relative aspect-square rounded-lg overflow-hidden mb-2 bg-[#2a2520]">
+                    {show.coverArt ? (
+                      <Image
+                        src={show.coverArt}
+                        alt={show.name}
+                        fill
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center text-[#8a7a68]">
+                        <svg className="w-12 h-12" viewBox="0 0 24 24" fill="currentColor">
+                          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                          <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                        </svg>
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                  <div className="text-sm text-[var(--text-dim)] group-hover:text-[var(--text)] transition-colors truncate">
+                    {show.showDate || show.name}
+                  </div>
+                  <div className="text-xs text-[var(--text-subdued)] truncate">
+                    {show.totalTracks} tracks
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
         )}
 
         {/* Footer */}

@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getAlbum, getArtist, getArtists } from '@/lib/api';
+import { getAlbum, getArtist, getArtists, Album } from '@/lib/api';
 import { notFound } from 'next/navigation';
 import AlbumPageContent from '@/components/AlbumPageContent';
 import StructuredData from '@/components/StructuredData';
@@ -11,6 +11,19 @@ import {
   combineSchemas,
   getShowMetadataFromAlbum,
 } from '@/lib/schema';
+import { getRecordingType } from '@/lib/lineageUtils';
+
+// Simplified album data for internal linking
+export interface RelatedShow {
+  slug: string;
+  name: string;
+  artistSlug: string;
+  artistName: string;
+  showDate?: string;
+  showVenue?: string;
+  coverArt?: string;
+  totalTracks: number;
+}
 
 interface AlbumPageProps {
   params: Promise<{ slug: string; album: string }>;
@@ -26,11 +39,56 @@ export async function generateMetadata({ params }: AlbumPageProps): Promise<Meta
 
   // Get show metadata from tracks (albums are categories, show data comes from tracks)
   const showMetadata = getShowMetadataFromAlbum(album);
-  const trackList = album.tracks.slice(0, 5).map(t => t.title).join(', ');
-  const description = `${album.name} by ${album.artistName} - ${album.totalTracks} tracks${showMetadata.showDate ? ` - ${showMetadata.showDate}` : ''}${showMetadata.showVenue ? ` at ${showMetadata.showVenue}` : ''}. Featuring: ${trackList}`;
+  const venue = album.showVenue || showMetadata.showVenue;
+  const showDate = album.showDate || showMetadata.showDate;
+
+  // Detect recording type from track lineage data
+  let recordingType: string | null = null;
+  for (const track of album.tracks) {
+    for (const song of track.songs) {
+      if (song.lineage) {
+        recordingType = getRecordingType(song.lineage);
+        if (recordingType) break;
+      }
+    }
+    if (recordingType) break;
+  }
+  const recordingLabel = recordingType === 'soundboard' ? 'Soundboard Recording'
+    : recordingType === 'matrix' ? 'Matrix Recording'
+    : 'Concert Recording';
+
+  // SEO-optimized title: "{Artist} Live at {Venue} ({Date}) - Soundboard Recording | 8PM"
+  // Fallback if venue unknown: "{Artist} Live ({Date}) - Free Streaming & Downloads | 8PM Archive"
+  let title: string;
+  if (venue && showDate) {
+    title = `${album.artistName} Live at ${venue} (${showDate}) - ${recordingLabel} | 8PM`;
+  } else if (venue) {
+    title = `${album.artistName} Live at ${venue} - ${recordingLabel} | 8PM Archive`;
+  } else if (showDate) {
+    title = `${album.artistName} Live (${showDate}) - Free Streaming & Downloads | 8PM Archive`;
+  } else {
+    title = `${album.artistName} - ${album.name} | 8PM Archive`;
+  }
+
+  // Keep title under ~70 characters for optimal SERP display
+  if (title.length > 70) {
+    // Shorten by removing "Recording" or "Archive"
+    title = title.replace(' Recording', '').replace(' Archive', '');
+  }
+
+  // SEO-optimized description: "Stream {Artist}'s {Date} show at {Venue}. Complete {recording_type} recording with {track_count} tracks. Free streaming."
+  const recordingTypeText = recordingType || 'concert';
+  let description: string;
+  if (venue && showDate) {
+    description = `Stream ${album.artistName}'s ${showDate} show at ${venue}. Complete ${recordingTypeText} recording with ${album.totalTracks} tracks. Free streaming.`;
+  } else if (showDate) {
+    description = `Stream ${album.artistName}'s ${showDate} performance. ${album.totalTracks} tracks available. High-quality ${recordingTypeText} recording. Free streaming, no signup.`;
+  } else {
+    description = `Stream ${album.name} by ${album.artistName}. ${album.totalTracks} tracks available. Free streaming, no signup required.`;
+  }
 
   return generateSeoMetadata({
-    title: `${album.artistName} - ${album.name}`,
+    title,
     description: description.substring(0, 160),
     path: `/artists/${slug}/album/${albumSlug}`,
     image: album.coverArt || album.wikipediaArtworkUrl,
@@ -64,6 +122,31 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
 
   const baseUrl = getBaseUrl();
 
+  // Fetch artist data to find other shows at the same venue
+  let moreFromVenue: RelatedShow[] = [];
+  if (album.showVenue) {
+    const artist = await getArtist(slug);
+    if (artist) {
+      // Find other albums at the same venue (excluding current album)
+      moreFromVenue = artist.albums
+        .filter(a =>
+          a.showVenue === album.showVenue &&
+          a.identifier !== album.identifier
+        )
+        .slice(0, 6) // Limit to 6 related shows
+        .map(a => ({
+          slug: a.slug,
+          name: a.name,
+          artistSlug: artist.slug,
+          artistName: artist.name,
+          showDate: a.showDate,
+          showVenue: a.showVenue,
+          coverArt: a.coverArt,
+          totalTracks: a.totalTracks,
+        }));
+    }
+  }
+
   // Generate Schema.org structured data using centralized utilities
   // MusicAlbum schema includes AggregateRating if sufficient reviews exist
   const musicAlbumSchema = generateMusicAlbumSchema(album, slug, baseUrl);
@@ -89,7 +172,7 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
   return (
     <>
       <StructuredData data={combinedSchema} />
-      <AlbumPageContent album={album} />
+      <AlbumPageContent album={album} moreFromVenue={moreFromVenue} />
     </>
   );
 }

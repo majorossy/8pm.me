@@ -10,6 +10,7 @@ import {
   generateBreadcrumbSchema,
   combineSchemas,
 } from '@/lib/schema';
+import { formatDuration } from '@/lib/api';
 
 interface TrackPageProps {
   params: Promise<{ slug: string; album: string; track: string }>;
@@ -23,11 +24,47 @@ export async function generateMetadata({ params }: TrackPageProps): Promise<Meta
     return { title: 'Track Not Found' };
   }
 
-  const description = `${track.title} from ${track.albumName} by ${track.artistName} - ${track.songCount} recording(s) available`;
+  // Get venue and date from the first song (all songs in a track share the same show)
+  const firstSong = track.songs[0];
+  const venue = firstSong?.showVenue;
+  const showDate = firstSong?.showDate;
+  const duration = track.totalDuration;
+
+  // SEO-optimized title: "{Song} - {Artist} Live at {Venue} ({Date}) | 8PM Archive"
+  let title: string;
+  if (venue && showDate) {
+    title = `${track.title} - ${track.artistName} Live at ${venue} (${showDate}) | 8PM Archive`;
+  } else if (showDate) {
+    title = `${track.title} - ${track.artistName} Live (${showDate}) | 8PM Archive`;
+  } else {
+    title = `${track.title} - ${track.artistName} Live | 8PM Archive`;
+  }
+
+  // Keep title under ~70 characters for optimal SERP display
+  if (title.length > 70) {
+    // Shorten by removing "Archive" or simplifying
+    title = title.replace(' Archive', '');
+  }
+  if (title.length > 70) {
+    // Further shorten by using simpler format
+    title = `${track.title} - ${track.artistName} | 8PM`;
+  }
+
+  // SEO-optimized description: "Listen to {Song} from {Artist}'s {Date} show at {Venue}. {Duration} of live music. Free streaming."
+  let description: string;
+  const durationText = duration > 0 ? formatDuration(duration) : '';
+
+  if (venue && showDate) {
+    description = `Listen to ${track.title} from ${track.artistName}'s ${showDate} show at ${venue}.${durationText ? ` ${durationText} of live music.` : ''} Free streaming.`;
+  } else if (showDate) {
+    description = `Listen to ${track.title} from ${track.artistName}'s ${showDate} performance.${durationText ? ` ${durationText} of live music.` : ''} Free streaming, no signup.`;
+  } else {
+    description = `Listen to ${track.title} by ${track.artistName}. ${track.songCount} recording${track.songCount !== 1 ? 's' : ''} available.${durationText ? ` ${durationText}.` : ''} Free streaming.`;
+  }
 
   return generateSeoMetadata({
-    title: `${track.title} - ${track.artistName}`,
-    description,
+    title,
+    description: description.substring(0, 160),
     path: `/artists/${slug}/album/${albumSlug}/track/${trackSlug}`,
     type: 'music.song',
   });
