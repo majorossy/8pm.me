@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getAlbum, getArtist, getArtists, Album } from '@/lib/api';
+import { getAlbum, getArtists, getArtistAlbums } from '@/lib/api';
 import { notFound } from 'next/navigation';
 import AlbumPageContent from '@/components/AlbumPageContent';
 import StructuredData from '@/components/StructuredData';
@@ -12,18 +12,6 @@ import {
   getShowMetadataFromAlbum,
 } from '@/lib/schema';
 import { getRecordingType } from '@/lib/lineageUtils';
-
-// Simplified album data for internal linking
-export interface RelatedShow {
-  slug: string;
-  name: string;
-  artistSlug: string;
-  artistName: string;
-  showDate?: string;
-  showVenue?: string;
-  coverArt?: string;
-  totalTracks: number;
-}
 
 interface AlbumPageProps {
   params: Promise<{ slug: string; album: string }>;
@@ -101,9 +89,9 @@ export async function generateStaticParams() {
   const params: { slug: string; album: string }[] = [];
 
   for (const artist of artists) {
-    const artistDetail = await getArtist(artist.slug);
-    if (artistDetail) {
-      artistDetail.albums.forEach(album => {
+    const result = await getArtistAlbums(artist.slug);
+    if (result) {
+      result.albums.forEach((album) => {
         params.push({ slug: artist.slug, album: album.slug });
       });
     }
@@ -121,31 +109,6 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
   }
 
   const baseUrl = getBaseUrl();
-
-  // Fetch artist data to find other shows at the same venue
-  let moreFromVenue: RelatedShow[] = [];
-  if (album.showVenue) {
-    const artist = await getArtist(slug);
-    if (artist) {
-      // Find other albums at the same venue (excluding current album)
-      moreFromVenue = artist.albums
-        .filter(a =>
-          a.showVenue === album.showVenue &&
-          a.identifier !== album.identifier
-        )
-        .slice(0, 6) // Limit to 6 related shows
-        .map(a => ({
-          slug: a.slug,
-          name: a.name,
-          artistSlug: artist.slug,
-          artistName: artist.name,
-          showDate: a.showDate,
-          showVenue: a.showVenue,
-          coverArt: a.coverArt,
-          totalTracks: a.totalTracks,
-        }));
-    }
-  }
 
   // Generate Schema.org structured data using centralized utilities
   // MusicAlbum schema includes AggregateRating if sufficient reviews exist
@@ -172,7 +135,7 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
   return (
     <>
       <StructuredData data={combinedSchema} />
-      <AlbumPageContent album={album} moreFromVenue={moreFromVenue} />
+      <AlbumPageContent album={album} />
     </>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef } from 'react';
 import Image from 'next/image';
-import { ArtistDetail } from '@/lib/api';
+import { Artist, Album, WikipediaSummary } from '@/lib/types';
 import { BandMemberData } from '@/lib/types';
 import { useBreadcrumbs } from '@/context/BreadcrumbContext';
 import { useWishlist } from '@/context/WishlistContext';
@@ -13,22 +13,20 @@ import BandStatistics from '@/components/artist/BandStatistics';
 import BandLinks from '@/components/artist/BandLinks';
 import DetailedCassette from '@/components/artist/DetailedCassette';
 import PolaroidCard from '@/components/artist/PolaroidCard';
-import RelatedArtists, { RelatedArtist } from '@/components/RelatedArtists';
 import ExpandedBiography from '@/components/ExpandedBiography';
-import ArtistFAQ from '@/components/ArtistFAQ';
 import { trackArtistView } from '@/lib/analytics';
 
-interface ArtistWithAlbums extends ArtistDetail {
-  albums: any[];
+interface ArtistWithAlbums extends Artist {
+  albums: Album[];
+  wikipediaSummary?: WikipediaSummary | null;
 }
 
 interface ArtistPageContentProps {
   artist: ArtistWithAlbums;
   bandData?: BandMemberData | null;
-  relatedArtists?: RelatedArtist[];
 }
 
-export default function ArtistPageContent({ artist, bandData, relatedArtists }: ArtistPageContentProps) {
+export default function ArtistPageContent({ artist, bandData }: ArtistPageContentProps) {
   const { setBreadcrumbs } = useBreadcrumbs();
   const { followArtist, unfollowArtist, isArtistFollowed } = useWishlist();
   const { vibrate, BUTTON_PRESS } = useHaptic();
@@ -419,27 +417,6 @@ export default function ArtistPageContent({ artist, bandData, relatedArtists }: 
         </div>
       </section>
 
-      {/* Related Artists Section - Internal linking for SEO */}
-      {relatedArtists && relatedArtists.length > 0 && (
-        <section className="max-w-[1000px] mx-auto px-4 md:px-8 pb-8">
-          <RelatedArtists
-            currentArtistName={artist.name}
-            relatedArtists={relatedArtists}
-          />
-        </section>
-      )}
-
-      {/* FAQ Section - Voice search optimization */}
-      <section className="max-w-[1000px] mx-auto px-4 md:px-8 pb-8">
-        <ArtistFAQ
-          artistName={artist.name}
-          totalShows={artist.totalShows || artist.albums.length}
-          yearsActive={artist.yearsActive}
-          genres={artist.genres}
-          originLocation={artist.originLocation}
-          mostPlayedTrack={artist.mostPlayedTrack}
-        />
-      </section>
     </div>
   );
 }

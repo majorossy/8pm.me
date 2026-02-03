@@ -1,71 +1,132 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 
 export default function LoadingBar() {
   const pathname = usePathname();
   const [progress, setProgress] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
   const prevPathname = useRef(pathname);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
+  const clearTimers = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  }, []);
+
+  // Start the loading animation
+  const startLoading = useCallback(() => {
+    clearTimers();
+    setProgress(0);
+    setIsVisible(true);
+    setIsNavigating(true);
+
+    // Animate to 30% quickly
+    requestAnimationFrame(() => {
+      setProgress(30);
+    });
+
+    // Slow crawl from 30% to 90%
+    let currentProgress = 30;
+    intervalRef.current = setInterval(() => {
+      currentProgress += Math.random() * 8;
+      if (currentProgress >= 90) {
+        currentProgress = 90;
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
+        }
+      }
+      setProgress(currentProgress);
+    }, 300);
+  }, [clearTimers]);
+
+  // Complete the loading animation
+  const completeLoading = useCallback(() => {
+    clearTimers();
+    setProgress(100);
+    setIsNavigating(false);
+
+    // Hide after completion animation
+    timeoutRef.current = setTimeout(() => {
+      setIsVisible(false);
+      setProgress(0);
+    }, 200);
+  }, [clearTimers]);
+
+  // Listen for clicks on internal links to start loading immediately
   useEffect(() => {
-    const clearTimers = () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const anchor = target.closest('a');
+
+      if (!anchor) return;
+
+      const href = anchor.getAttribute('href');
+      if (!href) return;
+
+      // Skip external links, hash links, and special protocols
+      if (
+        href.startsWith('http') ||
+        href.startsWith('//') ||
+        href.startsWith('#') ||
+        href.startsWith('mailto:') ||
+        href.startsWith('tel:') ||
+        anchor.target === '_blank' ||
+        e.ctrlKey ||
+        e.metaKey ||
+        e.shiftKey
+      ) {
+        return;
       }
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
+
+      // Skip if already navigating or if it's the same path
+      const linkPath = href.split('?')[0].split('#')[0];
+      const currentPath = pathname.split('?')[0].split('#')[0];
+      if (isNavigating || linkPath === currentPath) {
+        return;
       }
+
+      // Start loading immediately on link click
+      startLoading();
     };
 
-    // Pathname changed - start loading animation
+    document.addEventListener('click', handleClick, true);
+    return () => document.removeEventListener('click', handleClick, true);
+  }, [pathname, isNavigating, startLoading]);
+
+  // Complete loading when pathname actually changes
+  useEffect(() => {
     if (pathname !== prevPathname.current) {
-      clearTimers();
       prevPathname.current = pathname;
 
-      // Quick start
-      setProgress(0);
-      setIsVisible(true);
-
-      // Animate to 30% quickly
-      requestAnimationFrame(() => {
-        setProgress(30);
-      });
-
-      // Slow crawl from 30% to 90%
-      let currentProgress = 30;
-      intervalRef.current = setInterval(() => {
-        currentProgress += Math.random() * 10;
-        if (currentProgress >= 90) {
-          currentProgress = 90;
-          if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
-          }
-        }
-        setProgress(currentProgress);
-      }, 500);
-
-      // Complete after a short delay (page should be rendered)
-      timeoutRef.current = setTimeout(() => {
-        clearTimers();
-        setProgress(100);
-
-        // Hide after completion animation
-        setTimeout(() => {
-          setIsVisible(false);
-          setProgress(0);
-        }, 200);
-      }, 300);
+      if (isNavigating) {
+        // Navigation completed - finish the animation
+        completeLoading();
+      }
     }
+  }, [pathname, isNavigating, completeLoading]);
 
-    return clearTimers;
-  }, [pathname]);
+  // Safety timeout - complete after 10 seconds if navigation seems stuck
+  useEffect(() => {
+    if (isNavigating) {
+      const safetyTimeout = setTimeout(() => {
+        if (isNavigating) {
+          completeLoading();
+        }
+      }, 10000);
+      return () => clearTimeout(safetyTimeout);
+    }
+  }, [isNavigating, completeLoading]);
 
   if (!isVisible && progress === 0) {
     return null;

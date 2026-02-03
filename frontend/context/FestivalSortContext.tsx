@@ -17,7 +17,7 @@ import {
 
 const STORAGE_KEY = 'festivalSortAlgorithm';
 const ALPHA_STORAGE_KEY = 'festivalSortAlphaMode';
-const DEFAULT_ALGORITHM: SortAlgorithm = 'songVersions';
+const DEFAULT_ALGORITHM: SortAlgorithm = 'shows';
 
 interface FestivalSortContextValue {
   sortedArtists: ArtistWithStats[];
@@ -69,8 +69,10 @@ export function FestivalSortProvider({
 
   // Memoized sorted artists - only recompute when artists, algorithm, or alpha mode changes
   const sortedArtists = useMemo(() => {
-    // During SSR or before hydration, return unsorted to match server
-    if (!isHydrated) return artists;
+    // During SSR or before hydration, use default sort to match server-side pre-sorting
+    if (!isHydrated) {
+      return sortArtistsByAlgorithm(artists, DEFAULT_ALGORITHM);
+    }
 
     // In alpha mode, sort alphabetically (font sizes still based on algorithm's metric)
     if (isAlphaMode) {

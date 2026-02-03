@@ -26,7 +26,6 @@ import OfflineIndicator from '@/components/OfflineIndicator';
 import LoadingBar from '@/components/LoadingBar';
 import Footer from '@/components/Footer';
 import WebVitalsMonitor from '@/components/WebVitalsMonitor';
-import CookieConsentBanner from '@/components/CookieConsentBanner';
 
 // Lazy load heavy components that aren't immediately visible
 const Queue = dynamic(() => import('@/components/Queue'), { ssr: false });
@@ -162,8 +161,6 @@ function InnerLayout({ children }: { children: ReactNode }) {
       {/* Core Web Vitals monitoring */}
       <WebVitalsMonitor />
 
-      {/* Cookie consent banner (GDPR compliance) */}
-      <CookieConsentBanner />
     </>
   );
 }

@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getArtist, getArtists } from '@/lib/api';
+import { getArtistAlbums, getArtists } from '@/lib/api';
 import { getArtistBandData } from '@/lib/artistData';
 import { notFound } from 'next/navigation';
 import ArtistPageContent from '@/components/ArtistPageContent';
@@ -8,11 +8,8 @@ import { generateSeoMetadata, getBaseUrl } from '@/lib/seo';
 import {
   generateMusicGroupSchema,
   generateBreadcrumbSchema,
-  generateArtistFAQSchema,
   combineSchemas,
 } from '@/lib/schema';
-import { getRelatedArtistSlugs } from '@/lib/relatedArtists';
-import { RelatedArtist } from '@/components/RelatedArtists';
 
 interface ArtistPageProps {
   params: Promise<{ slug: string }>;
@@ -20,11 +17,13 @@ interface ArtistPageProps {
 
 export async function generateMetadata({ params }: ArtistPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const artist = await getArtist(slug);
+  const result = await getArtistAlbums(slug);
 
-  if (!artist) {
+  if (!result) {
     return { title: 'Artist Not Found' };
   }
+
+  const { artist } = result;
 
   // SEO-optimized title: "{Artist} Live Recordings & Concert Downloads | 8PM Archive"
   const title = `${artist.name} Live Recordings & Concert Downloads | 8PM Archive`;
@@ -64,39 +63,22 @@ export async function generateStaticParams() {
 
 export default async function ArtistPage({ params }: ArtistPageProps) {
   const { slug } = await params;
-  const artist = await getArtist(slug);
+  const result = await getArtistAlbums(slug);
 
-  if (!artist) {
+  if (!result) {
     notFound();
   }
+
+  // Combine artist with albums for the page content
+  const { artist: artistData, albums } = result;
+  const artist = { ...artistData, albums };
 
   // Load band member data from static JSON file
   const bandData = await getArtistBandData(slug);
   const baseUrl = getBaseUrl();
 
-  // Get all artists for related artists lookup
-  const allArtists = await getArtists();
-
-  // Get related artist slugs from the configuration
-  const relatedSlugs = getRelatedArtistSlugs(slug, 4);
-
-  // Build related artists data with full details
-  const relatedArtists: RelatedArtist[] = relatedSlugs
-    .map((relatedSlug): RelatedArtist | null => {
-      const relatedArtist = allArtists.find((a) => a.slug === relatedSlug);
-      if (!relatedArtist) return null;
-      return {
-        slug: relatedArtist.slug,
-        name: relatedArtist.name,
-        image: relatedArtist.bandImageUrl || relatedArtist.image,
-        showCount: relatedArtist.totalShows || relatedArtist.albumCount,
-        genres: relatedArtist.genres,
-      };
-    })
-    .filter((a): a is RelatedArtist => a !== null);
-
   // Generate Schema.org structured data using centralized utilities
-  const musicGroupSchema = generateMusicGroupSchema(artist, baseUrl, bandData);
+  const musicGroupSchema = generateMusicGroupSchema(artistData, baseUrl, bandData);
 
   // Breadcrumb schema for navigation
   const breadcrumbSchema = generateBreadcrumbSchema([
@@ -105,22 +87,13 @@ export default async function ArtistPage({ params }: ArtistPageProps) {
     { name: artist.name, url: `${baseUrl}/artists/${slug}` },
   ]);
 
-  // FAQ schema for voice search optimization
-  const faqSchema = generateArtistFAQSchema(
-    artist.name,
-    artist.totalShows,
-    artist.yearsActive,
-    artist.originLocation,
-    artist.mostPlayedTrack
-  );
-
   // Combine schemas using @graph (Google's preferred format)
-  const combinedSchema = combineSchemas(musicGroupSchema, breadcrumbSchema, faqSchema);
+  const combinedSchema = combineSchemas(musicGroupSchema, breadcrumbSchema);
 
   return (
     <>
       <StructuredData data={combinedSchema} />
-      <ArtistPageContent artist={artist} bandData={bandData} relatedArtists={relatedArtists} />
+      <ArtistPageContent artist={artist} bandData={bandData} />
     </>
   );
 }

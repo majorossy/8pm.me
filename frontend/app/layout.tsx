@@ -3,6 +3,7 @@ import { Orbitron, Space_Mono, Bebas_Neue } from 'next/font/google';
 import './globals.css';
 import ClientLayout from '@/components/ClientLayout';
 import ConditionalAnalytics from '@/components/ConditionalAnalytics';
+import EarlyAccessGate from '@/components/EarlyAccessGate';
 
 const orbitron = Orbitron({
   subsets: ['latin'],
@@ -72,7 +73,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${orbitron.variable} ${spaceMono.variable} ${bebasNeue.variable}`}>
+    <html lang="en" className={`${orbitron.variable} ${spaceMono.variable} ${bebasNeue.variable} theme-campfire`}>
       <head>
         {/* Preconnect hints for critical resources - improves LCP */}
         <link rel="preconnect" href="https://magento.test" />
@@ -119,9 +120,11 @@ export default function RootLayout({
         */}
       </head>
       <body className="font-mono">
-        <ClientLayout>{children}</ClientLayout>
-        {/* Google Analytics 4 - only loads when user has consented to analytics cookies */}
-        <ConditionalAnalytics />
+        <EarlyAccessGate>
+          <ClientLayout>{children}</ClientLayout>
+          {/* Google Analytics 4 - only loads when user has consented to analytics cookies */}
+          <ConditionalAnalytics />
+        </EarlyAccessGate>
       </body>
     </html>
   );

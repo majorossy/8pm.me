@@ -3,10 +3,36 @@
 @tailwind utilities;
 
 /* ========================================
-   THEME: Tron (Default)
+   ROOT: Campfire defaults (prevents FOUC)
+   ======================================== */
+:root {
+  --bg: #1c1a17;
+  --bg-card: #252220;
+  --bg-elevated: #2d2a26;
+  --neon-pink: #d4a060;
+  --neon-cyan: #d4a060;
+  --neon-purple: #5a8a7a;
+  --neon-orange: #c08a40;
+  --text: #e8e0d4;
+  --text-dim: #9a9488;
+  --text-subdued: #7a7468;
+  --grid-color: rgba(200, 180, 150, 0.03);
+  --show-grid: 0;
+  --show-orbs: 0;
+  --orb-pink-opacity: 0;
+  --orb-cyan-opacity: 0;
+  --campfire-amber: #d4a060;
+  --campfire-ochre: #c08a40;
+  --campfire-rust: #a85a38;
+  --campfire-teal: #5a8a7a;
+  --campfire-cream: #f5f0e8;
+  --accent2: #d4a060;
+}
+
+/* ========================================
+   THEME: Tron (Legacy)
    Neon synthwave with grid and glow orbs
    ======================================== */
-:root,
 .theme-tron {
   --bg: #0d0d12;
   --bg-card: #15151d;

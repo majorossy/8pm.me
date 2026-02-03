@@ -27,6 +27,9 @@ export default async function HomePage() {
     })
   );
 
+  // Pre-sort by show count (default) to prevent visual jump on hydration
+  artistsWithAlbums.sort((a, b) => (b.totalShows || 0) - (a.totalShows || 0));
+
   const baseUrl = getBaseUrl();
 
   // Schema.org WebSite + SearchAction structured data
