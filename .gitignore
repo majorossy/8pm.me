@@ -2,6 +2,7 @@
 *.sql
 *.sql.gz
 *.pem
+backups/
 node_modules/
 .next/
 frontend/.next/
