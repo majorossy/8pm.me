@@ -266,6 +266,8 @@ Related docs: <filename>
 **Types:** feat, fix, docs, refactor, test, chore, build
 **Scopes:** backend, frontend, tooling, seo, import
 
+> ⚠️ **DO NOT add "Co-Authored-By: Claude" signatures** - These are original commits being reorganized, not new code written with AI assistance. Adding Claude's signature would misrepresent authorship history.
+
 ---
 
 ## Rollback Plan
